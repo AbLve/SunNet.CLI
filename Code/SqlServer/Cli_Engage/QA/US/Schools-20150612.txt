@@ -1,0 +1,5 @@
+﻿--该删除字段有外键约束，若以下方法执行出错，则进行手动删除
+
+
+alter table schools
+drop column TrsMentorId

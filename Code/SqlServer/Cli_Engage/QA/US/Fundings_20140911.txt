@@ -1,0 +1,11 @@
+﻿
+ 
+insert into Fundings(name,CreatedOn,UpdatedOn)
+values('MissingFunding',GETDATE(),GETDATE())
+
+
+--警告1：在MainSite的WebConfig里，添加 <add key="MissingFunding" value="23" />，
+--其中的value为刚才生成的主键值
+
+--警告2：若Fundings里只有Fundings一条记录，执行下面的语句，目的是为了Fundings表里至少有2条记录  
+--insert into Fundings(name,createdOn,updatedOn) values('Community',GETDATE(),GETDATE())

@@ -1,0 +1,4 @@
+﻿ if not exists(select * from syscolumns where id=object_id('Files') and name='UploadUserType')
+alter table Files
+add UploadUserType tinyint not null
+default 0

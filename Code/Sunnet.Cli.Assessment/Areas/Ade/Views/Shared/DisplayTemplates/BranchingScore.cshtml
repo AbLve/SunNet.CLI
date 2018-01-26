@@ -1,0 +1,39 @@
+﻿@{
+    var selectItems = (List<SelectItemModel>)ViewData["selectItems"];
+}
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th width="40%">Scores</th>
+            <th width="*">Next Item</th>
+            <th width="100px;">Action</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:{data:branchingScores,as:'score'}">
+        <tr data-bind="css: { 'has-error': score.hasError }">
+            <td style="line-height: 25px;">
+                <input type="hidden" name="ID" data-bind="value:ID" />From
+                <label class="hide" data-bind="attr:{for:'From'+$index()}">From</label>
+                <input type="text" name="From" class="form-control input-sm _number " int="2" float="2" maxlength="5"
+                       data-bind="value:From,attr:{id:'From'+$index()}, disable:true"
+                       style="width: 50px; display: inline-block;">
+
+                To
+                <label class="hide" data-bind="attr:{for:'To'+$index()}">To Year</label>
+                <input type="text" name="To" class="form-control input-sm _number " int="2" float="2" maxlength="5"
+                       data-bind="value: To, attr: { id: 'To' + $index() }, disable:true"
+                       style="width: 50px; display: inline-block;">
+
+            </td>
+            <td>
+                <select data-bind="attr: { id: 'skipItem' + $index() }, value: SkipItemId, disable:true">
+                    @foreach (var v in selectItems)
+                    {
+                        <option value="@v.ID">@v.Name</option>
+                    }
+                </select>
+            </td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>

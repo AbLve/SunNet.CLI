@@ -1,0 +1,427 @@
+﻿@using System.Activities.Expressions
+@using System.Collections.Generic
+@using System.Web.Optimization
+@using Sunnet.Cli.Business.Classes
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Cli.Core.Students.Enums
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Students.Models.StudentModel
+
+@{
+    ViewBag.Title = "Edit Student";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var listClasses = JsonHelper.SerializeObject(Model.Classes.Select(o => o.ID).ToArray());
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/module_student")
+    <script type="text/javascript">
+
+        var listClass = @listClasses;
+        $(function ()
+        {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response)
+                {
+                    redirectBack("index");
+                }
+            });
+
+  
+        });
+        var list_StudentClasses = {};
+        $(function ()
+        {
+
+            list_StudentClasses = new ViewModel(
+                {
+                    instanceName: "list_StudentClasses",
+                    modalId: "modalNormal",
+                    viewType: "Redirect",
+                    getDataUrl: '/Student/Student/GetClassesByStudentId',
+                    orderBy: "Name",
+                    orderDirection: "ASC",
+                    pageSize: 100000,
+                    headers: [
+                        {
+                            text: "School Name",
+                            field: "",
+                            order: false,
+                            width: '10%'
+                        },
+                        {
+                            text: "Classroom Name",
+                            field: "",
+                            order: false,
+                            width: '10%'
+                        },
+                        {
+                            text: "Class Name",
+                            field: "",
+                            order: false,
+                            width: '10%'
+                        },
+                        {
+                            text: "Day Type",
+                            field: "",
+                            order: false,
+                            width: '30%'
+                        }
+                    ],
+                    searchCriteria:
+                    {
+                        studentId: ko.observable($("#ID").val())
+                    }
+                }, {
+                    classChecked: function (_class)
+                    {
+                        return listClass.indexOf(_class.ClassId) >= 0;
+                    }
+                }
+            );
+            list_StudentClasses.search();
+            ko.applyBindings(list_StudentClasses, document.getElementById("@formId"));
+
+            $("#txtSchool").on("selected.sunnet.datalist", function (event)
+            {
+                list_StudentClasses.search();
+            });
+
+        });
+        function AddClass()
+        {
+            var url = '@Url.Action("New", "Class", new { Area = "Class" })';
+            url = url +"?schoolId=" + $("#SchoolId").val() + "&schoolName=" + $("#FirstSchoolName").val();
+            window.open(url, "_blank");
+        }
+        function ReturnFromClass()
+        {
+            list_StudentClasses.search();
+        }
+    </script>
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Student)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Student", "Index", "Student"))
+    <i class="icon-angle-right">&nbsp;Edit</i>
+}
+
+@using (Ajax.BeginForm("Edit", "Student", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken() 
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Student List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CommunityName, new { @class = "col-sm-2 control-label " })
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(model => model.CommunityName, new { @class = "form-control", @readonly = "true" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolName, new { @class = "control-label col-sm-2 " })
+                @Html.HiddenFor(model => model.FirstSchoolName, new { @class = "form-control " })
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(model => model.SchoolName, new { @class = "form-control", @readonly = "true" })
+                    @Html.HiddenFor(model => model.SchoolId, new { @class = "form-control " })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.StudentId, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.StudentId, new { @class = "form-control", @readonly = "true" })
+                </div>
+
+                @Html.LabelFor(model => model.SchoolYear, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", @readonly = "true" })
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.FirstName)
+                </div>
+
+                @Html.LabelFor(model => model.MiddleName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.MiddleName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MiddleName)
+                </div>
+            </div>
+
+            <div class="form-group">
+
+
+                @Html.LabelFor(model => model.LastName, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.LastName)
+                </div>
+
+                @Html.LabelFor(model => model.Ethnicity, new { @class = "col-sm-2 control-label " })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.Ethnicity, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.EthnicityOther, new { @class = "form-control", type = "hidden" })
+                    @Html.Label("lbEthnicityOther", "EthnicityOther", new { @class = "hide", @for = "EthnicityOther" })
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.BirthDate, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.BirthDate, new { @class = "form-control date", @Value = Model.BirthDate.FormatDateString() })
+                </div>
+
+                <span class="col-sm-2 control-label required">@Html.DisplayNameFor(model => model.Gender)</span>
+                <div class="col-sm-4">
+                    @Html.RadioButtonFor(model => model.Gender, Gender.Male, new { id = "Gender1" })
+                    @Html.Label("", Gender.Male.ToDescription(), new { @for = "Gender1" })
+                    @Html.RadioButtonFor(model => model.Gender, Gender.Female, new { id = "Gender2" })
+                    @Html.Label("", Gender.Female.ToDescription(), new { @for = "Gender2" })
+                    <br />@Html.ValidationMessageFor(model => model.Gender)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimaryLanguageId, new { @class = "col-sm-2 control-label " })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(e => e.PrimaryLanguageId, (IEnumerable<SelectListItem>)ViewBag.Language, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.PrimaryLanguageOther, new { @class = "form-control", type = "hidden" })
+                    @Html.Label("lbPrimaryLanguageOther", "PrimaryLanguageOther", new { @class = "hide", @for = "PrimaryLanguageOther" })
+                </div>
+
+                @Html.LabelFor(model => model.SecondaryLanguageId, new { @class = "col-sm-2 control-label " })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(e => e.SecondaryLanguageId, (IEnumerable<SelectListItem>)ViewBag.Language, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.SecondaryLanguageOther, new { @class = "form-control", type = "hidden" })
+                    @Html.Label("lbSecondaryLanguageOther", "SecondaryLanguageOther", new { @class = "hide", @for = "SecondaryLanguageOther" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.StatusOptions,
+                        new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+
+                @Html.LabelFor(model => model.StatusDate, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.StatusDate, new
+                   {
+                       @class = "form-control ",
+                       @Value = Model.StatusDate.FormatDateString(),
+                       @readonly = "readonly"
+                   })
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.IsSendParent, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.CheckBoxFor(model => model.IsSendParent)
+
+                </div>
+                @Html.LabelFor(model => model.LocalStudentID, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.LocalStudentID, new { @class = "form-control" })
+                </div>
+
+            </div>
+
+            @if (ViewBag.MediaAccess == "RW")
+            {
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.IsMediaRelease)</span>
+                    <div class="col-sm-4">
+                        @Html.RadioButtonFor(model => model.IsMediaRelease, MediaRelease.Yes, new { id = "MediaYes" })
+                        @Html.Label("", "Yes", new { @for = "MediaYes" })
+
+                        @Html.RadioButtonFor(model => model.IsMediaRelease, MediaRelease.No, new { id = "MediaNo" })
+                        @Html.Label("", "No", new { @for = "MediaNo" })
+
+                        @Html.RadioButtonFor(model => model.IsMediaRelease, MediaRelease.Refused, new { id = "MediaRefused" })
+                        @Html.Label("", "Refused", new { @for = "MediaRefused" })
+                    </div>
+                    @Html.LabelFor(model => model.AssessmentLanguage, new { @class = "col-sm-2 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(e => e.AssessmentLanguage, (IEnumerable<SelectListItem>)ViewBag.AssessmentLanguages, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AssessmentLanguage)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TSDSStudentID, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.TSDSStudentID, new { @class = "form-control" })
+                    </div>
+                    @Html.LabelFor(model => model.GradeLevel, new { @class = "col-sm-2 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(model => model.GradeLevel, (IEnumerable<SelectListItem>)ViewBag.GradeLevelOptions, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GradeLevel)
+                    </div>
+                </div>
+            }
+            else if (ViewBag.MediaAccess == "R")
+            {
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.IsMediaRelease)</span>
+                    <div class="col-sm-4">
+                        @Html.RadioButtonFor(model => model.IsMediaRelease, MediaRelease.Yes,
+                            new { id = "MediaYes", @disabled = "true" })
+                        @Html.Label("", "Yes", new { @for = "MediaYes" })
+
+                        @Html.RadioButtonFor(model => model.IsMediaRelease, MediaRelease.No,
+                            new { id = "MediaNo", @disabled = "true" })
+                        @Html.Label("", "No", new { @for = "MediaNo" })
+
+                        @Html.RadioButtonFor(model => model.IsMediaRelease, MediaRelease.Refused,
+                            new { id = "MediaRefused", @disabled = "true" })
+                        @Html.Label("", "Refused", new { @for = "MediaRefused" })
+
+                    </div>
+                    @Html.LabelFor(model => model.AssessmentLanguage, new { @class = "col-sm-2 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(e => e.AssessmentLanguage, (IEnumerable<SelectListItem>)ViewBag.AssessmentLanguages, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AssessmentLanguage)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TSDSStudentID, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.TSDSStudentID, new { @class = "form-control" })
+                    </div>
+                    @Html.LabelFor(model => model.GradeLevel, new { @class = "col-sm-2 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(e => e.GradeLevel, (IEnumerable<SelectListItem>)ViewBag.GradeLevelOptions, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GradeLevel)
+                    </div>
+                </div>
+            }
+            else
+            {
+                @Html.HiddenFor(model => model.IsMediaRelease)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AssessmentLanguage, new { @class = "col-sm-2 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(e => e.AssessmentLanguage, (IEnumerable<SelectListItem>)ViewBag.AssessmentLanguages, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AssessmentLanguage)
+                    </div>
+                    @Html.LabelFor(model => model.TSDSStudentID, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.TSDSStudentID, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.GradeLevel, new { @class = "col-sm-2 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(e => e.GradeLevel, (IEnumerable<SelectListItem>)ViewBag.GradeLevelOptions, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GradeLevel)
+                    </div>
+                </div>
+            }
+
+
+            <div class="form-group">
+
+                <span class="col-sm-2 control-label required">Assign Student to Class</span>
+                <div class="col-sm-2 ">
+                    <a class="mainbutton mainright-btn sreach-btn" href="#" onclick="AddClass();">Add Class</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 ">&nbsp;</div>
+                <div class="col-sm-9">
+                    <div class="form-group">
+                        @Html.ValidationMessage("chkClasses")
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <label for="hiddenChk" class="hide">hiddenChk</label>
+                                        <input type="checkbox" id="hiddenChk" name="chkClasses" class="required hide validate" />
+                                        <input type="checkbox" onclick="CheckAll" id="chkSelectAll" />
+                                        <label for="chkSelectAll">Select All</label>
+                                    </th>
+                                    <th>School Name</th>
+                                    <th>Classroom Name</th>
+                                    <th>Class Name</th>
+                                    <th>Day Type</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <label data-bind=" attr: { 'for': 'chkClasses' + $index() }" class="hide">hiddenChk</label>
+                                        <input type="checkbox" name="chkClasses" id="chkClasses" class="required"
+                                            data-bind="value: item.ClassId, checked: $root.classChecked(item), attr: { id: 'chkClasses' + $index() }">
+                                    </td>
+                                    <td data-bind="text: item.SchoolName"></td>
+                                    <td data-bind="text: item.ClassroomName"></td>
+                                    <td data-bind="text: item.ClassName"></td>
+                                    <td data-bind="text: (item.DayType.text == '0' ? '' : item.DayType.text)"></td>
+                                </tr>
+                            </tbody>
+                            @Html.Display("e", "NoData", new { Colspan = 4 })
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @if (ViewBag.NoteAccess == "RW")
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Notes, null, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">
+                        @Html.TextAreaFor(model => model.Notes, 5, 10, new { @class = " form-control" })
+                    </div>
+                </div>
+            }
+            else if (ViewBag.NoteAccess == "R")
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Notes, null, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">
+                        @Html.TextAreaFor(model => model.Notes, 5, 10, new { @class = " form-control  ", @readonly = "true" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                @Html.HiddenFor(model => model.Notes)
+            }
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="submit">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.CreatedOn)
+        @Html.HiddenFor(model => model.UpdatedOn)
+        @Html.HiddenFor(model => model.ParentCode)
+    </div>
+ 
+            
+}

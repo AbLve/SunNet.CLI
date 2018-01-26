@@ -1,0 +1,92 @@
+﻿@model IEnumerable<TypedResopnseModel>
+@{
+    Layout = null;
+}
+<div class="nav-tab">
+    <ul id="responseEditor" class="nav-container" role="tablist">
+        <!--ko foreach:{data:activeResponses(),as:'Response'}-->
+        <!--ko ifnot:IsDeleted()-->
+        <li data-bind="css:{active:$index() === 0}">
+            <a data-bind="text:'Response ' + ($index() + 1),attr:{href:'#'+uuid}"
+               role="tab" data-toggle="tab"></a>
+        </li>
+        <!--/ko-->
+        <!--/ko-->
+    </ul>
+</div>
+<div class="tab-content" data-bind="foreach:{data:activeResponses(),as:'Response'}">
+    <!--ko ifnot:IsDeleted()-->
+    <div class="tab-pane fade" data-bind="css:{'active in':$index() === 0},attr:{id:uuid}">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th width="5"><span style="display:none;">1</span></th>
+                    <th width="160">Response Picture</th>
+                    <th width="120">Time in (ms)</th>
+                    <th width="*">Text</th>
+                    <th width="120">Time in (ms)</th>
+                    <th width="100">Required</th>
+                    <th width="200">Type of Field</th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr data-bind="ifnot:IsDeleted">
+                    <td>
+                        &nbsp;<input type="hidden" name="Id" data-bind="value:Id" />
+                    </td>
+                    <td>
+                        <div class="webuploader-preview" data-bind="visible: Picture.length > 0">
+                            <a class="table-btn icon-zoom-in preview-btn"
+                               data-bind="attr:{href:$root.BasePath + Picture}"
+                               target="_blank"><span style="display:none;">1</span></a>
+                        </div>
+                    </td>
+                    <td data-bind="text:PictureTimeIn"></td>
+                    <td data-bind="text:Text"></td>
+                    <td data-bind="text:TextTimeIn"></td>
+                    <td data-bind="boolText:Required"></td>
+                    <td data-bind="text:TypeText()"></td>
+                </tr>
+                <tr data-bind="ifnot:IsDeleted">
+                    <td colspan="2">&nbsp;</td>
+                    <td colspan="5">
+                        <table class="table table-hover table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th><span style="display:none;">1</span></th>
+                                    <th colspan="2">Response</th>
+                                    <th><span style="display:none;">1</span></th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach:{data:Options,as:'Option'}">
+                                <tr data-bind="ifnot:IsDeleted">
+                                    <td>
+                                        &nbsp;<input type="hidden" name="Id" data-bind="value:Id" />
+                                    </td>
+                                    <!--ko if: Type() == TypedResponseType.Text-->
+                                    <td class="editting-td">
+                                        If response contains: (separate words with <strong>,</strong> or <strong>;</strong>)
+                                    </td>
+                                    <td data-bind="text:Keyword"></td>
+                                    <!--/ko-->
+                                    <!--ko if: Type() == TypedResponseType.Numerical-->
+                                    <td colspan="2">
+                                        From
+                                        <span data-bind="text:From"></span>&nbsp;
+                                        To
+                                        <span data-bind="text:To"></span>&nbsp;
+                                    </td>
+                                    <!--/ko-->
+                                    <td>&nbsp;</td>
+                                    <td data-bind="text:Score"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--/ko-->
+</div>

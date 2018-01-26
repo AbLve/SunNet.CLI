@@ -1,0 +1,24 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Ade
+@{
+    ViewBag.Title = "Item Bulk Upload";
+}
+
+
+@section BreadPath
+{
+    Item Bulk Upload
+}
+
+<ul class="ade-menu-dashboard">
+    <li>
+        <a href="@(DomainHelper.AssessmentDomain)BulkUpload/ItemBup/UploadList?type=@ItemType.TxkeaReceptive" class="administrative-con">
+            <span>TX-KEA<br /> Receptive Item</span>
+        </a>
+    </li>
+    <li>
+        <a href="@(DomainHelper.AssessmentDomain)BulkUpload/ItemBup/UploadList?type=@ItemType.TxkeaExpressive" class="administrative-con">
+            <span>TX-KEA<br /> Expressive Item</span>
+        </a>
+    </li>
+</ul>

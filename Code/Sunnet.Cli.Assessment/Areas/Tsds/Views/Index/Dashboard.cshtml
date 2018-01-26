@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+}
+@section BreadPath
+{
+    TSDS<i class="icon-angle-right"></i>Dashboard
+}
+<div class="right-content">
+    <ul class="assessment-menu-dashboard">
+        <div class="assessment-d-btns">
+            @{
+                foreach (SelectListItem item in @ViewBag.Assessments as List<SelectListItem>)
+                {
+                    <li>
+                        @Html.ActionLink(item.Text, "DownloadIndex",
+                            new { assessmentId = item.Value },
+                            new { @class = "cpalls-btn" })
+                    </li>
+                }
+            }
+        </div>
+    </ul>
+</div>

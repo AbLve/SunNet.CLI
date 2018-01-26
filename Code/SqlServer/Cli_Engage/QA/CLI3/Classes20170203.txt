@@ -1,0 +1,3 @@
+﻿  ALTER TABLE Classes ALTER COLUMN [ClassInternalID] VARCHAR(150) NOT NULL
+  GO
+    update [ClassRoles] set ClassInternalID='RW' where RoleId =15

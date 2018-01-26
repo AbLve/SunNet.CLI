@@ -1,0 +1,87 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    var currentMenu = Cli_Menus.Home;
+    if (ViewBag.CurrentMenu != null)
+    {
+        currentMenu = (Cli_Menus)ViewBag.CurrentMenu;
+    }
+    string titleStr = ViewBag.Title;
+    var menus = Cli_Menus.Home.ToList().Cast<Cli_Menus>().ToDictionary(module => module, module => module == currentMenu ? "active" : "");
+}
+
+
+<nav class="navbar navbar-default">
+    <div id="nav">
+         
+             <ul class="nav navbar-nav @(ViewBag.Login ?"main-container new-nav":"") " style="  @(ViewBag.Login ?"padding:0 120px;":"")">
+            @if (!ViewBag.Login)
+            {
+                <li class="@((titleStr == "Sign Up"|| titleStr == "Maintenance Notificaton") ? "" : menus[Cli_Menus.Home])">@Html.ActionLink("Home", "Index", "Home", new { Area = "" }, new { @class = menus[Cli_Menus.Home] + " menutext" })</li>
+			
+                <li class="@(menus[Cli_Menus.TakeALook])" >@Html.ActionLink("Take A Look", "TakeALook", "Home", new { Area = "" }, new { @class = menus[Cli_Menus.TakeALook] + " menutext" })</li>
+			
+                <li class="@(menus[Cli_Menus.AboutUs]) dropdown">
+
+                    <a class="dropdown-toggle menutext" data-toggle="dropdown" onclick="(function(){this.location.href='/about';})()" href="/about">About Us<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li class="@(menus[Cli_Menus.AboutUs])">@Html.ActionLink("News and Updates", "News", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                        <li class="@(menus[Cli_Menus.AboutUs])">@Html.ActionLink("Eligibility", "Eligibility", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                    </ul>
+                </li>
+
+
+                <li class="@(menus[Cli_Menus.Tools]) dropdown"><a class="dropdown-toggle menutext" onclick="(function(){this.location.href='/tools';})()" data-toggle="dropdown" href="/Tools">Tools<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li class="@(menus[Cli_Menus.Tools])">@Html.ActionLink("Child Progress Monitoring", "MonitorTool", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                        <li class="@(menus[Cli_Menus.Tools])">@Html.ActionLink("Online Courses", "OnlineCourse", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                        <li class="@(menus[Cli_Menus.Tools])">@Html.ActionLink("Classroom Observation Tools", "ObservationTool", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                        <li class="@(menus[Cli_Menus.Tools])">@Html.ActionLink("Coaching & Collaboration Tools", "CoachingTool", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                        <li class="@(menus[Cli_Menus.Tools])">@Html.ActionLink("Activities", "ClassroomActivity", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                        <li class="@(menus[Cli_Menus.Tools])">@Html.ActionLink("Texas Kindergarten Entry Assessment", "Kindergarten", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                    </ul>
+                </li>
+            @* <li class="@(menus[Cli_Menus.EngageParents])">@Html.ActionLink("Parents", "Parents", "Home", new { Area = "" },
+                                                       new { @class = menus[Cli_Menus.EngageParents] + " menutext" })</li>*@
+                <li class="@(menus[Cli_Menus.EngageParents]) dropdown" >  
+                    <a class="dropdown-toggle menutext" data-toggle="dropdown" onclick="(function(){this.location.href='/Parents';})()" href="/Parents">Parents<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li style="list-style:none" class="@(menus[Cli_Menus.EngageParents])">@Html.ActionLink("Monitoring Your Child’s Progress", "MonitoringProgress", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                        <li style="list-style:none" class="@(menus[Cli_Menus.EngageParents])">@Html.ActionLink("Activities for Kids", "ActivitiesKids", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                        <li style="list-style:none" class="@(menus[Cli_Menus.EngageParents])">@Html.ActionLink("Online Learning for Parents", "OnlineLearning", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                        <li style="list-style:none" class="@(menus[Cli_Menus.EngageParents])">@Html.ActionLink("Understanding Child Development", "UnderstandingChildDev", "Home", new { Area = "" }, new { @class = " menutext" })</li>
+                    </ul>
+
+                </li>
+            } 
+            @if (ViewBag.Login)
+            {
+                           <li class="@(menus[Cli_Menus.Dashboard])">@Html.ActionLink("Dashboard", "Dashboard", "Home", new { Area = "" }, new { @class = menus[Cli_Menus.Dashboard] + " menutext" })</li>
+
+			
+            }
+                 <li class="@(menus[Cli_Menus.Calendar])" >@Html.ActionLink("Calendar", "Calendar", "Home", new { Area = "" }, new { @class = menus[Cli_Menus.Calendar] + " menutext" })</li>
+            
+            @if (!ViewBag.Login)
+            {
+                <li class="@(menus[Cli_Menus.Faq])">@Html.ActionLink("FAQ", "FAQ", "Home", new { Area = "" },
+                                                        new { @class = menus[Cli_Menus.Faq] + " menutext" })</li>
+                <li class="@(menus[Cli_Menus.ContactUs])">@Html.ActionLink("Contact Us", "ContactUs", "Home", new { Area = "" },
+                                                              new { @class = menus[Cli_Menus.ContactUs] + " menutext" })</li>
+            }
+            @if (ViewBag.Login)
+            {
+                <li class="@(menus[Cli_Menus.Resources])"><a class="@menus[Cli_Menus.Resources] menutext" href="@(SFConfig.MainSiteDomain)resources">Resources</a></li>
+            }
+
+        
+
+
+                 <li class="@(menus[Cli_Menus.Helps])"><a class="@menus[Cli_Menus.Helps] menutext" href="http://www.texasschoolready.org/help">Help Ticket</a></li>
+
+
+
+            <!--<li class="@(menus[Cli_Menus.Search])"><a href="@(SFConfig.MainSiteDomain)search"><span class="hidden-text">Name of Link</span><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></li>-->
+        </ul>
+    </div>
+</nav>

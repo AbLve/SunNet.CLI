@@ -1,0 +1,6 @@
+﻿ drop table Roles
+ alter table Users alter column RoleId tinyint not null
+ exec sp_rename 'Users.RoleId','Role'  
+
+
+ 

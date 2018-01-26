@@ -1,0 +1,109 @@
+﻿@{
+    Layout = null;
+    var pageTitle = ViewBag.Title as string;
+    var title = "CIRCLE Assessment System";
+    if (!string.IsNullOrEmpty(pageTitle))
+    {
+        title = pageTitle + " - " + title;
+    }
+
+    var cpallsUrl = "~/scripts/cpalls/offline";
+
+}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1, minimum-scale=1, maximum-scale=1.0">
+        <title>@title</title>
+    
+        <!--
+            <link href='@Url.Content("~/Content/Site.css")'/>
+            <link href='@Url.Content("~/Content/lib/bootstrap/css/bootstrap.min.css")' />
+            <link href='@Url.Content("~/Content/lib/bootstrap/css/bootstrap-theme.css")' />
+            <link href='@Url.Content("~/Content/lib/Font-Awesome-3.2.1/css/font-awesome.min.css")' />
+            <link href='@Url.Content("~/Content/style/layout.css")' />
+            <link href='@Url.Content("~/Content/style/module.css")' />
+            -->
+    
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        @Styles.Render("~/css/basic/offline")
+        @Styles.Render("~/css/cpalls/offline")
+        @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+        {
+            <script type="text/javascript">
+                window._DEBUG = true;
+            </script>
+        }
+        <script type="text/javascript">
+            window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+            window._staticDomain_ = "@((ViewBag.Offline != null && ViewBag.Offline) ? DomainHelper.AssessmentDomain : DomainHelper.StaticSiteDomain)";
+        </script>
+        @Scripts.Render("~/scripts/modernizr/offline")
+        @Scripts.Render("~/scripts/jquery/offline")
+        @Scripts.Render("~/scripts/jquery_val")
+        @Scripts.Render("~/scripts/bootstrap/offline")
+        @Scripts.Render("~/scripts/knockout/offline")
+        @Scripts.Render("~/scripts/cli/offline")
+        @Scripts.Render(cpallsUrl)
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <style type="text/css">
+            html, body {
+                width: 100%;
+                height: 100%;
+            }
+            ul,ol ,li{
+                margin: auto;
+                
+            }
+            .item-text-con ul,.item-text-con ol {
+                margin-left: 30px;
+            }
+        </style>
+    </head>
+<body style="background-color: #6faa29">
+    @RenderBody()
+    <div class="modal" id="modalPause"
+         data-backdrop="static"
+         tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog-sm modal-dialog-item" >
+            <div class="modal-content item-modal-content" style="width:415px;">
+                <div class="item-modal-con">
+                    <a class="item-modal-btn pass-btn" data-bind="click:saveAndQuit"><i class="icon-save"></i>Quit and Save</a>
+                    <a class="item-modal-btn pass-btn" data-bind="click:quit"><i class="icon-undo"></i>Quit and Discard</a>
+                    <a class="item-modal-btn backhome-btn" data-bind="click:$root.returnToAssessment">
+                        <i class="icon-double-angle-right"></i>Return to the Assessment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modalWaiting"
+         data-backdrop="static"
+         tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog-sm modal-dialog-item">
+            <div class="modal-content item-modal-content">
+                Loading resources...
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modalSyncing"
+         data-backdrop="static"
+         tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog-sm modal-dialog-item">
+            <div class="modal-content item-modal-content">
+                Saving data...
+            </div>
+        </div>
+    </div>
+    <div id="modalSmall" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-sm">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @RenderSection("Scripts", false)
+</body>
+</html>

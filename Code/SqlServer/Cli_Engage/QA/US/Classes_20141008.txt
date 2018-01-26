@@ -1,0 +1,2 @@
+﻿if not exists(select * from syscolumns where id=object_id('Classes') and name='Previous_Teacher_TEA_ID')
+	alter table Classes add  Previous_Teacher_TEA_ID varchar(50) default('') not null

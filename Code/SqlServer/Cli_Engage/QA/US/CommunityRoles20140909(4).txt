@@ -1,0 +1,6 @@
+﻿ALTER TABLE CommunityRoles alter column [CreatedOn] varchar(50)
+ALTER TABLE CommunityRoles alter column [UpdatedOn] varchar(50)
+update CommunityRoles set CreatedOn = getdate()
+update CommunityRoles set UpdatedOn = getdate()
+ALTER TABLE CommunityRoles alter column [CreatedOn] datetime
+ALTER TABLE CommunityRoles alter column [UpdatedOn] datetime

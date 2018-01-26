@@ -1,0 +1,28 @@
+﻿ 
+GO
+
+IF EXISTS(SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Cot_Teachers]') AND type in (N'V'))
+DROP VIEW [dbo].[V_Cot_Teachers]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE VIEW [dbo].[V_Cot_Teachers]
+AS
+
+SELECT T.*,
+CotWave1 = IsNull((SELECT TOP 1 CW.VisitDate FROM [dbo].[CotWaves] CW WHERE CW.CotAssessmentId = CA.ID AND CW.Wave = 1),CAST('1753-1-1' AS DATETIME)),
+CotWave2 = IsNull((SELECT TOP 1 CW.VisitDate FROM [dbo].[CotWaves] CW WHERE CW.CotAssessmentId = CA.ID AND CW.Wave = 1),CAST('1753-1-1' AS DATETIME))
+
+FROM DBO.V_Teachers T
+INNER JOIN [dbo].[COTAssessments] CA ON T.ID = CA.TeacherId 
+
+
+GO
+
+

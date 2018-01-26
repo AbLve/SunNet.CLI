@@ -1,0 +1,5 @@
+GO
+ALTER TABLE SchoolRoles ADD CreatedOn DATETIME,UpdatedOn DATETIME;
+
+GO
+UPDATE SchoolRoles SET CreatedOn=GETDATE(),UpdatedOn=GETDATE();

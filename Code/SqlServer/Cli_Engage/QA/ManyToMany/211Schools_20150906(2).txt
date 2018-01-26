@@ -1,0 +1,8 @@
+update schools set [CreateBy] =0;
+update schools set [UpdateBy] =0;
+update schools set [CreateFrom] ='';
+update schools set [UpdateFrom] ='';
+alter table schools alter column [CreateBy] int not null
+alter table schools alter column [UpdateBy] int not null
+alter table schools alter column [CreateFrom] varchar(500) not null
+alter table schools alter column [UpdateFrom] varchar(500) not null

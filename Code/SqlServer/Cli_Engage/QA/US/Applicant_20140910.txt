@@ -1,0 +1,4 @@
+﻿alter table applicants add InvitedOn datetime not null default '01/01/1753'
+alter table applicants add VerifiedOn datetime not null default '01/01/1753'
+alter table applicants add InviteeId int not null  default 0
+alter table applicants add SponsorId int not null  default 0

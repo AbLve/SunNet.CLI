@@ -1,0 +1,25 @@
+﻿@model Sunnet.Cli.Business.Trs.Models.TrsAssessmentModel
+@{
+    ViewBag.Title = "Finalized";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section BreadPath
+{
+    <a href="@(SFConfig.MainSiteDomain)Home/Dashboard">
+    <img src="/images/icon_trs.png" alt="Logo" />
+</a>
+    <i class="icon-angle-right"></i>@Html.ActionLink("Schools", "Index")
+    <i class="icon-angle-right"></i>@Html.ActionLink(Model.School.Name, "School", new { id = Model.SchoolId })
+    <i class="icon-angle-right"></i>Finalized
+}
+<div class="main-content top-form">
+    <form class="form-horizontal" role="form">
+        @Html.LabelFor(x => x.School.Name, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.School.Name)
+    </form>
+</div>
+<div class="main-content">
+    <p>
+        The assessment has been finalized on @Html.Raw(Model.UpdatedOn.FormatDateString())
+    </p>
+</div>

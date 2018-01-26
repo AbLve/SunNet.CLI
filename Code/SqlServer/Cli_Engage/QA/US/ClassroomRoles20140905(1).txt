@@ -1,0 +1,74 @@
+﻿ 
+/****** Object:  Table [dbo].[ClassroomRoles]    Script Date: 2014/9/5 15:53:33 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[ClassroomRoles](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[RoleName] [varchar](50) NOT NULL,
+	[ClassroomId] [varchar](10) NOT NULL,
+	[CommunityId] [varchar](10) NOT NULL,
+	[SchoolId] [varchar](10) NOT NULL,
+	[Name] [varchar](10) NOT NULL,
+	[Status] [varchar](10) NOT NULL,
+	[StatusDate] [varchar](10) NOT NULL,
+	[SchoolYear] [varchar](10) NOT NULL,
+	[InterventionStatus] [varchar](10) NOT NULL,
+	[InterventionOther] [varchar](10) NOT NULL,
+	[FundingId] [varchar](10) NOT NULL,
+	[KitId] [varchar](10) NOT NULL,
+	[KitUpdatedOn] [varchar](10) NOT NULL,
+	[FcNeedKitId] [varchar](10) NOT NULL,
+	[FcFundingId] [varchar](10) NOT NULL,
+	[Part1KitId] [varchar](10) NOT NULL,
+	[Part1KitUpdatedOn] [varchar](10) NOT NULL,
+	[Part1NeedKitId] [varchar](10) NOT NULL,
+	[Part1FundingId] [varchar](10) NOT NULL,
+	[Part2KitId] [varchar](10) NOT NULL,
+	[Part2KitUpdatedOn] [varchar](10) NOT NULL,
+	[Part2NeedKitId] [varchar](10) NOT NULL,
+	[Part2FundingId] [varchar](10) NOT NULL,
+	[StartupKitId] [varchar](10) NOT NULL,
+	[StartupKitUpdatedOn] [varchar](10) NOT NULL,
+	[StartupNeedKitId] [varchar](10) NOT NULL,
+	[StartupKitFundingId] [varchar](10) NOT NULL,
+	[CurriculumId] [varchar](10) NOT NULL,
+	[CurriculumUpdatedOn] [varchar](10) NOT NULL,
+	[NeedCurriculumId] [varchar](10) NOT NULL,
+	[NeedCurriculumUpdatedOn] [varchar](10) NOT NULL,
+	[CurriculumFundingId] [varchar](10) NOT NULL,
+	[DevelopingTalkersKitId] [varchar](10) NOT NULL,
+	[DevelopingTalkersKitUpdatedOn] [varchar](10) NOT NULL,
+	[DevelopingTalkersNeedKitId] [varchar](10) NOT NULL,
+	[DevelopingTalkerKitFundingId] [varchar](10) NOT NULL,
+	[FccKitId] [varchar](10) NOT NULL,
+	[FccKitUpdatedOn] [varchar](10) NOT NULL,
+	[FccNeedKitId] [varchar](10) NOT NULL,
+	[FccKitFundingId] [varchar](10) NOT NULL,
+	[InternetSpeed] [varchar](10) NOT NULL,
+	[InternetType] [varchar](10) NOT NULL,
+	[WirelessType] [varchar](10) NOT NULL,
+	[IsUsingInClassroom] [varchar](10) NOT NULL,
+	[ComputerNumber] [varchar](10) NOT NULL,
+	[IsInteractiveWhiteboard] [varchar](10) NOT NULL,
+	[MaterialsNotes] [varchar](10) NOT NULL,
+	[TechnologyNotes] [varchar](10) NOT NULL,
+ CONSTRAINT [PK_ClassroomRoles] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

@@ -1,0 +1,130 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentListModel
+
+@{
+    ViewBag.Title = "Coach Assignments";
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Assignment)
+}
+
+@section BreadPath
+{
+My Assignments
+}
+
+<form class="form-horizontal">
+    <div class="main-content">
+        <div class="content-title">Assignments</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr>
+                        <td data-bind="text: item.SendUserName"></td>
+                        <td data-bind="text: item.DueDate == minDate ? '' : item.DueDate"></td>
+                        <td data-bind="text: item.FeedbackCalllDate == minDate ? '' : item.FeedbackCalllDate"></td>
+                        <td data-bind="text: item.SessionText"></td>
+                        <td data-bind="text: item.Strategy"></td>
+                        <td data-bind="text: item.UploadType"></td>
+                        <td data-bind="text: item.Status.text"></td>
+                        <td>
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                        </td>
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 100 })
+            </table>
+            @Html.Partial("_Partial_Pager")
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Assignment = {};
+
+        $(function () {
+            list_Assignment = new ViewModel(
+                {
+                    instanceName: "list_Assignment",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchAssignment")))',
+                    viewDataUrl: '@Html.Raw(Url.Action("ViewAssignmentFiles"))',
+                    viewType: "Redirect",
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: '@Html.DisplayName("Sender")',
+                            field: "@Html.NameFor(model => model.SendUserName)",
+                            width: '12%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Due Date")',
+                            field: "@Html.NameFor(model => model.DueDate)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Call Date")',
+                            field: "@Html.NameFor(model => model.FeedbackCalllDate)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Session")',
+                            field: "@Html.NameFor(model => model.SessionId)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Strategies")',
+                            field: "@Html.NameFor(model => model.Strategy)",
+                            width: "*"
+                        },
+                        {
+                            text: '@Html.DisplayName("Upload Type")',
+                            field: "@Html.NameFor(model => model.UploadType)",
+                            width: "20%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Status")',
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: "10%"
+                        },
+                        {
+                            text: "Action",
+                            width: "5%"
+                        }
+                    ]
+                }
+            );
+
+            list_Assignment.search();
+            ko.applyBindings(list_Assignment);
+        });
+    </script>
+}
+
+

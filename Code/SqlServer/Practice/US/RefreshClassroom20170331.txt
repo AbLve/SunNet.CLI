@@ -1,0 +1,28 @@
+﻿GO
+/****** Object:  StoredProcedure [dbo].[RefreshClassroom]    Script Date: 2017/3/31 18:05:34 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+ALTER PROCEDURE [dbo].[RefreshClassroom] 
+	@AssessmentId int,
+		@Wave int
+AS
+BEGIN 
+	SET NOCOUNT ON; 
+	if @AssessmentId > 0
+	begin
+
+		select ID into #StudentMeasureIds from PracticeStudentMeasures where SAId in (select id from PracticeStudentAssessments where Wave=@Wave and AssessmentId = @AssessmentId and DataFrom = '')
+		select said into #StudentAssessmentIds from  PracticeStudentMeasures where SAId in (select id from PracticeStudentAssessments where  Wave=@Wave and AssessmentId = @AssessmentId and DataFrom = '')
+		delete from PracticeStudentItems where SMId in (select * from #StudentMeasureIds)
+		delete from PracticeStudentMeasures where ID in (select * from #StudentMeasureIds)
+		delete from PracticeStudentAssessments where ID in (select * from #StudentAssessmentIds)
+		drop table #StudentMeasureIds
+		drop table #StudentAssessmentIds
+
+	end
+END
+

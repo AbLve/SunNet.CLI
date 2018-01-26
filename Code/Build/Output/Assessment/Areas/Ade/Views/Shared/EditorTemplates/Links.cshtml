@@ -1,0 +1,32 @@
+﻿<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th width="20%">Display Text</th>
+            <th width="*">Link</th>
+            <th width="15%">Action</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: { data: dataset, as: 'data' }">
+        <tr data-bind="css: { 'has-error': data.hasError }">
+            <td>
+                <label class="hide" data-bind="attr: { for: 'DisplayText' + $index() }">DisplayText</label>
+                <input type="text" name="DisplayTexts" class="form-control input-sm"
+                    data-bind="value: DisplayText, attr: { id: 'DisplayText' + $index() }" maxlength="100"
+                    style="display: inline-block;" />
+            </td>
+            <td>
+                <label class="hide" data-bind="attr: { for: 'Link' + $index() }">Link</label>
+
+                <input type="text" name="links" class="form-control input-sm"
+                    data-bind="value: Link, attr: { id: 'Link' + $index() }" maxlength="100"
+                    style="display: inline-block;">
+            </td>
+            <td>
+                <a href="#" class="table-btn icon-plus plus-btn" data-bind="event: { click: $root.newData }" title="New"></a>
+                <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.delete }" title="Delete"></a>
+                <a class="table-btn icon-zoom-in preview-btn" data-bind="visible: Link != '', attr: { href: Link }"
+                    target="_blank" title="Preview"></a>
+            </td>
+        </tr>
+    </tbody>
+</table>

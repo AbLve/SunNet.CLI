@@ -1,0 +1,50 @@
+﻿<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th width="20%">Display Text</th>
+            <th width="*">Link</th>
+            <th width="15%" colspan="3">On measure Parent email</th>
+            <th width="15%" colspan="3">On Student Parent report</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td width="20%"></td>
+            <td width="*"></td>
+            <td width="5%"> W1</td>
+            <td width="5%"> W2</td>
+            <td width="5%"> W3</td>
+            <td width="5%"> W1</td>
+            <td width="5%"> W2</td>
+            <td width="5%"> W3</td>
+        </tr>
+        <!-- ko foreach:{data:dataset, as: 'data'} -->
+        <tr data-bind="css: { 'has-error': data.hasError }">
+            <td>
+                <div data-bind="text: ThumbnailDisplayText(DisplayText), attr: { title: DisplayText }"> </div>
+            </td>
+            <td style="text-align:left;">
+                <a data-bind="text: ThumbnailLink(Link), attr: { href: Link, title: Link }" target="_blank" class="form-link2"></a>
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked:MeasureWave1,attr:{id:'MeasureWave1'+$index()}" disabled />
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked:MeasureWave2,attr:{id:'MeasureWave2'+$index()}" disabled />
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked:MeasureWave3,attr:{id:'MeasureWave3'+$index()}" disabled />
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked:StudentWave1,attr:{id:'StudentWave1'+$index()}" disabled />
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked:StudentWave2,attr:{id:'StudentWave2'+$index()}" disabled />
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked:StudentWave3,attr:{id:'StudentWave3'+$index()}" disabled />
+            </td>
+        </tr>
+        <!-- /ko -->
+    </tbody>
+</table>

@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[PracticeGroupMyActivities](
+	[ID] [int] IDENTITY(1,1) NOT NULL primary key,
+	[GroupId] [int] NOT NULL,
+	[MyActivityId] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL
+) 

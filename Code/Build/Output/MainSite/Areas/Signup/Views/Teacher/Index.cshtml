@@ -1,0 +1,191 @@
+﻿@model Sunnet.Cli.Business.Users.Models.ApplicantTeacherModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Teacher Sign Up";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section Styles{
+}
+@section Scripts{
+    <script type="text/javascript">
+        var selectedSchool;
+        $(function () {;
+            $("#chkIsFindSchool").click(function () {
+                if ($("#chkIsFindSchool").prop("checked") == true) {
+                    $("#SchoolId").rules("remove", "required");
+                    $("#txtSchool").val("");
+                    $("#SchoolId").val();
+                    $("#txtSchool").attr("disabled", "disabled");
+                }
+                else {
+                    $("#txtSchool").removeAttr("disabled");
+                    $("#SchoolId").rules("add", { required: true, messages: { required: "The School field is required." } });
+                }
+            });
+
+            $("#chkAgree").click(function () {
+                if ($("#chkAgree").prop("checked") == true) {
+                    $(".submit-btn").removeAttr("disabled");
+                } else {
+                    $(".submit-btn").attr({ "disabled": "disabled" });
+                }
+            });
+
+            $("#txtCommunity").on("selected.sunnet.datalist", function (event) {
+                $("#txtSchool").datalist("clear");
+            });
+        });
+
+        $("#txtSchool").on("selected.sunnet.datalist", function (event) {
+            selectedSchool = event.selected;
+        });
+
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function (response) {
+                if ($("#chkIsFindSchool").prop("checked") == true) {
+                    location = "/Signup/Teacher/PrincipalInvitedRegister?applicantId=" + encodeURIComponent(response.data.entity.ApplicantId);
+                } else {
+                    if (response.data.isSchoolVerified == false)
+                        location = "/Signup/Teacher/PrincipalInvitedRegister?applicantId=" + encodeURIComponent(response.data.entity.ApplicantId)
+                            + "&basicSchoolId=" + encodeURIComponent($("#SchoolId").val())
+                            + "&isSpecialist=" + false + "&communityName=" + $("#txtCommunity").val()
+                            + "&communityId=" + $("#CommunityId").val();
+                    else
+                        $("#confirmation").click();
+                }
+            }
+        });
+    </script>
+}
+@using (Ajax.BeginForm("TeacherApplicant", "Teacher", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{          
+    <a href="/Signup/Teacher/Confirmation" id="confirmation" data-toggle="modal" data-target="#modalNormal"></a>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+    <div class="main-container">
+        <div class="main-con">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3><b>Teacher</b> Sign Up</h3>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.EnumDropDownListFor(model => model.Title, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.Title)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.FirstName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="logup-tip">@Html.ValidationMessageFor(model => model.LastName)</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control col-sm-4 email" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.Email)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-4 control-label required", @for = "txtCommunity" })
+                    <div class="col-sm-4">
+                        @Html.TextBox("txtCommunity", "", new
+                   {
+                       autocomplete = "off",
+                       @class = "form-control logup-right",
+                       data_list = "true",
+                       data_for = "#CommunityId",
+                       data_remote = "/Signup/Teacher/GetCommunitySelectList",
+                       data_text = "Name",
+                       data_value = "ID",
+                       id = "txtCommunity",
+                       name = "txtCommunity",
+                       @for = "CommunityId",
+                       placeholder = "Enter community to search"
+                   })
+                        <input type="hidden" id="CommunityId" name="CommunityId" class="validate" data-val="true" data-val-required="true" />
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.CommunityId, "The Community field is required.")
+                    </div>
+                </div>
+                <div class="form-group" id="select_School">
+                    @Html.Label("School", new { @class = "col-sm-4 control-label required", @for = "txtSchool" })
+                    <div class="col-sm-4">
+                        @Html.TextBox("txtSchool", "", new
+                   {
+                       autocomplete = "off",
+                       @class = "form-control logup-right",
+                       data_list = "true",
+                       data_for = "#SchoolId",
+                       data_remote = Url.Action("GetBasicSchoolSelectList", "Teacher", new { Area = "Signup" }),
+                       data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+                       data_text = "Name",
+                       data_value = "ID",
+                       data_searchfields = "City,Zip",
+                       id = "txtSchool",
+                       name = "txtSchool",
+                       @for = "SchoolId",
+                       data_extraParams = "{\"communityId\":\"#CommunityId\"}",
+                       placeholder = "Enter school name or zipcode to search"
+                   })
+                        <input type="hidden" id="SchoolId" name="SchoolId" class="validate" data-val="true" data-val-required="true" />
+                        @*@Html.HiddenFor(model => model.SchoolId, new { @class = "form-control logup-right validate" })*@
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.SchoolId, "The School field is required.")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8">
+                        <label>
+                            @Html.CheckBox("chkIsFindSchool") I can not find my school</label>
+                    </div>
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8" style="display: none;">
+                        <label>
+                            @Html.CheckBox("chkAgree", new { @checked = true })
+                            I agree to the <a href="#" class="loginup-link">Terms of Service</a> and <a href="#" class="loginup-link">Privacy Policy</a></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12 logbtn-con">
+                        <input type="submit" class="logbutton submit-btn" value="Submit">
+                        <input type="button" class="logbutton cancel-btn" onclick="javascript: location.href = '/Home/SignUp/'" value="Cancel">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

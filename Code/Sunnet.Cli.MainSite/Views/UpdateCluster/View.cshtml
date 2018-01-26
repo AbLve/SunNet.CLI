@@ -1,0 +1,18 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Business.Communities.Models
+
+@{
+    ViewBag.Title = "Message";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+}
+<div class="panel-group" id="accordion">
+    @Html.Raw(ViewBag.Messages)
+</div>
+<div class="modal-footer">
+    <button class="mainbutton modal-btn submit-btn" type="button" data-dismiss="modal">Cancel</button>
+</div>
+
+

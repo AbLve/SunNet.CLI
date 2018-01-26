@@ -1,0 +1,423 @@
+﻿@{
+    Layout = null;
+}
+<script type="text/html" id="Temp_Empty">
+</script>
+<script type="text/html" id="_cpalls_measure_List">
+    <div class="item-view">
+        <div class="items-thumb-list" data-bind="css:{'col-2':false}">
+            <!-- ko template: {name:$root.itemResultTemplate,foreach:items,as:'item'}-->
+            <!--/ko-->
+            <div>
+                <div class="text" data-bind="html:'Comment: ' + comment()"></div>
+                <div class="totalscore">
+                    Score:
+                </div>
+                <div class="score" data-bind="text:goal()">
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_10">
+    <div class="header-th">
+        <div class="prefix"></div>
+        <div class="text">
+            Prompt
+        </div>
+        <div class="item">
+            Item
+        </div>
+        <div class="score">
+            Score
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_10">
+    <!--Checklist:10-->
+    <!-- ko if:item.showInResultPage() -->
+    <!-- ko template: {name:$root.getHeaderTemplate.bind($parent)}-->
+    <!--/ko-->
+    <div data-bind="visible:item.showInResultPage">
+        <div class="order"></div>
+        <div class="text" data-bind="html:target.text">
+        </div>
+        <div class="item" data-bind="foreach:{data:answers, as:'answer'}">
+            <!-- ko if:choosed()-->
+            <div data-bind="html:text.text"></div>
+            <!--/ko-->
+        </div>
+        <div class="score" data-bind="html:goal()">
+        </div>
+    </div>
+    <!--/ko-->
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_1">
+    <!--Cec:1-->
+</script>
+<script type="text/html" id="_cpalls_ItemResult_1">
+    <!--Cec:1-->
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_2">
+    <!--Cot:2-->
+</script>
+<script type="text/html" id="_cpalls_ItemResult_2">
+    <!--Cot:2-->
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_9">
+    <!--Direction:9-->
+</script>
+<script type="text/html" id="_cpalls_ItemResult_9">
+    <!--Direction:9-->
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_3">
+    <div class="header-th">
+        <div class="prefix"></div>
+        <div class="text">
+            Prompt
+        </div>
+        <div class="img img-vertical">
+            Response
+        </div>
+        <div class="score">
+            Score
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_3">
+    <!--MultipleChoices:3-->
+
+    <!-- ko if:item.showInResultPage() -->
+    <!-- ko template: {name:$root.getHeaderTemplate.bind($parent)}-->
+    <!--/ko-->
+<div data-bind="visible:item.showInResultPage">
+        <div class="order"></div>
+        <div class="text" data-bind="html:target.text">
+        </div>
+        <div class="img " data-bind="foreach:{data:answers, as:'answer'}">
+            <!--ko if: picture.file -->
+            <div class="thumbnail">
+                <img data-bind="attr:{src:picture.fullImgUrl}" alt="Multiple Choices">
+            </div>
+            <!--/ko-->
+        </div>
+        <div class="img img-vertical" data-bind="foreach:{data:answers, as:'answer'}">
+            <!--ko if: choosed() && picture.file -->
+            <div class="thumbnail">
+                <img data-bind="attr:{src:picture.fullImgUrl}" alt="Multiple Choices">
+            </div>
+            <!--/ko-->
+        </div>
+        <div class="score" data-bind="html:goal()">
+        </div>
+    </div>
+    <!--/ko-->
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_4">
+    <div class="header-th">
+        <div class="prefix"></div>
+        <div class="text">
+            Prompt
+        </div>
+        <div class="item">
+            Item
+        </div>
+        <div class="score">
+            Score
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_4">
+    <!--Pa:4-->
+
+    <!-- ko if:item.showInResultPage() -->
+    <!-- ko template: {name:$root.getHeaderTemplate.bind($parent)}-->
+    <!--/ko-->
+<div data-bind="visible:item.showInResultPage">
+        <div class="order"></div>
+        <div class="text" data-bind="html:target.text">
+        </div>
+        <div class="item" data-bind="foreach:{data:answers, as:'answer'}">
+            <!-- ko if:choosed()-->
+            <div data-bind="html:text.text"></div>
+            <!--/ko-->
+        </div>
+        <div class="score" data-bind="html:goal()">
+        </div>
+    </div>
+    <!--/ko-->
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_5">
+    <div class="header-th">
+        <div class="prefix"></div>
+        <div class="text">
+            Prompt
+        </div>
+        <div class="img img-vertical">
+            Response
+        </div>
+        <div class="score">
+            Score
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_5">
+    <!--Quadrant:5-->
+
+    <!-- ko if:item.showInResultPage() -->
+    <!-- ko template: {name:$root.getHeaderTemplate.bind($parent)}-->
+    <!--/ko-->
+<div data-bind="visible:item.showInResultPage">
+        <div class="order"></div>
+        <div class="text" data-bind="html:target.text">
+        </div>
+        <div class="img img-4" data-bind="foreach:{data:answers, as:'answer'}">
+            <div class="thumbnail">
+                <img data-bind="attr:{src:picture.fullImgUrl}" alt="Receptive without prompt" />
+            </div>
+        </div>
+        <div class="img img-vertical" data-bind="foreach:{data:answers, as:'answer'}">
+            <!-- ko if: choosed()-->
+            <div class="thumbnail">
+                <img data-bind="attr:{src:picture.fullImgUrl}" alt="Receptive without prompt" />
+            </div>
+            <!--/ko-->
+        </div>
+        <div class="score" data-bind="html:goal()">
+        </div>
+    </div>
+    <!--/ko-->
+
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_6">
+    <div>
+        <div class="prefix"></div>
+        <div class="text">
+            Item
+        </div>
+        <div class="score">
+            Score
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_6">
+    <!--Rapid Expressive:6-->
+
+    <!-- ko if:item.showInResultPage() -->
+    <!-- ko template: {name:$root.getHeaderTemplate.bind($parent)}-->
+    <!--/ko-->
+<div data-bind="visible:item.showInResultPage">
+        <div class="order"></div>
+        <div class="text" data-bind="html:description">
+        </div>
+        <div class="img " data-bind="css:{'hidden':$root.includeImages() === false}">
+            <!-- ko if:answers != null && answers.length > 0 -->
+            <div class="thumbnail">
+                <img data-bind="attr:{src:answers[0].picture.fullImgUrl}" alt="Rapid Expressive">
+            </div>
+            <!-- /ko -->
+        </div>
+        <div class="score" data-bind="html:goal()">
+        </div>
+    </div>
+    <!--/ko-->
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_7">
+    <div class="header-th">
+        <div class="prefix"></div>
+        <div class="text">
+            Prompt
+        </div>
+        <div class="img img-vertical">
+            Response
+        </div>
+        <div class="score">
+            Score
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_7">
+    <!--Receptive without prompt:7-->
+
+    <!-- ko if:item.showInResultPage() -->
+    <!-- ko template: {name:$root.getHeaderTemplate.bind($parent)}-->
+    <!--/ko-->
+<div data-bind="visible:item.showInResultPage">
+        <div class="order"></div>
+        <div class="text" data-bind="html:target.text">
+        </div>
+        <div class="img" data-bind="foreach:{data:answers, as:'answer'}">
+            <div class="thumbnail">
+                <img data-bind="attr:{src:picture.fullImgUrl}" alt="Receptive without prompt" />
+            </div>
+        </div>
+        <div class="img img-vertical" data-bind="foreach:{data:answers, as:'answer'}">
+            <!-- ko if: choosed()-->
+            <div class="thumbnail">
+                <img data-bind="attr:{src:picture.fullImgUrl}" alt="Receptive without prompt" />
+            </div>
+            <!--/ko-->
+        </div>
+        <div class="score" data-bind="html:goal()">
+        </div>
+    </div>
+    <!--/ko-->
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_8">
+    <div class="header-th">
+        <div class="prefix"></div>
+        <div class="text">
+            Prompt
+        </div>
+        <div class="img img-vertical">
+            Response
+        </div>
+        <div class="score">
+            Score
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_8">
+    <!--Receptive with prompt:8-->
+
+    <!-- ko if:item.showInResultPage() -->
+    <!-- ko template: {name:$root.getHeaderTemplate.bind($parent)}-->
+    <!--/ko-->
+<div data-bind="visible:item.showInResultPage">
+        <div class="order"></div>
+        <div class="text" data-bind="html:target.text">
+        </div>
+        <div class="img" data-bind="foreach:{data:answers, as:'answer'}">
+            <div class="thumbnail">
+                <img data-bind="attr:{src:picture.fullImgUrl}" alt="Receptive without prompt" />
+            </div>
+        </div>
+        <div class="img img-vertical" data-bind="foreach:{data:answers, as:'answer'}">
+            <!-- ko if: choosed()-->
+            <div class="thumbnail">
+                <img data-bind="attr:{src:picture.fullImgUrl}" alt="Receptive without prompt">
+            </div>
+            <!--/ko-->
+        </div>
+        <div class="score" data-bind="html:goal()">
+        </div>
+    </div>
+    <!--/ko-->
+</script>
+
+<script type="text/html" id="_cpalls_ItemHeader_11">
+    <div class="header-th">
+        <div class="prefix"></div>
+        <div class="text">
+            Prompt
+        </div>
+        <div class="img  img-wide">
+            Response
+        </div>
+        <div class="score">
+            Score
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11">
+    <!--TypedResposne:11-->
+
+    <!-- ko if:item.showInResultPage() -->
+    <!-- ko template: {name:$root.getHeaderTemplate.bind($parent)}-->
+    <!--/ko-->
+<div data-bind="visible:item.showInResultPage">
+        <div class="order">
+        </div>
+        <div class="text" data-bind="html:description">
+        </div>
+        <div class="img img-wide item-responses-list">
+            <!-- ko template:{name:responseResultTemplate,data:item}-->
+            <!--/ko-->
+        </div>
+        <div class="score" data-bind="html:goal()">
+        </div>
+    </div>
+    <!--/ko-->
+</script>
+<!-- responseResultTemplate: maybe one of these below:-->
+<script type="text/html" id="_cpalls_ItemResult_11_Response">
+    <div class="item-response" data-bind="">
+        <div class="item-response-img thumbnail" data-bind="html:html">
+        </div>
+        <div class="item-response-text">
+            <div class="item-response-label">
+                <label data-bind="attr:{'for':uuid},html:text"></label>
+            </div>
+            <div class="item-response-input">
+                <input type="text" data-bind="attr:{id:uuid,readonly:true,value:content()},enable:false" />
+                <!-- ko if:getGoal() -->
+                <span data-bind="html:'Score: ' + getGoal()"></span>
+                <!--/ko-->
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11_Response_1">
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_ItemResult_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11_Response_2">
+    <div class="item-responses " data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_ItemResult_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11_Response_3">
+    <div class="item-responses " data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_ItemResult_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11_Response_4">
+    <div class="item-responses " data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_ItemResult_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11_Response_5">
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_ItemResult_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11_Response_6">
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_ItemResult_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11_Response_7">
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_ItemResult_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11_Response_8">
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_ItemResult_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_ItemResult_11_Response_9">
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_ItemResult_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>

@@ -1,0 +1,49 @@
+GO
+ALTER TABLE dbo.Measures ADD BOYHasCutOffScores BIT NOT NULL DEFAULT 0
+GO
+ALTER TABLE dbo.Measures ADD MOYHasCutOffScores BIT NOT NULL DEFAULT 0
+GO
+ALTER TABLE dbo.Measures ADD EOYHasCutOffScores BIT NOT NULL DEFAULT 0
+
+GO
+UPDATE  dbo.Measures
+SET     BOYHasCutOffScores = 1
+WHERE   ID IN (
+        SELECT  DISTINCT
+                ( C.HostId )
+        FROM    dbo.CutOffScores AS C
+        WHERE   C.HostType = 'Sunnet.Cli.Core.Ade.Entities.MeasureEntity'
+                AND ( C.FromYear != 0
+                      OR C.FromMonth != 0
+                      OR C.ToYear != 0
+                      OR C.ToMonth != 0
+                      OR C.CutOffScore != 0.00
+                    ) AND C.Wave=1 );
+GO
+UPDATE  dbo.Measures
+SET     MOYHasCutOffScores = 1
+WHERE   ID IN (
+        SELECT  DISTINCT
+                ( C.HostId )
+        FROM    dbo.CutOffScores AS C
+        WHERE   C.HostType = 'Sunnet.Cli.Core.Ade.Entities.MeasureEntity'
+                AND ( C.FromYear != 0
+                      OR C.FromMonth != 0
+                      OR C.ToYear != 0
+                      OR C.ToMonth != 0
+                      OR C.CutOffScore != 0.00
+                    ) AND C.Wave=2 );
+GO
+UPDATE  dbo.Measures
+SET     EOYHasCutOffScores = 1
+WHERE   ID IN (
+        SELECT  DISTINCT
+                ( C.HostId )
+        FROM    dbo.CutOffScores AS C
+        WHERE   C.HostType = 'Sunnet.Cli.Core.Ade.Entities.MeasureEntity'
+                AND ( C.FromYear != 0
+                      OR C.FromMonth != 0
+                      OR C.ToYear != 0
+                      OR C.ToMonth != 0
+                      OR C.CutOffScore != 0.00
+                    ) AND C.Wave=3 );

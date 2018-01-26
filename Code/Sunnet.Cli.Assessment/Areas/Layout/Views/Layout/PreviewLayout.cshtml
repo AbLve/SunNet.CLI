@@ -1,0 +1,79 @@
+﻿@model Sunnet.Cli.Business.Ade.Models.TxkeaLayoutModel
+@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    ViewBag.Title = "Preview Layout";
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var canvas_preview;
+        var preLayoutScreenWidth;
+        var curLayoutScreenWidth;
+        var layout;
+
+        +(function() {
+            curLayoutScreenWidth = $(window).innerWidth() * 0.80 - 40;
+            
+            var ua = navigator.userAgent.toLowerCase();
+            if (ua.match(/msie/) != null || ua.match(/trident/) != null) {
+                curLayoutScreenWidth -= 40;
+            }
+            canvas_preview = new fabric.Canvas('cav_prelayout', {
+                width: curLayoutScreenWidth, //#modal-content.width - padding
+                height: curLayoutScreenWidth * (565 / 1024)
+            });
+
+            if (typeof (canvas) != "undefined") //edit page
+            {
+                preLayoutScreenWidth = canvas.width;
+                layout = JSON.parse(JSON.stringify(canvas.toDatalessJSON()));
+                layout.objects = layout.objects.filter(function(obj) { return obj.type == "image" }); // remove lines
+            } else //list page
+            {
+                preLayoutScreenWidth = "@(Model.ScreenWidth)";
+                layout = JSON.parse('@(Html.Raw(Model.Layout))');
+            }
+            if (layout.backgroundImage && layout.backgroundImage.width) {
+                layout.backgroundImage.width = curLayoutScreenWidth;
+            }
+
+            for (var i = 0; i < layout.objects.length; i++) {
+                var preLayout = layout.objects[i];
+                if (preLayoutScreenWidth != curLayoutScreenWidth && preLayoutScreenWidth > 0)
+                //If the screen before and now is not the same as the screen size, recalculate the left margin
+                {
+                    var preLayoutScreenHeight = preLayoutScreenWidth * (565 / 1024);
+                    var curLayoutScreenHeight = curLayoutScreenWidth * (565 / 1024);
+
+                    var width = preLayout.width * preLayout.scaleX;
+                    var height = preLayout.height * preLayout.scaleY;
+                    //If on the left, then calculate the left margin, opposite to calculate the right margin
+                    if (preLayout.left < (preLayoutScreenWidth / 2))
+                        preLayout.left = (preLayout.left / preLayoutScreenWidth) * curLayoutScreenWidth;
+                    else
+                        preLayout.left = curLayoutScreenWidth -
+                        ((preLayoutScreenWidth - preLayout.left - width) / preLayoutScreenWidth) * curLayoutScreenWidth - width;
+
+                    if (preLayout.top < (preLayoutScreenHeight / 2))
+                        preLayout.top = (preLayout.top / preLayoutScreenHeight) * curLayoutScreenHeight;
+                    else
+                        preLayout.top = curLayoutScreenHeight -
+                        ((preLayoutScreenHeight - preLayout.top - height) / preLayoutScreenHeight) * curLayoutScreenHeight - height;
+                    preLayout.selectable = false;
+                }
+            }
+
+            layout.objects.sort(function(a, b) {
+                return a.sort - b.sort;
+            }); //order by sort
+
+            canvas_preview.loadFromDatalessJSON(JSON.stringify(layout), function() { canvas_preview.renderAll(); });
+
+        })();
+    </script>
+}
+
+<div id="previewLayout" style="width:100%">
+    <canvas id="cav_prelayout">(Your browser doesn't support canvas)</canvas>
+</div>

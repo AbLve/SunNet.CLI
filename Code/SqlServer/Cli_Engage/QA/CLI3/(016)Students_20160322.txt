@@ -1,0 +1,5 @@
+﻿alter table Students add IsDeleted bit 
+go
+update Students set IsDeleted=0 
+go
+alter table Students alter column IsDeleted bit not null

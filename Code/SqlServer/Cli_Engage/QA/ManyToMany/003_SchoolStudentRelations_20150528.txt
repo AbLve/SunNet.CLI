@@ -1,0 +1,25 @@
+﻿GO
+
+/****** Object:  Table [dbo].[SchoolStudentRelations]    Script Date: 2015/5/28 11:18:12 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[SchoolStudentRelations](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SchoolId] [int] NOT NULL,
+	[StudentId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+ CONSTRAINT [PK_SchoolStudentRelations] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO

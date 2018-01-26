@@ -1,0 +1,32 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Cli.Practice.Areas.Cpalls.Controllers
+@{
+    AssessmentLegendEntity assessmentLegend = ViewBag.AssessmentLegend;
+}
+<h4>
+    <a class="main-ade-left-active" href="@(DomainHelper.MainSiteDomain)Home/Dashboard">
+        <i class="icon-dashboard"></i>Dashboard
+    </a>
+</h4>
+<ul>
+    <li>
+        <a href="/" class="active">Assessment</a>
+    </li>
+
+</ul> 
+@if (ViewContext.Controller is StudentController)
+{
+    if (assessmentLegend.ID > 0)
+    {
+        if (assessmentLegend.TextPosition.ToLower() == "bottom")
+        {
+            <img alt="color" style="max-width: 100%;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.ColorFilePath)" />
+            <span style="color: #047B2E; display: block;">@assessmentLegend.Text</span>
+        }
+        else if (assessmentLegend.TextPosition.ToLower() == "top")
+        {
+            <span style="color: #047B2E; display: block;">@assessmentLegend.Text</span>
+            <img alt="color" style="max-width: 100%;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.ColorFilePath)" />
+        }
+    }
+}

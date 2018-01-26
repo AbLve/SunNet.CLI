@@ -1,0 +1,191 @@
+﻿@model Sunnet.Cli.Business.Users.Models.ApplicantCommunityModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Community User Sign Up";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    IEnumerable<SelectListItem> StateOptions = (IEnumerable<SelectListItem>)ViewBag.StateOptions;
+    int txid = int.Parse(StateOptions.Where(a => a.Text.Trim() == "TX").FirstOrDefault().Value);
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#StateId").val(@txid);
+            $("#chkAgree").click(function () {
+                if ($("#chkAgree").prop("checked") == true) {
+                    $(".submit-btn").removeAttr("disabled");
+                } else {
+                    $(".submit-btn").attr({ "disabled": "disabled" });
+                }
+            });
+        });
+
+        $("#txtCommunity").on("selected.sunnet.datalist", function (event) {
+            $("#Address").val(event.selected.Address);
+            $("#City").val(event.selected.City);
+            $("#StateId").val(event.selected.StateId);
+            $("#Zip").val(event.selected.Zip);
+        });
+
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function (response) {
+                $("#confirmation").click();
+            }
+        });
+    </script>
+}
+@using (Ajax.BeginForm("CommunityApplicant", "Community", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{          
+    <a href="/Signup/Community/Confirmation" id="confirmation" data-toggle="modal" data-target="#modalNormal"></a>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+
+    <div class="main-container">
+        <div class="main-con">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3><b>District/Community User</b> Sign Up</h3>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.EnumDropDownListFor(model => model.Title, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control logup-right" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.Title)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.FirstName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.LastName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.WorkPhone, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.WorkPhone, new { @class = "_homephone form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.WorkPhone)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OtherPhone, new { @class = "col-sm-4 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.OtherPhone, new { @class = "_homephone form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.OtherPhone)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control col-sm-4 email" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.Email)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-4 control-label required",@for="txtCommunity" })
+                    <div class="col-sm-4">
+                        @Html.TextBox("txtCommunity", "", new
+                           {
+                               autocomplete = "off",
+                               @class = "form-control",
+                               data_list = "true",
+                               data_for = "#CommunityId",
+                               data_remote = "/Signup/Teacher/GetBasicCommunitySelectList",
+                               data_text = "Name",
+                               data_value = "ID", 
+                               data_searchfields="Zip",
+                               id = "txtCommunity",
+                               name = "txtCommunity",
+                               @for = "CommunityId",
+                               placeholder = "Enter community name or zipcode to search"
+                           })
+                        @Html.HiddenFor(model => model.CommunityId, new { @class = "form-control logup-right validate" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.CommunityId)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        @Html.LabelFor(model => model.Address, null, new { @class = "control-label hide" })
+                        @Html.TextBoxFor(model => model.Address, new { @class = "form-control col-sm-4", placeholder = "Address 1*" })
+                    </div>
+                    <div class="col-sm-4">@Html.ValidationMessageFor(model => model.Address)</div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        @Html.LabelFor(model => model.Address2, null, new { @class = "control-label hide" })
+                        @Html.TextBoxFor(model => model.Address2, new { @class = "form-control col-sm-4", placeholder = "Address 2(optional)" })
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <div class="col-lg-4 m-l-n">
+                                @Html.LabelFor(model => model.City, null, new { @class = "control-label hide" })
+                                @Html.TextBoxFor(model => model.City, new { @class = "form-control", placeholder = "City*" })
+                            </div>
+                            <div class="col-lg-5 m-l-n">
+                                @Html.LabelFor(model => model.StateId, null, new { @class = "control-label hide" })
+                                @Html.DropDownListFor(e => e.StateId, (IEnumerable<SelectListItem>)ViewBag.StateOptions, new { @class = "form-control" })
+                            </div>
+                            <div class="col-lg-4 m-l-n">
+                                @Html.LabelFor(model => model.Zip, null, new { @class = "control-label hide" })
+                                @Html.TextBoxFor(model => model.Zip, new { @class = "form-control _num_5", placeholder = "Zip*" })
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8" style="display: none;">
+                        <label>
+                            @Html.CheckBox("chkAgree", new { @checked = true })
+                            I agree to the <a href="#" class="loginup-link">Terms of Service</a> and <a href="#" class="loginup-link">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12 logbtn-con">
+                        <input type="submit" class="logbutton submit-btn" value="Submit">
+                        <input type="button" class="logbutton cancel-btn" onclick="javascript: location.href = '/Home/SignUp/'" value="Cancel">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,208 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Common.Enums
+@{
+    ViewBag.Title = "Assessment Report Template List";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Reports)
+}
+@section BreadPath
+{
+    <a href="../../Index">Reports</a> &nbsp;<i class="icon-angle-right"></i>&nbsp;@ViewBag.Title
+}
+@Html.AntiForgeryToken()
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("../Index"))">Back</a>
+</div>
+<div class="main-content">
+    <div class="content-title">
+        Assessment Report Template
+    </div>
+    <div class="content-body">
+        <form class="form-horizontal" role="form" id="formSearch">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Report Template Name</label>
+                <div class="col-sm-3">
+                    <label class="hide" for="Keyword">Keyword</label>
+                    <input class="form-control" placeholder="Enter key to search" id="Keyword" name="Keyword"
+                        type="text" value="" />
+                </div>
+                <div class="col-sm-2">
+                    <button class="mainbutton mainright-btn sreach-btn" type="button" id="btnSearch">search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="main-content">
+    <div class="content-body-tab">
+        <form id="formbox" class="form-horizontal" role="form" method="POST">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th width="15%">Template ID</th>
+                        <th width="20%">Template Name</th>
+                        <th width="18%">Status</th>
+                        <th width="20%">Created By</th>
+                        <th width="15%">Created On</th>
+                        <th width="*">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyList" data-bind="template: { name: displayMode, foreach: items, as: 'item' }">
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+
+    <script type="text/html" id="view">
+        <tr>
+            <td>
+                <span data-bind="html: item.ID"></span>
+            </td>
+            <td>
+                <span class="" data-bind="html: item.Name"></span>
+            </td>
+            <td>
+                <span data-bind="html: item.Status == '1' ? 'Active' : 'Inactive'"></span>
+            </td>
+            <td>
+                <span data-bind="html: item.CreatedUserName"></span>
+            </td>
+            <td>
+                <span data-bind="datetime: item.CreatedOn"></span>
+            </td>
+            <td>
+                <a class="table-btn icon-pencil pencil-btn" href="#" data-bind="click: $root.changeToEdit" title="Edit"></a>
+                <a class="table-btn icon-trash trash-btn" href="#" data-bind="click: $root.changeToDelete" title="Delete"></a>
+            </td>
+        </tr>
+    </script>
+    <script type="text/html" id="edit">
+        <tr>
+            <td>
+                <span data-bind="html: item.ID"></span>
+            </td>
+            <td>
+                <label>
+                    <input class="form-control required" type="text" data-val="true" data-bind="value: item.Name, attr: { name: item.ID }" />
+                    <span class="field-validation-valid" data-bind="attr: { 'data-valmsg-for': item.ID }" data-valmsg-replace="true"></span>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" value="1" data-bind="checked: item.Status, attr: { name: 'radio' + $index() }" />
+                    @EntityStatus.Active
+                </label>
+                <label>
+                    <input type="radio" value="2" data-bind="checked: item.Status, attr: { name: 'radio' + $index() }" />
+                    @EntityStatus.Inactive
+                </label>
+            </td>
+            <td>
+                <span data-bind="html: item.CreatedUserName"></span>
+            </td>
+            <td>
+                <span data-bind="datetime: item.CreatedOn"></span>
+            </td>
+            <td>
+                <a class="table-btn icon-save save-btn" title="Save" href="#" data-bind="click: $root.updateItem"></a>
+                <a class="icon-ban-circle table-btn active-btn" title="Cancel" href="#" data-bind="click: $root.changeToView"></a>
+            </td>
+        </tr>
+    </script>
+
+    <script type="text/javascript">
+
+
+
+        function item(id, name, status, createdBy, createdOn, mode) {
+            var self = this;
+            self.ID = id;
+            self.Name = name;
+            self.Status = status + '';
+            self.CreatedUserName = createdBy;
+            self.CreatedOn = createdOn;
+            self.Mode = ko.observable(mode);
+        }
+
+        function ViewModel() {
+            var self = this;
+            self.items = ko.observableArray();
+            self.displayMode = function (item) {
+                return item.Mode();
+            };
+
+            self.updateItem = function (item) {
+                if ($("#formbox").valid()) {
+                    $.post("../UpdateAssTemp", {
+                        tempId: item.ID,
+                        tempName: item.Name,
+                        tempStatus: item.Status,
+                        assessmentId:@ViewBag.assessmentId
+                        },
+                        function (response) {
+                            if (response.success) {
+                                showMessage("success");
+                                item.Mode("view");
+                            }
+                            else {
+                                showMessage("fail", response.msg);
+                            }
+
+                        }, "json");
+                }
+            };
+
+            self.changeToEdit = function (item) {
+                var oldStatus = { Status: item.Status };
+                item.oldStatus = oldStatus;
+                item.oldName = item.Name;
+                item.Mode("edit");
+            };
+            self.changeToView = function (item) {
+                item.Status = item.oldStatus.Status;
+                item.Name = item.oldName;
+                item.Mode("view");
+            };
+            self.changeToDelete = function (item) {
+                var confirmMessage = window.getErrorMessage("confirmToDelete");
+                confirmMessage = confirmMessage.replace("[{0}]", item.Name);
+                $.when(waitingConfirm(confirmMessage, "Yes", "No")).done(function () {
+                    var id = item.ID;
+                    $.post("../DeleteAssTemp", { id: id }, function (response) {
+                        if (response.success) {
+                            showMessage("success");
+                            self.items.remove(item);
+                        }
+                    }, 'json');
+                });
+            };
+        };
+        var vm;
+        $(function () {
+            vm = new ViewModel();
+            $.getJSON("../SearchAssTemp",{assessmentId:@ViewBag.assessmentId}, function (json) {
+                $.each(json.data, function (i, value) {
+                    vm.items.push(new item(value.ID, value.Name, value.Status.value, value.CreatedUserName, value.CreatedOn, "view"));
+                });
+                ko.applyBindings(vm);
+            });
+            $("#btnSearch").click(function () {
+                var keyWord = $("#Keyword").val();
+                vm.items.removeAll();
+                $.getJSON("../SearchAssTemp", {assessmentId:@ViewBag.assessmentId, keyWord: keyWord }, function (json) {
+                    $.each(json.data, function (i, value) {
+                        vm.items.push(new item(value.ID, value.Name, value.Status.value, value.CreatedUserName, value.CreatedOn, "view"));
+                    });
+                });
+            });
+        });
+    </script>
+
+}

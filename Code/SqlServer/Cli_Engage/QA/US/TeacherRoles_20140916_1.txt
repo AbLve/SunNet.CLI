@@ -1,0 +1,70 @@
+﻿
+
+if	 OBJECT_ID('TeacherRoles','U') is not null drop table TeacherRoles
+go
+create table TeacherRoles
+(
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] int not null,
+	[RoleName] varchar(50) not null,
+	[UserInfo_GoogleId] [varchar](2) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[CommunityId] [varchar](2) NOT NULL,
+	[SchoolId] [varchar](2) NOT NULL,
+	[TeacherId] [varchar](2) NOT NULL,
+	[SchoolYear] [varchar](2) NOT NULL,
+	[UserInfo_FirstName] [varchar](2) NOT NULL,
+	[UserInfo_MiddleName] [varchar](2) NOT NULL,
+	[UserInfo_LastName] [varchar](2) NOT NULL,
+	[UserInfo_PreviousLastName] [varchar](2) NOT NULL,
+	[BirthDate] [varchar](2) NOT NULL,
+	[Gender] [varchar](2)NOT NULL,
+	[Ethnicity] [varchar](2) NOT NULL,
+	[VendorCode] [varchar](2) NOT NULL,
+	[PrimaryLanguageId] [varchar](2) NOT NULL,
+	[EmployedBy] [varchar](2) NOT NULL,
+	[SecondaryLanguageId] [varchar](2) NOT NULL,
+	[CLIFundingId] [varchar](2) NOT NULL,
+	[MediaRelease] [varchar](2) NOT NULL,
+	[UserInfo_Status] [varchar](2)  NOT NULL,
+	[HomeMailingAddress] [varchar](2) NOT NULL,
+	[HomeMailingAddress2] [varchar](2) NOT NULL,
+	[City] [varchar](2) NOT NULL,
+	[CountyId] [varchar](2) NOT NULL,
+	[StateId] [varchar](2) NOT NULL,
+	[Zip] [varchar](2) NOT NULL,
+	[UserInfo_PrimaryPhoneNumber] [varchar](2) NOT NULL,
+	[UserInfo_PrimaryNumberType] [varchar](2) NOT NULL,
+	[UserInfo_SecondaryPhoneNumber] [varchar](2) NOT NULL,
+	[UserInfo_SecondaryNumberType] [varchar](2) NOT NULL,
+	[UserInfo_FaxNumber] [varchar](2) NOT NULL,
+	[UserInfo_PrimaryEmailAddress] [varchar](2) NOT NULL,
+	[UserInfo_SecondaryEmailAddress] [varchar](2) NOT NULL,
+	[TotalTeachingYears] [varchar](2) NOT NULL,
+	[AgeGroup] [varchar](2) NOT NULL,
+	[CurrentAgeGroupTeachingYears] [varchar](2) NOT NULL,
+	[TeacherType] [varchar](2)NOT NULL,
+	[UserPDRelations] [varchar](2) NOT NULL,
+	[EducationLevel]  [varchar](2) NOT NULL,
+	[UserCertificateRelations] [varchar](2)NOT NULL,
+	[CoachId] [varchar](2) NOT NULL,
+	[CoachAssignmentWay] [varchar](2) NOT NULL,
+	[ECIRCLEAssignmentWay] [varchar](2)NOT NULL,
+	[YearsInProjectId] [varchar](2) NOT NULL,
+	[CoreAndSupplemental] [varchar](2) NOT NULL,
+	[CoreAndSupplemental2] [varchar](2) NOT NULL,
+	[CoreAndSupplemental3] [varchar](2) NOT NULL,
+	[CoreAndSupplemental4] [varchar](2) NOT NULL,
+	Permission_UserRole   [varchar](2) NOT NULL,
+	[IsAssessmentEquipment] [varchar](2) not null,
+	[TeacherNotes] [varchar](2) NOT NULL,
+	TeacherClassRelations  [varchar](2) NOT NULL,
+	TeacherTransactions [varchar](2) NOT NULL
+)
+
+
+
+
+
+

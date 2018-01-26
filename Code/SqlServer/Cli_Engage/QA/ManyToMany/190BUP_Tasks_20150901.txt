@@ -1,0 +1,6 @@
+﻿if not exists(select * from syscolumns where id=object_id('BUP_Tasks') and name='OriginFileName')
+alter table [dbo].[BUP_Tasks] add  OriginFileName varchar(200)
+go
+update [BUP_Tasks] set OriginFileName = '' where OriginFileName is null
+go
+alter table [dbo].[BUP_Tasks] alter column OriginFileName varchar(200) not null

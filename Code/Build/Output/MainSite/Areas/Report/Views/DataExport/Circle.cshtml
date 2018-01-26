@@ -1,0 +1,43 @@
+﻿@using Sunnet.Cli.Business.Cpalls.Models
+
+@{
+    ViewBag.Title = "CIRCLE Data Export";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Reports)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Reports", "Index", "Index"))
+    <i class="icon-angle-right"></i>
+    @(ViewBag.Title)
+}
+@section Styles{
+    <style type="text/css">
+        .assessment-menu-dashboard li {
+            width: 140px;
+            height: 100px;
+            float: left;
+            display: block;
+            margin: 20px 20px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .assessment-menu-dashboard .cpalls-btn {
+            background-color: #41730b;
+        }
+    </style>
+}
+<div class="right-content">
+    <ul class="assessment-menu-dashboard">
+        @foreach (CpallsAssessmentModel item in ViewBag.List as List<CpallsAssessmentModel>)
+        {
+            <li>
+                <a class="cpalls-btn"  
+                   href="@Url.Action("SelectMeasures", null, new { id = item.ID })">@(item.Name)</a>
+            </li>
+        }
+    </ul>
+</div>

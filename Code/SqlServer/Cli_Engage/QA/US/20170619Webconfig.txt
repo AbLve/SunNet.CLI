@@ -1,0 +1,11 @@
+﻿<system.webServer>节点下增加下面配置
+<httpProtocol>
+      <customHeaders>
+        <add name="Access-Control-Allow-Credentials" value="true"/>
+        <add name="Access-Control-Allow-Origin" value="http://tsr_circle.cc (CAC站点url地址)" />
+      </customHeaders>
+    </httpProtocol>
+
+
+	<appSettings>节点下增加下面配置
+	<add key="CACDomain" value="http://TSR_Circle.cc/ （CAC站点url地址）" />

@@ -1,0 +1,173 @@
+﻿@using System.Web.UI.WebControls
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Hide/Display Measures";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var language = (int)ViewBag.language;
+
+}
+@section Scripts{
+    <script type="text/javascript">
+        +(function() {
+            var $form = $("#@(formId)");
+            var groups = @(Html.Raw(ViewBag.MeasureJson));
+            var waveMeasure = new WaveMeasures(groups);
+            waveMeasure.selectedWave = ko.observable(@ViewBag.wave);
+
+            if ("@(ViewBag.shownMeasures)" == "all") {
+                for (var a = 0; a < groups.groups.length; a++) {
+                    for (var b = 0; b < groups.groups[a].measures.length; b++) {
+                        waveMeasure.chooseMeasure(groups.groups[a].measures[b], groups.groups[a]);
+                    }
+                }
+            } else {
+                var isfind = false;
+                var shownMeasures = '@(ViewBag.shownMeasures == "all" ? "" : Html.Raw(ViewBag.shownMeasures))';
+                if (shownMeasures != "")
+                    shownMeasures = JSON.parse(shownMeasures);
+
+                for (var i = 1; i <= 3; i++) { // {"1":[2260,69],"2":[],"3":[]}
+
+                    if (shownMeasures[i].length > 0) {
+                        for (var j = 0; j < shownMeasures[i].length; j++) { // {[2260,69]}
+                            isfind = false;
+
+                            for (var n = 0; n < groups.groups.length; n++) {
+                                for (var m = 0; m < groups.groups[n].measures.length; m++) {
+                                    if (shownMeasures[i][j] == groups.groups[n].measures[m].id) { // find the shown measure
+                                        waveMeasure.chooseMeasure(groups.groups[n].measures[m], groups.groups[n]);
+                                        isfind = true;
+
+                                        break;
+
+                                    }
+                                }
+                                if (isfind) break;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            var models = {};
+            models.languages = {};
+            models.languages[@(language)] = waveMeasure;
+
+            models.selectedLanguage = ko.observable(@(language));
+
+            models.assessment = ko.computed(function() {
+                return models.languages[models.selectedLanguage()];
+            }, models);
+
+
+            models.submit = function() {
+                var measures = {};
+                $.each(models.assessment().waves, function(i, wave) {
+                    measures[i] = [];
+                });
+                var selectedWaves = [];
+                $.each(models.assessment().groups, function(j, group) {
+
+                    $.each(group.measures, function(k, measure) {
+                        $.each(measure.selectedWaves(), function(l, wave) {
+                            if (selectedWaves.indexOf(wave) < 0) {
+                                selectedWaves.push(wave);
+                            }
+                            measures[wave].push(measure.id);
+                            if (group.parent && measures[wave].indexOf(group.parent.id) <= 0) {
+                                measures[wave].push(group.parent.id);
+                            }
+                        });
+                    });
+                });
+
+                var strMeas = JSON.stringify(measures);
+                $form.find("#measures").val(strMeas);
+                $form.submit();
+            };
+            ko.applyBindings(models, document.getElementById("@(formId)"));
+
+        })();
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function(response) {
+                if (response.success) {
+                    window.showMessage("success", "");
+                    setTimeout(function() {
+                        ReLoadFunction();
+                        closeModal($("#@(formId)"));
+                    }, 4000);
+
+
+                } else {
+                    window.showMessage("fail", response.msg);
+                }
+            }
+        });
+        $(function() {
+
+            // waveMeasure.waves[waveMeasure.selectedWave()].selectedMeasures.push(measure.id);//2260
+        });
+    </script>
+}
+
+@using (Ajax.BeginForm("SaveShownMeasures", "Student", new { Area = "Cpalls" }, PostFormHelper.DefaultAjaxOptions,
+                new
+                {
+                    @class = "form-horizontal",
+                    role = "form",
+                    id = formId
+                }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <div class="nav-tab">
+            <div id="myTabContent" class="tab-content term-content-con">
+                <div class="tab-pane fade active in term-main-con1" id="content1">
+                    <!-- ko foreach:{data:assessment().groups,as:'group'}-->
+
+                    <div class="term-content">
+                        <!-- ko if: group.parent != null -->
+                        <div class="form-group">
+                            <div class="col-sm-12" data-bind="click: $root.assessment().chooseGroup">
+                                <a class="term-group-t">
+                                    <p data-bind="attr: { title: group.parent.name }">
+                                        <span data-bind="html: group.parent.name" class="body"></span>
+                                        <span class="select"><i data-bind="css: { 'icon-check': allSelected[@ViewBag.wave](), 'icon-check-empty': !allSelected[@ViewBag.wave]() }"></i>Select All Measures</span>
+                                    </p>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- /ko-->
+                        <div class="form-group">
+                            <!-- ko foreach:{data:group.measures,as:'measure'}-->
+                            <div class="col-sm-2" data-bind="visible: applyToWave.indexOf($root.assessment().selectedWave()) >= 0">
+                                <a class="term-contents" data-bind="attr: { title: measure.name }, css: { 'term-1': selectedWaves().indexOf(@ViewBag.wave) >= 0 }, click: function (measure, event) { $root.assessment().chooseMeasure(measure, $parent); }">
+                                    <text data-bind="html: ' ' + measure.name"></text>
+                                    <span data-bind="html: ' ' + measure.otherInfo, visible: measure.otherInfo != null">
+                                    </span>
+                                </a>
+                            </div>
+                            <!-- /ko-->
+                        </div>
+                    </div>
+
+                    <!-- /ko-->
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("assessmentId", "@ViewBag.assessmentId")
+    @Html.Hidden("wave", "ViewBag.wave")
+    @Html.Hidden("year", "ViewBag.year")
+    @Html.Hidden("measures")
+    <div class="modal-footer">
+        <button type="button" class="mainbutton mainright-btn save-btn" data-bind="click:submit">Save</button>
+    </div>
+
+
+}
+
+
+

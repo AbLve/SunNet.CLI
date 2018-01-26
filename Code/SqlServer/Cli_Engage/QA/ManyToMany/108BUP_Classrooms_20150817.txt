@@ -1,0 +1,28 @@
+﻿SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[BUP_Classrooms](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[TaskId] [int] NOT NULL,
+	[Action] [tinyint] NOT NULL,
+	[CommunityName] [varchar](200) NOT NULL,
+	[CommunityEngageID] [varchar](50) NOT NULL,
+	[SchoolName] [varchar](500) NOT NULL,
+	[SchoolEngageID] [varchar](20) NOT NULL,
+	[Name] [varchar](50) NOT NULL,
+	[ClassroomEngageId] [varchar](32) NOT NULL,
+	[ClassroomInternalID] [varchar](32) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[Remark] [varchar](200) NOT NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO

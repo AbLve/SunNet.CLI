@@ -1,0 +1,232 @@
+﻿CREATE PROCEDURE [dbo].[BUP_Task] 
+	@ID int,
+	@UpdatedBy int
+AS
+BEGIN
+	--UPDATE BUP_Object
+	IF NOT EXISTS (SELECT * FROM BUP_Tasks WHERE ID = @ID and [Status] = 1)
+	  RETURN
+
+    DECLARE @Action INT
+	SELECT @Action=[Type] FROM BUP_Tasks WHERE ID = @ID
+	IF (@Action IS NULL)
+	 RETURN
+
+	ELSE BEGIN
+	DECLARE @ObjectId INT
+	IF (@Action = 1)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Communities
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+	IF (@Action = 2)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Schools
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+	IF (@Action = 3)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Classrooms
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+	IF (@Action = 4)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Classes
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+	IF (@Action = 5)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Teachers
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+	IF (@Action = 6)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Students
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+	IF (@Action = 7 or @Action = 8)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_CommunityUsers
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+	IF (@Action = 9 or @Action = 10)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Principals
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+  
+    IF (@Action = 11)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Parents
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+
+	IF (@Action = 12)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Statewides
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+
+	IF (@Action = 13)
+		BEGIN
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			   SELECT ID FROM BUP_Auditors
+			   WHERE TaskId = @ID AND [Status] = 1
+		END
+
+	OPEN cur FETCH NEXT FROM cur INTO @ObjectId
+
+	WHILE @@FETCH_STATUS=0
+	BEGIN
+	   IF (@Action = 1)
+	    EXEC BUP_Community @ObjectId
+
+	   IF (@Action = 2)
+	    EXEC BUP_School @ObjectId, @UpdatedBy
+	   
+	   IF (@Action = 3)
+	    EXEC BUP_Classroom @ObjectId
+
+	   IF (@Action = 4)
+	    EXEC BUP_Class @ObjectId, @UpdatedBy
+
+	   IF (@Action = 5)
+	    EXEC BUP_Teacher @ObjectId, @UpdatedBy
+	   
+	   IF (@Action = 6)
+	    EXEC BUP_Student @ObjectId, @UpdatedBy
+
+	   IF (@Action = 7 or @Action = 8)
+	    EXEC BUP_CommunityUser @ObjectId, @UpdatedBy
+
+	   IF (@Action = 9 or @Action = 10)
+	    EXEC BUP_Principal @ObjectId, @UpdatedBy
+
+	   IF (@Action = 11)
+	    EXEC BUP_Parent @ObjectId
+
+	   IF (@Action = 12)
+	    EXEC BUP_StateWide @ObjectId, @UpdatedBy
+
+	   IF (@Action = 13)
+	    EXEC BUP_Auditor @ObjectId
+
+	   FETCH NEXT FROM cur INTO @ObjectId
+	END
+	CLOSE cur
+	DEALLOCATE cur
+
+	--UPDATE BUP_Tasks
+	IF (@Action = 1)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Communities WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Communities WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END		
+	IF (@Action = 2)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Schools WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Schools WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END		
+	IF (@Action = 3)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Classrooms WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Classrooms WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END	
+	IF (@Action = 4)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Classes WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Classes WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END	
+	IF (@Action = 5)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Teachers WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Teachers WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END	
+	 IF (@Action = 6)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Students WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Students WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END		
+	  IF (@Action = 7 or @Action = 8)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_CommunityUsers WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_CommunityUsers WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END		
+	  IF (@Action = 9 or @Action = 10)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Principals WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Principals WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END	
+	  IF (@Action = 11)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Parents WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Parents WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END	
+	   IF (@Action = 12)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Statewides WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Statewides WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END		
+	   IF (@Action = 13)
+		BEGIN
+			UPDATE BUP_Tasks SET [Status] = 3,
+			SuccessCount = (SELECT COUNT(*) FROM BUP_Auditors WHERE TaskId = @ID AND Status = 3),
+			FailCount = (SELECT COUNT(*) FROM BUP_Auditors WHERE TaskId = @ID AND Status IN (4,5)),
+			UpdatedOn = GETDATE(),
+			UpdatedBy = @UpdatedBy
+			WHERE ID = @ID and [Status] = 1
+		END			
+	END
+END
+
+GO

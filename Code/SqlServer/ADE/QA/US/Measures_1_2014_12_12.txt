@@ -1,0 +1,5 @@
+﻿IF NOT EXISTS(SELECT * FROM SYSCOLUMNS WHERE ID=OBJECT_ID('Measures') AND NAME='TotalScore') 
+BEGIN     
+ALTER TABLE [dbo].[Measures]
+ADD TotalScore decimal(18,2)
+END  

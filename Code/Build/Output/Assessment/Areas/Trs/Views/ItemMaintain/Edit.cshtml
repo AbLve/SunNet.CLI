@@ -1,0 +1,51 @@
+﻿@model Sunnet.Cli.Core.Trs.Entities.TRSItemEntity
+@using Sunnet.Cli.UIBase.Models
+@{
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                }
+            });
+        });
+    </script>
+}
+
+@using (Ajax.BeginForm("Edit", "ItemMaintain", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    <div>
+        @Html.LabelFor(model => model.ID, Model.ID.ToString())
+    </div>
+    <br />
+    <div>
+        @Html.LabelFor(model => model.Item)
+        <br />
+        @Html.TextAreaFor(model => model.Item, new { @style = "width:90%" })
+    </div>
+    <br />
+    <div>
+        @Html.LabelFor(model => model.Text)
+        <br />
+        @Html.TextAreaFor(model => model.Text, new { @style = "width:90%" })
+    </div>
+    <br />
+    <div>
+        @Html.LabelFor(model => model.Description)
+        <br />
+        @Html.TextAreaFor(model => model.Description, new { @style = "width:90%;height:200px" })
+    </div>
+
+    <input type="submit" class="mainbutton mainright-btn submit-btn" value="Save" id="btnSubmit" />
+}
+

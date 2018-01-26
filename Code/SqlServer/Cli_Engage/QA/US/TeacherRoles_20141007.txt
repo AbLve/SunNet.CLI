@@ -1,0 +1,21 @@
+﻿update TeacherRoles set ECIRCLEAssignmentWay='R' where RoleId=145
+go
+alter table TeacherRoles add CoachingHours varchar(2) not null default 'R'
+go
+
+update TeacherRoles set CoachingHours='RW' where RoleId=1
+update TeacherRoles set CoachingHours='RW' where RoleId=10
+update TeacherRoles set CoachingHours='R' where RoleId=5
+update TeacherRoles set CoachingHours='RW' where RoleId=20
+update TeacherRoles set CoachingHours='RW' where RoleId=30
+update TeacherRoles set CoachingHours='RW' where RoleId=15
+update TeacherRoles set CoachingHours='RW' where RoleId=35
+update TeacherRoles set CoachingHours='RW' where RoleId=40
+update TeacherRoles set CoachingHours='R' where RoleId=105
+update TeacherRoles set CoachingHours='R' where RoleId=25
+update TeacherRoles set CoachingHours='X' where RoleId=110
+update TeacherRoles set CoachingHours='X' where RoleId=115
+update TeacherRoles set CoachingHours='X' where RoleId=130
+update TeacherRoles set CoachingHours='X' where RoleId=125
+update TeacherRoles set CoachingHours='X' where RoleId=145
+update TeacherRoles set CoachingHours='R' where RoleId=101

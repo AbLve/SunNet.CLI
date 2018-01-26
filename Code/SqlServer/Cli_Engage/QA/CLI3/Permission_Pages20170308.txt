@@ -1,0 +1,20 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9600,'Practice',0,0,'',11,1,'Practice',GETDATE(),GETDATE())
+SET IDENTITY_INSERT Permission_Pages OFF
+
+GO
+
+		  INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9600 , -- PageId - int
+          '128;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )

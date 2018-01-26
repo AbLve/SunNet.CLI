@@ -1,0 +1,112 @@
+﻿@{
+    Layout = null;
+}
+<script type="text/html" id="_td_Measure">
+    <!--ko if: @(ViewBag.Start.ToString().ToLower())-->
+    <!--ko template:{name:function(){return $root.getMeasureTemplate(measure,$parent,$parent.DicMeasure && $parent.DicMeasure[measure.MeasureId]);},data:$root.getMeasureData(measure,$parent,$parent.DicMeasure && $parent.DicMeasure[measure.MeasureId])}-->
+    <!--/ko-->
+    <!--/ko-->
+    <!--Not in exec data range-->
+    <!--ko ifnot: @(ViewBag.Start.ToString().ToLower())-->
+    <!--ko if: $parent.DicMeasure != null
+        && $parent.DicMeasure[measure.MeasureId]
+        && $parent.DicMeasure[measure.MeasureId].Status.value() == 3
+        -->
+    <!--ko template:{name:function(){return $root.getMeasureTemplate(measure,$parent,$parent.DicMeasure && $parent.DicMeasure[measure.MeasureId]);},data:$root.getMeasureData(measure,$parent,$parent.DicMeasure && $parent.DicMeasure[measure.MeasureId])}-->
+    <!--/ko-->
+    <!--/ko-->
+    <!--ko if: ($parent.DicMeasure == null
+        || !$parent.DicMeasure[measure.MeasureId]
+        || $parent.DicMeasure[measure.MeasureId].Status.value() != 3)
+        && (measure.ParentId == 1 || measure.ParentId == measure.MeasureId || $root.parentMeasure[measure.ParentId].visible() )
+        -->
+    <td data-bind="css: { 'measure-split-line-left': measure.IsFirstOfParent || (measure.ParentId == measure.MeasureId && $root.parentMeasure[measure.ParentId].visible() == false), 'measure-split-line-bottom': measure.ParentId > 1, 'measure-split-line-right': measure.ParentId == measure.MeasureId, 'measure-split-line-bottom': measure.ParentId > 1 }">-</td>
+    <!--/ko-->
+    <!--/ko-->
+</script>
+<script type="text/html" id="_td_Null">
+</script>
+<script type="text/html" id="_td_Play">
+    <td data-bind="css: { 'measure-split-line-left': measure.IsFirstOfParent, 'measure-split-line-bottom': measure.ParentId > 1 }">
+        <a class="tab-btn" data-bind="click: $root.koPlayMeasure, attr: { measure: MeasureId, title: 'Launch ' + MeasureName }"><i class="icon-play"></i><span style="display: none">1</span></a>
+        <a class="tab-btn on-btn" data-bind="click: $root.koLockMeasure, attr: { measure: MeasureId, title: 'Exclude ' + MeasureName }, visible: StudentId > 0">
+            <i class="icon-circle"></i>
+            <span style="display: none">1</span>
+        </a>
+    </td>
+</script>
+
+<script type="text/html" id="_td_Paused">
+    <td data-bind="css: { 'measure-split-line-left': measure.IsFirstOfParent, 'measure-split-line-bottom': measure.ParentId > 1 }">
+        <a class="tab-btn" data-bind="click: $root.koPlayMeasure, attr: { measure: MeasureId, title: 'Paused ' + MeasureName }">
+            <i class="icon-pause"></i><span style="display: none">1</span>
+        </a>
+    </td>
+</script>
+
+<script type="text/html" id="_td_Locked">
+    <td data-bind="css: { 'measure-split-line-left': measure.IsFirstOfParent, 'measure-split-line-bottom': measure.ParentId > 1 }">
+        <a class="tab-btn off-btn" data-bind="click: $root.koUnlockMeasure, attr: { measure: 'MeasureId', title: 'Restore ' + MeasureName }">
+            <i class="icon-circle-blank"></i><span style="display: none">1</span>
+        </a>
+    </td>
+</script>
+<script type="text/html" id="_td_Score">
+    <td data-bind="css: { 'measure-split-line-left': measure.IsFirstOfParent, 'measure-split-line-bottom': measure.ParentId > 1 }">
+        <!--ko ifnot: (DataFrom==='')-->
+        <!-- ko if: (TotalScored) -->
+        <span data-bind="text: $('#isDisplayRanks').val() == 'true' ? PercentileRank : Goal, attr: { title: MeasureName, style: 'background:' + (($('#isDisplayRanks').val() == 'true' && (PercentileRank=='-' || PercentileRank=='N/A'))?'':BenchmarkColor) }, css: {'benchmarkColor':true}"
+              class=""></span>
+        <!-- /ko-->
+        <!-- ko ifnot: (TotalScored) -->
+        <span class="table-btn icon-ok ok-btn"
+              data-bind="attr: {  title: MeasureName }"
+              title="Completed"></span>
+        <!-- /ko-->
+        <!-- /ko-->
+        <!--ko if: (DataFrom==='')-->
+        <!-- ko if: (TotalScored) -->
+        <a href="javascript:void(0)" data-bind="text: $('#isDisplayRanks').val() == 'true' ? PercentileRank : Goal, attr: { title: MeasureName, style: 'background:' + (($('#isDisplayRanks').val() == 'true' && (PercentileRank=='-' || PercentileRank=='N/A'))?'':BenchmarkColor) }, click: $root.viewMeasure, css: {'benchmarkColor':true }"
+           class=""><span style="display: none">1</span></a>
+
+        @*<!-- ko if: (LightColor)-->
+            <a data-bind="text: Goal, attr: { href: $root.getViewUrl($data), title: MeasureName }
+            , css: { 'cpalls_normal_light': Color == 'cpalls_normal' || Color == 'cpalls_normal_light', 'cpalls_three_light': Color == 'cpalls_three' || Color == 'cpalls_three_light', 'cpalls_four_light': Color == 'cpalls_four' || Color == 'cpalls_four_light', 'cpalls_no_benchmark': Color == 'cpalls_no_benchmark', 'cpalls_three_less_light': Color == 'cpalls_three_less' || Color == 'cpalls_three_less_light' }"
+                class="NoChange"><span style="display: none">1</span></a>
+            <!-- /ko-->*@
+
+        <!-- /ko-->
+        <!-- ko ifnot: (TotalScored) -->
+        <a href="javascript:void(0)" class="table-btn icon-ok ok-btn"
+           data-bind="attr: {  title: MeasureName },click: $root.viewMeasure"
+           title="Completed"><span style="display: none">1</span></a>
+        <!-- /ko-->
+        <!-- /ko-->
+
+    </td>
+</script>
+<script type="text/html" id="_td_Total">
+    <td data-bind="css: { 'measure-split-line-left': !$root.parentMeasure[measure.ParentId].visible(), 'measure-split-line-bottom': measure.ParentId > 1 }" class="measure-split-line-right">
+        <!--ko ifnot: (DataFrom==='')-->
+        <!-- ko ifnot: (ShowText == '-') -->
+        <span data-bind="text: $('#isDisplayRanks').val() == 'true' ? PercentileRank : ShowText, attr: { title: ParentName },style:{background:(($('#isDisplayRanks').val() == 'true' && (PercentileRank=='-' || PercentileRank=='N/A'))?'':BenchmarkColor)}, css: {'benchmarkColor':true}"
+              class="" style="width: 40px;" href="javascript:void(0)"></span>
+        <!-- /ko-->
+        <!-- /ko-->
+        <!--ko if: (DataFrom==='')-->
+        <!-- ko if: (ShowText == '-') -->
+        -
+        <!-- /ko-->
+        <!-- ko ifnot: (ShowText == '-') -->
+        <a data-bind="text: $('#isDisplayRanks').val() == 'true' ? PercentileRank : ShowText, attr: { title: ParentName },style:{background:(($('#isDisplayRanks').val() == 'true' && (PercentileRank=='-' || PercentileRank=='N/A'))?'':BenchmarkColor)}, click: $root.viewMeasure, css: {'benchmarkColor':true}"
+           class="" style="width: 40px;" href="javascript:void(0)"><span style="display: none">1</span></a>
+        <!-- /ko-->
+        <!-- /ko-->
+
+
+
+
+
+
+    </td>
+</script>

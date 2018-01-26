@@ -1,0 +1,302 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    var waves = ViewBag.Waves as Dictionary<Wave, List<ReportRowModel>>;
+    var breakPager = false;
+    var gray = Request.Form["Gray"];
+    AssessmentLegendEntity assessmentLegend = ViewBag.AssessmentLegend;
+}
+<style>
+    body {
+        font-family: arial;
+        font-size: 15px;
+        color: #333;
+    }
+
+    .container{
+        width: 100% !important;
+        margin:0;
+        padding:0;
+    }
+    .top-img {
+        position:absolute;
+        top:0;
+        right:1%;
+    }
+
+    .top-title {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 700;
+        margin:0 auto;
+    }
+
+    .top-left p{
+        text-align: left;
+        margin-bottom: 3px;
+    }
+
+    .top-right p {
+        text-align: right;
+        margin-bottom: 3px;
+    }
+    .top-logo{
+        text-align:center;
+    }
+</style>
+
+<table style="width: 100%">
+    <thead>
+        <tr>
+            <td>
+                <table cellpadding="0" cellspacing="0" class="noborder header">
+                    <tr>
+                        <td colspan="2" class="top-logo">
+                            <div class="top-title">
+                                @(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+                                @(ViewBag.Title)
+                            </div>
+                            <div class="top-img">
+                                <img src="@(DomainHelper.PracticeDomain)images/cli_logo.png" style="width: 150px; height: 60px; vertical-align: middle;" alt="cli_logo" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="top-left">
+                            <p>School year:&nbsp;@ViewBag.ScoolYear<br/>Wave @waves.Keys.First().ToDescription()</p>
+                        </td>
+                        <td class="top-right">
+                            <p>Assessment Language:&nbsp;@ViewBag.Language</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="top-left">
+                            <p>Practice Class</p>
+                        </td>
+                        <td class="top-right">
+                            <p>@ViewBag.UserName</p>
+                        </td>
+                    </tr>
+                    @*<tr>
+                        <td>&nbsp;</td>
+                        <td style="text-align: right; vertical-align: top;" colspan="2">
+                                        Number of student:&nbsp;@Html.Raw(ViewBag.StudentCount)
+                        </td>
+                    </tr>*@
+                    @if (ViewBag.NoClassSummary)
+                    {
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                </table>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @foreach (var wave in waves)
+                {
+                    <table cellpadding="0" cellspacing="0" class='@(breakPager ? "newpager" : "") report-data table_border'>
+                        <caption style="text-align: center;">
+                            @if (ViewContext.Controller is StudentController)
+                            {
+                                <span>Raw Scores</span>
+                            }
+                            else
+                            {
+                                <span>Average Scores</span>
+                            }
+                        </caption>
+                        <thead style="page-break-inside: avoid">
+                            <tr class='fixed-columns-rotate' style="page-break-inside: avoid">
+                                @for (var j = 0; j < wave.Value[0].Cells.Count; j++)
+                                {
+                                    if (j == 0)
+                                    {
+                                    <th rowspan="@(wave.Value[0][j].Rowspan)"
+                                            colspan="@(wave.Value[0][j].Colspan + 1)" class="border-l border-t border-b">
+                                        <div style="width: 200px;">
+                                            <span>
+                                                @(ViewBag.ReportFirstColumn)
+                                            </span>
+                                        </div>
+                                    </th>
+                                    }
+                                    else
+                                    {
+                                    <th class='@(wave.Value[0][j].IsParent ? "fixed-columns-rotate-super" : "fixed-columns-rotate") border-t'
+                                            rowspan="@(wave.Value[0][j].Rowspan)"
+                                            colspan="@(wave.Value[0][j].Colspan)">
+                                        <div>
+                                            <span>
+                                                @(wave.Value[0][j].Text.ToString().CutString((wave.Value[0][j].Colspan > 1 ? wave.Value[0][j].Colspan : 4) * 6))
+                                            </span>
+                                        </div>
+                                    </th>
+                                    }
+                                }
+                                <th class="noborder border-t"></th>
+                                <th class="noborder border-t"></th>
+                            </tr>
+                            <tr class='fixed-columns-rotate' style="page-break-inside: avoid">
+                                @for (var j = 0; j < wave.Value[1].Cells.Count; j++)
+                                {
+                                    <th class='fixed-columns-rotate'
+                                        rowspan="@(wave.Value[1][j].Rowspan)"
+                                        colspan="@(wave.Value[1][j].Colspan)">
+                                        <div>
+                                            <span>@(wave.Value[1][j].Text.ToString().CutString(20))</span>
+                                        </div>
+                                    </th>
+
+                                }
+                                <th class="noborder "></th>
+                                <th class="noborder "></th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @for (var i = 2; i < wave.Value.Count; i++)
+                            {
+                                <tr style="page-break-inside: avoid">
+                                    <td><b>@(i - 2 > 0 ? (i - 2).ToString() : "")</b></td>
+                                    @for (var j = 0; j < wave.Value[i].Cells.Count; j++)
+                                    {
+                                        <td>
+                                            @if (gray == "gray")
+                                            {
+                                                <span @(!string.IsNullOrEmpty(wave.Value[i][j].Background) ? "class=" + wave.Value[i][j].Background : "")>
+                                                    @(wave.Value[i][j].Text.ToString().CutString(16))
+                                                </span>  
+                                            }
+                                            else
+                                            {
+                                                <span @(!string.IsNullOrEmpty(wave.Value[i][j].Color) ? "style=background:" + wave.Value[i][j].Color + ";"+" class=spancolor" : "")>
+                                                    @(wave.Value[i][j].Text.ToString().CutString(16))
+                                                </span>  
+                                            }
+                                        </td>
+                                    }
+                                    <td class="noborder border-l"></td>
+                                    <td class="noborder"></td>
+                                </tr>
+                            }
+                            @if (!(ViewContext.Controller is StudentController))
+                            {
+                                <tr>
+                                    <td colspan="@((wave.Value.LastOrDefault() ?? new ReportRowModel()).Cells.Sum(c => c.Colspan) + 3)">
+                                        <div class="note">*  Averages for Classes and School are based on students tested.</div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>
+@if (ViewContext.Controller is StudentController)
+{
+    if (gray == "gray")
+    {
+    <table class="noborder" cellpadding="0" cellspacing="0" style="margin-bottom: 0px; margin-top: 5px;">
+        @*<tr style="page-break-inside: avoid">
+                <td class="cpalls_normal"><span>Bold</span></td>
+                <td style="text-align: left;" class="cpalls_normal">: (green) Proficient (at or above benchmark)</td>
+            </tr>
+            <tr style="page-break-inside: avoid">
+                <td class="cpalls_three"><span>#</span></td>
+                <td style="text-align: left;">: (orange) Younger than 4 years-old, Developing (below benchmark)</td>
+            </tr>
+            <tr style="page-break-inside: avoid">
+                <td class="cpalls_four"><span>#</span></td>
+                <td style="text-align: left;">: (red) 4 years-old and older, Emergent (below benchmark)</td>
+            </tr>
+            <tr style="page-break-inside: avoid">
+                <td class="cpalls_three_less"><span>#</span></td>
+                <td style="text-align: left;">: (blue)Out of age range, no benchmarks apply</td>
+            </tr>
+            <tr style="page-break-inside: avoid">
+                <td class="light_color"><span>#</span></td>
+                <td style="text-align: left;">: (light colors) For instructional planning only</td>
+            </tr>
+            <tr>
+                <td class="cpalls_no_benchmark"><span>#</span></td>
+                <td style="text-align: left;">: Measure has no benchmarks</td>
+            </tr>*@
+        <tr style="page-break-inside:avoid">
+            <td colspan="2" style="text-align:left">
+                @if (assessmentLegend != null)
+                {
+                    if (assessmentLegend.TextPosition.ToLower() == "bottom")
+                    {
+                    <img style="max-width: 100%;display:block;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.BlackWhiteFilePath)"/>
+                    @assessmentLegend.Text
+                    }
+                    else if (assessmentLegend.TextPosition.ToLower() == "top")
+                    {
+                        @assessmentLegend.Text
+                    <img style="max-width: 100%;display:block;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.BlackWhiteFilePath)"/>
+                    }
+                }
+            </td>
+        </tr>
+    </table>
+    }
+    else
+    {
+    <table class="noborder" cellpadding="0" cellspacing="0" style="margin-bottom: 0px; margin-top: 5px;">
+        @*<tr style="page-break-inside: avoid">
+                <td class="cpalls_normal"><span>#</span></td>
+                <td class="cpalls_normal_light" id="normal_light">&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;<span>#</span></td>
+                <td style="text-align: left;">: Proficient (at or above benchmark)</td>
+            </tr>
+            <tr style="page-break-inside: avoid">
+                <td class="cpalls_three"><span>#</span></td>
+                <td class="cpalls_three_light" id="three_light">&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;<span>#</span></td>
+                <td style="text-align: left;">: Younger than 4 years-old, Developing (below benchmark)</td>
+            </tr>
+            <tr style="page-break-inside: avoid">
+                <td class="cpalls_four"><span>#</span></td>
+                <td class="cpalls_four_light" id="four_light">&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;<span>#</span></td>
+                <td style="text-align: left;">: 4 years-old and older, Emergent (below benchmark)</td>
+            </tr>
+            <tr style="page-break-inside: avoid">
+                <td class="cpalls_three_less"><span>#</span></td>
+                <td class="cpalls_three_less_light" id="three_less_light">&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;<span>#</span></td>
+                <td style="text-align: left;">: Out of age range, no benchmarks apply</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="cpalls_no_benchmark"><span>#</span></td>
+                <td style="text-align: left;">: Measure has no benchmarks</td>
+            </tr>
+            <tr>
+                <td colspan="2"><span>Light colors</span></td>
+                <td style="text-align: left;">: For instructional planning only</td>
+            </tr>*@
+
+        <tr style="page-break-inside:avoid">
+            <td colspan="2" style="text-align:left">
+                @if (assessmentLegend != null)
+                {
+                    if (assessmentLegend.TextPosition.ToLower() == "bottom")
+                    {
+                    <img style="max-width: 100%;display:block;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.ColorFilePath)"/>
+                    @assessmentLegend.Text
+                    }
+                    else if (assessmentLegend.TextPosition.ToLower() == "top")
+                    {
+                        @assessmentLegend.Text
+                    <img style="max-width: 100%;display:block;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.ColorFilePath)"/>
+                    }
+                }
+            </td>
+        </tr>
+    </table>
+    }
+}

@@ -1,0 +1,138 @@
+﻿DECLARE @From int;
+DECLARE @MaxId int;
+
+---------------Assessment------------------------------------------------------
+set @From = (select top 1 id from Assessments order by ID asc);
+set @MaxId = (select top 1 id from Assessments order by ID desc);
+while(@From <= @MaxId)
+BEGIN
+	IF EXISTS(SELECT 1 FROM Assessments WHERE ID = @From) 
+		and NOT EXISTS 
+		(SELECT 1 FROM CutOffScores where HostId = @From 
+										and HostType = 'Sunnet.Cli.Core.Ade.Entities.AssessmentEntity'
+										AND Wave  = 1)
+		BEGIN
+			INSERT INTO [dbo].[CutOffScores]
+           ([FromYear]
+           ,[FromMonth]
+           ,[ToYear]
+           ,[ToMonth]
+           ,[CutOffScore]
+           ,[HostType]
+           ,[HostId]
+           ,[CreatedOn]
+           ,[UpdatedOn]
+           ,[Wave])
+			VALUES(0,0,0,0,0,'Sunnet.Cli.Core.Ade.Entities.AssessmentEntity',@From,GETDATE(),GETdATE(),1)
+		END
+
+		IF EXISTS(SELECT 1 FROM Assessments WHERE ID = @From) 
+		and NOT EXISTS 
+		(SELECT 1 FROM CutOffScores where HostId = @From 
+										and HostType = 'Sunnet.Cli.Core.Ade.Entities.AssessmentEntity'
+										AND Wave  = 2)
+		BEGIN
+			INSERT INTO [dbo].[CutOffScores]
+           ([FromYear]
+           ,[FromMonth]
+           ,[ToYear]
+           ,[ToMonth]
+           ,[CutOffScore]
+           ,[HostType]
+           ,[HostId]
+           ,[CreatedOn]
+           ,[UpdatedOn]
+           ,[Wave])
+			VALUES(0,0,0,0,0,'Sunnet.Cli.Core.Ade.Entities.AssessmentEntity',@From,GETDATE(),GETdATE(),2)
+		END
+
+		IF EXISTS(SELECT 1 FROM Assessments WHERE ID = @From) 
+		and NOT EXISTS 
+		(SELECT 1 FROM CutOffScores where HostId = @From 
+										and HostType = 'Sunnet.Cli.Core.Ade.Entities.AssessmentEntity'
+										AND Wave  = 3)
+		BEGIN
+			INSERT INTO [dbo].[CutOffScores]
+           ([FromYear]
+           ,[FromMonth]
+           ,[ToYear]
+           ,[ToMonth]
+           ,[CutOffScore]
+           ,[HostType]
+           ,[HostId]
+           ,[CreatedOn]
+           ,[UpdatedOn]
+           ,[Wave])
+			VALUES(0,0,0,0,0,'Sunnet.Cli.Core.Ade.Entities.AssessmentEntity',@From,GETDATE(),GETdATE(),3)
+		END
+
+		SET @From = @From + 1;
+END
+
+---------------Measure------------------------------------------------------
+set @From = (select top 1 id from Measures order by ID asc);
+set @MaxId = (select top 1 id from Measures order by ID desc);
+while(@From <= @MaxId)
+BEGIN
+	IF EXISTS(SELECT 1 FROM Measures WHERE ID = @From) 
+		and NOT EXISTS 
+		(SELECT 1 FROM CutOffScores where HostId = @From 
+										and HostType = 'Sunnet.Cli.Core.Ade.Entities.MeasureEntity'
+										AND Wave  = 1)
+		BEGIN
+			INSERT INTO [dbo].[CutOffScores]
+           ([FromYear]
+           ,[FromMonth]
+           ,[ToYear]
+           ,[ToMonth]
+           ,[CutOffScore]
+           ,[HostType]
+           ,[HostId]
+           ,[CreatedOn]
+           ,[UpdatedOn]
+           ,[Wave])
+			VALUES(0,0,0,0,0,'Sunnet.Cli.Core.Ade.Entities.MeasureEntity',@From,GETDATE(),GETdATE(),1)
+		END
+
+		IF EXISTS(SELECT 1 FROM Measures WHERE ID = @From) 
+		and NOT EXISTS 
+		(SELECT 1 FROM CutOffScores where HostId = @From 
+										and HostType = 'Sunnet.Cli.Core.Ade.Entities.MeasureEntity'
+										AND Wave  = 2)
+		BEGIN
+			INSERT INTO [dbo].[CutOffScores]
+           ([FromYear]
+           ,[FromMonth]
+           ,[ToYear]
+           ,[ToMonth]
+           ,[CutOffScore]
+           ,[HostType]
+           ,[HostId]
+           ,[CreatedOn]
+           ,[UpdatedOn]
+           ,[Wave])
+			VALUES(0,0,0,0,0,'Sunnet.Cli.Core.Ade.Entities.MeasureEntity',@From,GETDATE(),GETdATE(),2)
+		END
+
+		IF EXISTS(SELECT 1 FROM Measures WHERE ID = @From) 
+		and NOT EXISTS 
+		(SELECT 1 FROM CutOffScores where HostId = @From 
+										and HostType = 'Sunnet.Cli.Core.Ade.Entities.MeasureEntity'
+										AND Wave  = 3)
+		BEGIN
+			INSERT INTO [dbo].[CutOffScores]
+           ([FromYear]
+           ,[FromMonth]
+           ,[ToYear]
+           ,[ToMonth]
+           ,[CutOffScore]
+           ,[HostType]
+           ,[HostId]
+           ,[CreatedOn]
+           ,[UpdatedOn]
+           ,[Wave])
+			VALUES(0,0,0,0,0,'Sunnet.Cli.Core.Ade.Entities.MeasureEntity',@From,GETDATE(),GETdATE(),3)
+		END
+
+		SET @From = @From + 1;
+END

@@ -1,0 +1,12 @@
+﻿@model bool
+@{
+    var dics = ViewTextHelper.BoolInTexts;
+    if (ViewData["Dics"] != null)
+    {
+        dics = (Dictionary<bool, string>) ViewData["Dics"];
+    }
+}
+
+<label class="control-label-text">
+    @dics[Model]
+</label>

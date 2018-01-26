@@ -1,0 +1,106 @@
+﻿
+@model Sunnet.Cli.Business.Ade.Models.ScoreModel
+
+@{
+    ViewBag.Title = "Score Index";
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+
+@section BreadPath
+{
+    <a href="/Ade">Assessment</a><i class="icon-angle-right"></i>Score
+}
+
+@section Styles
+{
+    @Styles.Render("~/css/colorpicker")
+}
+
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to Assessment List</a>
+    <button class="mainbutton mainright-btn create-btn " id="btnNewScore" type="button" data-bind="event: { click: addData}">Add Score</button>
+</div>
+<div class="modal-l-b"></div>
+<div class="main-content main-content">
+    <div class="content-title">Scores</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Score Name</th>
+                    <th>Score Domain</th>
+                    <th>MeanAdjustment</th>
+                    <th>SDAdjustment</th>
+                    <th>TargetMean</th>
+                    <th>TargetSD</th>
+                    <th>TargetRound</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.ScoreName"></td>
+                    <td data-bind="text: item.ScoreDomain"></td>
+                    <td data-bind="text: item.MeanAdjustment"></td>
+                    <td data-bind="text: item.SDAdjustment"></td>
+                    <td data-bind="text: item.TargetMean"></td>
+                    <td data-bind="text: item.TargetSD"></td>
+                    <td data-bind="text: item.TargetRound"></td>
+                    <td>
+                        <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData}" href="#" title="Edit"></a>
+                        <a class="table-btn icon-bookmark feature-btn" data-bind="attr: { href: $root.finalScore(item),title:item.ScoreDomain}" data-toggle="modal" data-target="#modalLarge" href="#" title="Final Score"></a>
+                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.deleteData}" href="#" title="Delete"></a>
+                        <a class="table-btn icon-paper-clip clip-btn" href="#" title="Activities" data-bind="attr: {href:$root.ScoreActivities(item),title:item.ScoreDomain+'Activities'}"
+                           data-toggle="modal" data-target="#modalNormal" style="background-color:green"></a>
+                    </td>
+                </tr>
+            </tbody>
+            @Html.Display("e", "NoData", new { Colspan = 8 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/CustomScore")
+    @Scripts.Render("~/scripts/ckeditor")
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/javascript">
+        var list_Scores = {};
+        $(function () {
+            list_Scores = new ViewModel(
+                {
+                    instanceName: "list_Scores",
+                    modalId: "modalLarge",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchScore")))?assessmentId=' + @ViewBag.assessmentId,
+                    addDataUrl: '@Html.Raw(Url.Action("NewScore"))?assessmentId=' + @ViewBag.assessmentId,
+                    editDataUrl: '@Html.Raw(Url.Action("EditScore"))',
+                    viewDataUrl: '@Html.Raw(Url.Action("DetailScore"))',
+                    deleteDataUrl: '@Html.Raw(Url.Action("DeleteScore"))',
+                    showField: "ScoreName",
+                    addType: '',
+                    pageSize: 10,
+                }, {
+                    finalScore:function(item) {
+                        return '/Ade/Assessment/FinalScore?assessmentId=@ViewBag.assessmentId' + "&scoreId="+item.ID;
+                    },
+                    ScoreActivities: function (item) {
+                        return '/Ade/Assessment/ScoreActivities?scoreId='+item.ID;
+                    }
+                }
+            );
+            list_Scores.search();
+            ko.applyBindings(list_Scores);
+        });
+    </script>
+
+}
+
+
+

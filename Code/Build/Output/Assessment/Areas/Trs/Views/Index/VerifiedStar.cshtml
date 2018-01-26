@@ -1,0 +1,50 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Trs.Models.TrsAssessmentModel
+@{
+    ViewBag.Title = "Verified Star";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@using (Ajax.BeginForm("VerifiedStar", "Index", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.HiddenFor(model => model.Id)
+    <div class="form-group">
+        @Html.LabelFor(model => model.Star, new { @class = "control-label col-sm-5 required" })
+        <div class="col-sm-5">
+            @Html.DisplayFor(x=>x.Star)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.VerifiedStar, new { @class = "control-label col-sm-5 required" })
+        <div class="col-sm-5">
+            @Html.EnumDropDownListFor(model => model.VerifiedStar, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Status)
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="submit" >Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function() {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function(response) {
+                    if (response.success) {
+                        // parent page defined
+                        verifiedStarSetted = true;
+                        closeModal($("#@(formId)"));
+                    }
+                }
+            });
+        })();
+    </script>
+}

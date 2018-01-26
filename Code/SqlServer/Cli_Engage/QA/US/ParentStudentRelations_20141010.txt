@@ -1,0 +1,11 @@
+﻿ALTER TABLE Parents DROP COLUMN Relation 
+ALTER TABLE Parents DROP COLUMN RelationOther 
+
+create table ParentStudentRelations
+(
+	ID int primary key identity(1,1) not null,
+	ParentId int not null,
+	StudentId int not null,
+	Relation tinyint not null,
+	RelationOther varchar(100) not null
+)

@@ -1,0 +1,263 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@{
+    ViewBag.Title = "Custom Score Report - " + Request.QueryString["school"];
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var language = (int)ViewBag.language;
+    List<ScoreEntity> scoreListEnglish = ViewBag.CustomScoresEnglish;
+    List<ScoreEntity> scoreListSpanish = ViewBag.CustomScoresSpanish;
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response) {
+                    if (response.success) {
+                        window.showMessage("success", response.msg);
+                    } else {
+                        window.showMessage("fail", response.msg);
+                    }
+                }
+            });
+        });
+        function BeforeSubmit(type) {
+            if ($("[name='wave']:checked").length == 0) {
+                window.showMessage("hint", "Please select wave first.");
+                return false;
+            }
+            if ($("[name='scoreIds']:checked").length == 0) {
+                window.showMessage("hint", "Please select custom scores.");
+                return false;
+            }
+            var $form = $("#@(formId)");
+            if (type =="benchmark")
+            {
+                $form.attr("action", '@Url.Action("CustomScoreBenchmarkWhere", "Class", new { Area = "Report" })');
+                $form.attr("target", "_blank");
+            }
+            else {
+                $form.attr("action", '@Url.Action("CustomScoreWhere", "Class", new { Area = "Report" })');
+                $form.attr("target", "_blank");
+            }
+            setTimeout(function () { $("#@(formId)").cliForm("loaded"); }, 3000);
+            return true;
+        }
+
+        function SelectLanguage(object, language) {
+            if (!$(object).attr("disabled")) {
+                $("[name='labelLanguage']").removeClass('submit-btn');
+                $(object).find("input").prop("checked", true);
+                $(object).addClass("submit-btn");
+                if (language == 1) {
+                    $("#dvScoreEnglish").show();
+                    $("#dvScoreSpanish").hide();
+                    $("#dvScoreSpanish").find("a").removeClass("term-1");
+                    $("#dvScoreSpanish").find("[type='checkbox']").prop("checked", false);
+                }
+                else if (language == 2) {
+                    $("#dvScoreEnglish").hide();
+                    $("#dvScoreSpanish").show();
+                    $("#dvScoreEnglish").find("a").removeClass("term-1");
+                    $("#dvScoreEnglish").find("[type='checkbox']").prop("checked", false);
+                }
+            }
+        }
+
+        function SelectWave(object) {
+            $("[name='lblWave']").removeClass('submit-btn');
+            $(object).find("input").prop("checked", true);
+            $(object).addClass("submit-btn");
+        }
+
+        function SelectCustomScore(object) {
+            if ($(object).find("a").hasClass("term-1")) {
+                $(object).find("a").removeClass("term-1");
+                $(object).find("input").prop("checked", false);
+            } else {
+                $(object).find("a").addClass("term-1");
+                $(object).find("input").prop("checked", true);
+            }
+        }
+
+        function AllCustomScores(object) {
+            var selectedLanguage = $("[name='language']:checked").val();
+            if (selectedLanguage == 1) {
+                if ($(object).prop("checked")) {
+                    $("#dvScoreEnglish").find("a").addClass("term-1");
+                    $("#dvScoreEnglish [name='scoreIds']").prop("checked", true);
+                } else {
+                    $("#dvScoreEnglish").find("a").removeClass("term-1");
+                    $("#dvScoreEnglish [name='scoreIds']").prop("checked", false);
+                }
+            }
+            else if (selectedLanguage == 2) {
+                if ($(object).prop("checked")) {
+                    $("#dvScoreSpanish").find("a").addClass("term-1");
+                    $("#dvScoreSpanish [name='scoreIds']").prop("checked", true);
+                } else {
+                    $("#dvScoreSpanish").find("a").removeClass("term-1");
+                    $("#dvScoreSpanish [name='scoreIds']").prop("checked", false);
+                }
+            }
+        }
+    </script>
+}
+<style type="text/css">
+    [data-toggle="buttons"] > fieldset .btn input[type="radio"] {
+        position: absolute;
+        clip: rect(0, 0, 0, 0);
+        pointer-events: none;
+    }
+</style>
+@using (Ajax.BeginForm("CustomScoreWhere", "Class", new { Area = "Report" }, PostFormHelper.DefaultAjaxOptions,
+                                                                                                                                                    new
+                                                                                                                                                    {
+                                                                                                                                                        @class = "form-horizontal",
+                                                                                                                                                        id = formId
+                                                                                                                                                    }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <div class="col-sm-4">
+            <div class="btn-group term-chose-l" data-toggle="buttons" id="languages">
+                <fieldset style="border:0px;float:left;">
+                    <legend style="display:none">Wave 1</legend>
+                    <label class="btn   nav-btn @(language == 1 ? "submit-btn active" : "")" for="language1" name="labelLanguage" onclick="SelectLanguage(this,1);">
+                        <input autocomplete="off" id="language1" name="language" type="radio" @(language == 1 ? "checked=true" : "") value="1" title="English Only">
+                        English Only
+                    </label>
+                </fieldset>
+                <fieldset style="border:0px;float:left;">
+                    <legend style="display:none">Wave 1</legend>
+                    <label class="btn  nav-btn @(language == 2 ? "submit-btn active" : "")" for="language2" name="labelLanguage" @(ViewBag.TheOtherLanguage == null ? "disabled=true" : "") onclick="SelectLanguage(this,2);">
+                        <input autocomplete="off" id="language2" name="language" type="radio" @(language == 2 ? "checked=true" : "") value="2" title="Spanish Only">
+                        Spanish Only
+                    </label>
+                </fieldset>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <label class="control-label col-sm-4" for="StartDate">Time period </label>
+            <div class="col-sm-4">
+                <input type="text" class="date form-control" id="StartDate" name="StartDate" placeholder="Start date" maxDate="@(DateTime.Now.FormatDateString())" />
+            </div>
+            <div class="col-sm-4">
+                <input type="text" class="date form-control" id="EndDate" name="EndDate" placeholder="End date" data-minDate="#F{$dp.$D(\'StartDate\',{d:0});}" maxDate="@(DateTime.Now.FormatDateString())" title="End Date" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group" style="margin-top:-10px;">
+        <div class="col-sm-4 btn-group term-chose-l" data-toggle="buttons">
+            <fieldset style="border:0px;float:left;">
+                <legend style="display:none">Wave 1</legend>
+                <label class="btn nav-btn" onclick="SelectWave(this);" name="lblWave">
+                    <input type="radio" id="wave1" autocomplete="off" name="wave" value="1" title="Wave 1">
+                    <span>Wave 1</span>
+                </label>
+            </fieldset>
+            <fieldset style="border:0px;float:left;">
+                <legend style="display:none">Wave 1</legend>
+                <label class="btn nav-btn" onclick="SelectWave(this);" name="lblWave">
+                    <input type="radio" id="wave2" autocomplete="off" name="wave" value="2" title="Wave 2">
+                    <span>Wave 2</span>
+                </label>
+            </fieldset>
+            <fieldset style="border:0px;float:left;">
+                <legend style="display:none">Wave 1</legend>
+                <label class="btn nav-btn" onclick="SelectWave(this);" name="lblWave">
+                    <input type="radio" id="wave3" autocomplete="off" name="wave" value="3" title="Wave 3">
+                    <span>Wave 3</span>
+                </label>
+            </fieldset>
+        </div>
+        <div class="col-sm-8">
+            <label class="control-label col-sm-4" for="dobStartDate">DOB Range </label>
+            <div class="col-sm-4">
+                <input type="text" class="date form-control" id="dobStartDate" name="dobStartDate" placeholder="Start date" maxDate="@(DateTime.Now.FormatDateString())" />
+            </div>
+            <div class="col-sm-4">
+                <input type="text" class="date form-control" id="dobEndDate" name="dobEndDate" placeholder="End date" data-minDate="#F{$dp.$D(\'StartDate\',{d:0});}" maxDate="@(DateTime.Now.FormatDateString())" title="DOB End Date" />
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="form-group">
+        <div class="nav-tab">
+            <div id="myTabContent" class="tab-content term-content-con">
+                <div class="tab-pane fade active in term-main-con1" id="content1">
+                    <div class="term-content">
+                        @if (scoreListEnglish != null)
+                        {
+                            <div id="dvScoreEnglish" style="@(language==1?"":"display:none;")">
+                                <div class="form-group">
+                                    <div class="col-sm-6">
+                                        <fieldset style="border:0px;float:left;">
+                                            <legend style="display:none">Select All Custom Scores</legend>
+                                            <input type="checkbox" autocomplete="off" id="txtAllScoresEnglish" onclick="AllCustomScores(this);">
+                                        </fieldset>
+                                        <label for="txtAllScoresEnglish" style="font-weight: bold;">Select All Custom Scores</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @foreach (var score in scoreListEnglish)
+                                    {
+                                        <div class="col-sm-3" onclick="SelectCustomScore(this);">
+                                            <a class="term-contents" title="@(score.ScoreDomain)">
+                                                <text>@(score.ScoreDomain)</text>
+                                                <fieldset style="border:0px;float:left;">
+                                                    <legend style="display:none">@(score.ScoreDomain)</legend>
+                                                    <input id="scoreId@(score.ID)" type="checkbox" autocomplete="off" name="scoreIds" style="width: 0px; height: 0px; display: none;" value="@(score.ID)" title="scoreId@(score.ID)" />
+                                                </fieldset>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @if (scoreListSpanish != null)
+                        {
+                            <div id="dvScoreSpanish" style="@(language == 2 ? "" : "display:none;")">
+                                <div class="form-group">
+                                    <div class="col-sm-6">
+                                        <fieldset style="border:0px;float:left;">
+                                            <legend style="display:none">Select All Custom Scores</legend>
+                                            <input type="checkbox" autocomplete="off" id="txtAllScoresSpanish" onclick="AllCustomScores(this);">
+                                        </fieldset>
+                                        <label for="txtAllScoresSpanish" style="font-weight: bold;">Select All Custom Scores</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @foreach (var score in scoreListSpanish)
+                                    {
+                                        <div class="col-sm-3" onclick="SelectCustomScore(this);">
+                                            <a class="term-contents" title="@(score.ScoreDomain)">
+                                                <text>@(score.ScoreDomain)</text>
+                                                <fieldset style="border:0px;float:left;">
+                                                    <legend style="display:none">@(score.ScoreDomain)</legend>
+                                                    <input id="scoreId@(score.ID)" type="checkbox" autocomplete="off" name="scoreIds" style="width: 0px; height: 0px; display: none;" value="@(score.ID)" title="scoreId@(score.ID)" />
+                                                </fieldset>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("assessmentId", new { @Value = ViewBag.AssessmentId })
+    @Html.Hidden("schoolId", new { @Value = ViewBag.SchoolId })
+    @Html.Hidden("scoreYear", "", new { @Value = ViewBag.Year })
+    <div class="modal-footer">
+        <button type="submit" class="mainbutton mainright-btn submit-btn average" onclick="return BeforeSubmit();">
+            Custom Score Report
+        </button>
+        <button type="submit" class="mainbutton mainright-btn submit-btn average" onclick="return BeforeSubmit('benchmark');">
+            Custom Score Benchmark Report
+        </button>
+    </div>
+    <iframe id="export" name="export" style="display: none; height: 0px; width: 0px;" title="export"></iframe>
+}

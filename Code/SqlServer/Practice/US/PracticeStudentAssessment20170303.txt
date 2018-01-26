@@ -1,0 +1,41 @@
+﻿ 
+GO
+
+/****** Object:  Table [dbo].[PracticeStudentAssessments]    Script Date: 2017/3/3 15:41:51 ******/
+DROP TABLE [dbo].[PracticeStudentAssessments]
+GO
+
+/****** Object:  Table [dbo].[PracticeStudentAssessments]    Script Date: 2017/3/3 15:41:51 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[PracticeStudentAssessments](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[StudentId] [int] NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[SchoolYear] [varchar](5) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[TotalGoal] [decimal](18, 2) NOT NULL CONSTRAINT [DF__PraticeStudentAs__Total__5CA1C101]  DEFAULT ((0)),
+	[Wave] [tinyint] NULL,
+ CONSTRAINT [PK_PracticeStudentAssessments] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

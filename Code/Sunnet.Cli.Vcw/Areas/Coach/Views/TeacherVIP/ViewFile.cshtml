@@ -1,0 +1,131 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherVIPFileModel
+@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase;
+@{
+    ViewBag.Title = "Video Information";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    bool isSummary = !string.IsNullOrEmpty(ViewBag.Redirect);
+}
+
+@if (isSummary)
+{
+    @section LeftMenu
+{
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Summary)
+    }
+}
+else
+{
+    @section LeftMenu
+{
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Teachers)
+    }
+}
+
+
+@if (isSummary)
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Summary", "Index", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("Teacher Files", "TeacherFiles", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        File
+    }
+}
+else
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("My Teachers", "Index", "TeacherVIP"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("VIP List", "Index", "TeacherVIP"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("VIP", "View", "TeacherVIP", new { id = Model.AssignmentID }, null))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        View
+    }
+}
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var isVideo = true;
+    </script>
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var backurl = "@(ViewBag.Redirect)";
+                    if (backurl != "") {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("TeacherFiles", "Summary"))");
+                    }
+                    else {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? @Url.Action("View", "TeacherVIP", new { id = Model.AssignmentID }, ""))");
+                    }
+                }
+            })
+        });
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+    </script>
+}
+
+@using (Ajax.BeginForm("EditFile", "TeacherVIP", new { isCoach = ViewBag.IsCoach }, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    <div class="right-content-top">
+        @if (isSummary)
+        {
+            <a class="mainbutton nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("TeacherFiles", "Summary"))" >Back to Files</a>
+        }
+        else
+        {
+            <a class="mainbutton nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("View", "TeacherVIP", new { id = Model.AssignmentID }, ""))" >Back to Assignment</a>
+        }
+    </div>
+     @Html.Partial("/Views/TeacherInfo/TeacherInfo.cshtml")
+    <div class="main-content">
+        <div class="content-title">File</div>
+        <div class="content-body">
+            @if (ViewBag.IsCoach == true)
+            {
+                @Html.Partial("/Areas/Coach/Views/TeacherVIP/Partials/FileEdit.cshtml")
+            }
+            else
+            {
+                @Html.Partial("/Areas/Coach/Views/TeacherVIP/Partials/FileView.cshtml")   
+            }
+        </div>
+    </div>
+    <input type="hidden" name="uploadfiles" id="uploadfiles" />
+    <div class="button-content">
+        <input type="submit" class="mainbutton mainright-btn submit-btn" onclick="return beforeSubmit_edit()" value="Submit" id="btnSubmit">
+        @if (isSummary)
+        {
+            <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                Url.Action("TeacherFiles", "Summary"))" >Cancel</a>
+        }
+        else
+        {
+            <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                Url.Action("View", "TeacherVIP", new { id = Model.AssignmentID }, ""))" >Cancel</a>
+        }
+    </div>
+}

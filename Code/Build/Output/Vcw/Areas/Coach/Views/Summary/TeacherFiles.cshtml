@@ -1,0 +1,353 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.FileListModel
+@using Sunnet.Cli.Business.Vcw.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Vcw.Enums
+
+@{
+    ViewBag.Title = "Teacher Files";
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Summary)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Coach Summary", "Index", "Summary"))&nbsp;
+     <i class="icon-angle-right"></i>&nbsp;
+     Teacher Files
+}
+<form class="form-horizontal">
+    <div class="form-group"></div>
+
+    <div class="form-group">
+        <div class="nav-tab">
+            <ul id="myTab" class="nav-container" role="tablist">
+                <li><a href="@(Url.Action("Index", "Summary", new { returnurl = Request.QueryString["returnurl"] }))">Coach Files</a></li>
+                <li class="active"><a href="@(Url.Action("TeacherFiles", "Summary", new { returnurl = Request.QueryString["returnurl"] }))">Teacher Files</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav-container-main">
+        <div class="form-group"></div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="CommunityName">Community</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(model => model.CommunityName, ViewBag.Communities as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.community" })
+            </div>
+            <label class="control-label col-sm-2" for="SchoolName">School</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(model => model.SchoolName, ViewBag.Schools as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.school" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="TeacherName">Teacher</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(model => model.TeacherName, ViewBag.Teachers as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.teacher" })
+            </div>
+            <label class="control-label col-sm-2" for="UploadBy">Uploaded By</label>
+            <div class="col-sm-3">
+                @Html.DropDownList("UploadBy", (IEnumerable<SelectListItem>)ViewBag.Uploadby, new { @class = "form-control", data_bind = "value: searchCriteria.uploadby" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="VideoType">Video Type</label>
+            <div class="col-sm-3">
+                @Html.DropDownList("VideoType", (IEnumerable<SelectListItem>)ViewBag.VideoType, new { @class = "form-control", data_bind = "value: searchCriteria.videotype" })
+            </div>
+            <label class="control-label col-sm-2" for="Number">ID</label>
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.Number, new { @class = "form-control", data_bind = "value: searchCriteria.number" })
+            </div>
+            <div class="col-sm-1">
+                <button class="mainbutton mainright-btn sreach-btn" type="button" id="btn_search" data-bind="event: { click: search }">Search</button>
+            </div>
+            <div class="col-sm-2">
+                <label class="hide" for="selectExportTo">&nbsp;</label>
+                <select class="form-control" id="selectExportTo" onchange="exportTo(this);" style="width: 80%; float: right">
+                    <option selected="selected" value="-1">Export to</option>
+                    <option value="1">Excel</option>
+                    <option value="2">PDF</option>
+                </select>
+            </div>
+        </div>
+        <div class="main-content main-content">
+            <div class="content-title">Teacher File</div>
+            <div class="content-body-tab">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr data-bind="foreach: { data: headers, as: 'header' }">
+                            <!-- ko if: (header.order === true)-->
+                            <th data-bind="style: { width: width }">
+                                <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                            </th>
+                            <!-- /ko-->
+                            <!-- ko if: (header.order === false) -->
+                            <th data-bind="text: text, style: { width: width }"></th>
+                            <!-- /ko-->
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                        <tr>
+                            <td data-bind="text: item.IdentifyFileName"></td>
+                            <td data-bind="text: item.Number"></td>
+                            <td data-bind="text: item.CommunityName"></td>
+                            <td data-bind="text: item.SchoolName"></td>
+                            <td data-bind="text: item.TeacherName"></td>
+                            <td data-bind="text: item.Context"></td>
+                            <td data-bind="text: item.Content"></td>
+                            <td data-bind="text: item.Status.text"></td>
+                            <td data-bind="text: item.DateRecorded == minDate ? '' : item.DateRecorded"></td>
+                            <td data-bind="text: item.AssignmentDueDate == minDate ? '' : item.AssignmentDueDate"></td>
+                            <td data-bind="text: item.FileExtension"></td>
+                            <td>
+                                <!-- ko if: (item.VideoType.value == 1) -->
+                                <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewDataVIP }" href="#" title="View"></a>
+                                <!-- /ko-->
+                                <!-- ko if: (item.VideoType.value == 2) -->
+                                <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewDataGeneral }" href="#" title="View"></a>
+                                <!-- /ko-->
+                                <!-- ko if: (item.VideoType.value == 3) -->
+                                <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewDataAssignment }" href="#" title="View"></a>
+                                <!-- /ko-->
+                            </td>
+                        </tr>
+                    </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+                </table>
+                @Html.Partial("_Partial_Pager")
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Video = {};
+
+        $(function () {
+
+            $("#btn_search").click(function () {
+                $("#CommunityName").data("LastValue", $("#CommunityName").val());
+                $("#SchoolName").data("LastValue", $("#SchoolName").val());
+                $("#TeacherName").data("LastValue", $("#TeacherName").val());
+                $("#UploadBy").data("LastValue", $("#UploadBy").val());
+                $("#VideoType").data("LastValue", $("#VideoType").val());
+                $("#Number").data("LastValue", $("#Number").val());
+            })
+
+            list_Video = new ViewModel(
+                {
+                    instanceName: "list_Video",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchTeacherFiles")))',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("File Name")",
+                            field: "@Html.NameFor(model => model.IdentifyFileName)",
+                            order: true,
+                            width: '13%'
+                        },
+                        {
+                            text: "@Html.DisplayName("ID")",
+                            field: "@Html.NameFor(model => model.ID)",
+                            order: true,
+                            width: '8%'
+                        },
+                        {
+                            text: "@Html.DisplayName("Community")",
+                            field: "@Html.NameFor(model => model.CommunityId)",
+                            order: true,
+                            width: "12%"
+                        },
+                        {
+                            text: "@Html.DisplayName("School")",
+                            field: "@Html.NameFor(model => model.SchoolId)",
+                            order: true,
+                            width: "12%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Teacher")',
+                            field: "@Html.NameFor(model => model.TeacherId)",
+                            order: true,
+                            width: "14%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Context")',
+                            field: "@Html.NameFor(model => model.ContextId)",
+                            order: true,
+                            width: '12%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Content")',
+                            field: "@Html.NameFor(model => model.Content)",
+                            width: '12%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Status")',
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '5%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Recorded")',
+                            field: "@Html.NameFor(model => model.DateRecorded)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Due")',
+                            field: "@Html.NameFor(model => model.AssignmentDueDate)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Type")',
+                            field: "@Html.NameFor(model => model.FileExtension)",
+                            width: '5%'
+                        },
+                        { text: "Action", width: '5%' }
+                    ],
+                    searchCriteria: {
+                        community: ko.observable(window.queryString("community", -1)),
+                        school: ko.observable(window.queryString("school", -1)),
+                        teacher: ko.observable(window.queryString("teacher", -1)),
+                        uploadby: ko.observable(window.queryString("uploadby", -1)),
+                        videotype: ko.observable(window.queryString("videotype", -1)),
+                        number: ko.observable(window.queryString("number"))
+                    }
+                }
+                ,
+                {
+                    viewDataVIP: function (data) {
+                        location.href = "@Html.Raw(Url.Action("ViewFile", "TeacherVIP"))" + "?id=" + data.ID + "&redirect=Summary&returnurl=" + list_Video.getLocation();
+                    },
+                    viewDataGeneral: function (data) {
+                        location.href = "@Html.Raw(Url.Action("View", "TeacherGeneral"))" + "?id=" + data.ID + "&redirect=Summary&returnurl=" + list_Video.getLocation();
+                    },
+                    viewDataAssignment: function (data) {
+                        location.href = "@Html.Raw(Url.Action("ViewFile", "TeacherAssignment"))" + "?id=" + data.ID + "&redirect=Summary&returnurl=" + list_Video.getLocation();
+                    }
+                }
+            );
+
+            list_Video.search();
+            ko.applyBindings(list_Video);
+        });
+
+                function exportTo(o) {
+                    o = $(o);
+                    if (o.val() > 0) {
+                        var message_excel = window.getErrorMessage("VCW_ExportToExcelConfirm");
+                        var message_pdf = window.getErrorMessage("VCW_ExportToPdfConfirm");
+                        if (o.val() == "1") {
+                            jQuery.when(waitingConfirm("<p style='text-align:center'> " + message_excel + " </p>", " Yes ", " No ")).done(function () {
+                                Export("/Coach/Summary/ExportExcel_TeacherFiles");
+                            }).fail(function () {
+
+                            });
+                        }
+                        if (o.val() == "2") {
+                            jQuery.when(waitingConfirm("<p style='text-align:center'> " + message_pdf + " </p>", " Yes ", " No ")).done(function () {
+                                Export("/Coach/Summary/ExportPdf_TeacherFiles");
+                            }).fail(function () {
+
+                            });
+                        }
+                    }
+                }
+
+                function Export(method) {
+                    var form = $("<form>");
+                    form.attr("style", "display:none");
+                    form.attr("target", "");
+                    form.attr("method", "post");
+                    form.attr("action", method);
+
+                    var input_community = $("<input>");
+                    input_community.attr("type", "hidden");
+                    input_community.attr("name", "community");
+                    if ($("#CommunityName").data("LastValue") == undefined) {
+                        input_community.attr("value", $("#CommunityName").children("option:first").val());
+                    }
+                    else {
+                        input_community.attr("value", $("#CommunityName").data("LastValue"));
+                    }
+                    form.append(input_community);
+
+                    var input_school = $("<input>");
+                    input_school.attr("type", "hidden");
+                    input_school.attr("name", "school");
+                    if ($("#SchoolName").data("LastValue") == undefined) {
+                        input_school.attr("value", $("#SchoolName").children("option:first").val());
+                    }
+                    else {
+                        input_school.attr("value", $("#SchoolName").data("LastValue"));
+                    }
+                    form.append(input_school);
+
+                    var input_teacher = $("<input>");
+                    input_teacher.attr("type", "hidden");
+                    input_teacher.attr("name", "teacher");
+                    if ($("#TeacherName").data("LastValue") == undefined) {
+                        input_teacher.attr("value", $("#TeacherName").children("option:first").val());
+                    }
+                    else {
+                        input_teacher.attr("value", $("#TeacherName").data("LastValue"));
+                    }
+                    form.append(input_teacher);
+
+                    var input_uploadby = $("<input>");
+                    input_uploadby.attr("type", "hidden");
+                    input_uploadby.attr("name", "uploadby");
+                    if ($("#UploadBy").data("LastValue") == undefined) {
+                        input_uploadby.attr("value", $("#UploadBy").children("option:first").val());
+                    }
+                    else {
+                        input_uploadby.attr("value", $("#UploadBy").data("LastValue"));
+                    }
+                    form.append(input_uploadby);
+
+                    var input_videotype = $("<input>");
+                    input_videotype.attr("type", "hidden");
+                    input_videotype.attr("name", "videotype");
+                    if ($("#VideoType").data("LastValue") == undefined) {
+                        input_videotype.attr("value", $("#VideoType").children("option:first").val());
+                    }
+                    else {
+                        input_videotype.attr("value", $("#VideoType").data("LastValue"));
+                    }
+                    form.append(input_videotype);
+
+                    var input_number = $("<input>");
+                    input_number.attr("type", "hidden");
+                    input_number.attr("name", "number");
+                    if ($("#Number").data("LastValue") == undefined) {
+                        input_number.attr("value", "");
+                    }
+                    else {
+                        input_number.attr("value", $("#Number").data("LastValue"));
+                    }
+                    form.append(input_number);
+
+                    $("body").append(form);
+                    form.submit().remove();
+                    setTimeout(function () { window.loading(false) }, 2000);
+                }
+    </script>
+}
+
+

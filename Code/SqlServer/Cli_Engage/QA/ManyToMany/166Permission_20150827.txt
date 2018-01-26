@@ -1,0 +1,20 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3953,'Data Process',1,3906,'',14,1,'Data Process',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+go
+
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3953,1)
+go
+
+
+insert into Permission_RolePageAuthorities
+select RoleId,3953,PageAction,GETDATE(),GETDATE()
+from Permission_RolePageAuthorities where PageId=3940
+go
+
+

@@ -1,0 +1,318 @@
+﻿@using System.Collections.Generic
+@using Sunnet.Cli.MainSite.Models
+@model Sunnet.Cli.Business.Students.Models.StudentModel
+@{
+    ViewBag.Title = "Students";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Student)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Student", "Index", "Student"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Student List
+}
+
+@if (ViewBag.accessAdd || ViewBag.accessParentInvitation)
+{
+    <div class="right-content-top">
+        @if (ViewBag.accessAdd)
+        {
+            <button type="button" class="mainbutton mainright-btn create-btn" data-bind="click: $root.addData">Add Student</button>
+        }
+        @if (ViewBag.accessParentInvitation)
+        {
+            @*<input type="button" href='#' class="mainbutton mainright-btn create-btn" value=" View Parent Invitations"
+                onclick="ParentInvitation()" />*@
+        }
+    @if (ViewBag.accessBES)
+    {
+        <button type="button" class="mainbutton mainright-btn create-btn" data-bind="click: $root.BESData">Bulk Add/Update Students</button> 
+    }
+    </div>
+}
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        @Html.Label("", "Community/District", new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#CommunityId",
+           data_remote = Url.Action("GetCommunitySelectListForSearch", "Community", new { Area = "Community" }),
+           data_text = "Name",
+           data_value = "ID",
+           data_required = false,
+           id = "txtCommunity",
+           name = "txtCommunity",
+           placeholder = "Enter key text to search",
+           data_bind = "value: searchCriteria.communityName",
+           @for = "CommunityId",
+
+           data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}"
+       })
+            @Html.HiddenFor(model => model.CommunityId, new
+       {
+           @class = "form-control ",
+           placeholder = "Selected Community",
+           data_bind = "value: searchCriteria.communityId"
+       })
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        @Html.Label("", "School Name", new { @class = "control-label col-sm-2", @for = "txtSchool" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#SchoolId",
+           data_remote = Url.Action("GetSchoolSelectList", "School", new { Area = "School" }),
+           data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+
+           data_text = "Name",
+           data_value = "ID",
+           data_required = false,
+           id = "txtSchool",
+           name = "txtSchool",
+           placeholder = "Enter key text to search",
+           data_bind = "value: searchCriteria.schoolName",
+           @for = "SchoolId",
+           data_extraParams = "{\"communityId\":\"#CommunityId\",\"isActive\":\"#isActive\"}"
+
+       })
+            @Html.HiddenFor(model => model.SchoolId, new
+       {
+           @class = "form-control",
+           placeholder = "Selected School",
+           data_bind = "value: searchCriteria.schoolId"
+       })
+            @Html.Hidden("isActive", false)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("", "Class Name", new { @class = "control-label col-sm-2", @for = "dplClass" })
+        <div class="col-sm-3">
+            <select id="dplClass" class="form-control"
+                data-bind="options: classOptions, optionsText: 'Text', optionsValue: 'Value', value: searchCriteria.classId">
+            </select>
+        </div>
+        @Html.LabelFor(m => m.StudentId, new { @class = "control-label col-sm-2", @for = "txtStudentId" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtStudentId", "", new
+       {
+           @class = "form-control",
+           data_bind = "value: searchCriteria.studentId,"
+       })
+
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.StudentName, new { @class = "control-label col-sm-2", @for = "txtStudentName" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtStudentName", "", new
+       {
+           @class = "form-control",
+           data_bind = "value: searchCriteria.studentName",
+           placeholder = "Enter first, middle or last name"
+       })
+
+        </div>
+        @Html.LabelFor(m => m.Status, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(m => m.Status, (IEnumerable<SelectListItem>)ViewBag.StatusOptions,
+                new { @class = "form-control", data_bind = "value: searchCriteria.status" })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">
+        Students
+    </div>
+
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.FirstName"></td>
+                    <td data-bind="text: item.LastName"></td>
+                    <td data-bind="text: item.LocalStudentID"></td>
+                    <td data-bind="text: item.TSDSStudentID"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td>
+                        @if (ViewBag.accessView)
+                        {
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                        }
+                        @if (ViewBag.accessEdit)
+                        {
+                            <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                        }
+                        @if (ViewBag.accessParentInvitation)
+                        {
+                            @*<a class="table-btn icon-envelope-alt message-btn" data-bind="event: { click: $root.Invitation }" href="#" title="Parent Invitation"></a>*@
+                        }
+
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Students = {};
+
+        function SchoolChanged() {
+            var schoolId = $("#SchoolId").val();
+            var communityId = $("#CommunityId").val();
+            $.getJSON(
+                '@Url.Action("GetClassSelectList")',
+                { schoolId: schoolId, communityId: communityId },
+                function (data) {
+                    list_Students.classOptions(data);
+                    list_Students.searchCriteria.classId(window.queryString("classid"));
+                });
+        }
+
+        function changeStatus() {
+
+
+        }
+
+        function ParentInvitation() {
+            var href = '@Url.Action("ParentInvitations", "Student")';
+            var searchCondition = {};
+            $.each(list_Students.searchCriteria, function (field, fieldAccessor) {
+                searchCondition[field] = fieldAccessor();
+            });
+            href = list_Students.appendQueryString(href, searchCondition) + "&returnurl=" + list_Students.getLocation();
+            location.href = href;
+        }
+
+        $(function () {
+            list_Students = new ViewModel(
+                {
+                    instanceName: "list_Students",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: 'Redirect',
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: 'Redirect',
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: 'Redirect',
+                    deleteDataUrl: '@Html.Raw(Url.Action(""))',
+                    orderBy: "FirstName",
+                    orderDirection: "ASC",
+                    pageSize: 100,
+                    headers: [
+                        {
+                            text: "@Html.DisplayNameFor(model => model.FirstName)",
+                            field: "@Html.NameFor(model => model.FirstName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.LastName)",
+                            field: "@Html.NameFor(model => model.LastName)",
+                            order: true,
+                            width: '20%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.LocalStudentID)",
+                            field: "@Html.NameFor(model => model.LocalStudentID)",
+                            order: true,
+                            width: '15%'
+                        },
+                       {
+                           text: "@Html.DisplayNameFor(model => model.TSDSStudentID)",
+                           field: "@Html.NameFor(model => model.TSDSStudentID)",
+                           order: true,
+                           width: '20%'
+                       },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                        { text: "Action", width: '15%' }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("communityId")),
+                        communityName: ko.observable(window.queryString("communityName")),
+                        schoolId: ko.observable(window.queryString("schoolId")),
+                        schoolName: ko.observable(window.queryString("schoolName")),
+
+                        classId: ko.observable(window.queryString("classid", -1)),
+                        studentId: ko.observable(window.queryString("studentId")),
+                        studentName: ko.observable(window.queryString("studentName")),
+                        status: ko.observable(window.queryString("status", -1))
+                    }
+                },
+                {
+                    classOptions: ko.observableArray([]),
+                    Invitation: function (item) {
+
+                        $.get('@Url.Action("GeneratePdf")', { id: item.ID }, function (data) {
+                            var res = JSON.parse(data);
+                            console.log(res.Message);
+                            if (res.ResultType == 0) {
+                                showMessage("success", "Email has been sent successfully.");
+                            } else {
+                                showMessage("fail", res.Message);
+                            }
+                        });
+                    }, BESData: function ()
+                    {
+                     
+                        window.location = '@Url.Action("Index", "Index", new {Area = "Roster"})';
+                    }
+                }
+
+            );
+
+            list_Students.search();
+            ko.applyBindings(list_Students);
+
+            $("#txtCommunity").on("selected.sunnet.datalist", function () {
+                $("#txtSchool").datalist("clear");
+                $("#SchoolId").val("");
+                SchoolChanged();
+            });
+            $("#txtSchool").on("selected.sunnet.datalist", function () {
+                SchoolChanged();
+            });
+            SchoolChanged();
+        });
+    </script>
+}

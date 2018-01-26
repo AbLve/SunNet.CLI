@@ -1,0 +1,54 @@
+﻿ if exists(select * from sysobjects where id=object_id('[dbo].[CoachingHoursbyCommunity]') and xtype='P') 
+	DROP PROCEDURE [dbo].[CoachingHoursbyCommunity] 
+
+	go
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[CoachingHoursbyCommunity] 
+AS
+BEGIN
+
+with Coaches as (
+select bc.Name as CommunityName , c.ID as CommunityId,SUM(ISNULL(F2FAvailableHours,0)) as F2FAvailableHours,
+SUM(ISNULL(RemAvailableCycle,0)) as RemAvailableCycle
+ from Communities c
+inner join BasicCommunities bc on c.BasicCommunityId = bc.ID
+left join  UserCommunityRelations r on c.ID = r.CommunityId
+left join  CoordCoachs cc on cc.UserId = r.UserId
+inner join Users u on cc.UserId = u.ID and u.Status = 1
+group by bc.Name ,c.ID
+),
+TeacherCount as(
+select c.ID as CommunityId , COUNT(*) as TeacherTotal from Communities c 
+left join Teachers t on c.ID = t.CommunityId 
+inner join Users u on t.UserId = u.ID and u.Status =1 
+group by c.ID
+)
+
+,
+TeacherF2F as (
+select c.ID as CommunityId , COUNT(*) as NmberofF2F from Communities c 
+left join Teachers t on c.ID = t.CommunityId and t.CoachAssignmentWay =1
+inner join Users u on t.UserId = u.ID and u.Status =1 
+group by c.ID
+),
+TeacherRem as (
+select c.ID as CommunityId , COUNT(*) as NmberofRem from Communities c 
+left join Teachers t on c.ID = t.CommunityId and t.CoachAssignmentWay =1
+inner join Users u on t.UserId = u.ID and u.Status =1 
+group by c.ID
+)
+select c.* ,ISNULL(f.NmberofF2F,0) AS NmberofF2F ,ISNULL(r.NmberofRem,0) AS NmberofRem,ISNULL(t.TeacherTotal,0) AS TeacherTotal from Coaches c
+left join TeacherCount t on c.CommunityId = t.CommunityId
+left join TeacherF2F f on f.CommunityId =c.CommunityId
+left join TeacherRem r on r.CommunityId = c.CommunityId
+
+
+END
+
+GO
+
+

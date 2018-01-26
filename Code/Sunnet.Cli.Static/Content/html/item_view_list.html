@@ -1,0 +1,371 @@
+﻿<html lang="zh-en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Items</title>
+
+    <!-- Bootstrap -->
+    <link href="/Content/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Content/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Content/lib/Font-Awesome-3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/Content/style/layout.css" rel="stylesheet">
+    <link href="/Content/style/module.css" rel="stylesheet">
+    <script src="../Scripts/jquery-1.10.2.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+</head>
+<body style="background-color: #6faa29">
+
+
+    <div class="item-warp">
+        <!---  <div class="header">
+              <div class="header-container">
+                  <div class="header-logo">
+                      <a href="#">
+                          <img src="/Content/images/cli_logo.png"></a>
+                  </div>
+                  <div class="header-logout"><span>welcome<i class="icon-user"></i>John Smith<a><i class="icon-off"></i>Log out</a></span></div>
+              </div>
+
+          </div> --->
+
+        <div class="item-container">
+            <div class="item-main">
+                <div class="item-main-header item-view-header">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            
+                            
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inputPassword" class="col-sm-2 control-label">Assessment Date</label>
+                            <div class="col-sm-3 has-date has-feedback">
+                                        <input type="text" class="form-control" placeholder="">
+                                        <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                                    </div>
+                            <label for="inputPassword" class="col-sm-2 control-label">Testing Period</label>
+                            <div class="col-sm-3">
+                                <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                            </div>
+                            
+                            
+                        </div>
+                        
+                        <div class="form-group">
+                        </div>
+                        
+
+                    </form>
+                </div>
+                <div class="item-main-body item-view-body">
+                    <div class="item-view-list">
+                        <table class="table-striped table">
+                            <tr>
+                                <th>Area</th>
+                                <th width="60%">Description</th>
+                                <th>Mark a response</th>
+                            </tr>
+                            <tr>
+                                <td>Basic Classroom Arrangement</td>
+                                <td>1 – Room is disorganized, messy, and/or centers are undefined. <br/>
+                                    2 – Room is organized with three to six defined centers. There is space for large- and small-group meeting areas. Center definition and/or traffic flow need improvement.
+                                    <br/>3 – Room is organized with at least seven recommended centers★ that are well defined. There is space for large- and small-group meeting areas and good traffic flow throughout the classroom.</td>
+                                <td><a class="item-list-btn item-list-btn-tr"><i class="icon-check"></i>&nbsp;1&nbsp;-&nbsp;low</a>
+                                    <a class="item-list-btn item-list-btn-tr"><i class="icon-check-empty"></i>&nbsp;1&nbsp;-&nbsp;low 2&nbsp;-&nbsp;moderate</a>
+                                    <a class="item-list-btn item-list-btn-tr"><i class="icon-circle"></i>&nbsp;1&nbsp;-&nbsp;low 3-high</a>
+                                    <a class="item-list-btn item-list-btn-tr"><i class="icon-circle-blank"></i>&nbsp;1&nbsp;-&nbsp;low 3-high</a>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Center Management System</td>
+                                <td>1 – Centers are not labeled with both words and pictures or labels are not at eye level. Or there is no center management/rotation system. 
+<br/>2 – Three to six centers are labeled with words and pictures/icons and labels are at child’s eye level. There are places for children’s name tags at each center or a central center planning board.
+<br/>3 – At least seven recommended centers are labeled with words and pictures/icons and labels are at child’s eye level. There are places for children’s name tags at each center or a central center planning board.
+<br/><em><strong>*Note: If dual language/bilingual classroom, center labels should have words in English and Spanish for a high rating.</strong></em></td>
+                                <td>
+                                    <a class="item-list-btn item-list-btn-td"><i class="icon-check"></i>&nbsp;1&nbsp;-&nbsp;low</a>
+                                    <a class="item-list-btn item-list-btn-td"><i class="icon-check-empty"></i>&nbsp;1&nbsp;-&nbsp;low 2&nbsp;-&nbsp;moderate</a>
+                                    <a class="item-list-btn item-list-btn-td"><i class="icon-circle"></i>&nbsp;1&nbsp;-&nbsp;low 3-high</a>
+                                    <a class="item-list-btn item-list-btn-td"><i class="icon-circle-blank"></i>&nbsp;1&nbsp;-&nbsp;low 3-high</a>
+
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Variety of Accessible Center Materials</td>
+                                <td>1 – There are very few materials in most centers and/or center materials are not accessible to children (e.g., paint in large containers that require adult supervision, materials on high shelves that children cannot reach safely). 
+                                    <br />2 – There are some centers with few materials but others have an adequate variety of materials. All center materials are accessible to children. 
+                                    <br />3 – All centers have an adequate variety of materials. All center materials are accessible to children.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio4" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio5" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio6" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            
+                            <tr>
+                                <td>Center Material Labels</td>
+                                <td>1 – Materials and shelves are poorly labeled or not labeled at all. 
+                                    <br />2 – Some materials and shelves are labeled with words and/or pictures/icons to facilitate children’s independent handling and storage of materials. 
+<br />3 – Most materials and shelves are neatly labeled with words and pictures/icons to facilitate children’s independent handling and storage of materials. 
+<br/><em><strong>*Note: If dual language/bilingual classroom, center materials labels should have words in English and Spanish for a high rating.</strong></em></td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio7" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio8" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio9" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Books in Centers</td>
+                                <td>1 – There are no books accessible to children in the classroom or there are only books in the classroom library center. 
+                                    <br />2 – There are books in the library center and in one to three <em><strong>additional</strong></em> centers. 
+<br />3 – There are books in the library center and in four to six <em><strong>additional</strong></em> centers. 
+Books are center specific (e.g., books about building in the construction center) or theme/topic related.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio10" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio11" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio12" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Writing Tools in Centers</td>
+                                <td>1 – There are no writing materials available or writing materials are only available in the writing center. 
+                                    <br />2 – Writing materials are available in the writing center and in one to three <em><strong>additional</strong></em> centers. 
+<br />3 – Writing materials are available in the writing center and in four to six <em><strong>additional</strong></em> centers and these centers include a variety of writing tools or papers/materials to encourage purposeful writing activities.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio13" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio14" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio15" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Book Availability</td>
+                                <td>1 – There is no classroom library or area set aside for reading. Or there are only one to three books available to children in the library.
+                                    <br />2 – There is a classroom library area that includes four to nine books that are displayed so children can access books. Books do not represent a variety of genres. 
+                                    <br />3 – There is a classroom library area that includes at least 10 books of various genres (e.g., narratives, informational books, ABC books, counting books, etc.) that are displayed so they are easily accessible to children.
+                                    <br/><em><strong>*Note: If dual language/bilingual classroom, books must be available in English and Spanish for high rating.</strong></em></td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio16" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio17" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio18" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Interactive Read Aloud Supports</td>
+                                <td>1 – There is no evidence of read aloud supports* in the large-group meeting area or centers. 
+                                    <br />2 – There is evidence of one or two read aloud supports in the large-group meeting area or centers.
+<br />3 – There is evidence of three or more read aloud supports in the large-group meeting area or centers.
+<br />*Note: Interactive read aloud supports may include: read aloud pocket chart (with sentence strips to list title, author, illustrator, key vocabulary, etc.), puppets, flannel board, retell props, vocabulary or picture cards, etc.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio19" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio20" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio21" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Shared or Interactive Writing</td>
+                                <td>1 – There are no shared or interactive writing samples displayed.
+                                    <br />2 – There are some shared or interactive writing samples displayed (e.g., recent daily news), but there are only one or two displays of shared writing. 
+                                    <br />3 – There are three or more shared or interactive writing samples displayed and they appear recent (e.g., daily news from today/yesterday) or they appear to represent writing across various activity contexts (e.g., daily news + dictations from class science activity). 
+                                    <br />*Note: Shared/interactive writing samples may include daily news, science activity with predictions dictated, morning message, class-made books, KWL charts, semantic web, etc.
+                                    <br />*Note: Shared writing requires that a child contributes ideas or dictations to the message, whereas interactive writing requires that the child has some opportunity to use the pen/marker to write words, letters, punctuation, or circle/count words.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio22" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio23" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio24" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Writing Journals</td>
+                                <td>1 – There are no journals in the classroom or journals are used infrequently based on outdated entries. 
+                                    <br />2 – Journals are available to children and have some recent dated entries, but appear to be used infrequently. There is no evidence of teacher dictations or teacher assistance with invented spellings. 
+                                    <br />3 – Journals are accessible to children and appear to be used on a regular basis with 1-2 dated entries per week. There is some evidence of teacher dictations, teacher assistance with invented spellings, or other scaffolded writing supports.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio25" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio26" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio27" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Alphabet/PA Activities</td>
+                                <td>1 – There are no alphabet puzzles/activities, magnetic letters, word puzzles/activities, picture or word sorts, word study materials, or phonological awareness (PA*) activities accessible to students. 
+                                    <br />2 – One to three alphabet puzzles/activities, magnetic letters, word puzzles/activities, word study, or PA activities accessible to students.
+                                    <br />3 – Four or more alphabet puzzles/activities, magnetic letters, word puzzles/activities, word study, or PA activities accessible to students. 
+                                    <br />*Common PA activities: rhyming games, alliteration games, cards that segment sentences into words, cards that segment words into syllables, say-it-move-it or other phoneme segmentation activities.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio28" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio29" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio30" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Children's Names</td>
+                                <td>1 – Children’s names are not visible in the classroom or are seen only in one or two places. 
+                                    <br />2 – Names are visible in three to five places in the room. 
+                                    <br />3 – Names are visible in six or more places in the room. 
+                                    <br />*Common locations for names: helper chart, attendance chart, center name tags, name chart, letter wall, cubbies, etc.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio31" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio32" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio33" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Letter Wall</td>
+                                <td>1 – There is no letter wall in the classroom or it is not accessible to children. 
+                                    <br />2 – There is a letter wall in the classroom accessible to children. Children’s names with pictures are included. Some vocabulary words may be included.
+<br />3 – There is a letter wall at children’s eye level all of the words have pictures/icons. There is a variety of words including children’s names and theme/topic related words.
+<br/><em><strong>*Note: If dual language/bilingual classroom, two letter walls are recommended for a high rating– one in English and one in Spanish. 
+<br />*Note: In pre-k all words should have pictures/icons, but by K/1 the letter wall is used as a word wall and some words may not, such as sight words/function words that do not need pictures/icons.</strong></em></td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio34" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio35" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio36" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Authentic Print</td>
+                                <td>1 – There is minimal print in the classroom and/or print appears decorative rather than functional/educational.
+                                    <br />2 – There is a variety of print in the classroom but some of the print appears not educational or inauthentic because it is generic commercial print rather than teacher- or child-made. 
+                                    <br />3 – There is an abundance of authentic print that is accessible to children in the classroom.
+                                    <br />*Examples of <em><strong>generic commercial print:</strong></em> color, number words (not just numerals), alphabet, vowels, shapes, basic body parts, posters, etc.
+                                    <br />*Common examples of authentic print: read aloud pocket chart (lists title, author, illustrator, key vocabulary, etc.); shared or interactive writing; theme/unit related print; environmental print; nursery rhyme/song posters or pocket charts; completed graphic organizer charts; class-made books/cards; class surveys; etc.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio37" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio38" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio39" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Children's Daily Schedule</td>
+                                <td>1 – There is no children’s daily schedule located at children’s level to allow for children to see activities and daily routines. There may be a daily schedule located for adults’ use only. 
+                                    <br />2 – There is children’s daily schedule located at children’s eye level, but it only displays words and does not include pictures/icons. 
+                                    <br />3 – There is a children’s daily schedule located at children’s eye level that includes words with pictures/icons for each activity. There may also be evidence that children/teacher move an arrow or other marker to track which activity is occurring. 
+                                    <br />*Note: In K/1 a high quality schedule will add clock/times to the schedule to support this math standard.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio40" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio41" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio42" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Rules Chart</td>
+                                <td>1 – There is not a rules chart or the rules chart uses negative language. 
+                                    <br />2 – There is a rules chart with expectations stated using positive language. However, the chart is not at children’s eye level or does not use pictures/icons.
+                                    <br />3 – There is a rule chart posted at children’s eye level with words and pictures/icons. There are a limited number of rules (3-5) and the language is positive.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio43" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio44" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio45" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Helper Chart</td>
+                                <td>1 – There is no helper chart or there are only jobs for a few (3-6) children. 
+                                    <br />2 – There is a helper chart with jobs for several (7 or more) children, but the chart does not include pictures/icons or is not located at children’s eye level.
+                                    <br />3 – There is a helper chart with a job for every child in the class. The chart includes words as well as pictures/icons and is at children’s eye level.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio46" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio47" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio48" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Lesson Plan</td>
+                                <td>1 – There is no lesson plan or the lesson plan is incomplete. 
+                                    <br />2 – Lesson plan is brief and vague. Or use of adopted core curriculum and theme/unit focus is not evident. Or lesson plan does not include activities for important parts of the daily schedule (i.e., whole-group, small-group, center time, transitions).
+                                    <br />3 – Lesson plan is based on adopted core curriculum and theme/unit is evident. The lesson plan includes intentional activities for all parts of the daily schedule (i.e., whole-group, small-group, center time, transitions).
+                                    <br />*Note: If dual language/bilingual classroom is following a specific model of language instruction, the lesson plan should indicate planned language of instruction for the time of day/day of the week to follow their model.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio49" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio50" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio51" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Thematic Connections</td>
+                                <td>1 – There is no theme/unit or unified subject area that is the topic of study as evidenced by a lack of thematically linked materials in the classroom. 
+                                    <br />2 – There is an obvious theme/unit being studied as evidenced by thematically linked artwork/objects and general classroom materials/play manipulatives. 
+<br />3 – There is a clear theme/unit being studied as evidenced by thematically linked artwork/objects, general classroom materials/play manipulatives, print, and books that are all linked to the thematic topic. 
+<br />*Note: The theme should be carried out in more than one center/area of the classroom. Do not infer a theme from weak examples such as one animal book in library, one animal toy in dramatic play, and one picture of bear on wall. If more than one theme is present, consider the dominant or higher quality theme in rating.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio52" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio53" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio54" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Assessment Techniques</td>
+                                <td>1 – There are no recent progress-monitoring assessment data available or portfolios for each child or the portfolios do not contain any suggested entries. 
+                                    <br />2 – There are recent progress-monitoring assessment data and portfolios for each child. However, the portfolios only contain a few of the suggested entries.
+                                    <br />3 – There are recent progress-monitoring assessment data and portfolios for each child. The portfolios contain many suggested entries and recently dated materials, suggesting frequent use.
+                                    <br />*Note: If dual language/bilingual classroom, assessment data should be collected in both English and Spanish. If possible, ELL in English-only instruction should have some assessments in Spanish to understand strengths/needs. 
+                                    <br />*Suggested portfolio entries across the academic year: Recorded anecdotal records (facts not opinions), self-portraits, name writing samples, journal/writing samples, art sample, photo of child working independently, dictated narratives, print and book concepts checklist (pre-k/K), letter identification/sounds checklist, PA checklist, sight word checklist (K/1), math standards checklist, math work samples, etc.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio55" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio56" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio57" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Children’s Work Display</td>
+                                <td>1 – Children’s work is not displayed in the classroom or hallway directly outside classroom. 
+                                    <br />2 – A variety (2-3 samples) of children’s work is displayed throughout the room or hallway. All children are represented. 
+<br />3 – There is a variety (4 or more samples) of children’s work displayed throughout the room or hallway. All children are represented in at least one of the samples displayed. 
+<br />*Note: If dual language/bilingual classroom, work may be displayed in both English and Spanish, depending on the model of instruction. For example, 50/50 model should have both, but if 90/10 model, student work only in Spanish is appropriate.</td>
+                                <td>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio58" value="option1">1-low</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio59" value="option1">1-low 2-moderate</label>
+                                    <label><input type="radio" name="inlineRadioOptions" id="Radio60" value="option1">1-low 3-high</label>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="item-main-footer">
+
+                    <a class="item-btn submit-btn" href="#"><i class="icon-save"></i>Save</a>
+
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+</body>
+</html>

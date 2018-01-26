@@ -1,0 +1,7 @@
+﻿  alter table [TxkeaReceptiveItems] add [ScreenHeight] decimal(18,2) 
+    go 
+  update [TxkeaReceptiveItems] set [ScreenHeight] = 0
+  go
+    alter table [TxkeaLayouts] add [ScreenHeight] decimal(18,2)
+	go
+	   update [TxkeaLayouts] set [ScreenHeight] = 0 

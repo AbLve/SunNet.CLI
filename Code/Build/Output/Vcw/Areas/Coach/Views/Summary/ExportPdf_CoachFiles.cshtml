@@ -1,0 +1,44 @@
+﻿@using Sunnet.Cli.Business.Vcw.Models;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.Business.Common;
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "pdf";
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+}
+<div class="main-content main-content">
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover" width="99%">
+            <thead>
+                <th>File Name</th>
+                <th>ID</th>
+                <th>Video Type</th>
+                <th>Upload Date</th>
+                <th>Date Recorded</th>
+                <th>Strategies</th>
+                <th>Context</th>
+                <th>Content</th>
+                <th>File Type</th>
+                <th>Status</th>
+            </thead>
+            <tbody>
+                @foreach (FileListModel item in (List<FileListModel>)ViewBag.List)
+                {
+                    <tr>
+                        <td style="text-align: center">@item.IdentifyFileName</td>
+                        <td style="text-align: center">@item.Number</td>
+                        <td style="text-align: center">@item.VideoType</td>
+                        <td style="text-align: center">@(item.UploadDate.FormatDateString())</td>
+                        <td style="text-align: center">@(item.DateRecorded.FormatDateString())</td>
+                        <td style="text-align: center">@(item.Strategy)</td>
+                        <td style="text-align: center">@(item.Context)</td>
+                        <td style="text-align: center">@(item.Content)</td>
+                        <td style="text-align: center">@item.FileExtension</td>
+                        <td style="text-align: center">@item.Status.ToDescription()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

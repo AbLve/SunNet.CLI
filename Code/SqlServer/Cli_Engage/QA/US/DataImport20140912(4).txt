@@ -1,0 +1,23 @@
+﻿INSERT INTO BasicCommunities 
+SELECT distinct [District Name],1,GETDATE(),GETDATE()
+,[District Type],[District Street Address]
+,[District City],[District Zip],[District Phone] ,ISNULL(B.ID,0),ISNULL(C.ID,0) FROM [dbo].[TEA_ISD_Directory_090214$] A 
+LEFT JOIN Counties B on replace(A.[County Name],' COUNTY','') = B.Name
+LEFT JOIN States C on A.[District State]= C.Name
+ 
+ INSERT INTO BasicSchools 
+SELECT 
+ [School Name],1,GETDATE(),GETDATE(),[School Street Address],[School City],[School Zip]
+,[School Phone]  ,ISNULL(B.ID,0),ISNULL(C.ID,0)
+FROM [dbo].[TEA_ISD_Directory_090214$]  A
+LEFT JOIN Counties B on replace(A.[County Name],' COUNTY','') = B.Name
+LEFT JOIN States C on A.[District State]= C.Name
+
+
+ INSERT INTO BasicSchools 
+SELECT 
+ [Operation/Caregiver Name],1,GETDATE(),GETDATE(),[Address],[City],[Zip]
+,[Phone]  ,ISNULL(B.ID,0),ISNULL(C.ID,0)
+FROM [dbo].[DFPS_ChildCareSearchResults_090$]  A
+LEFT JOIN Counties B ON A.County = B.Name
+LEFT JOIN States C on A.State= C.Name

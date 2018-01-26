@@ -1,0 +1,8 @@
+GO
+TRUNCATE TABLE dbo.ReportTemplates
+
+GO
+ALTER TABLE dbo.ReportTemplates DROP COLUMN CommunityFields,SchoolFields,ClassroomFields,ClassFields,StudentFields
+
+GO
+ALTER TABLE dbo.ReportTemplates ADD Fields VARCHAR(3000) NOT NULL

@@ -1,0 +1,52 @@
+﻿ 
+GO
+
+/****** Object:  Table [dbo].[PracticeStudentMeasures]    Script Date: 2017/2/23 13:47:57 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[PracticeStudentMeasures](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SAId] [int] NOT NULL,
+	[MeasureId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[PauseTime] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[TotalScore] [decimal](18, 2) NOT NULL,
+	[Benchmark] [decimal](18, 2) NOT NULL,
+	[Goal] [decimal](18, 2) NOT NULL,
+	[TotalScored] [bit] NOT NULL,
+	[Comment] [nvarchar](150) NOT NULL,
+	[BenchmarkChanged] [bit] NOT NULL,
+	[PercentileRank] [int] NOT NULL,
+ CONSTRAINT [PK_PracticeStudentMeasures] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[PracticeStudentMeasures] ADD  CONSTRAINT [DF__PracticeStudentMe__Total__5BAD9CC8]  DEFAULT ((0)) FOR [TotalScore]
+GO
+
+ALTER TABLE [dbo].[PracticeStudentMeasures] ADD  CONSTRAINT [DF__PracticeStudentMe__Bentc__6166761E]  DEFAULT ((0)) FOR [Benchmark]
+GO
+
+ALTER TABLE [dbo].[PracticeStudentMeasures] ADD  CONSTRAINT [DF_PracticeStudentMeasures_Goal]  DEFAULT ((0)) FOR [Goal]
+GO
+
+ALTER TABLE [dbo].[PracticeStudentMeasures] ADD  CONSTRAINT [DF_PracticeStudentMeasures_Scored]  DEFAULT ((0)) FOR [TotalScored]
+GO
+
+ALTER TABLE [dbo].[PracticeStudentMeasures] ADD  CONSTRAINT [DF__PracticeStudentMe__Comme__5D2BD0E6]  DEFAULT ('') FOR [Comment]
+GO
+
+ALTER TABLE [dbo].[PracticeStudentMeasures] ADD  DEFAULT ((0)) FOR [BenchmarkChanged]
+GO
+
+

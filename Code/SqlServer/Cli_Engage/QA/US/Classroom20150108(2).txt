@@ -1,0 +1,46 @@
+﻿ALTER TABLE Classrooms add [TypeOfClassroom] tinyint not null default 0
+ALTER TABLE Classrooms add [LCchildrenNumber] int not null default 0
+ALTER TABLE Classrooms add [LCchildrenTypeId] int not null default 0
+
+
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('0-12 mos',10,'NMAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('13-17 mos',12,'NMAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('18-23 mos',14,'NMAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('24-35 mos',14,'NMAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('3 yrs old',18,'NMAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('4 yrs old',21,'NMAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('5 yrs old',25,'NMAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('6-8 yrs old',25,'NMAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('9-12 yrs old',30,'NMAC',1,GETDATE(),GETDATE())
+
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('0-17 mos',10,'MAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('13-23 mos',12,'MAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('2-3 yrs old',16,'MAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('3-4 yrs old',18,'MAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('3-5 yrs old',18,'MAC',1,GETDATE(),GETDATE()) 
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('4-5 yrs old',21,'MAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('5-8 yrs old',25,'MAC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('9-12 yrs old',30,'MAC',1,GETDATE(),GETDATE())
+
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('0-17 mos',0,'LC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('13-23 mos',0,'LC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('2-3 yrs old',0,'LC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('3-4 yrs old',0,'LC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('3-5 yrs old',0,'LC',1,GETDATE(),GETDATE()) 
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('4-5 yrs old',0,'LC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('5-8 yrs old',0,'LC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('9-12 yrs old',0,'LC',1,GETDATE(),GETDATE())
+
+
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('0-17 mos',0,'RC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('13-23 mos',0,'RC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('2-3 yrs old',0,'RC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('3-4 yrs old',0,'RC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('3-5 yrs old',0,'RC',1,GETDATE(),GETDATE()) 
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('4-5 yrs old',0,'RC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('5-8 yrs old',0,'RC',1,GETDATE(),GETDATE())
+INSERT INTO CHChildrens(Name,Logic,[Type],[Status],CreatedOn,UpdatedOn)VALUES('9-12 yrs old',0,'RC',1,GETDATE(),GETDATE())
+
+alter table ClassroomRoles add [TypeOfClassroom] varchar(10) not null default 'RW'
+alter table ClassroomRoles add [LCchildrenNumber] varchar(10) not null default 'RW'
+alter table ClassroomRoles add [LCchildrenTypeId] varchar(10) not null default 'RW'

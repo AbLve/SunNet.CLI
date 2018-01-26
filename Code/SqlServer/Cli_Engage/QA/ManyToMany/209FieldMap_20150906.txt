@@ -1,0 +1,136 @@
+GO
+UPDATE  dbo.FieldMap
+SET     DisplayName = 'VideoCoding Key ID'
+WHERE   DisplayName = 'VideoCoding Engage ID'
+        AND ID = 1301;
+
+GO
+UPDATE  dbo.FieldMap
+SET     DisplayName = 'Coordinator/Coach Key ID'
+WHERE   DisplayName = 'Coordinator/Coach Engage ID'
+        AND ID = 1201;
+
+GO
+
+UPDATE  dbo.FieldMap
+SET     ID = ID + 1
+WHERE   ID > 600
+        AND ID < 1200;
+--CommunityUser
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 601 , -- ID - int
+          'ID' , -- FieldName - varchar(100)
+          'Community User/Specialist Key ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+
+GO
+--StateWide
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 701 , -- ID - int
+          'ID' , -- FieldName - varchar(100)
+          'Statewide Key ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+
+GO
+--Principal
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 801 , -- ID - int
+          'ID' , -- FieldName - varchar(100)
+          'Principal/Specialist Key ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+
+GO
+--Teacher
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 901 , -- ID - int
+          'ID' , -- FieldName - varchar(100)
+          'Teacher Key ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+
+GO
+--Parent
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 1001 , -- ID - int
+          'ID' , -- FieldName - varchar(100)
+          'Parent Key ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+
+GO
+--Auditor
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 1101 , -- ID - int
+          'ID' , -- FieldName - varchar(100)
+          'Auditor Key ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );

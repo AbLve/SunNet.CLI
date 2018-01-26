@@ -1,0 +1,38 @@
+﻿GO
+
+/****** Object:  View [dbo].[V_StudentMeasures]    Script Date: 7/10/2015 17:12:41 ******/
+IF EXISTS(SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_StudentMeasures]') AND type in (N'V'))
+DROP VIEW [dbo].[V_StudentMeasures]
+GO
+
+/****** Object:  View [dbo].[V_StudentMeasures]    Script Date: 7/10/2015 17:12:41 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+/*
+StudentAssessmentLanguage:
+        English = 1
+        Spanish = 2
+		Bilingual = 3
+Status:
+		Active = 1,
+        Inactive = 2
+*/
+CREATE VIEW [dbo].[V_StudentMeasures]
+AS
+SELECT   SM.ID, SM.SAId, SM.MeasureId, SM.Status, SM.PauseTime, SM.CreatedOn, SM.UpdatedOn, SM.TotalScore, 
+                SM.Benchmark, (CASE SM.Goal WHEN - 1 THEN 0 ELSE SM.Goal END) AS Goal, SM.TotalScored,SM.Comment
+FROM      (SELECT   ID AS StudentId, Status, AssessmentLanguage AS Language
+                 FROM      dbo.Cli_Engage__Students
+                 WHERE   (Status = 1)) AS STU INNER JOIN
+                dbo.StudentAssessments AS SA ON SA.StudentId = STU.StudentId INNER JOIN
+                dbo.StudentMeasures AS SM ON SA.ID = SM.SAId
+
+
+GO
+
+

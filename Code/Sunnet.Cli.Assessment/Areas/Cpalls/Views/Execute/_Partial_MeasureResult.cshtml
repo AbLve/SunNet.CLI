@@ -1,0 +1,108 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="item-main-header item-view-header" data-bind="visible:status() == Exec_Status.resulting" style="display: none;">
+    <div class="main-content top-form" style="margin-top: 0px;">
+        <form class="form-horizontal" role="form">
+            <label class=" control-label">
+                Student
+            </label>&nbsp;<p class="form-control-static" data-bind="html:student.name"></p>
+
+            <label class="control-label">DOB</label>&nbsp;
+            <p class="form-control-static" data-bind="html:student.birthday"></p>
+
+            <label class="control-label">Class</label>&nbsp;
+            <p class="form-control-static" data-bind="html:classModel.name"></p>
+
+            <label class="control-label">School</label>&nbsp;
+            <p class="form-control-static" data-bind="html:schoolName"></p>
+
+            <label class="control-label">Age Group</label>&nbsp;
+            <p class="form-control-static" data-bind="html:currentMeasure().ageGroup"></p>
+
+            <br />
+            <label class="control-label">Date</label>&nbsp;
+            <p class="form-control-static" data-bind="html:currentMeasure().updatedOn"></p>
+
+            <label class="control-label">School year</label>&nbsp;
+            <p class="form-control-static" data-bind="html:schoolYear"></p>
+
+            <label class="control-label">Wave</label>&nbsp;
+            <p class="form-control-static" data-bind="html:wave.text"></p>
+
+            <label class="control-label">Test</label>&nbsp;
+            <p class="form-control-static" data-bind="html:currentMeasure().name"></p>
+
+            <label class="control-label" data-bind="visible:currentMeasure().totalScored">Score</label>&nbsp;
+            <p class="form-control-static" data-bind="html:currentMeasure().finalScore,visible:currentMeasure().totalScored"></p>
+
+            <label class="control-label" data-bind="visible:currentMeasure().totalScored">Benchmark</label>&nbsp;
+            <p class="form-control-static" data-bind="html:currentMeasure().metBenchmark,visible:currentMeasure().totalScored"></p>
+            <!-- ko if: showCommentBtn()-->
+            <br/>
+            <label class="control-label">Comment</label>&nbsp;
+            <p class="form-control-static" data-bind="html:currentMeasure().comment()+'&nbsp;'"></p>
+            <!-- /ko-->
+        </form>
+    </div>
+    <div class="clearfix">
+        <br />
+        <form action='@Url.Action("GetPdf")' target="_blank" id="exportPdfForm" method="POST">
+            <input type="hidden" name="id" data-bind="value:execId" />
+            <input type="hidden" name="measure" data-bind="value:currentMeasure().id" />
+            <input type="hidden" name="classId" data-bind="value:classModel.id" />
+            <input type="hidden" name="resultHtml" id="resultHtml" />
+            <input type="hidden" name="export" value="true" />
+        </form>
+    </div>
+    <form class="form-horizontal" role="form">
+        <div class="form-group item-group-btn">
+            <a href="#" class="mainbutton Invalidate-btn" data-bind="visible:showInvalidate,event:{click:invalidate}">
+                @*<i class=" icon-ban-circle"></i>*@
+                Invalidate This Assessment
+            </a>
+            <!-- ko if:online-->
+            <!-- David 09/22/2016 Disable it temporary  <a href="#" class="mainbutton item-top-btn" data-bind="event:{click:exportPdf}">
+                @*<i class="icon-print"></i>*@
+                Export to PDF
+            </a> -->
+            <a href="#" class="mainbutton item-top-btn" data-bind="event:{click:toggleIncludeImages},text:includeImages()?'Hide images':'Include images'">
+            </a>
+            <!-- /ko-->
+            <!-- ko if:online && mode === Exec_Mode.View -->
+            <a href="#" class="mainbutton item-top-btn"
+               data-bind="visible:showCommentBtn(),attr:{href:'Comment/'+currentMeasure().execId+'?label='+encodeURIComponent(currentMeasure().name)}"
+               data-toggle="modal" data-target="#modalSmall">
+                @*<i class="icon-print"></i>*@
+                Comment
+            </a>
+            <!-- /ko-->
+            <!-- ko if:(online === false) || (online && mode === Exec_Mode.Exec)-->
+            <a href="#" class="mainbutton item-top-btn"
+               data-toggle="modal" data-target="#modalComment">
+                @*<i class="icon-print"></i>*@
+                Comment
+            </a>
+            <!-- /ko-->
+            <a href="#" class="mainbutton item-top-btn" data-bind="click:close,visible:!online && mode==Exec_Mode.View">
+                Close
+            </a>
+            <a href="#" class="mainbutton  item-top-btn" data-bind="click:$root.goBack,visible:online && mode==Exec_Mode.View">
+                @*<i class="icon-user"></i>*@
+                Student View
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- ko if:status() == Exec_Status.resulting-->
+<div class="item-main-body item-view-body"
+     data-bind='template:{name:"_cpalls_measure_List",data:currentMeasure()}'>
+</div>
+<!--/ko-->
+<div class="item-main-body item-view-body" data-bind="visible:status() == Exec_Status.over" style="display: none;">
+    Syncing...
+</div>
+
+@Html.Partial("_Partial_MeasureResultList")

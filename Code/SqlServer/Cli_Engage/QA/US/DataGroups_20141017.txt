@@ -1,0 +1,30 @@
+﻿
+if not exists(select * from syscolumns where id=object_id('DataGroups') and name='SchoolTotal')
+EXEC sp_rename   'DataGroups.SchoolCount',   'SchoolTotal',   'COLUMN ' ;
+go
+if not exists(select * from syscolumns where id=object_id('DataGroups') and name='StudentTotal')
+EXEC sp_rename   'DataGroups.StudentCount',   'StudentTotal',   'COLUMN ' ;
+go
+if not exists(select * from syscolumns where id=object_id('DataGroups') and name='TeacherTotal')
+EXEC sp_rename   'DataGroups.TeacherCount',   'TeacherTotal',   'COLUMN ' ;
+go
+
+if not exists(select * from syscolumns where id=object_id('DataGroups') and name='SchoolFail')
+EXEC sp_rename   'DataGroups.SchoolError',   'SchoolFail',   'COLUMN ' ;
+go
+if not exists(select * from syscolumns where id=object_id('DataGroups') and name='TeacherFail')
+EXEC sp_rename   'DataGroups.TeacherError',   'TeacherFail',   'COLUMN ' ;
+go
+if not exists(select * from syscolumns where id=object_id('DataGroups') and name='StudentFail')
+EXEC sp_rename   'DataGroups.StudentError',   'StudentFail',   'COLUMN ' ;
+go
+
+if not exists(select * from syscolumns where id=object_id('DataGroups') and name='SchoolSuccess')
+alter table DataGroups add SchoolSuccess int not null default(0)
+go
+if not exists(select * from syscolumns where id=object_id('DataGroups') and name='TeacherSuccess')
+alter table DataGroups add TeacherSuccess int not null default(0)
+go
+if not exists(select * from syscolumns where id=object_id('DataGroups') and name='StudentSuccess')
+alter table DataGroups add StudentSuccess int not null default(0)
+go

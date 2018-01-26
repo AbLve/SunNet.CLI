@@ -1,0 +1,227 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Schools.Models.SchoolModel
+@{
+    ViewBag.Title = "Edit School";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Layout_Base.cshtml";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.School)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("School", "Index", "School"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;Edit
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/module_school")
+    <script>
+        var viewModel = {
+            changeByUser: false,
+
+            defaultCounty: ko.observable(@Model.CountyId),
+            selectedCounty: ko.observable(@Model.CountyId),
+            countiesOptions: ko.observableArray([]),
+            selectedState: ko.observable(@Model.StateId),
+            address1: ko.observable("@Model.PhysicalAddress1"),
+            address2: ko.observable("@Model.PhysicalAddress2"),
+            city: ko.observable("@Model.City"),
+            zip: ko.observable("@Model.Zip"),
+
+            defaultMailCounty: ko.observable(@Model.MailingCountyId),
+            mailSelectedCounty: ko.observable(@Model.MailingCountyId),
+            mailCountiesOptions: ko.observableArray([]),
+            mailSelectedState: ko.observable(@Model.MailingStateId),
+            mailAddress1: ko.observable("@Model.MailingAddress1"),
+            mailAddress2: ko.observable("@Model.MailingAddress2"),
+            mailCity: ko.observable("@Model.MailingCity"),
+            mailZip: ko.observable("@Model.MailingZip"),
+
+            keepMailSameAsPhysical: ko.observable(@(Model.IsSamePhysicalAddress.ToString().ToLower())),
+            sync: function() {
+                if (viewModel.keepMailSameAsPhysical() && viewModel.changeByUser) {
+                    viewModel.mailCountiesOptions.removeAll();
+                    viewModel.mailCountiesOptions.push.apply(viewModel.mailCountiesOptions, viewModel.countiesOptions());
+                    viewModel.mailSelectedState(viewModel.selectedState());
+                    viewModel.mailSelectedCounty(viewModel.selectedCounty());
+                    viewModel.defaultMailCounty(viewModel.selectedCounty());
+
+                    viewModel.mailAddress1(viewModel.address1());
+                    viewModel.mailAddress2(viewModel.address2());
+                    viewModel.mailCity(viewModel.city());
+                    viewModel.mailZip(viewModel.zip());
+                }
+            }
+        };
+
+        var subTypeVal = "@Html.Raw(Model.SubTypeId)";
+
+
+        function IsShowTrs() {
+            var isShow = "@ViewBag.IsShowTRS";
+            if ($("#divTRS").length > 0) {
+                if (isShow.toLowerCase() == "true") {
+                    $("#divTRS").show();
+                } else {
+                    $("#divTRS").hide();
+                }
+            }
+        }
+
+        viewModel.selectedState.subscribe(function(state) {
+            $.getJSON('@Url.Action("GetCountiesByStateId")',
+                { stateId: state },
+                function(data) {
+                    viewModel.countiesOptions.removeAll();
+                    viewModel.countiesOptions.push.apply(viewModel.countiesOptions, data);
+                    viewModel.selectedCounty(viewModel.defaultCounty());
+
+                    viewModel.sync();
+                });
+        });
+
+        function syncMailAddress() {
+            viewModel.sync();
+        }
+
+        function BeforeSubmit() {
+            return true;
+        }
+
+        viewModel.address1.subscribe(syncMailAddress);
+        viewModel.address2.subscribe(syncMailAddress);
+        viewModel.city.subscribe(syncMailAddress);
+        viewModel.zip.subscribe(syncMailAddress);
+        viewModel.selectedCounty.subscribe(syncMailAddress);
+
+        viewModel.keepMailSameAsPhysical.subscribe(syncMailAddress);
+
+        viewModel.mailSelectedState.subscribe(function(state) {
+            $.getJSON('@Url.Action("GetCountiesByStateId")',
+                { stateId: state },
+                function(data) {
+                    viewModel.mailCountiesOptions.removeAll();
+                    viewModel.mailCountiesOptions.push.apply(viewModel.mailCountiesOptions, data);
+                    viewModel.mailSelectedCounty(viewModel.defaultMailCounty());
+                });
+        });
+
+
+        oldVSDesignationValue = '@((int)Model.VSDesignation)';
+        SCHOOL_FourStart = '@(ViewBag.FourStart)';
+
+        $(function() {
+            SchoolTypeChanged();
+            $("#TrsLastStatusChange").rules("remove", "required");
+            var schoolTypeId = $("#SchoolTypeId").val();
+            DisplayClassroomCount(schoolTypeId);
+
+            // TrsProviderChanged();
+            IspChanged();
+            InternetTypeChanged();
+            $("#AtRiskPercent").val(@Model.AtRiskPercent);
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    redirectBack("index");
+                }
+            });
+            IsShowTrs();
+            setTimeout(function() { viewModel.changeByUser = true; }, 1000);
+
+            var autoAssign = new AutoAssign4Star('@((int)Model.VSDesignation)',
+                '@(Model.RecertificatedBy.FormatDateString())',
+                @(Model.EnableAutoAssign4Star.ToString().ToLower()),
+                '@((int)Model.RegulatingEntity)',
+                @(Model.NAEYC.ToString().ToLower()),
+                @(Model.CANASA.ToString().ToLower()),
+                @(Model.NECPA.ToString().ToLower()),
+                @(Model.NACECCE.ToString().ToLower()),
+                @(Model.NAFCC.ToString().ToLower()),
+                @(Model.ACSI.ToString().ToLower()),
+                @(Model.USMilitary.ToString().ToLower()));
+            $.extend(viewModel, autoAssign);
+            ko.applyBindings(viewModel);
+
+            var $FacilityType = $("#FacilityType");
+            $FacilityType.on("change", function() {
+                var $this = $(this);
+                $.when(window.waitingConfirm("warning_change_facility_type", "OK", "Cancel"))
+                    .done(function() {
+                        $this.data("_source", $this.val());
+                    }).fail(function() {
+                        $this.val($this.data("_source"));
+                    });
+            }).data("_source", $FacilityType.val());
+        });
+    </script>
+}
+@using (Ajax.BeginForm("Update", "School", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to School List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                <input type="hidden" id="IsPlaygroundChanged" value="0" />
+                @Html.LabelFor(model => model.CommunityNameText, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.CommunityNameText, new { @class = "form-control", @readonly = "true" })
+
+                </div>
+
+
+                @Html.HiddenFor(model => model.ID)
+
+                @Html.LabelFor(model => model.SchoolId, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolId, new { @class = "form-control", @readonly = "true" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.BasicSchoolId, new { @class = "control-label col-sm-2 required" })
+                @Html.Label("lbSchoolName", "SchoolName", new { @class = "hide", @for = "SchoolName" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolName, new { @class = "form-control", @readonly = "readonly" })
+                    @Html.HiddenFor(model => model.BasicSchoolId, new { @class = "form-control validate", placeholder = "Selected School" })
+                    @Html.ValidationMessageFor(model => model.SchoolId)
+                </div>
+                @Html.LabelFor(model => model.SchoolYear, null, new { @class = "col-sm-2 control-label " })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolYear, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            @Html.Partial((string)ViewBag.partialUrl)
+        </div>
+    </div>
+
+
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" onclick="return BeforeSubmit()" type="submit">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+    </div>
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.CreatedOn)
+    @Html.HiddenFor(model => model.UpdatedOn)
+    @Html.HiddenFor(model => model.SchoolYear)
+    @Html.HiddenFor(model => model.SchoolId)
+    @Html.HiddenFor(model => model.SchoolName)
+    
+}
+

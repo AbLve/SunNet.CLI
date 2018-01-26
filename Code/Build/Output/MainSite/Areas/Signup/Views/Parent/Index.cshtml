@@ -1,0 +1,142 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.ParentEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Parent Sign Up";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#chkAgree").click(function () {
+                if ($("#chkAgree").prop("checked") == true) {
+                    $(".submit-btn").removeAttr("disabled");
+                } else {
+                    $(".submit-btn").attr({ "disabled": "disabled" });
+                }
+            });
+            $("#Relation").change(function () {
+                if ($("#Relation :selected").text() == "Other")
+                    $("#RelationOther").attr("type", "text");
+                else {
+                    $("#RelationOther").val("");
+                    $("#RelationOther").attr("type", "hidden");
+                }
+            })
+        });
+
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function (response) {
+                $("#confirmation").click();
+            }
+        });
+
+        function SubmitParent() {
+            $("#" + '@formId').submit();
+        }
+    </script>
+}
+@using (Html.BeginForm("ParentRegister", "Parent", null, FormMethod.Post,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{     
+    @Html.AntiForgeryToken()
+    <label class="hide" for="SchoolYear">&nbsp;</label>
+    @Html.TextBox("SchoolYear", Sunnet.Cli.Business.Common.CommonAgent.SchoolYear, new { @class = "hide" }) 
+    <a href="/Signup/Teacher/Confirmation" id="confirmation" data-toggle="modal" data-target="#modalNormal"></a>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="main-con">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3><b>Parent</b> Sign Up</h3>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Your First Name", new { @class = "col-sm-4 control-label required", @for = "UserInfo_FirstName" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.UserInfo.FirstName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.UserInfo.FirstName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Your Last Name", new { @class = "col-sm-4 control-label required", @for = "UserInfo_LastName" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.UserInfo.LastName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.UserInfo.LastName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Email", new { @class = "col-sm-4 control-label required", @for = "UserInfo_PrimaryEmailAddress" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.UserInfo.PrimaryEmailAddress, new { @class = "form-control col-sm-4 email" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.UserInfo.PrimaryEmailAddress)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Parent Code", new { @class = "col-sm-4 control-label", @for = "ParentCode" })
+                    <div class="col-sm-4">
+                        @Html.TextBox("ParentCode", "", new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Child’s Frist Name", new { @class = "col-sm-4 control-label", @for = "ChildFirstName" })
+                    <div class="col-sm-4">
+                        @Html.TextBox("ChildFirstName", "", new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Child’s Last Name", new { @class = "col-sm-4 control-label", @for = "ChildLastName" })
+                    <div class="col-sm-4">
+                        @Html.TextBox("ChildLastName", "", new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="logup-tip"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Relation", new { @class = "col-sm-4 control-label" })
+                    <div class="col-sm-4">
+                        @Html.DropDownList("Relation", (IEnumerable<SelectListItem>)ViewBag.RelationList, new { @class = "form-control col-sm-4" })
+                        @Html.Label("RelationOther", null, new { @class = "control-label hide" })
+                        @Html.TextBox("RelationOther", "", new { @class = "form-control col-sm-4", type = "hidden", placeholder = "enter other relation" })
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8" style="display: none;">
+                        <label>
+                            @Html.CheckBox("chkAgree", new { @checked = true })
+                            I agree to the <a href="#" class="loginup-link">Terms of Service</a> and <a href="#" class="loginup-link">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12 logbtn-con">
+                        <input type="button" onclick="SubmitParent()" class="logbutton submit-btn" value="Submit">
+                        <input type="button" class="logbutton cancel-btn" onclick="javascript: location.href = '/Home/SignUp/'" value="Cancel">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

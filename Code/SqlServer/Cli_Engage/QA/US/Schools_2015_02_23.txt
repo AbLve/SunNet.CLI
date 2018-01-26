@@ -1,0 +1,17 @@
+﻿IF NOT EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('Schools') AND name = 'RecertificatedBy' )
+BEGIN
+ALTER TABLE [dbo].Schools ADD RecertificatedBy DATETIME NULL 
+END
+GO
+UPDATE Schools SET RecertificatedBy = '1753-1-1'
+GO 
+ALTER TABLE Schools ALTER COLUMN RecertificatedBy DATETIME NOT NULL
+
+IF NOT EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('Schools') AND name = 'EnableAutoAssign4Star' )
+BEGIN
+ALTER TABLE [dbo].Schools ADD EnableAutoAssign4Star BIT NULL 
+END
+GO
+UPDATE Schools SET EnableAutoAssign4Star = 0
+GO 
+ALTER TABLE Schools ALTER COLUMN EnableAutoAssign4Star BIT NOT NULL

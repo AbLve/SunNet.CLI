@@ -1,0 +1,521 @@
+﻿@model Sunnet.Cli.Business.Ade.Models.TxkeaLayoutModel
+@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization
+@using Sunnet.Cli.Core.Ade.Enums
+@{
+    ViewBag.Title = "New";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Index", "Layout");
+}
+
+@section Styles
+{
+    @Styles.Render("~/css/cpalls")
+    @Styles.Render("~/css/colorpicker")
+    @Styles.Render("~/css/txkea")
+}
+
+@section BreadPath
+{
+    @Html.ActionLink("Layout", "Index", "Layout")
+    <i class="icon-angle-right"></i>
+    @(Model.ID > 0 ? "Edit" : "New")
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/fabric")
+    @Scripts.Render("~/scripts/fullscreen")
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/javascript">
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+        function getToFolder() {
+            return "txkeaLayout";
+        }
+
+
+        var canvas;
+        var canvasElement = "cav_layout";
+        var canvasBg = "@(ViewBag.Backgroud)";
+        var cnavasBgType = "@(ViewBag.BackgroudType)";
+        var itemLayout = '@(Html.Raw(ViewBag.Layout))';
+        var preScreenWidth = "@(Model.ScreenWidth)"; //The screen width of last time to save
+        var selectedObj;
+        var preScroll;
+
+        $(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    redirectBack("index");
+                }
+            });
+
+            $(window).scroll(function(obj) {
+                if (selectedObj && $("#divShow").css("display") == "block") {
+                    ShowSize(selectedObj);
+                }
+            });
+
+            $('#BackgroundFillColor').colorpicker({
+                color: cnavasBgType == "1" ? canvasBg : "",
+                warning: true,
+                warningObjId: "#divBackgroundImage"
+            });
+
+            $("#beforeImageNo").val($("#NumberOfImages").val());
+
+            InitCanvas(null, cnavasBgType == "1" ? canvasBg : "");
+
+            InitPicture_Layout(itemLayout);
+
+            $("#txtCanvaLeft").on("change blur", function () {
+                var newWidth = $("#txtCanvaWidth").val() / 100.00 * canvas.width;
+                var newLeft = $("#txtCanvaLeft").val() / 100.00 * canvas.width - newWidth/2.00;
+                $("#hidCanvaLeft").val(newLeft);
+            });
+            $("#txtCanvaTop").on("change blur", function () {
+                var newHeight = $("#txtCanvaHeight").val() / 100.00 * canvas.height;
+                var newTop = $("#txtCanvaTop").val() / 100.00 * canvas.height - newHeight/2.00;
+                $("#hidCanvaTop").val(newTop);
+            });
+
+            $("#txtCanvaWidth").on("change blur", function () {
+                //   $("#txtCanvaHeight").val($("#txtCanvaWidth").val());
+                var newWidth = $("#txtCanvaWidth").val() / 100.00 * canvas.width;
+                var newHeight = newWidth;
+                var newHeightPercent = newHeight / canvas.height * 100.00;
+                $("#txtCanvaHeight").val(newHeightPercent.toFixed(2));
+                $("#hidCanvaHeight").val(newHeight);
+                $("#hidCanvaWidth").val(newWidth);
+
+            });
+
+            $("#txtCanvaHeight").on("change blur", function() {
+                //$("#txtCanvaWidth").val($("#txtCanvaHeight").val());
+                var newHeight = $("#txtCanvaHeight").val() / 100.00 * canvas.height;
+                var newWidth = newHeight;
+                var newWidthPercent = newWidth / canvas.width * 100.00;
+                $("#txtCanvaWidth").val(newWidthPercent.toFixed(2));
+                $("#hidCanvaWidth").val(newWidth);
+                $("#hidCanvaHeight").val(newHeight);
+            });
+
+            //背景选颜色时，去除背景图片
+            $("#BackgroundFillColor").change(function() {
+                canvas.setBackgroundColor($(this).val());
+                $("#BackgroundFill").val($(this).val());
+                delete canvas["backgroundImage"];
+                canvas.renderAll();
+                $("#divBackgroundImage").css("display", "none");
+
+                if ($("#BackgroundImageList") && $("#BackgroundImageList").find(".delete").length > 0) {
+                    $("#BackgroundImageList").find(".delete").get(0).click()
+                }
+            });
+
+            $("#NumberOfImages").change(function() {
+                $.when(waitingConfirm("This will reset the Layout <br /> Are you sure want to Continue?", "Ok", "Cancel"))
+                    .done(function() {
+                        $("#beforeImageNo").val($("#NumberOfImages").val());
+                        NumberOfImgChagne();
+
+                    }).fail(function() {
+                        $("#NumberOfImages").val($("#beforeImageNo").val());
+                    });
+            });
+
+            //resize   process only last one
+            var rtime = new Date();
+            var timeout = false;
+            var delta = 200;
+            $(window).resize(function() {
+                if (typeof (canvas) != "undefined")
+                {
+                    canvas.discardActiveObject();
+                    canvas.fire('canvas:cleared');
+                    rtime = new Date();
+                    if (timeout === false) {
+                        timeout = true;
+                        setTimeout(resizeend, delta);
+                    }
+                }
+            });
+
+            //resize   process only last one
+            function resizeend() {
+                if (new Date() - rtime < delta) {
+                    setTimeout(resizeend, delta);
+                } else {
+                    timeout = false;
+                    if (canvas) {
+                        CanvasResize(JSON.stringify(canvas.toDatalessJSON(new Array("id", "sort", "lockUniScaling", "hasRotatingPoint", "selectable"))),
+                            canvas.width, null);
+                    }
+                }
+            }
+        });
+
+        function NumberOfImgChagne() {
+            var modles = JSON.stringify(canvas.toDatalessJSON(new Array("id")));
+            canvas.clear();
+            InitPicture_Layout(modles, true);
+        }
+
+        function NewLayout() {
+            if ($("form").valid()) {
+                $.when(waitingConfirm("Are you sure you want to create Layout?", "Ok", "Cancel"))
+                    .done(function() {
+                        GetLayouts("#Layout", null);
+                        GetLayoutPNG()
+                        $("form").submit();
+                    });
+            }
+        }
+
+        function EditLayout() {
+            if ($("form").valid()) {
+                GetLayouts("#Layout", null);
+                GetLayoutPNG()
+                $("form").submit();
+            }
+        }
+
+        function GetLayoutPNG() {
+            //delete prompt info "data:image/png;base64,"
+            var data = canvas.toDataURL().substring(22);
+            $("#layoutPng").val(data);
+        }
+
+        function CloseSize() {
+            var $divShow = $("#divShow");
+            if ($divShow.css('display') == 'block')
+                $divShow.css('display', 'none');
+        }
+
+        function ShowSize(obj) {
+            if (obj.target && obj.target.id && obj.target.id != '') {
+                selectedObj = obj;
+
+                var readWith = obj.target.width * obj.target.scaleX;
+                var readHeight = obj.target.height * obj.target.scaleY;
+
+                //if out of right , then left
+                var left = obj.target.left + readWith + $("#cav_layout").offset().left + 10;
+                if (left + $("#divShow").width() > canvas.width) {
+                    left = obj.target.left - $("#divShow").width() + $("#cav_layout").offset().left - 10;
+                    if (left < 0)
+                        left = 0;
+                    $("span.arrow-left-bot").attr("class", "arrow-right-bot");
+                    $("span.arrow-left-top").attr("class", "arrow-right-top");
+                } else {
+                    if ($("span.arrow-right-bot").length > 0)
+                        $("span.arrow-right-bot").attr("class", "arrow-left-bot");
+                    if ($("span.arrow-right-top").length > 0)
+                        $("span.arrow-right-top").attr("class", "arrow-left-top");
+                }
+
+                var $divShow = $("#divShow");
+                $divShow.css('display', 'block');
+                $divShow.css('top', obj.target.top + $("#cav_layout").offset().top - $(document).scrollTop());
+                $divShow.css('left', left);
+
+                $("#hidCanvaWidth").val(readWith);
+                $("#hidCanvaHeight").val(readHeight);
+
+                $("#hidCanvaLeft").val(obj.target.left);
+                $("#hidCanvaTop").val(obj.target.top);
+
+
+                $("#txtCanvaHeight").val(((readHeight / canvas.height)*100.00).toFixed(2));
+                $("#txtCanvaWidth").val(((readWith / canvas.width) * 100.00).toFixed(2));
+                $("#txtCanvaLeft").val((((obj.target.left + readWith / 2.00) / canvas.width) * 100.00).toFixed(2));
+                $("#txtCanvaTop").val((((obj.target.top + readHeight / 2.00) / canvas.height) * 100.00).toFixed(2));
+
+                $("#spanCanvasWidth").html(canvas.width.toFixed(2) + "px");
+                $("#spanCanvasHeight").html(canvas.height.toFixed(2) + "px");
+                preScroll = $("#divShow").offset().top;
+            }
+        }
+
+        function ResizeObjSize() {
+
+            if (selectedObj && selectedObj.target) {
+                //var nHeight = Number($("#txtCanvaHeight").val())/100.00 * canvas.height;
+                //var nWidth = Number($("#txtCanvaWidth").val()) / 100.00 * canvas.width;
+                //var nLeft = Number($("#txtCanvaLeft").val()) / 100.00 * canvas.width;
+                //var nTop = Number($("#txtCanvaTop").val()) / 100.00 * canvas.height;
+                var nHeight = Number($("#hidCanvaHeight").val()) ;
+                var nWidth = Number($("#hidCanvaWidth").val());
+                var nLeft = Number($("#txtCanvaLeft").val()) / 100.00 * canvas.width - nWidth / 2.00;//Number($("#hidCanvaLeft").val()) ;
+                var nTop = Number($("#txtCanvaTop").val()) / 100.00 * canvas.height - nHeight / 2.00; //Number($("#hidCanvaTop").val());
+                var selectedCanvasObj = canvas._objects.filter(function(obj) { return obj.id == selectedObj.target.id });
+                var maxSize = canvas.height > canvas.width ? canvas.width : canvas.height; //should be resized always to square form
+                if (selectedCanvasObj.length > 0) {
+                    if (selectedObj.target.height * selectedObj.target.scaleY != nHeight ||
+                        selectedObj.target.width * selectedObj.target.scaleX != nWidth
+                        || selectedObj.target.left != nLeft ||
+                        selectedObj.target.top != nTop)
+                    {
+                        var newHeight = nHeight >= maxSize ? maxSize - minPadding : nHeight;
+                        var newWidth = nWidth >= maxSize ? maxSize - minPadding : nWidth;
+                        var newscaleY = newHeight / selectedObj.target.height;
+                        var newscaleX = newWidth / selectedObj.target.width;
+                        if (newscaleY > 0)
+                            selectedCanvasObj[0].scaleY = newscaleY;
+                        if (newscaleX > 0)
+                            selectedCanvasObj[0].scaleX = newscaleX;
+
+                        selectedCanvasObj[0].left = nLeft;
+                        selectedCanvasObj[0].top = nTop;
+
+
+                        selectedObj.target.scaleX = newscaleX;
+                        selectedObj.target.scaleY = newscaleY;
+                        selectedObj.target.left = nLeft;
+                        selectedObj.target.top = nTop;
+
+                        selectedCanvasObj[0].setCoords();
+
+                        canvas.renderAll();
+                        RePositionLayout(selectedObj);
+                        ShowSize(selectedObj);
+                    }
+                }
+            }
+        }
+
+
+        var uploaderBackgroundImage = SunnetWebUploader.CreateWebUploader({
+            pick: "#btnBackgroundImage",
+            container: "#BackgroundImageList",
+            submitbutton: "#btnSubmit",
+            targetField: "#BackgroundFill",
+            fileSingleSizeLimit: 2097152, //2M
+            accept: {
+                extensions: "jpg,jpeg,gif,png,bmp",
+                mimeTypes: "image/jpg,image/jpeg,image/gif,image/png,image/bmp"
+            },
+            autoUpload: true,
+            showProgress: true
+        });
+
+        var hasUploaderBackgroundImage = false;
+        uploaderBackgroundImage.on("beforeFileQueued", function(file) {
+            if ($("#BackgroundFillColor").val() != "") {
+                if (hasUploaderBackgroundImage) {
+                    hasUploaderBackgroundImage = false;
+                    return true;
+                }
+                $.when(waitingConfirm("Uploading a background image will clear out your selection for background color fill. Would you still like to proceed?", "Ok", "Cancel"))
+                    .done(function() {
+                        hasUploaderBackgroundImage = true;
+                        uploaderBackgroundImage.addFiles(file);
+                    });
+                return false;
+            } else if ($("#divBackgroundImage").css("display") != "none") {
+                if (hasUploaderBackgroundImage) {
+                    hasUploaderBackgroundImage = false;
+                    return true;
+                }
+                $.when(waitingConfirm("Selecting a new background image will clear out the background image you had previously selected. Would you still like to proceed?", "Ok", "Cancel"))
+                    .done(function() {
+                        hasUploaderBackgroundImage = true;
+                        uploaderBackgroundImage.addFiles(file);
+                    });
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+        uploaderBackgroundImage.on('uploadSuccess', function(file, result) {
+            if (result) {
+                if (result.success) {
+                    var uploadUrl = '@(DomainHelper.StaticSiteDomain.AbsoluteUri)';
+                    var $backgroundImage = $("#divBackgroundImage");
+                    $backgroundImage.css("display", "");
+                    $backgroundImage.children().get(0).src = '/upload/' + getToFolder() + "/" + getUploaderPrefix() + result.file;
+                    uploaderBackgroundImage.disable();
+                    $("#BackgroundFillColor").val("");
+                    $("#BackgroundFillColor").next().css("background-color", "");
+                    canvas.setBackgroundColor("");
+
+                    canvas.setBackgroundImage('/upload/' + getToFolder() + "/" + getUploaderPrefix() + result.file, canvas.renderAll.bind(canvas), {
+                        width: canvas.width,
+                        height: canvas.height,
+                        // Needed to position backgroundImage at 0/0
+                        originX: 'left',
+                        originY: 'top'
+                    });
+                } else {
+                    $('#' + file.id).find('.state').text(result.msg);
+                }
+            } else if (file) {
+
+                var uploadUrl = '@(DomainHelper.StaticSiteDomain.AbsoluteUri)';
+                var $backgroundImage = $("#divBackgroundImage");
+                $backgroundImage.css("display", "");
+                $backgroundImage.children().get(0).src = '/upload/' + file.dbName;
+                uploaderBackgroundImage.disable();
+                $("#BackgroundFillColor").val("");
+                $("#BackgroundFillColor").next().css("background-color", "");
+                canvas.setBackgroundColor("");
+                canvas.setBackgroundImage('/upload/' + file.dbName);
+                canvas.setBackgroundImage('/upload/' + file.dbName, canvas.renderAll.bind(canvas), {
+                    width: canvas.width,
+                    height: canvas.height,
+                    // Needed to position backgroundImage at 0/0
+                    originX: 'left',
+                    originY: 'top'
+                });
+
+            }
+        });
+
+
+        uploaderBackgroundImage.on('error', function(type) {
+            switch (type) {
+            case 'Q_TYPE_DENIED':
+                showMessage("fail", "VCW_NotCorretExtensions");
+                return false;
+            case 'F_EXCEED_SIZE':
+                showMessage("fail", "Maximum files size: 2 MB");
+                return false;
+            }
+            return false;
+        });
+        //从队列中删除文件时，启用选择按钮
+        uploaderBackgroundImage.on('fileDequeued', function() {
+            uploaderBackgroundImage.enable();
+            $("#BackgroundFill").val("");
+            $("#divBackgroundImage").css("display", "none");
+            delete canvas["backgroundImage"];
+            canvas.renderAll();
+        });
+
+    </script>
+}
+
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+    </div>
+
+    @using (Ajax.BeginForm("SaveLayout", "Layout", null, PostFormHelper.DefaultAjaxOptions,
+        new
+        {
+            @class = "form-horizontal",
+            id = formId
+        }))
+    {
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.Layout)
+        @Html.HiddenFor(model => model.BackgroundFillType)
+        @Html.HiddenFor(model => model.ScreenWidth)
+        <input type="hidden" id="beforeImageNo">
+        <input type="hidden" name="layoutPng" id="layoutPng">
+
+        <div class="main-content"  style="width: 82%;">
+            <div class="content-body">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, new {@class = "control-label col-sm-2 required"})
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.Name, new {@class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+                    @Html.LabelFor(model => model.NumberOfImages, new {@class = "control-label col-sm-2 required"})
+                    <div class="col-sm-3">
+                        @Html.DropDownListFor(model => model.NumberOfImages,
+                            (IEnumerable<SelectListItem>) ViewBag.NumImages, new {@class = "form-control"})
+                        @Html.ValidationMessageFor(model => model.NumberOfImages)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Choose background color fill", new {@class = "control-label col-sm-2"})
+                    <div class="col-sm-3">
+                        @Html.TextBox("BackgroundFillColor", "", new {@class = "colorPicker evo-cp1 bgfillcolor", title = " "})
+                    </div>
+                    @Html.Label("Choose background image", new {@class = "control-label col-sm-2"})
+                    <div class="col-sm-5">
+                        <div id="btnBackgroundImage" for="BackgroundImage">Browse</div>
+                        @if (Model.BackgroundFillType == BackgroundFillType.Image && !string.IsNullOrEmpty(Model.BackgroundFill))
+                        {
+                            <div class="webuploader-preview" id="divBackgroundImage">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="@Sunnet.Cli.UIBase.FileHelper.GetPreviewPathofUploadFile(Model.BackgroundFill)" width="60" height="60" alt="Background" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="webuploader-preview" id="divBackgroundImage" style="display: none;">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <img width="60" height="60" alt="Background" />
+                            </div>
+                        }
+                        <div id="BackgroundImageList" class="uploader-list"></div>
+                        @Html.HiddenFor(model => model.BackgroundFill)
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="content-body" id="content-body">
+                <div class="item-main-header">
+                    <h4><span>Layout Editor</span><span style="font-size:14px;"><b style="margin-left:15px;color:#247432;">Width: </b><span id="spanCanvasWidth"></span><b style="margin-left:15px;color:#05468E;">Height: </b><span id="spanCanvasHeight"></span></span></h4>
+                    <div class="item-fullscreen-head">
+                        <a class="item-fullscreen-btn stop-btn" onclick=" switchFullscreen('content-body') "><i class="icon-resize-full"></i></a>
+                    </div>
+                </div>
+                <div class="setSize" id="divShow">
+                    <span class="arrow-left-bot"></span>
+                    <span class="arrow-left-top"></span>
+                    <div class="setSizeCloseDiv">
+                        <a class="closeSize icon-remove" onclick=" CloseSize() "></a>
+                    </div>
+                    <div class="setSizeDiv">
+                        Left&nbsp;&nbsp;
+                        <input type="number" class="setSizeInput" id="txtCanvaLeft" title=" "/>
+                        <input type="hidden"  id="hidCanvaLeft" />
+                    </div>
+                    <div class="setSizeDiv">
+                        Top&nbsp;&nbsp;
+                        <input type="number" class="setSizeInput" id="txtCanvaTop" title=" "/>
+                        <input type="hidden" id="hidCanvaTop" />
+                    </div>
+
+                    <div class="setSizeDiv">
+                        Width&nbsp;&nbsp;
+                        <input type="number" class="setSizeInput" id="txtCanvaWidth" title=" "/>
+                        <input type="hidden" id="hidCanvaWidth" />
+                    </div>
+                    <div class="setSizeDiv">
+                        Height&nbsp;&nbsp;
+                        <input type="number" class="setSizeInput" id="txtCanvaHeight" title=" "/>
+                        <input type="hidden" id="hidCanvaHeight" />
+                    </div>
+                     
+                </div>
+                <canvas id="cav_layout">(Your browser doesn't support canvas)</canvas>
+            </div>
+            <div class="button-content">
+                <a class="mainbutton mainright-btn nav-btn" href="/Layout/Layout/PreviewLayout"
+                   data-toggle="modal" data-target="#modalLayoutPreview">Preview</a>
+                @if (Model.ID > 0)
+                {
+                    <button class="mainbutton mainright-btn nav-btn" id="btnSubmit" type="button" onclick=" EditLayout() ">Save Layout</button>
+                    <a class="mainbutton mainright-btn nav-btn" href="/Layout/Layout/Copy?id=@(Model.ID)"
+                       data-toggle="modal" data-target="#modalSmall">Save As</a>
+                }
+                @if (Model.ID == 0)
+                {
+                    <button class="mainbutton mainright-btn nav-btn" id="btnSubmit" type="button" onclick=" NewLayout() ">Save Layout</button>
+                }
+                <a class="mainbutton mainright-btn cancel-btn" href="@(Html.Raw(backUrl))">Cancel</a>
+            </div>
+        </div>
+        }
+        

@@ -1,0 +1,173 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherGeneralFileModel
+@using Sunnet.Cli.Core.Vcw.Enums
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase
+
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        @Html.LabelFor(model => model.IdentifyFileName, new { @class = "control-label required" })
+                    </div>
+                    <div class="inputtext-con">
+                        @Html.TextBoxFor(model => model.IdentifyFileName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IdentifyFileName)
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <label class="control-label" for="DateVieoRecorded">Date Video Recorded</label>
+                    </div>
+                    <div class="inputtext-con">
+                        @Html.TextBoxFor(model => model.DateVieoRecorded, new
+                                   {
+                                       @class = "form-control date"
+                                       ,
+                                       @Value = Model.DateVieoRecorded.Value.FormatDateString()
+                                   })
+                        @Html.ValidationMessageFor(model => model.DateVieoRecorded)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Video Context</div>
+                    </div>
+                    @foreach (ContextEnum item in Enum.GetValues(typeof(ContextEnum)))
+                    {
+                        if (item != ContextEnum.None)
+                        {
+                            bool isChecked = Model.ContextId == item;
+                            if (item == ContextEnum.Other)
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="Context" value="@(item.GetValue())"  @(isChecked ? "checked" : "")/>@item.ToDescription()
+                            </label>
+                            <label>
+                                @if (Model.ContextId == ContextEnum.Other)
+                                {
+                                    @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control", disabled = "disabled" })  
+                                }
+                            </label>
+                            @Html.ValidationMessageFor(model => model.ContextOther)
+                        </div>
+                            }
+                            else
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="Context" value="@(item.GetValue())" @(isChecked ? "checked" : "")/>@item.ToDescription()
+                            </label>
+                        </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Video Content</div>
+                    </div>
+                    @foreach (ContentEnum item in Enum.GetValues(typeof(ContentEnum)))
+                    {
+                        if (item != ContentEnum.None)
+                        {
+                            bool isChecked = Model.Contents.Contains(item);
+                            if (item == ContentEnum.Other)
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="Content" id="content-other" onclick="ContentClick(this)" 
+                                                    value="@item.GetValue()" @(isChecked ? "checked" : "")>@item.ToDescription()
+                                &nbsp;&nbsp;
+                            </label>
+                            <label>
+                                @if (isChecked)
+                                {
+                                    @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control", @disabled = "disabled" })   
+                                }
+                            </label>
+                            @Html.ValidationMessageFor(model => model.ContentOther)
+                        </div>
+                            }
+                            else
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="Content"  
+                                                    value="@item.GetValue()" @(isChecked ? "checked" : "") >
+                                @item.ToDescription()
+                            </label>
+                        </div>
+                            }
+                        }
+
+                    }
+                </div>
+            </div>
+        </div>
+        @Html.Partial("/Areas/Coach/Views/Partials/UploadedFile.cshtml")
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div id='div_sunnet'>
+                <div style='width:100%;height:450px; text-align:center; background:#333333 url(@(Sunnet.Framework.SFConfig.AssessmentDomain)/images/not-played.jpg) no-repeat center center; line-height:450px;'>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    Description
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                </div>
+                <label for="Description" class="hide">&nbsp;</label>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "2" })
+                @Html.ValidationMessageFor(m => m.Description)
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    FeedbackText
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                </div>
+                <label for="FeedbackText" class="hide">&nbsp;</label>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(model => model.FeedbackText, new { @class = "form-control", @rows = "2" })
+                @Html.ValidationMessageFor(model => model.FeedbackText)
+            </div>
+        </div>
+    </div>
+</div>
+
+

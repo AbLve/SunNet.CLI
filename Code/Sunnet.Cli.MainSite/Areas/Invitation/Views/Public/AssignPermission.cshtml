@@ -1,0 +1,151 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Business.Permission.Models
+@{
+    ViewBag.Title = "Assign Permission";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    IEnumerable<GroupPackageModel> GroupPackages = ViewBag.GroupPackages;
+    List<GroupPackageModel> SelectedGroupPagkages = ViewBag.GroupPackageSelected;
+    List<int> DisabledGroupPackages = ViewBag.GroupPackageDisabled;
+    bool IsAdmin = ViewBag.IsAdmin;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        
+        @*if ("@ViewBag.accessPermission" == "X")
+            closeModal("#@formId");
+        else if ("@ViewBag.accessPermission" == "R") {
+            $(":checkbox").prop("disabled", "true");
+            $("#btnAssign").hide();
+        }*@
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    closeModal($("#@(formId)"));
+                }
+            });
+
+            $("#chkAll").click(function (event) {
+                if ($(this).is(":checked"))
+                    $("[name='chkPackages']").prop("checked", true);
+                else {
+                    $("[name='chkPackages']").prop("checked", false);
+                }
+            });
+            $("#chkAllDisable").click(function (event) {
+                if ($(this).is(":checked"))
+                    $("[name='chkDisablePackages']").prop("checked", true);
+                else {
+                    $("[name='chkDisablePackages']").prop("checked", false);
+                }
+            });
+        })();
+    </script>
+}
+
+@using (Ajax.BeginForm("AssignPermission", "Public", null, Sunnet.Cli.UIBase.Models.PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="userId" value="@ViewBag.UserId" />
+    <div class="content-body">
+        <div class="form-group">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-12">
+                Assign additional packages to @ViewBag.UserType: @ViewBag.Name
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-12">
+                Available Additional Packages
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <table class="table table-striped table-hover">
+                    <tr>
+                        <th>Disable
+                            <label for="chkAllDisable" class="hide">chkAllDisable</label>
+                            @if (IsAdmin)
+                            {
+                                @Html.CheckBox("chkAllDisable", false)
+                            }
+                            else
+                            {
+                                @Html.CheckBox("chkAllDisable", false, new { disabled = true })
+                            }
+                        </th>
+                        <th>Assign
+                            <label for="chkAll" class="hide">chkAll</label>
+                            @Html.CheckBox("chkAll", false)
+                        </th>
+                        <th>Package Name</th>
+                        <th>Description</th>
+                    </tr>
+                    @if (GroupPackages.Count() > 0)
+                    {
+                        foreach (var item in GroupPackages)
+                        {
+                            string strDisabled = DisabledGroupPackages.Contains(item.PackageId) ? "checked='checked'" : "";
+                            string strChecked = SelectedGroupPagkages.Where(e => e.PackageId == item.PackageId).Count() > 0
+                                ? "checked='checked'" : "";
+                        <tr>
+                            <th>
+                                <label for="chkDisablePackages@(item.PackageId)" class="hide">@item.PackageName</label>
+                                <input type="checkbox" @strDisabled id="chkDisablePackages@(item.PackageId)"
+                                     name="chkDisablePackages"  value="@item.PackageId" @(IsAdmin ? "" : "disabled=true")>
+                            </th>
+                            <th>
+                                <label for="chkPackages@(item.PackageId)" class="hide">@item.PackageName</label>
+                                <input type="checkbox" @strChecked id="chkPackages@(item.PackageId)" name="chkPackages"  value="@item.PackageId">
+                            </th>
+                            <th>
+                                @if (string.IsNullOrEmpty(item.PackageName))
+                                {
+                                    <span style="display: none;">wave</span>
+                                }
+                                else
+                                {
+                                    <span>@item.PackageName</span>
+                                }
+                            </th>
+                            <th>
+                                @if (string.IsNullOrEmpty(item.PackageDescription))
+                                {
+                                    <span style="display: none">wave</span>
+                                }
+                                else
+                                {
+                                    <span>@item.PackageDescription</span>
+                                }
+                            </th>
+                        </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <th colspan="3">There is no additional packages for this user.
+                            </th>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="mainbutton modal-btn submit-btn" type="submit" id="btnAssign" data-bind="event: { click: submit }">Assign</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+}
+

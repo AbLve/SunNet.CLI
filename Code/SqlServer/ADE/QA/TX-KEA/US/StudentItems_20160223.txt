@@ -1,0 +1,11 @@
+﻿
+
+if not exists(select * from syscolumns where id=object_id('StudentItems') and name='Executed')
+	alter table StudentItems add Executed bit
+
+go 
+
+update StudentItems set Executed = 1 where executed is null
+
+go 
+alter table StudentItems alter column Executed bit not null

@@ -1,0 +1,44 @@
+﻿
+if not exists(select * from syscolumns where id=object_id('Classes') and name='LeadTeacherId')
+	alter table Classes add LeadTeacherId int 
+go
+update Classes set LeadTeacherId = 0 
+go
+alter table Classes alter column LeadTeacherId int not null
+go
+ 
+if not exists(select * from syscolumns where id=object_id('Classes') and name='TypeOfClassroom')
+	alter table Classes add TypeOfClassroom tinyint 
+go
+update Classes set TypeOfClassroom = 0 
+go
+alter table Classes alter column TypeOfClassroom tinyint not null
+go
+
+
+ if not exists(select * from syscolumns where id=object_id('Classes') and name='LCchildrenNumber')
+	alter table Classes add LCchildrenNumber int 
+go
+update Classes set LCchildrenNumber = 0 
+go
+alter table Classes alter column LCchildrenNumber int not null
+go
+
+
+
+ if not exists(select * from syscolumns where id=object_id('Classes') and name='LCchildrenTypeId')
+	alter table Classes add LCchildrenTypeId int 
+go
+update Classes set LCchildrenTypeId = 0 
+go
+alter table Classes alter column LCchildrenTypeId int not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Classes') and name='playgroundId')
+	alter table Classes add playgroundId int 
+go
+update Classes set playgroundId = 0 
+go
+alter table Classes alter column playgroundId int not null
+go
+

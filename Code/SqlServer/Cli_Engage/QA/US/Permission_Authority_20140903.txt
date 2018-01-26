@@ -1,0 +1,7 @@
+﻿
+alter table dbo.Permission_Authority
+add IsAll bit default 0 not null 
+
+update Permission_Authority 
+set isAll=1
+where Authority='All'

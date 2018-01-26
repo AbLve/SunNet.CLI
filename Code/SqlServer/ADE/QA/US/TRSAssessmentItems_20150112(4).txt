@@ -1,0 +1,31 @@
+﻿ IF EXISTS (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TRSAssessmentItems]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+	DROP TABLE [dbo].[TRSAssessmentItems]
+GO
+
+/****** Object:  Table [dbo].[TRSAssessmentItems]    Script Date: 2015/1/12 15:01:41 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[TRSAssessmentItems](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[TRSAssessmentId] [int] NOT NULL,
+	[ClassroomId] [int] NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[Score] [int] NOT NULL,
+	[AnswerId] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+ CONSTRAINT [PK_TRSAssessmentItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+

@@ -1,0 +1,5 @@
+﻿if not exists(select * from syscolumns where id=object_id('Assignments') and name='Watch')
+begin
+alter table Assignments
+add Watch varchar(200) null
+end

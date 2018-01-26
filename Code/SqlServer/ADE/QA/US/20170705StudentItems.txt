@@ -1,0 +1,3 @@
+﻿update StudentItems set Goal=0  where Goal is null or Goal=''
+go
+alter table StudentItems alter column Goal decimal(18,2) not null

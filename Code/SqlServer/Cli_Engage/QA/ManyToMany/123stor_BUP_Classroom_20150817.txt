@@ -1,0 +1,190 @@
+﻿CREATE PROCEDURE  [dbo].[BUP_Classroom]
+	@BUPClassroomID int
+AS
+BEGIN
+	
+	  DECLARE @Action tinyint
+	  DECLARE @CommunityName varchar(200)
+      DECLARE @CommunityEngageID varchar(50)
+      DECLARE @SchoolName varchar(200)
+      DECLARE @SchoolEngageID varchar(50)
+      DECLARE @Name varchar(50)
+      DECLARE @ClassroomEngageId varchar(32)
+	  DECLARE @ClassroomInternalID varchar(32)
+
+	  DECLARE @SchoolId INT
+	  DECLARE @CommunityId INT
+	  DECLARE @ClassroomId INT --classrooms 表Id
+
+	  BEGIN TRY
+	    BEGIN TRANSACTION;
+		  SELECT @Action= [Action] ,@CommunityName=[CommunityName] , @CommunityEngageID=[CommunityEngageID]
+		  ,@SchoolName=[SchoolName] ,@SchoolEngageID=[SchoolEngageID],@Name=[Name],@ClassroomEngageId=[ClassroomEngageId]
+		  ,@ClassroomInternalID = ClassroomInternalID
+	      FROM [dbo].[BUP_Classrooms] WHERE ID=@BUPClassroomID
+
+		--INSERT
+		IF(@Action = 1) BEGIN			
+			INSERT INTO [dbo].[Classrooms]
+			([ClassroomId]
+			,[SchoolId]
+			,[Name]
+			,[Status]
+			,[StatusDate]
+			,[SchoolYear]
+			,[InterventionStatus]
+			,[InterventionOther]
+			,[FundingId]
+			,[KitId]
+			,[KitUpdatedOn]
+			,[FcNeedKitId]
+			,[FcFundingId]
+			,[Part1KitId]
+			,[Part1KitUpdatedOn]
+			,[Part1NeedKitId]
+			,[Part1FundingId]
+			,[Part2KitId]
+			,[Part2KitUpdatedOn]
+			,[Part2NeedKitId]
+			,[Part2FundingId]
+			,[StartupKitId]
+			,[StartupKitUpdatedOn]
+			,[StartupNeedKitId]
+			,[StartupKitFundingId]
+			,[CurriculumId]
+			,[CurriculumUpdatedOn]
+			,[NeedCurriculumId]
+			,[NeedCurriculumUpdatedOn]
+			,[CurriculumFundingId]
+			,[DevelopingTalkersKitId]
+			,[DevelopingTalkersKitUpdatedOn]
+			,[DevelopingTalkersNeedKitId]
+			,[DevelopingTalkerKitFundingId]
+			,[FccKitId]
+			,[FccKitUpdatedOn]
+			,[FccNeedKitId]
+			,[FccKitFundingId]
+			,[InternetSpeed]
+			,[InternetType]
+			,[WirelessType]
+			,[IsUsingInClassroom]
+			,[ComputerNumber]
+			,[IsInteractiveWhiteboard]
+			,[MaterialsNotes]
+			,[TechnologyNotes]
+			,[CreatedOn]
+			,[UpdatedOn]
+			,[TypeOfClassroom]
+			,[LCchildrenNumber]
+			,[LCchildrenTypeId]
+			,ClassroomInternalID)
+			VALUES
+			(''-- <ClassroomId, varchar(32),>
+			,@SchoolId--<SchoolId, int,>
+			,@Name --<Name, varchar(50),>
+			,1 --<Status, tinyint,>
+			,getdate() --<StatusDate, datetime,>
+			,dbo.GetSchoolYear()--<SchoolYear, varchar(5),>
+			, 0--<InterventionStatus, tinyint,>
+			,''--<InterventionOther, varchar(150),>
+			,0--<FundingId, int,>
+			,0--<KitId, int,>
+			,'1753/1/1'--<KitUpdatedOn, datetime,>
+			,0--<FcNeedKitId, int,>
+			,0--<FcFundingId, int,>
+			,0--<Part1KitId, int,>
+			,'1753/1/1'--<Part1KitUpdatedOn, datetime,>
+			,0--<Part1NeedKitId, int,>
+			,0--<Part1FundingId, int,>
+			,0--<Part2KitId, int,>
+			,'1753/1/1'--<Part2KitUpdatedOn, datetime,>
+			,0--<Part2NeedKitId, int,>
+			,0--<Part2FundingId, int,>
+			,0--<StartupKitId, int,>
+			,'1753/1/1'--<StartupKitUpdatedOn, datetime,>
+			,0--<StartupNeedKitId, int,>
+			,0--<StartupKitFundingId, int,>
+			,0--<CurriculumId, int,>
+			,'1753/1/1'--<CurriculumUpdatedOn, datetime,>
+			,0--<NeedCurriculumId, int,>
+			,'1753/1/1'--<NeedCurriculumUpdatedOn, datetime,>
+			,0--<CurriculumFundingId, int,>
+			,0--<DevelopingTalkersKitId, int,>
+			,'1753/1/1'--<DevelopingTalkersKitUpdatedOn, datetime,>
+			,0--<DevelopingTalkersNeedKitId, int,>
+			,0--<DevelopingTalkerKitFundingId, int,>
+			,0--<FccKitId, int,>
+			,'1753/1/1'--<FccKitUpdatedOn, datetime,>
+			,0--<FccNeedKitId, int,>
+			,0--<FccKitFundingId, int,>
+			,0--<InternetSpeed, tinyint,>
+			,0--<InternetType, tinyint,>
+			,0--<WirelessType, tinyint,>
+			,0--<IsUsingInClassroom, bit,>
+			,0--<ComputerNumber, int,>
+			,0--<IsInteractiveWhiteboard, bit,>
+			,''--<MaterialsNotes, varchar(600),>
+			,''--<TechnologyNotes, varchar(600),>
+			,getdate()--<CreatedOn, datetime,>
+			,getdate()--<UpdatedOn, datetime,>
+			,0--<TypeOfClassroom, tinyint,>
+			,0--<LCchildrenNumber, int,>
+			,0--<LCchildrenTypeId, int,>
+			,@ClassroomInternalID
+			)
+
+			SELECT @ClassroomId = SCOPE_IDENTITY()
+					
+			UPDATE Classrooms SET Name = CASE @Name WHEN  '' THEN ClassroomId ELSE @Name END, 
+			ClassroomInternalID = CASE @ClassroomInternalID WHEN  '' THEN ClassroomId ELSE @ClassroomInternalID END
+			WHERE ID = @ClassroomId
+
+		END  --END ACTION=1
+
+		--UPDATE
+		IF(@Action = 2) BEGIN
+			IF NOT EXISTS(SELECT * FROM Classrooms WHERE ClassroomId=@ClassroomEngageId) BEGIN
+					UPDATE BUP_Classrooms SET Status=5 , Remark ='Classroom Engage Id not in Classrooms' WHERE ID = @BUPClassroomID
+			END
+			ELSE BEGIN
+				UPDATE [dbo].[Classrooms]
+				SET [Name] = @Name
+				,ClassroomInternalID = CASE WHEN @ClassroomInternalID='*CLEAR*' THEN '' WHEN @ClassroomInternalID != '' THEN @ClassroomInternalID ELSE ClassroomInternalID END
+				,[UpdatedOn] = GETDATE()
+				WHERE ClassroomId=@ClassroomEngageId
+			END
+		END
+		--DELETE
+		IF(@Action = 3)BEGIN		
+			IF NOT EXISTS(SELECT * FROM Classrooms WHERE ClassroomId=@ClassroomEngageId)
+						UPDATE BUP_Classrooms SET Status=5 , Remark ='Classroom Name not in Classrooms' WHERE ID = @BUPClassroomID
+			ELSE BEGIN
+				UPDATE [dbo].[Classrooms]
+				SET Status = 2
+				,StatusDate =GETDATE()
+				,[UpdatedOn] = GETDATE()
+				WHERE ClassroomId=@ClassroomEngageId
+			END			   
+		END
+
+	UPDATE BUP_Classrooms SET Status = 3 WHERE ID = @BUPClassroomID AND Status = 1;
+	  COMMIT TRANSACTION ;
+	END TRY
+
+	BEGIN CATCH
+		IF (XACT_STATE()) = -1
+		BEGIN			
+			ROLLBACK TRANSACTION;
+			UPDATE BUP_Classrooms SET Remark = ERROR_MESSAGE() ,Status = 4 WHERE ID = @BUPClassroomID
+		END;
+
+		IF (XACT_STATE()) = 1
+		BEGIN
+			COMMIT TRANSACTION;   
+		END;
+	END CATCH 
+
+END
+
+GO
+

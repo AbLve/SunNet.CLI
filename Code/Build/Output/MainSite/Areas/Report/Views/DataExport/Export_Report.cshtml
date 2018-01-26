@@ -1,0 +1,20 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout_ReportQueue.cshtml";
+}
+@if (ViewBag.CanDownload)
+{
+    using (Html.BeginForm("Export_Dl", "DataExport", FormMethod.Post))
+    {
+        @Html.Hidden("id")
+        @Html.Hidden("export", true)
+        <button type="submit" class="download-report btn btn-primary ">
+            <i class="icon-cloud-download"></i>
+            Download
+        </button>
+    }
+}
+else
+{
+    @Html.Raw("The report is not ready yet.")
+}
+

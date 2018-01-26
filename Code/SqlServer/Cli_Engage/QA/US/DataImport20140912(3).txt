@@ -1,0 +1,7 @@
+﻿
+INSERT INTO Counties
+SELECT DISTINCT County,getdate(),getdate() FROM
+(
+select distinct replace([County Name],' COUNTY','') as County from TEA_ISD_Directory_090214$ 
+union select distinct County from DFPS_ChildCareSearchResults_090$
+)tb1 WHERE County is not null order by County

@@ -1,0 +1,184 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Vcw.Models.FileListModel
+@{
+    ViewBag.Title = "My General Files";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Teacher_General)
+}
+@section BreadPath
+{
+My General Files
+}
+@using (Ajax.BeginForm("Delete", "General", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+
+    <div class="right-content-top">
+        <button type="button" class="mainbutton mainright-btn submit-btn" data-bind="click: $root.addData">Upload File</button>
+        <input type="button" class="mainbutton mainright-btn pencil-btn" value="Delete Selected File(s)" onclick="return deletedata()">
+    </div>
+
+
+    @Html.AntiForgeryToken()
+    <div class="main-content main-content">
+        <div class="content-title">File</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr>
+                        <td>
+                            <label>
+                                <input name="video_select" type="checkbox" data-bind="value: item.ID" />
+                            </label>
+                        </td>
+                        <td data-bind="text: item.IdentifyFileName"></td>
+                        <td data-bind="text: item.Number"></td>
+                        <td data-bind="text: item.UploadDate"></td>
+                        <td data-bind="text: item.DateRecorded == minDate ? '' : item.DateRecorded"></td>
+                        <td data-bind="text: item.Context"></td>
+                        <td data-bind="text: item.Content"></td>
+                        <td data-bind="text: item.FileExtension"></td>
+                        <td class="feedback" style="padding-left: 26px">
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                            <a class="table-btn icon-download-alt download-btn" data-bind="attr: { href: item.DownLoadFilePath }" title="Download"></a>
+                            <!-- ko if: (item.HasFeedback === true) -->
+                            <a class="table-btn icon-comment comment-btn" data-bind='attr: { href: $root.feedBack(item) }'
+                                data-toggle="modal" data-target="#modalNormal" href="#" title="Feedback"></a>
+                            <!-- /ko-->
+                        </td>
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 100 })
+            </table>
+            @Html.Partial("_Partial_Pager")
+        </div>
+    </div>
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Video = {};
+
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    list_Video.search();
+                }
+            })
+
+
+            list_Video = new ViewModel(
+                {
+                    instanceName: "list_Video",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: 'Redirect',
+                    viewDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    viewType: 'Redirect',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("Select")",
+                            field: "@Html.NameFor(model => model.ID)",
+                            width: '5%'
+                        },
+                        {
+                            text: '@Html.DisplayName("File Name")',
+                            field: "@Html.NameFor(model => model.IdentifyFileName)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: "@Html.DisplayName("ID")",
+                            field: "@Html.NameFor(model => model.ID)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Upload Date")',
+                            field: "@Html.NameFor(model => model.UploadDate)",
+                            order: true,
+                            width: '12%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Date Recorded")',
+                            field: "@Html.NameFor(model => model.DateRecorded)",
+                            order: true,
+                            width: '14%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Context")',
+                            field: "@Html.NameFor(model => model.Context)",
+                            width: '13%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Content")',
+                            field: "@Html.NameFor(model => model.Content)",
+                            width: '*'
+                        },
+                        {
+                            text: '@Html.DisplayName("File Type")',
+                            field: "@Html.NameFor(model => model.FileExtension)",
+                            width: '8%'
+                        },
+                        { text: "Action", width: '120px' }
+                    ],
+                    searchCriteria: {
+                    }
+                }
+                ,
+                {
+                    feedBack: function (data) {
+                        return "@Html.Raw(Url.Action("FileFeedback", "Feedback", new { Area = "" }))" + "/" + data.ID;
+                    }
+                }
+            );
+
+            list_Video.search();
+            ko.applyBindings(list_Video);
+        });
+
+                function deletedata() {
+                    var video_select = $("input[name=video_select]:checked");
+                    if (video_select.length == 0) {
+                        showMessage("hint", "Vcw_Videos_Noselect")
+                        return false;
+                    }
+                    else {
+                        var message = window.getErrorMessage("confirmToDelete");
+                        message = message.replace("[{0}]", "the selected files");
+                        $.when(waitingConfirm(message, "Delete", "Cancel")).done(function () {
+                            $("#@(formId)").submit();
+                        })
+                    }
+                    return false;
+                }
+    </script>
+}
+

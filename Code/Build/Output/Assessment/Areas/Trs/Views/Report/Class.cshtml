@@ -1,0 +1,174 @@
+﻿@using Sunnet.Cli.Business.Trs.Models
+@using Sunnet.Cli.Core.Trs
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Report - Classroom Item (TA)";
+    Layout = "~/Areas/Trs/Views/Shared/_Trs_Report_Layout.cshtml";
+    var assessment = ViewBag.Model as TrsAssessmentReportModel;
+    var classModel = ViewBag.ClassModel as TrsClassModel;
+}
+<table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-header">
+                <tr>
+                    <th>CLASSROOM TECHNICAL ASSISTANCE REPORT
+                        <p class="redtext" style="margin-top: -30px">(Official)</p>
+                    </th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td colspan="2" style="text-align: left;">Date:&nbsp;@(assessment.UpdatedOn.FormatDateString())</td>
+                    <td style="text-align: left;"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th colspan="2" style="text-align: left;">@(assessment.School.Name)</th>
+                    <td></td>
+                    <td>
+                        <img class="logo" src="@(SFConfig.AssessmentDomain)images/trs_logo.jpg" alt="Trs Logo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" width="200">@(assessment.School.CommunityNames)</td>
+                    <th style="text-align: left;">@(Html.DisplayNameFor(x => assessment.School.DfpsNumber)):&nbsp;@(assessment.School.DfpsNumber)</th>
+                    <th style="text-align: left; font-size: 16px;"></th>
+                </tr>
+                <tr>
+                    <td width="100"></td>
+                    <td width="260"></td>
+                    <td></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    @if (classModel != null)
+    {
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <th style="text-align: left;" width="350">NAME OF CLASSROOM</th>
+                        <td>@(classModel.Name)</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left;">Type of Classroom</th>
+                        <td>@(classModel.TypeOfClass.ToDescription())</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left;"># of Children</th>
+                        <td>@(string.Join(", ", classModel.Ages.Select(x => x.NumberOfChildren)))</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left;" colspan="2">STAFF RATIO (Category 2: @(string.Join(", ", classModel.StaffRatioItems.Select(x => x.Item)))):
+                        </th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;" colspan="2">
+                            @(string.Join(", ", classModel.StaffRatioItems.Select(x => x.AnswerText)))
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td colspan="3" class="trs-table-tittle">Name(s) of Teacher(s) in Classroom</td>
+                        <td colspan="1">Lead Teacher</td>
+                    </tr>
+                    @if (classModel.Teachers.Any())
+                    {
+                        foreach (var teacher in classModel.Teachers)
+                        {
+                            if (teacher.UserId > 0)
+                            {
+                        <tr>
+                            <td width="20%">@(teacher.FirstName)</td>
+                            <td width="20%">@(teacher.LastName)</td>
+                            <td width="20%">@(teacher.MiddleName)</td>
+                            <td width="*">@(ViewTextHelper.BoolInTexts[teacher.IsLeadTeacher])</td>
+                        </tr>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4">None
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table cellpadding="0" cellspacing="0" border="0" class="trs-table-f">
+                    <thead>
+                        <tr>
+                            <th width="100">Measure #</th>
+                            <th width="*">Measure</th>
+                            <th width="200">Linking Video or Document</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in classModel.Categories)
+                        {
+                            if (category.Value.Any(cate => cate.Value.Any(sub => sub.Score < 3)))
+                            {
+                            <tr style="page-break-inside: avoid;">
+                                <th colspan="3">
+                                    @(category.Key.GetDisplayName()): @(category.Key.ToDescription())
+                                </th>
+                            </tr>
+                            }
+                            foreach (var subCategory in category.Value)
+                            {
+                                if (subCategory.Value.Any(x => x.Score < 3))
+                                {
+                            <tr style="page-break-inside: avoid;">
+                                <th colspan="3">
+                                    @ViewTextHelper.HtmlEmptySeparator
+                                    @(assessment.SubCategory[subCategory.Key].Name)
+                                </th>
+                            </tr>
+                                    foreach (var itemModel in subCategory.Value)
+                                    {
+                                        if (itemModel.Score < 3)
+                                        {
+                            <tr style="page-break-inside: avoid;">
+                                <td>@(itemModel.Item)</td>
+                                <td>@(Html.Raw(itemModel.Description))</td>
+                                <td>@(Html.Raw(itemModel.LinkingDocument))</td>
+                            </tr>
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <br />
+                TRS Mentor's Note:
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="width: 100%; height: 200px; border: 1px solid #000000;"></div>
+            </td>
+        </tr>
+    }
+</table>

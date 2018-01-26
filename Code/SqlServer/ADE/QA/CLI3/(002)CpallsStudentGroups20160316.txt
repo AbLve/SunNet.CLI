@@ -1,0 +1,7 @@
+﻿    alter table  [CpallsStudentGroups] add [Note] varchar(300) not null default ''
+  go
+  update [CpallsStudentGroups] set [Note] = ''
+  go 
+    alter table  [CpallsStudentGroups] alter column [Note]  varchar(300) not null  
+
+ 

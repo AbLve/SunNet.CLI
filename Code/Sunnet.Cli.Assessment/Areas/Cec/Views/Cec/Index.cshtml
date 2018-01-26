@@ -1,0 +1,465 @@
+﻿@using System.Web.Optimization
+@model Sunnet.Cli.Business.Cec.Model.CECSeachModel
+@{
+    ViewBag.Title = "CEC";
+    List<int> UserPages = ViewBag.UserPages as List<int>;
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a><i class="icon-angle-right"></i>Teacher
+}
+@section Styles
+{
+    @Styles.Render("~/css/assessment/offline")
+}
+@Html.Partial("Offline/_Partial_Reset")
+@Html.Partial("Offline/_Partial_Pin")
+<div class="right-content-top">
+</div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        @Html.LabelFor(m => m.CommunityName, new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", Model.CommunityName, new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#CommunityId",
+                    data_remote = Url.Action("GetCommunitySelectListForSearch", "Cec"),
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "txtCommunity",
+                    name = "txtCommunity",
+                    @for = "CommunityId",
+                    placeholder = "Enter key text to search",
+                    data_bind = "value: searchCriteria.txtCommunity",
+                    data_required = "true"
+                })
+            @Html.HiddenFor(model => model.CommunityId, new
+           {
+               @class = "form-control ",
+               placeholder = "selected from autocomplete",
+               data_bind = "value: searchCriteria.communityId"
+           })
+        </div>
+        @Html.LabelFor(m => m.SchoolName, new
+       {
+           @class = "control-label col-sm-2",
+           @for = "txtSchool"
+       })
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", Model.SchoolName, new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#SchoolId",
+                    data_remote = Url.Action("GetSchoolSelectList", "Cec"),
+                    data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "txtSchool",
+                    name = "txtSchool",
+                    @for = "SchoolId",
+                    placeholder = "Enter key text to search",
+                    data_extraParams = "{\"communityId\":\"#CommunityId\"}",
+                    data_bind = "value: searchCriteria.txtSchool",
+                    data_required = "true"
+                })
+            @Html.HiddenFor(model => model.SchoolId, new
+           {
+               @class = "form-control",
+               placeholder = "selected from autocomplete",
+               data_bind = "value: searchCriteria.schoolId"
+           })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Coach", "Coach", new { @class = "control-label col-sm-2", @for = "selCoach" })
+        <div class="col-sm-3">
+            <select id="selCoach" name="selCoach" class="form-control"
+                data-bind="options: coachOptions, optionsText: 'Text', optionsValue: 'Value',value: searchCriteria.coachId">
+            </select>
+        </div>
+        @Html.Label("Code", "Teacher ID", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Code, new
+              {
+                  @class = "form-control",
+                  data_bind = "value: searchCriteria.teacherCode"
+              })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.FirstName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.FirstName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.firstName"
+            })
+        </div>
+        @Html.LabelFor(m => m.LastName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.LastName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.lastName"
+            })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("SchoolYear", "School Year", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(m => m.SchoolYear, (IEnumerable<SelectListItem>)ViewBag.YearOptions, new { @class = "form-control", data_bind = "value: searchCriteria.year" })
+        </div>
+        <div class="col-sm-offset-2 col-sm-5">
+            <button class="mainbutton mainright-btn search-bg-btn" type="button" data-bind="event: { click: search }">Search</button>
+            @if (@ViewBag.CecOffline)
+            {
+                <!--ko if:$root.currentYear == $root.searchedYear()-->
+                  
+                <button id="hrefGoOffline" class=" mainbutton mainright-btn pencil-btn" type="button">
+                    <i class=" icon-cloud-download"></i>
+                    Offline Assessment
+                </button>
+                <!-- /ko-->
+                <button class="mainbutton mainright-btn pencil-btn hidden" type="button" id="btnOpenResetPin" type="button">
+                    <i class="icon-key"></i>
+                    Reset PIN</button>
+            }
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">Teachers</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.CommunitiesText"></td>
+                    <td data-bind="text: item.SchoolsText"></td>
+                    <td data-bind="text: item.FirstName"></td>
+                    <td data-bind="text: item.LastName"></td>
+                    <td data-bind="text: item.CoachName"></td>
+                    <td data-bind="text: item.YearsInProject"></td>
+                    <td>
+                        <!-- ko if: (item.BOY() == "" && item.SchoolYear == '@(ViewBag.SchoolYear)') -->
+                        <a class="tab-btn" data-bind="attr: { href: $root.getBOYUrl(item) }" title="Launch BOY"><span style="display:none;">1</span><i class="icon-play"></i></a>
+                        <!-- /ko-->
+
+                        <!-- ko if: !(item.BOY() == "") -->
+                        <a data-bind="text: BOY(), attr: { href: $root.getBOYReport(item) }" class="form-link2" title="BOY" target="_blank"></a>
+                        <!-- /ko-->
+                        &nbsp;
+                        @if (ViewBag.IsAdmin)
+                        {
+                            <!-- ko if: (item.BOY() != "" && item.SchoolYear == '@(ViewBag.SchoolYear)') -->
+                            <a class="tab-btn" data-bind="click: $root.koResultBOY" title="Reset BOY"><i class="icon-undo"></i></a>
+                            <!-- /ko-->
+                        }
+                    </td>
+                    <td>
+                        <!-- ko if: (item.MOY() == "" && item.SchoolYear == '@(ViewBag.SchoolYear)') -->
+                        <a class="tab-btn" data-bind="attr: { href: $root.getMOYUrl(item) }" title="Launch MOY"><span style="display:none;">1</span><i class="icon-play"></i></a>
+                        <!-- /ko-->
+
+                        <!-- ko if: !(item.MOY() == "") -->
+                        <a data-bind="text: MOY(), attr: { href: $root.getMOYReport(item) }" class="form-link2" title="MOY" target="_blank"></a>
+                        <!-- /ko-->
+                        &nbsp;
+                        @if (ViewBag.IsAdmin)
+                        {
+                     
+                            <!-- ko if: (item.MOY() != "" && item.SchoolYear == '@(ViewBag.SchoolYear)') -->
+                            <a class="tab-btn" data-bind="click: $root.koResultMOY" title="Reset MOY"><i class="icon-undo"></i></a>
+                            <!-- /ko-->
+                        }
+                    </td>
+                    <td>
+                        <!-- ko if: (item.EOY() == "" && item.SchoolYear == '@(ViewBag.SchoolYear)') -->
+                        <a class="tab-btn" data-bind="attr: { href: $root.getEOYUrl(item) }" title="Launch EOY"><span style="display:none;">1</span><i class="icon-play"></i></a>
+                        <!-- /ko-->
+
+                        <!-- ko if: !(item.EOY() == "") -->
+                        <a data-bind="text: EOY(), attr: { href: $root.getEOYReport(item) }" class="form-link2" title="EOY" target="_blank"></a>
+                        <!-- /ko-->
+                        &nbsp;
+                        @if (ViewBag.IsAdmin)
+                        {
+                            <!-- ko if: (item.EOY() != "" && item.SchoolYear == '@(ViewBag.SchoolYear)') -->
+                            <a class="tab-btn" data-bind="click: $root.koResultEOY" title="Reset EOY"><i class="icon-undo"></i></a>
+                            <!-- /ko-->
+                        }
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 9 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/cec/offline")
+    <script type="text/javascript">
+        var teacherList = {};
+
+        function communityChanged() {
+            var communityId = $("#CommunityId").val();
+            $.getJSON(
+                '@Url.Action("GetCoachSelectList")',
+                { communityId: communityId },
+                function (data) {
+                    teacherList.coachOptions(data);
+                });
+            $("#FirstName").val("");
+            $("#LastName").val("");
+        }
+
+        jQuery(function() {
+            $("#txtCommunity").on("selected.sunnet.datalist", function (obj) {
+                communityChanged();
+            });
+
+            teacherList = new ViewModel(
+            {
+                instanceName: "teacherList",
+                modalId: "modalNormal",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                orderBy: "FirstName",
+                orderDirection: "ASC",
+                pageSize: 10,
+                headers: [
+                    {
+                        text: "Community Name",
+                        field: "CommunityName",
+                        order: false,
+                        width: '*'
+                    },
+                    {
+                        text: "School Name",
+                        field: "SchoolName",
+                        order: false,
+                        width: '15%'
+                    },
+                    {
+                        text: "First Name",
+                        field: "FirstName",
+                        order: true,
+                        width: '130px'
+                    },
+                    {
+                        text: "Last Name",
+                        field: "LastName",
+                        order: true,
+                        width: '130px'
+                    },
+                    {
+                        text: "Coach Name",
+                        field: "CoachLastName",
+                        order: true,
+                        width: '140px'
+                    },
+                    {
+                        text: "Years in Project",
+                        field: "YearsInProject",
+                        order: false,
+                        width: '120px'
+                    },
+                    {
+                        text: "BOY",
+                        field: "BOY",
+                        order: true,
+                        width: '135px'
+                    },
+                    {
+                        text: "MOY",
+                        field: "MOY",
+                        order: true,
+                        width: '135px'
+                    },
+                    {
+                        text: "EOY",
+                        field: "EOY",
+                        order: true,
+                        width: '135px'
+                    }
+                ],
+                searchCriteria: {
+                    communityId: ko.observable(window.queryString("communityId", "@Model.CommunityId")),
+                    txtCommunity: ko.observable(window.queryString("txtCommunity", '@Model.CommunityName')),
+                    schoolId: ko.observable(window.queryString("schoolId", '@Model.SchoolId')),
+                    coachId:ko.observable(window.queryString("coachId","")),
+                    txtSchool: ko.observable(window.queryString("txtSchool", '@Model.SchoolName')),
+                    teacherCode: ko.observable(window.queryString("teacherCode")),
+                    firstName: ko.observable(window.queryString("firstName")),
+                    lastName: ko.observable(window.queryString("lastName")),
+                    year: ko.observable(window.queryString("year", @(ViewBag.Year))),
+                    assessmentId: ko.observable(window.queryString("assessmentId", @(ViewBag.AssessmentId))),
+                }
+            }, {
+                dataProcessor: function(items) {   
+                    for (var i = 0; i < items.length; i++) {
+                        if(typeof(items[i].BOY) == "string"){
+                            items[i].BOY = ko.observable(items[i].BOY);
+                            items[i].MOY = ko.observable(items[i].MOY);
+                            items[i].EOY = ko.observable(items[i].EOY);
+                        }
+                    }
+                    teacherList.searchedYear(items[0].SchoolYear);
+                    return items;
+                },
+                getBOYUrl: function(data) {
+                    return '@Url.Action("Measure")?assessmentId=@(ViewBag.AssessmentId)&wave=1&teacherId=' + data.ID;
+                },
+                getBOYReport: function(data) {
+                    return '@Url.Action("CECReport")?assessmentId=@(ViewBag.AssessmentId)&wave=1&teacherId=' + data.ID + "&year=" + teacherList.searchCriteria.year();
+                },
+                getMOYUrl: function(data) {
+                    return '@Url.Action("Measure")?assessmentId=@(ViewBag.AssessmentId)&wave=2&teacherId=' + data.ID;
+                },
+                getMOYReport: function(data) {
+                    return '@Url.Action("CECReport")?assessmentId=@(ViewBag.AssessmentId)&wave=2&teacherId=' + data.ID + "&year=" + teacherList.searchCriteria.year();
+                },
+                getEOYUrl: function(data) {
+                    return '@Url.Action("Measure")?assessmentId=@(ViewBag.AssessmentId)&wave=3&teacherId=' + data.ID;
+                },
+                getEOYReport: function(data) {
+                    return '@Url.Action("CECReport")?assessmentId=@(ViewBag.AssessmentId)&wave=3&teacherId=' + data.ID + "&year=" + teacherList.searchCriteria.year();
+                },
+                koResultBOY: function(teacher, event) {
+                    jQuery.when(waitingConfirm("<p style='text-align:left'> Are you sure that you want to delete the BOY CEC? Once deleted, the observation can not be recovered. </p>", "Yes", "No")).done(function() {
+                        jQuery.post("Cec/reset",
+                        {
+                            assessmentId: @(ViewBag.AssessmentId),
+                            teacherId: teacher.ID,
+                            wave: 1
+                        }, function(msg) {
+                            if (msg.success) {
+                                teacher.BOY("");
+                            } else {
+                                showMessage("fail", msg.msg);
+                            }
+                        }, "json");
+
+                    }).fail(function() {
+                    });
+                },
+                koResultMOY: function(teacher, event) {
+                    jQuery.when(waitingConfirm("<p style='text-align:left'> Are you sure that you want to delete the MOY CEC? Once deleted, the observation can not be recovered. </p>", "Yes", "No")).done(function() {
+                        jQuery.post("Cec/reset",
+                        {
+                            assessmentId: @(ViewBag.AssessmentId),
+                            teacherId: teacher.ID,
+                            wave: 2
+                        }, function(msg) {
+                            if (msg.success) {
+                                teacher.MOY("");
+                            } else {
+                                showMessage("fail", msg.msg);
+                            }
+                        }, "json");
+
+                    }).fail(function() {
+                    });
+                },
+                koResultEOY: function(teacher, event) {
+                    jQuery.when(waitingConfirm("<p style='text-align:left'> Are you sure that you want to delete the EOY CEC? Once deleted, the observation can not be recovered. </p>", "Yes", "No")).done(function() {
+                        jQuery.post("Cec/reset",
+                        {
+                            assessmentId: @(ViewBag.AssessmentId),
+                            teacherId: teacher.ID,
+                            wave: 3
+                        }, function(msg) {
+                            if (msg.success) {
+                                teacher.EOY("");
+                            } else {
+                                showMessage("fail", msg.msg);
+                            }
+                        }, "json");
+
+                    }).fail(function() {
+                    });
+                },
+                currentYear: '@(ViewBag.SchoolYear)',
+                searchedYear: ko.observable('@(ViewBag.SchoolYear)'),
+                coachOptions: ko.observableArray([])
+            });
+            teacherList.offline = function() {
+                $.get('@Url.Action("Offline")', {
+                    communityId: teacherList.searchCriteria.communityId(),
+                    communityName: teacherList.searchCriteria.txtCommunity(),
+                    schoolId: teacherList.searchCriteria.schoolId(),
+                    schoolName: teacherList.searchCriteria.txtSchool(),
+                    teacherCode: teacherList.searchCriteria.teacherCode(),
+                    firstName: teacherList.searchCriteria.firstName(),
+                    lastName: teacherList.searchCriteria.lastName(),
+                    year: teacherList.searchCriteria.year(),
+                    assessmentId: teacherList.searchCriteria.assessmentId(),
+                    sort: teacherList.orderBy(),
+                    order: teacherList.orderDirection(),
+                    first: teacherList.showFromRecord() - 1,
+                    count: teacherList.showRecordsCount()
+                }, function(response) {
+                    location.href = "/Cec/Offline/Preparing";
+                });
+            };
+            teacherList.search();
+            ko.applyBindings(teacherList);
+            communityChanged();
+
+            var offlineApp = getCecOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.init();
+            
+            offlineApp.customOfflinePreparing = function() {
+                teacherList.offline();
+            };
+
+            $("#hrefGoOffline").click(function() {
+                if (offlineApp.status === offlineApp.values.Status.Changed) {
+                    $.when(window.waitingConfirm("confirm_To_Offline_Changed", "Go to Offline", "Cancel")).done(function() {
+                        location.href = "/Cec/Offline";
+                    });
+                } else {
+                    offlineApp.showLocker();
+                }
+                return false;
+            });
+            
+            if (offlineApp.status === offlineApp.values.Status.None) {
+                $("#btnOpenResetPin").remove();
+            } else {
+                $("#btnOpenResetPin").removeClass("hidden").click(function() {
+                    offlineApp.resetPin();
+                });
+            }
+        });
+
+    </script>
+}

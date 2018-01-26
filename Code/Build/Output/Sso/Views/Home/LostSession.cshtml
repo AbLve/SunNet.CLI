@@ -1,0 +1,21 @@
+﻿@using Sunnet.Cli.UIBase.Models;
+@{
+    ViewBag.Title = "LogOut";
+    Layout = "~/Views/Shared/_Layout_LogOut.cshtml";    
+}
+
+<div class="logout-main">
+    <div class="logout-main-header">
+        <a href="#">
+            <img src="/images/cli_logo.png" alt="cli_logo"></a>
+    </div>
+    <div class="logout-main-body">
+        <h4>Your session has expired.</h4>
+        <p>Choose from the following three options:</p>
+    </div>
+      <div class="logout-main-footer">
+        <a class="mainbutton logout-main-btn pass-btn" href="@(DomainHelper.MainSiteDomain)">Return to the home page</a>
+        <a class="mainbutton logout-main-btn close-btn" href="@(DomainHelper.SsoSiteDomain)home/Index?@(ViewBag.LoginUrl_Google)">Sign In with your Google Account</a>
+        <a class="mainbutton logout-main-btn backhome-btn" href="@(DomainHelper.SsoSiteDomain)home/Index?@(ViewBag.LoginUrl_UT)">UTHealth Login</a>
+    </div>
+</div>

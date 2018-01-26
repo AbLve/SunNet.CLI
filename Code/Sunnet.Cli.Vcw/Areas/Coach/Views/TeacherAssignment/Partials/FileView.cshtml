@@ -1,0 +1,117 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherAssignmentFileModel
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.UIBase
+@{
+    List<SelectItemModel> SelectionLists = ViewBag.SelectionList as List<SelectItemModel>;
+}
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <span class="col-sm-6 control-label">File Name</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @Model.IdentifyFileName
+            </span>
+        </div>
+        <span class="col-sm-6 control-label">DownLoad</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                <a href="@(Model.DownLoadFilePath)" class="form-link4">@(Model.FileName)</a>
+            </span>
+        </div>
+        <span class="col-sm-6 control-label">Date Video Recorded</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @Model.DateRecorded.Value.FormatDateString()
+            </span>
+        </div>
+
+        <span class="col-sm-6 control-label">Video Language</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @(Model.LanguageText)
+            </span>
+        </div>
+
+        <span class="col-sm-6 control-label">Video Context</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @Model.ContextText
+            </span>
+
+        </div>
+
+        <div class="col-sm-12">
+            <div class="content-con">
+                <div class="content-title3">
+                    <span class="control-label">Teacher Comments</span>
+                </div>
+                <div class="textarea-con">
+                    @Model.Description
+                </div>
+            </div>
+        </div>
+        <div class="coachreview-con">
+            <div class="coachreview-con-t">Coach Review</div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Screening</div>
+                    </div>
+                    <div class="checkbox-con">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="screening" value="1" 
+                                     @(Model.Status == FileStatus.Completed ? "checked" : "")/>Accept
+                        </label>
+                    </div>
+                    <div class="checkbox-con">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="screening" value="2" 
+                                    @(Model.Status == FileStatus.Rejected ? "checked" : "")/>Reject
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Selection List</div>
+                    </div>
+                    @if (SelectionLists != null)
+                    {
+                        foreach (SelectItemModel item in SelectionLists)
+                        {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="selectionlist" value="@item.ID"
+                                        @(Model.SelectionIds.Contains(item.ID) ? "checked" : "")>@item.Name
+                            </label>
+                        </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Link Video</div>
+                    </div>
+                    <div class="upload-btn">
+                        <a  href='@Url.Action("LinkToAssignment", "TeacherAssignment", new { fileId = Model.ID, redirect = Request.QueryString["redirect"], teacherId = Model.OwnerId })'                               
+                                class="mainbutton mainright-btn search-btn">Browse for VIP</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <video controls="controls" class="videoplay">
+            <source src="@(FileHelper.GetPreviewPathofUploadFile(Model.FilePath).Replace("\\", "/"))" />
+        </video>
+    </div>
+</div>

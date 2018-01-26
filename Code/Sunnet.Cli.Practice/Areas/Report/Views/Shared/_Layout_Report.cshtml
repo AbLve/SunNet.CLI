@@ -1,0 +1,691 @@
+﻿@using System.Web.Optimization
+@{
+    Layout = null;
+    var title = "" + ViewBag.Title;
+    if (!string.IsNullOrEmpty(title))
+    {
+        title += " - ";
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <title>@(title)Report</title>
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+    <style type="text/css">
+        body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, form, img, dl, dt, dd, table, th, td, blockquote, fieldset, div, strong, label, em
+        {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        body
+        {
+            font-family: Calibri;
+            font-size: 12px;
+        }
+
+        table > caption
+        {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .container
+        {
+            /*border: solid 1px #000;*/
+            border-radius: 5px;
+            padding: 5px 20px;
+            margin: 10px;
+            text-align: center;
+            width: 95%;
+        }
+
+            .container.pdf
+            {
+                margin: 0px;
+                padding: 0px;
+            }
+
+                .container.pdf table
+                {
+                }
+
+        table
+        {
+            margin-bottom: 20px;
+        }
+
+            table.header
+            {
+                width: 99%;
+                margin: 0 auto;
+            }
+
+                table.header .title
+                {
+                    font-size: 14px;
+                    font-weight: bold;
+                }
+
+                table.header .heading
+                {
+                    font-size: 12px;
+                    font-weight: bold;
+                    text-align: left;
+                }
+
+        .header div
+        {
+            white-space: nowrap;
+        }
+
+        .header td
+        {
+            vertical-align: top;
+            padding: 0px;
+        }
+
+        table th, table td
+        {
+            padding: 3px;
+        }
+
+            table th.noborder, table td.noborder, .noborder, .noborder td, .noborder th
+            {
+                border-color: #fff !important;
+            }
+
+            table th.border-t, table td.border-t
+            {
+                border-top: 1px solid #000 !important;
+            }
+
+            table th.border-l, table td.border-l
+            {
+                border-left: 1px solid #000 !important;
+            }
+
+            table th.border-b, table td.border-b
+            {
+                border-bottom: 1px solid #000 !important;
+            }
+
+        table caption
+        {
+            text-align: left;
+        }
+        /***************** begin:table-left ********************/
+        .table-left
+        {
+            text-align: left;
+            border: #fff !important;
+        }
+
+            .table-left .noborder
+            {
+                border-color: #fff !important;
+            }
+
+            .table-left th, .table-left td
+            {
+                border: solid 1px #000;
+                padding: 3px;
+            }
+
+            .table-left .td-right
+            {
+                text-align: right;
+            }
+
+            .table-left .td-center
+            {
+                text-align: center;
+            }
+
+            .table-left .text-bold
+            {
+                font-weight: bolder;
+            }
+
+        /***************** end:table-left ********************/
+
+        /***** fixed columns start**********/
+        .fixed-columns-container
+        {
+            position: relative;
+        }
+
+        .fixed-columns-overflow
+        {
+            margin-left: 99px;
+            overflow-x: scroll;
+            overflow-y: visible;
+            padding-bottom: 1px;
+        }
+
+        table > thead > tr.fixed-columns-rotate th, .table > thead > tr > th.fixed-columns-rotate-super
+        {
+            border: none;
+            padding: 0px;
+            position: relative;
+            vertical-align: bottom;
+            min-width: 50px;
+        }
+
+        table > thead > tr.fixed-columns-rotate > th.fixed-columns-rotate-super
+        {
+            height: 30px;
+        }
+
+        table > thead > tr.fixed-columns-rotate th.fixed-columns-rotate
+        {
+            max-width: 70px;
+            height: 130px;
+        }
+
+        th.fixed-columns-rotate
+        {
+            border: none;
+        }
+
+
+            th.fixed-columns-rotate > div
+            {
+                white-space: normal;
+                height: 70px;
+                left: 72px;
+                z-index: 100;
+                position: relative;
+                min-width: 10px;
+                width: 130px;
+                overflow: hidden;
+                border: 1px solid #000;
+                -webkit-transform: rotate(270deg) skew(0deg,30deg); /* Safari and Chrome */
+                -webkit-transform-origin: bottom left; /* Safari and Chrome */
+                transform: rotate(270deg) skew(0deg,30deg);
+                transform-origin: bottom left;
+                -ms-transform: rotate(270deg) skew(0deg,30deg);
+                -ms-transform-origin: bottom left;
+                -moz-transform: rotate(270deg) skew(0deg,30deg);
+                -moz-transform-origin: bottom left;
+                -o-transform: rotate(270deg) skew(0deg,30deg);
+                -o-transform-origin: bottom left;
+            }
+
+        th.fixed-columns-rotate-super > div
+        {
+            white-space: normal;
+            height: 30px;
+            z-index: 100;
+            position: relative;
+            left: 75px;
+            min-width: 10px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid #000;
+            -webkit-transform: skew(-30deg,0deg); /* Safari and Chrome */
+            -webkit-transform-origin: bottom left; /* Safari and Chrome */
+            transform: skew(-30deg,0deg);
+            transform-origin: bottom left;
+            -ms-transform: skew(-30deg,0deg);
+            -ms-transform-origin: bottom left;
+            -moz-transform: skew(-30deg,0deg);
+            -moz-transform-origin: bottom left;
+            -o-transform: skew(-30deg,0deg);
+            -o-transform-origin: bottom left;
+        }
+
+        table thead .active.fixed-columns-rotate, table thead .active.fixed-columns-rotate-super
+        {
+            background: none !important;
+        }
+
+            table thead .active.fixed-columns-rotate > div, table thead .active.fixed-columns-rotate-super > div
+            {
+                background: #f5f5f5;
+            }
+
+        th.fixed-columns-rotate > div > span
+        {
+            position: absolute;
+            left: 10px;
+            bottom: 0px;
+            text-align: left;
+            display: inline-block;
+            width: 97%;
+            height: 40px;
+            -webkit-transform: skew(0deg, -30deg) rotate(30deg); /* Safari and Chrome */
+            transform: skew(0deg, -30deg) rotate(30deg);
+            -ms-transform: skew(0deg, -30deg) rotate(30deg);
+            -moz-transform: skew(0deg, -30deg) rotate(30deg);
+            -o-transform: skew(0deg, -30deg) rotate(30deg);
+        }
+
+        th.fixed-columns-rotate-super > div > span
+        {
+            position: absolute;
+            left: 0px;
+            bottom: 4px;
+            display: inline-block;
+            width: 100%;
+            transform: skew(30deg, 0deg);
+            -webkit-transform: skew(30deg, 0deg); /* Safari and Chrome */
+            -ms-transform: skew(30deg, 0deg);
+            -moz-transform: skew(30deg, 0deg);
+            -o-transform: skew(30deg, 0deg);
+        }
+
+        .fixed-column, .fixed-column-header
+        {
+            position: absolute !important;
+            left: 0px;
+            width: 100px;
+            border: 1px solid #000;
+        }
+
+            .fixed-column-header div
+            {
+                margin-top: 94px;
+            }
+
+        .fixed-columns-container thead > th.fixed-column
+        {
+            border-top: 1px;
+        }
+
+        .newpager
+        {
+            page-break-before: always;
+        }
+
+        .btn-export
+        {
+            position: fixed;
+            top: 50%;
+            right: 50px;
+            height: 40px;
+            font-size: 16px;
+            background-color: #1a7c9d;
+            color: #fff;
+            cursor: pointer;
+            display: none;
+        }
+
+        .title-strong
+        {
+            font-weight: bold;
+        }
+
+        .note
+        {
+            text-align: left;
+            color: #999;
+        }
+
+        .report-data
+        {
+            margin: 0 auto;
+        }
+
+        img
+        {
+            max-width: 1200px;
+            max-height: 650px;
+        }
+        /***** fixed columns end**********/
+
+        .table_border
+        {
+            border: 1px #333 solid;
+            border-left: 0px;
+            border-bottom: 0px;
+        }
+
+            .table_border td
+            {
+                border-left: 1px #333 solid;
+                border-bottom: 1px #333 solid;
+            }
+    </style>
+
+    <style type="text/css">
+        /*-----------------------------------------Color Report Start---------------------------------*/
+        .cpalls_normal span
+        {
+            background: #32a447;
+            color: #000;
+        }
+
+        .cpalls_normal_light span
+        {
+            color: #000;
+            background-color: #D3F07D;
+        }
+
+        .cpalls_four, .cpalls_three
+        {
+            color: #fff;
+            font-weight: bold;
+        }
+        .cpalls_four span, .cpalls_no_benchmark span, .cpalls_three span, .cpalls_normal span,
+        .cpalls_four_light span, .cpalls_three_light span, .cpalls_three_less span, .cpalls_three_less_light span, .cpalls_normal_light span
+        {
+            display: inline-block;
+            /*border-radius: 3px;
+            width: auto;
+            min-width: 30px;
+            padding: 2px 5px;*/
+
+            width:23px;
+            height:18px;
+            padding-top:5px;
+            border-radius:50%;
+        }
+
+        .cpalls_four span
+        {
+            background: #dc143c;
+            color: #000;
+        }
+
+        .cpalls_three span
+        {
+            background: #F0A300;
+            color: #000;
+        }
+
+        .cpalls_four_light span
+        {
+            background: #F8A5A9;
+            color: #000;
+        }
+
+        .cpalls_three_light span
+        {
+            color: #000;
+            background: #FFF200;
+        }
+
+        .cpalls_three_less span
+        {
+            background-color: #028dc4;
+            color: #000;
+        }
+
+        .cpalls_three_less_light span
+        {
+            color: #000;
+            background-color: #B9ECE7;
+        }
+
+        .cpalls_no_benchmark span
+        {
+            background-color: #fff;
+            color: #000;
+            border-color: #000;
+            display: inline-block;
+            border: 1px solid;
+        }
+        /*-----------------------------------------Color Report End---------------------------------*/
+    </style>
+
+    <style type="text/css">
+        /*-----------------------------------------B&W Report Start---------------------------------*/
+        .gray .cpalls_four span, .gray .cpalls_three span, .gray .cpalls_normal span,
+        .gray .cpalls_four_light span, .gray .cpalls_three_light span, .gray .cpalls_three_less span, .gray .cpalls_three_less_light span, .gray .cpalls_normal_light span
+        {
+            display: inline-block;
+            width:30px;
+            height:18px;
+            padding-top:5px;
+            border-radius:20%;
+        }
+
+        .gray .light_color span
+        {
+            color: #000;
+            font-size: 13px;
+            text-decoration: underline;
+        }
+        .gray .cpalls_normal span
+        {
+            background: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .gray .cpalls_four span
+        {
+            background: #D3D3D3;
+            border: 1px solid #000;
+            border-radius: 20%;
+            color: #000;
+            font-size: 13px;
+        }
+
+        .gray .cpalls_three span
+        {
+            background: #fff;
+            border: 1px solid #000;
+            border-radius: 20%;
+            color: #000;
+            font-size: 13px;
+        }
+
+        .gray .cpalls_three_less span
+        {
+            background: #fff;
+            border-radius: 20%;
+            color: #000;
+            font-size: 13px;
+        }
+
+        .gray .cpalls_three_less span:after
+        {
+            content: '*';
+            font-size: 13px;
+        }
+
+        .gray .cpalls_no_benchmark span
+        {
+            background: #fff;
+            color: #000;
+            border-color: #000;
+            display: inline-block;
+            border: 1px solid;
+            font-size: 13px;
+        }
+
+        .gray .cpalls_normal_light span
+        {
+            background: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 17px;
+            text-decoration:underline;
+        }
+
+        .gray .cpalls_four_light span
+        {
+            background: #D3D3D3;
+            border: 1px solid #000;
+            border-radius: 20%;
+            color: #000;
+            font-size: 13px;
+            text-decoration: underline;
+        }
+
+        .gray .cpalls_three_light span
+        {
+            background: #fff;
+            border: 1px solid #000;
+            border-radius: 20%;
+            color: #000;
+            font-size: 13px;
+            text-decoration: underline;
+        }
+
+        .gray .cpalls_three_less_light span
+        {
+            background: #fff;
+            border-radius: 20%;
+            color: #000;
+            font-size: 13px;
+            text-decoration: underline;
+        }
+
+        .gray .cpalls_three_less_light span:after
+        {
+            content: '*';
+            font-size: 13px;
+        }
+
+        .gray-legend
+        {
+            display: none;
+        }
+
+        .gray .gray-legend
+        {
+            display: table-row;
+        }
+    </style>
+
+    <style type="text/css">
+        /*-----------------------------------------New Function Report Start---------------------------------*/
+        .spancolor {
+            display: inline-block;
+            width:23px;
+            height:23px;
+            line-height: 23px;
+            border-radius:50%;
+            color: #000;
+        }
+        .underline{
+                text-decoration: underline;
+                font-size: 15px;
+                line-height: 25px;
+            }
+            .bold{
+                font-weight: bold;
+                font-size: 15px;
+                line-height: 25px;
+            }
+            .italics{
+                font-style: italic;
+                font-size: 15px;
+                line-height: 25px;
+            }
+            .asterisks{
+                position: relative;
+                padding-right: 8px;
+                font-size: 15px;
+                line-height: 25px;
+            }
+            .asterisks:after{
+                content: '*';
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform:translateY(-50%);
+                -webkit-transform:translateY(-50%);
+            }
+            .font_increase{
+                display: inline-block;
+                font-size: 19px;
+            }
+            .triangle{
+                position: relative;
+                display: inline-block;
+                font-size: 15px;
+                background: transparent;
+                text-align: center;
+                width:23px;
+            }
+            .triangle:before{
+                content: '';
+                position: absolute;
+                border:23px solid #D3D3D3;
+                border-right-color:transparent;
+                border-left-color:transparent;
+                border-top-color:transparent;
+                z-index: -1;
+                top: -26.5px;
+                left: -11.5px;
+            }
+            .rectangle{
+                width: 40px;
+                height: 25px;
+                line-height: 25px;
+                border: 1px solid #ccc;
+                background: #d3d3d3;
+                text-align: center;
+                border-radius: 3px;
+                display: inline-block;
+                font-size: 15px;
+            }
+            .square{
+                width: 25px;
+                height: 25px;
+                line-height: 25px;
+                border: 1px solid #ccc;
+                background: #d3d3d3;
+                text-align: center;
+                border-radius: 3px;
+                display: inline-block;
+                font-size: 15px;
+            }
+            .hexagon{
+                position: relative;
+                line-height: 40px;
+                display: inline-block;
+                background: transparent;
+                text-align: center;
+                width: 40px;
+                font-size: 15px;
+            }
+            .hexagon:before{
+                width: 20px;
+                height: 20px;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-bottom: 15px solid #d3d3d3;
+                z-index: -1;
+                position: absolute;
+                content: '';
+                top:-14px;
+                left: 0;
+            }
+            .hexagon:after{
+                width: 20px;
+                height: 20px;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-top: 15px solid #d3d3d3;
+                position: absolute;
+                content: '';
+                top: 20px;
+                left: 0px;
+                z-index: -1;
+            }
+    </style>
+</head>
+<body class='@(Request.Form["Gray"])' onload="myFunction()">
+    <div class='container @(ViewData["Pdf"] != null && ViewBag.Pdf ? "pdf" : "")'>
+        @RenderBody()
+    </div>
+    @Scripts.Render("~/scripts/jquery")
+    @RenderSection("Scripts", false)
+
+    <iframe id="export" name="export" style="display: none; height: 0px; width: 0px;"></iframe>
+</body>
+</html>

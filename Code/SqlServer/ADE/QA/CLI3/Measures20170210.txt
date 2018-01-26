@@ -1,0 +1,10 @@
+﻿create table PercentileRankLookups
+(
+ID int not null primary key identity(1,1),
+MeasureLabel nvarchar(100) not null,
+AgeMin int not null,
+AgeMax int not null,
+RawScore int not null,
+PercentileRank varchar(10) not null,
+AlternateScore varchar(10)
+)

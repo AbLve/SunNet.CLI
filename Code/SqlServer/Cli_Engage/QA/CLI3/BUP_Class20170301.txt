@@ -1,0 +1,268 @@
+﻿ALTER PROCEDURE [dbo].[BUP_Class]
+	@BUPClassID INT,
+	@CreatedBy INT
+AS
+BEGIN
+	  SET XACT_ABORT ON;
+
+	  DECLARE @Action tinyint
+	  DECLARE @CommunityName varchar(200)
+      DECLARE @CommunityEngageID varchar(50)
+      DECLARE @SchoolName varchar(200)
+      DECLARE @SchoolEngageID varchar(50)
+      DECLARE @Name varchar(50)
+      DECLARE @ClassEngageID varchar(32)
+	  DECLARE @ClassInternalID VARCHAR(32)
+	  DECLARE @DayType TINYINT
+	  DECLARE @ClassroomName VARCHAR(50)
+	  DECLARE @ClassroomEngageID VARCHAR(32)
+	  DECLARE @HomeroomTeacherFirst varchar(50)
+	  DECLARE @HomeroomTeacherLast varchar(50)
+	  DECLARE @HomeroomTeacherEngageId varchar(50)
+	  DECLARE @ClassStatus tinyint
+
+	  DECLARE @SchoolId INT
+	  DECLARE @ClassId INT --classes 表Id
+	  DECLARE @ClassroomId INT --classrooms 表Id
+	  DECLARE @LeadTeacherId INT --teachers 表Id
+
+	  BEGIN TRY
+		BEGIN TRANSACTION;
+		  SELECT @Action= [Action]  ,@CommunityName=[CommunityName] , @CommunityEngageID=[CommunityEngageID]
+		  ,@SchoolName=[SchoolName] ,@SchoolEngageID=[SchoolEngageID],@Name=[Name],@ClassEngageID=ClassEngageID
+		  ,@ClassInternalID=ClassInternalID,@DayType=DayType,@ClassroomName=ClassroomName,@ClassroomEngageID=ClassroomEngageID
+		  ,@HomeroomTeacherFirst=[HomeroomTeacherFirst],@HomeroomTeacherLast=[HomeroomTeacherLast],
+		  @HomeroomTeacherEngageID=[HomeroomTeacherEngageID],@ClassStatus=[ClassStatus]
+	      FROM [dbo].BUP_Classes WHERE ID=@BUPClassID
+
+
+		  IF(@Action = 1) --when insert, school must be active
+			SELECT @SchoolId = s.ID FROM Schools s INNER JOIN CommunitySchoolRelations cs
+			  on s.ID=cs.SchoolId AND s.Status=1
+			  INNER JOIN Communities c
+			  on cs.CommunityId = c.ID AND c.CommunityId=@CommunityEngageID
+			  WHERE s.SchoolId =@SchoolEngageID
+		  ELSE
+			SELECT @SchoolId = s.ID FROM Schools s INNER JOIN CommunitySchoolRelations cs
+			  ON s.ID=cs.SchoolId
+			  INNER JOIN Communities c
+			  ON cs.CommunityId = c.ID AND c.CommunityId=@CommunityEngageID
+			  WHERE s.SchoolId =@SchoolEngageID
+
+		  IF(@ClassEngageID != '')
+			SELECT @ClassId=ID FROM Classes WHERE ClassId = @ClassEngageID AND SchoolId = @SchoolId
+
+			SELECT @LeadTeacherId=T.ID FROM Teachers T INNER JOIN Users U ON U.ID=T.UserId WHERE T.TeacherId=@HomeroomTeacherEngageId AND U.FirstName=@HomeroomTeacherFirst 
+			AND U.LastName=@HomeroomTeacherLast
+
+		--INSERT
+		IF(@Action = 1) BEGIN			
+			IF(@SchoolId IS NULL) 
+				UPDATE BUP_Classes SET Status=5 , Remark ='School Engage ID is not in Schools or not along to the community' WHERE ID = @BUPClassID
+			 ELSE BEGIN
+				IF(EXISTS (SELECT ID FROM Classes WHERE Name=@Name AND SchoolId=@SchoolId AND IsDeleted=0))
+					UPDATE BUP_Classes SET Status=5 ,Remark='Duplicate class found' WHERE ID = @BUPClassID
+				ELSE
+					BEGIN
+						INSERT INTO [dbo].[Classes]
+							([SchoolId]
+							,[ClassId]
+							,[Name]
+							,[Status]
+							,[StatusDate]
+							,[SchoolYear]
+							,[IsSameAsSchool]
+							,[AtRiskPercent]
+							,[DayType]
+							,[CurriculumId]
+							,[CurriculumOther]
+							,[SupplementalCurriculumId]
+							,[SupplementalCurriculumOther]
+							,[MonitoringToolId]
+							,[MonitoringToolOther]
+							,[UsedEquipment]
+							,[EquipmentNumber]
+							,[ClassType]
+							,[Notes]
+							,[CreatedOn]
+							,[UpdatedOn]
+							,[Previous_Teacher_TEA_ID]
+							,[Classlevel]
+							,[LeadTeacherId]
+							,ClassInternalID
+							,[IsDeleted])
+							VALUES
+							( @SchoolId --<SchoolId, int,>
+							,''--<ClassId, varchar(32),>
+							,@Name --, varchar(150),>
+							,1--<Status, tinyint,>
+							,GETDATE()--<StatusDate, datetime,>
+							,  dbo.GetSchoolYear()--<SchoolYear, varchar(5),>
+							, 0--<IsSameAsSchool, bit,>
+							, 0--<AtRiskPercent, int,>
+							, @DayType --, tinyint,>
+							,0--<CurriculumId, int,>
+							,''--<CurriculumOther, varchar(150),>
+							,0--<SupplementalCurriculumId, int,>
+							,''--<SupplementalCurriculumOther, varchar(150),>
+							,0--<MonitoringToolId, int,>
+							,''--<MonitoringToolOther, varchar(150),>
+							,0--<UsedEquipment, tinyint,>
+							,''--<EquipmentNumber, varchar(150),>
+							,0--<ClassType, tinyint,>
+							,''--<Notes, varchar(600),>
+							,GETDATE()--<CreatedOn, datetime,>
+							,GETDATE()--<UpdatedOn, datetime,>
+							, ''--<Previous_Teacher_TEA_ID, varchar(50),>
+							,0--<Classlevel, tinyint,>
+							,(case when @LeadTeacherId is null then 0 else @LeadTeacherId end)--<LeadTeacherId, int,>
+							,@ClassInternalID
+							,0
+							)
+						SELECT @ClassId = SCOPE_IDENTITY();
+						IF(@Name = '' OR @ClassInternalID ='') 
+							UPDATE [Classes] SET Name= CASE WHEN @Name = '' THEN ClassId ELSE @Name END 
+							,ClassInternalID= CASE WHEN @ClassInternalID = ''THEN ClassId ELSE @ClassInternalID END
+							WHERE ID = @ClassId
+
+						IF(@ClassroomEngageID != '')
+					BEGIN		
+						SELECT @ClassroomId = ID FROM Classrooms WHERE ClassroomId=@ClassroomEngageID
+							AND SchoolId=@SchoolId AND Status = 1			
+						IF (@ClassroomId IS NULL)
+							UPDATE BUP_Classes SET Status=5 ,
+							Remark='Can not find classroom with the Classroom_Engage_ID: '+ @ClassroomEngageID WHERE ID = @BUPClassID
+						ELSE
+							INSERT INTO ClassroomClassRelations(ClassroomId,ClassId,Status,CreatedBy,CreatedOn,UpdatedBy,UpdatedOn)
+							VALUES(@ClassroomId,@ClassId,1,@CreatedBy,GETDATE(),@CreatedBy,GETDATE())
+					END
+						IF @LeadTeacherId IS NOT NULL
+						BEGIN
+							IF NOT EXISTS (SELECT * FROM TeacherClassRelations WHERE TeacherId=@LeadTeacherId AND ClassId=@ClassId)
+								INSERT INTO TeacherClassRelations(TeacherId,ClassId) VALUES (@LeadTeacherId,@ClassId)
+						END
+				    END		
+				END	--END INSERT 	
+		END  --END ACTION=1
+
+		--UPDATE
+		IF(@Action = 2) BEGIN
+			IF(@ClassId IS NULL)BEGIN
+				UPDATE 	BUP_Classes SET Status=5 , Remark ='Class Engage ID is not in Classes' WHERE ID = @BUPClassID
+			END
+			ELSE BEGIN
+				DECLARE @IFDuplicate BIT =0
+				IF(@Name != '')
+				BEGIN
+					IF(EXISTS (SELECT ID FROM Classes WHERE Name=@Name AND ID!=@ClassId AND SchoolId=@SchoolId AND IsDeleted=0))
+					  BEGIN
+						UPDATE BUP_Classes SET Status=5 ,Remark='Duplicate class found' WHERE ID = @BUPClassID
+						SET @IFDuplicate = 1
+					  END
+				END
+
+				IF(@IFDuplicate=0)
+				BEGIN
+					UPDATE [dbo].[Classes]
+					SET [Name] = CASE WHEN @Name != '' THEN @Name ELSE [Name] END
+					,ClassInternalID= CASE @ClassInternalID WHEN '*CLEAR*'THEN '' WHEN '' THEN ClassInternalID ELSE @ClassInternalID END 
+					,DayType =CASE WHEN @DayType = 127 THEN 0 WHEN @DayType>0 THEN @DayType ELSE DayType END 
+					,[UpdatedOn] = GETDATE()
+					,[LeadTeacherId]=(case when ISNULL(@LeadTeacherId,0)=0 then [LeadTeacherId] else @LeadTeacherId end)
+					,[Status]=(case when @ClassStatus=1 then 1 when @ClassStatus=2 then 2 else [Status] end)
+					,[IsDeleted]=(case when @ClassStatus=1 then 0 when @ClassStatus=2 then 0 else [IsDeleted] end)
+					WHERE ClassId=@ClassEngageID
+
+					IF(@ClassroomEngageID != '')BEGIN
+					SELECT @ClassroomId = ID FROM Classrooms WHERE ClassroomId=@ClassroomEngageID
+						AND SchoolId=@SchoolId AND Status = 1
+					IF(@ClassroomId IS NULL) 
+						UPDATE 	BUP_Classes SET Status=5 , 
+						Remark='Can not find classroom with the Classroom_Engage_ID: '+ @ClassroomEngageID WHERE ID = @BUPClassID
+					ELSE BEGIN
+							IF NOT EXISTS(SELECT * FROM [ClassroomClassRelations] 
+							WHERE ClassroomId=@ClassroomId AND ClassId=@ClassId)BEGIN
+							INSERT INTO [dbo].[ClassroomClassRelations]
+							([ClassroomId]
+							,[ClassId]
+							,[Status]
+							,[CreatedBy]
+							,[CreatedOn]
+							,[UpdatedOn]
+							,[UpdatedBy])
+							VALUES
+							( @ClassroomId
+							, @ClassId
+							, 1
+							,@CreatedBy
+							,GETDATE()
+							,GETDATE()
+							,@CreatedBy)
+							END
+						END
+					END
+
+					IF @LeadTeacherId IS NOT NULL
+					BEGIN
+						IF NOT EXISTS (SELECT * FROM TeacherClassRelations WHERE TeacherId=@LeadTeacherId AND ClassId=@ClassId)
+							INSERT INTO TeacherClassRelations(TeacherId,ClassId) VALUES (@LeadTeacherId,@ClassId)
+					END
+				END
+				
+				IF(@ClassStatus=2)
+				BEGIN
+					EXEC DeleleStudentClassRelations @ClassId 
+				END
+				ELSE IF(@ClassStatus=3)
+				BEGIN
+					IF EXISTS (select StudentId from StudentClassRelations SCR where SCR.ClassId=@ClassId)
+					BEGIN
+						UPDATE BUP_Classes SET Status=5 ,Remark='The Class has Students' WHERE ID = @BUPClassID
+					END
+					ELSE
+					BEGIN
+						DELETE TeacherClassRelations WHERE ClassId=@ClassId
+						UPDATE [dbo].[Classes] set [LeadTeacherId]=0,IsDeleted=1,Status=2 WHERE ClassId=@ClassEngageID
+						EXEC DeleleStudentClassRelations @ClassId 
+					END
+
+				END
+			END
+		END
+
+		--DELETE
+		IF(@Action = 3)BEGIN	
+			IF (@ClassId IS NOT NULL) BEGIN
+				IF (@ClassroomEngageID != '')
+				BEGIN
+					SELECT @ClassroomId = ID FROM Classrooms WHERE ClassroomId=@ClassroomEngageID
+						AND SchoolId=@SchoolId
+					IF(@ClassroomId IS NULL) 
+						UPDATE 	BUP_Classes SET Status=5 , 
+						Remark='Can not find classroom with the Classroom_Engage_ID: '+ @ClassroomEngageID WHERE ID = @BUPClassID
+					ELSE 
+						DELETE  ClassroomClassRelations WHERE ClassroomId=@ClassroomId AND ClassId=@ClassId
+				END
+			END 
+			ELSE 
+				UPDATE 	BUP_Classes SET Status=5 , Remark ='Class Engage ID is not in Classes' WHERE ID = @BUPClassID
+		END
+
+		UPDATE BUP_Classes SET Status = 3 WHERE ID = @BUPClassID AND Status = 1;
+	  COMMIT TRANSACTION ;
+	END TRY
+
+	BEGIN CATCH
+		IF (XACT_STATE()) = -1
+		BEGIN			
+			ROLLBACK TRANSACTION;
+			UPDATE BUP_Classes SET Remark = ERROR_MESSAGE() ,Status = 4 WHERE ID = @BUPClassID
+		END;
+
+		IF (XACT_STATE()) = 1
+		BEGIN
+			COMMIT TRANSACTION;   
+		END;
+	END CATCH 
+
+END

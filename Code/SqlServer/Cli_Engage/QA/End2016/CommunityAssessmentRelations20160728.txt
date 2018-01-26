@@ -1,0 +1,3 @@
+﻿alter table [CommunityAssessmentRelations] add [ClassLevelIds] nvarchar(500) not null default ''
+go
+update [CommunityAssessmentRelations] set  [ClassLevelIds] = ''

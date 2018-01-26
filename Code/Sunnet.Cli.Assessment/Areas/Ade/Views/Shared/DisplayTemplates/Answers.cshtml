@@ -1,0 +1,37 @@
+﻿
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th width="10%"><span style="display:none;">1</span></th>
+            <th width="10%">Picture</th>
+            <th width="15%">Time in (ms)</th>
+            <th width="*"><span style="display:none;">1</span></th>
+            <th width="10%">Audio</th>
+            <th width="20%">Time in (ms)</th>
+            <th width="15%">Correct Answer</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:{data:Answers,as:'anser'}">
+        <tr>
+            <td data-bind="text:$index()+1"></td>
+            <td>
+                <div class="webuploader-preview" data-bind="visible:ID > 0">
+                    <a class="table-btn icon-zoom-in preview-btn"
+                       data-bind="attr:{href:$root.BasePath + Picture}"
+                       target="_blank"><span style="display:none;">1</span></a>
+                </div>
+            </td>
+            <td data-bind="text:PictureTime"></td>
+            <td width="*"></td>
+            <td>
+                <div class="webuploader-preview" data-bind="visible:Audio.length>0">
+                    <a class="table-btn icon-zoom-in preview-btn"
+                       data-bind="attr:{href:$root.BasePath + Audio}"
+                       target="_blank"><span style="display:none;">1</span></a>
+                </div>
+            </td>
+            <td data-bind="text:AudioTime"></td>
+            <td data-bind="mark:IsCorrect"></td>
+        </tr>
+    </tbody>
+</table>

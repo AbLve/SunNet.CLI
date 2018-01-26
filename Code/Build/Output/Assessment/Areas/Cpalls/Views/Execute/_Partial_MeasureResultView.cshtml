@@ -1,0 +1,104 @@
+﻿@{
+    Layout = null;
+}
+<div class="item-main-header item-view-header" data-bind="visible:status() == Exec_Status.resulting" style="display: none;">
+    <div class="main-content top-form" style="margin-top: 0px;">
+        <form class="form-horizontal" role="form">
+            <label class=" control-label">
+                Student
+            </label>&nbsp;<p class="form-control-static" data-bind="html:student.name"></p>
+
+            <label class="control-label">DOB</label>&nbsp;
+            <p class="form-control-static" data-bind="html:student.birthday"></p>
+
+            <label class="control-label">Class</label>&nbsp;
+            <p class="form-control-static" data-bind="html:classModel.name"></p>
+
+            <label class="control-label">School</label>&nbsp;
+            <p class="form-control-static" data-bind="html:schoolName"></p>
+
+            <label class="control-label">School year</label>&nbsp;
+            <p class="form-control-static" data-bind="html:schoolYear"></p>
+
+            <label class="control-label">Wave</label>&nbsp;
+            <p class="form-control-static" data-bind="html:wave.text"></p>
+
+            <label class="control-label">Test</label>&nbsp;
+            <p class="form-control-static" data-bind="html:name"></p>
+        </form>
+    </div>
+    <div class="clearfix">
+        <br />
+    </div>
+    <form class="form-horizontal" role="form">
+        <div class="form-group item-group-btn">
+            <!-- ko if:online-->
+            <a href="#" class="mainbutton item-top-btn" data-bind="event:{click:exportPdf}">
+                @*<i class="icon-print"></i>*@
+                Export to PDF
+            </a>
+            <a href="#" class="mainbutton item-top-btn" data-bind="event:{click:toggleIncludeImages},text:includeImages()?'Hidden images':'Include images'">
+            </a>
+            <!-- /ko-->
+            <a href="#" class="mainbutton item-top-btn" data-bind="click:close,visible:!online && mode==Exec_Mode.View">
+                Close
+            </a>
+            <a href="#" class="mainbutton  item-top-btn" data-bind="click:$root.goBack,visible:online && mode==Exec_Mode.View">
+                @*<i class="icon-user"></i>*@
+                Student View
+            </a>
+        </div>
+    </form>
+    <div data-bind="foreach:{data:measures,as:'measureModel'}">
+        <!-- ko if:status == Cpalls_Status.Finished -->
+        <div class="modal-l-b"></div>
+
+        <div class="main-content top-form" style="margin-top: 0px;">
+            <form class="form-horizontal" role="form">
+
+                <label class="control-label">Age Group</label>&nbsp;
+                <p class="form-control-static" data-bind="html:measureModel.ageGroup"></p>
+
+                <label class="control-label">Date</label>&nbsp;
+                <p class="form-control-static" data-bind="html:measureModel.updatedOn"></p>
+
+                <label class="control-label" data-bind="visible:measureModel.totalScored">Score</label>&nbsp;
+                <p class="form-control-static" data-bind="html:measureModel.finalScore,visible:measureModel.totalScored"></p>
+
+                <label class="control-label" data-bind="visible:measureModel.totalScored">Benchmark</label>&nbsp;
+                <p class="form-control-static" data-bind="html:measureModel.metBenchmark,visible:measureModel.totalScored"></p>
+                <!-- ko if: $root.showCommentBtn()-->
+                <br />
+                <label class="control-label">Comment</label>&nbsp;
+                <p class="form-control-static" data-bind="html:measureModel.comment()+'&nbsp;'"></p>
+                <!-- /ko-->
+            </form>
+        </div>
+        <div class="clearfix">
+            <br />
+        </div>
+        <form class="form-horizontal" role="form">
+            <div class="form-group item-group-btn">
+                <a href="#" class="mainbutton Invalidate-btn" data-bind="visible:$root.showInvalidate,click:$root.invalidate">
+                    Invalidate This Assessment
+                </a>
+                <!-- ko if: $root.mode === Exec_Mode.View -->
+                <a href="#" class="mainbutton item-top-btn"
+                   data-bind="visible:$root.showCommentBtn(),click:$root.openComment">
+                    Comment
+                </a>
+                <!-- /ko-->
+            </div>
+        </form>
+        <div class="item-main-body item-view-body"
+             data-bind='template:{name:"_cpalls_measure_List",data:$data}'>
+        </div>
+        <div class="clearfix">
+            <br />
+        </div>
+        <!--/ko-->
+    </div>
+
+</div>
+
+@Html.Partial("_Partial_MeasureResultList")

@@ -1,0 +1,133 @@
+﻿ALTER PROCEDURE [dbo].[InitMeasures]
+	-- Add the parameters for the stored procedure here
+	@UserId int,
+	@AssessmentId int,
+	@SchoolYear varchar(10),
+	@StudentId int,
+	@StudentBirthday datetime,
+	@Wave tinyint,
+	@MeasureIds varchar(max),
+	@StudentAssessmentId int out
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	SET @StudentAssessmentId = 0;
+
+
+	BEGIN TRY
+	  BEGIN TRANSACTION;
+
+		IF(NOT EXISTS(SELECT 1 FROM [dbo].[PracticeStudentAssessments] WHERE AssessmentId = @AssessmentId AND StudentId = @StudentId AND Wave = @Wave AND SchoolYear = @SchoolYear))
+		BEGIN 
+			INSERT INTO [dbo].[PracticeStudentAssessments]([StudentId],[AssessmentId],[Status],[SchoolYear],[Wave],[CreatedBy],[UpdatedBy],[CreatedOn],[UpdatedOn],[TotalGoal])
+			VALUES(@StudentId,@AssessmentId,1,@SchoolYear ,@Wave,@UserId,@UserId,GETDATE(),GETDATE(),0);
+		END
+		 
+		SET @StudentAssessmentId = (SELECT TOP 1 ID FROM  [dbo].[PracticeStudentAssessments] 
+		WHERE AssessmentId = @AssessmentId AND StudentId = @StudentId AND Wave = @Wave AND SchoolYear = @SchoolYear);
+		 
+		CREATE  table #Measures(ID int);
+		declare @sql varchar (2000)
+		set @sql='insert #Measures select '+replace(@MeasureIds,',',' union all select ')
+		exec (@sql)
+		
+		INSERT INTO #Measures 
+		SELECT ParentId FROM CLI_ADE_Measures WHERE ID IN (SELECT ID FROM #Measures)
+
+		------SELECT * FROM #Measures;
+		DELETE FROM #Measures WHERE EXISTS (SELECT 1 FROM PracticeStudentMeasures SM WHERE SM.SAId = @StudentAssessmentId AND SM.MeasureId = #Measures.ID )
+		------SELECT * FROM #Measures; 
+		
+		SELECT * INTO #HasCutoffScore FROM (
+		SELECT StudentId = @StudentId,AssessmentId = @AssessmentId,[Status] = 1,[SchoolYear]=@SchoolYear,Wave=@Wave, 
+		MeasureId = M.ID, M.TotalScored,M.TotalScore,
+		COS.FromYear,COS.FromMonth,COS.ToYear,COS.ToMonth,
+		[EndDate] = DATEADD(m, 0-COS.FromMonth, DATEADD(YY,0-COS.FromYear,CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME))),
+		[StartDate] = DATEADD(m, 0-COS.ToMonth, DATEADD(YY,0-COS.ToYear,CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME)))
+		FROM CLI_ADE_Measures M  INNER JOIN #Measures ON M.ID = #Measures.ID AND M.ID > 1
+		LEFT JOIN CLI_ADE_CutOffScores [COS] ON M.ID = [COS].HostId AND [COS].HostType='Sunnet.Cli.Core.Ade.Entities.MeasureEntity' AND [COS].Wave = @Wave
+		) HasCutoffScore
+		
+		--SELECT * FROM #HasCutoffScore;
+
+		SELECT DISTINCT MeasureId INTO #FoundBenchmark FROM #HasCutoffScore
+		WHERE  [EndDate] >= @StudentBirthday AND @StudentBirthday > [StartDate]
+
+		--SELECT * FROM #FoundBenchmark
+
+		INSERT INTO PracticeStudentMeasures 
+		SELECT DISTINCT SAId = @StudentAssessmentId,MeasureId,[Status] = 1, PauseTime = 0,CreatedOn=GETDATE(),UpdatedOn = GETDATE(),TotalScore = ISNULL(TotalScore,0),
+		Benchmark = -1,Goal = -1,TotalScored,Comment = '',BenchmarkChanged = 0,
+		PercentileRank=(select case when PercentileRank=1 then 'N/A' else '-' end from CLI_ADE_Measures where ID=HCS.MeasureId),
+		BenchmarkId=0,LowerScore=-1,HigherScore=-1,DataFrom='',ShowOnGroup=0
+		FROM #HasCutoffScore HCS
+		WHERE  HCS.MeasureId IN (SELECT MeasureId  FROM #FoundBenchmark) 
+		AND [EndDate] >= @StudentBirthday AND @StudentBirthday > [StartDate]
+		AND NOT EXISTS (SELECT 1 FROM PracticeStudentMeasures ALLRECORDS WHERE 
+						ALLRECORDS.SAId = @StudentAssessmentId AND ALLRECORDS.MeasureId = HCS.MeasureId)
+		SELECT  MeasureId INTO #Added 
+		FROM #FoundBenchmark
+
+		INSERT INTO PracticeStudentMeasures 
+		SELECT DISTINCT SAId = @StudentAssessmentId,MeasureId,[Status] = 1, PauseTime = 0,CreatedOn=GETDATE(),UpdatedOn = GETDATE(),TotalScore = ISNULL(TotalScore,0),
+		Benchmark = -1,Goal = -1,TotalScored,Comment = '',BenchmarkChanged = 0,
+		PercentileRank=(select case when PercentileRank=1 then 'N/A' else '-' end from CLI_ADE_Measures where ID=HCS.MeasureId),
+		BenchmarkId=0,LowerScore=-1,HigherScore=-1,DataFrom='',ShowOnGroup=0
+		FROM #HasCutoffScore HCS
+		WHERE   HCS.MeasureId NOT IN (SELECT MeasureId FROM #Added) 
+		AND NOT EXISTS (SELECT 1 FROM PracticeStudentMeasures ALLRECORDS WHERE 
+						ALLRECORDS.SAId = @StudentAssessmentId AND ALLRECORDS.MeasureId = HCS.MeasureId)
+	
+		INSERT INTO #Added
+		SELECT DISTINCT  MeasureId FROM #HasCutoffScore
+		WHERE  MeasureId NOT IN (SELECT MeasureId FROM #Added)
+		 
+		-----select * from #Added
+		INSERT INTO PracticeStudentItems(SMId,ItemId,[Status],IsCorrect,SelectedAnswers,PauseTime,CreatedOn,UpdatedOn,Goal,Scored,Score,Details
+		,Executed,LastItemIndex,ResultIndex 
+		)
+		SELECT DISTINCT SMId = SM.ID,ItemId = IB.ID,[Status] = 1, [IsCorrect]= 0,SelectedAnswers='',PauseTime=0,CreatedOn = GETDATE(),UpdatedOn=GETDATE(),
+		Goal = 0,[Scored]  = IB.Scored,IB.Score,Details = '',Executed=1,LastItemIndex=0,ResultIndex=0
+		FROM CLI_ADE_ItemBases IB INNER JOIN #Added M ON IB.MeasureId = M.MeasureId 
+		INNER JOIN 
+		--LEFT JOIN
+		PracticeStudentMeasures SM ON M.MeasureId = SM.MeasureId AND SM.SAId = @StudentAssessmentId 
+		WHERE IB.[Status] = 1 AND IB.[IsDeleted] = 0 
+		AND NOT EXISTS (SELECT 1 FROM PracticeStudentItems ALLRECORDS WHERE 
+						ALLRECORDS.SMId = SM.ID AND ALLRECORDS.ItemId = IB.ID)
+		DROP TABLE #Measures;
+		DROP TABLE #Added;
+		DROP TABLE #HasCutoffScore;
+		DROP TABLE #FoundBenchmark;
+
+	  COMMIT TRANSACTION ;
+	END TRY
+
+	BEGIN CATCH
+		print N'error occured.'
+		IF (XACT_STATE()) = -1
+		BEGIN
+			
+			ROLLBACK TRANSACTION;
+		END;
+
+		IF (XACT_STATE()) = 1
+		BEGIN
+			COMMIT TRANSACTION;   
+		END;
+	END CATCH 
+
+	IF(@StudentAssessmentId <1 )
+	BEGIN
+	SET @StudentAssessmentId = (SELECT TOP 1 ID FROM  [dbo].[PracticeStudentAssessments] 
+		WHERE AssessmentId = @AssessmentId AND StudentId = @StudentId AND Wave = @Wave AND SchoolYear = @SchoolYear);
+	END
+END
+
+
+
+
+

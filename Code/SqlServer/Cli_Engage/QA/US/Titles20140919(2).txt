@@ -1,0 +1,88 @@
+﻿truncate table Titles
+
+--Community / District Primary Contact Title
+insert into Titles values('Superintendent',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Acting Superintendent',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Area Superintendent',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Deputy Superintendent',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Assistant Superintendent',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('District Administrator',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Early Childhood Education Specialist/Coordinator',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Early Childhood Education Director',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Early Childhood Department Chair',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('ESC Specialist/Coordinator',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Program Director/Manager',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Center Director/Manager',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Principal',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+insert into Titles values('Other',GETDATE(),GETDATE(),1,'Community / District Primary Contact')
+
+--Community / District Secondary Contact Title
+insert into Titles values('Superintendent',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+insert into Titles values('Acting Superintendent',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+insert into Titles values('Area Superintendent',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+insert into Titles values('Deputy Superintendent',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+insert into Titles values('Assistant Superintendent',GETDATE(),GETDATE(),2,'Community / District Secondary Contact ')
+insert into Titles values('District Administrator',GETDATE(),GETDATE(),2,'Community / District Secondary Contact ')
+insert into Titles values('Early Childhood Education Specialist/Coordinator',GETDATE(),GETDATE(),2,'Community / District Secondary Contact ')
+insert into Titles values('Early Childhood Education Director',GETDATE(),GETDATE(),2,'Community / District Secondary Contact ')
+insert into Titles values('Early Childhood Department Chair',GETDATE(),GETDATE(),2,'Community / District Secondary Contact ')
+insert into Titles values('ESC Specialist/Coordinator',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+insert into Titles values('Program Director/Manager',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+insert into Titles values('Center Director/Manager',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+insert into Titles values('Assistant Principal',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+insert into Titles values('Specialist/Coach',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+insert into Titles values('Other',GETDATE(),GETDATE(),2,'Community / District Secondary Contact')
+
+--School Primary Contact Title
+insert into Titles values('Principal',GETDATE(),GETDATE(),3,'School Primary Contact')
+insert into Titles values('Assistant Principal',GETDATE(),GETDATE(),3,'School Primary Contact')
+insert into Titles values('Center Director/Manager',GETDATE(),GETDATE(),3,'School Primary Contact')
+insert into Titles values('Program Director/Manager',GETDATE(),GETDATE(),3,'School Primary Contact')
+insert into Titles values('Specialist/Coach',GETDATE(),GETDATE(),3,'School Primary Contact')
+insert into Titles values('Other',GETDATE(),GETDATE(),3,'School Primary Contact')
+
+--School Secondary  Contact Title
+insert into Titles values('Principal',GETDATE(),GETDATE(),4,'School Secondary  Contact')
+insert into Titles values('Assistant Principal',GETDATE(),GETDATE(),4,'School Secondary  Contact')
+insert into Titles values('Center Director/Manager',GETDATE(),GETDATE(),4,'School Secondary  Contact')
+insert into Titles values('Program Director/Manager',GETDATE(),GETDATE(),4,'School Secondary  Contact')
+insert into Titles values('Specialist/Coach',GETDATE(),GETDATE(),4,'School Secondary  Contact')
+insert into Titles values('Other',GETDATE(),GETDATE(),4,'School Secondary  Contact')
+
+--Community/District User Groups
+insert into Titles values('Superintendent',GETDATE(),GETDATE(),5,'Community/District User Groups')
+insert into Titles values('Acting Superintendent',GETDATE(),GETDATE(),5,'Community/District User Groups')
+insert into Titles values('Area Superintendent',GETDATE(),GETDATE(),5,'Community/District User Groups')
+insert into Titles values('Deputy Superintendent',GETDATE(),GETDATE(),5,'Community/District User Groups')
+insert into Titles values('Assistant Superintendent',GETDATE(),GETDATE(),5,'Community/District User Groups')
+insert into Titles values('ESC Specialist/Coordinator',GETDATE(),GETDATE(),5,'Community/District User Groups')
+insert into Titles values('Program Director/Manager',GETDATE(),GETDATE(),5,'Community/District User Groups')
+insert into Titles values('Center Director/Manager',GETDATE(),GETDATE(),5,'Community/District User Groups')
+insert into Titles values('Other',GETDATE(),GETDATE(),5,'Community/District User Groups')
+
+
+--Community/District Specialist User Groups the Title/Role
+insert into Titles values('Early Childhood Education Specialist/Coordinator',GETDATE(),GETDATE(),6,'Community/District Specialist User Groups ')
+insert into Titles values('Early Childhood Education Director',GETDATE(),GETDATE(),6,'Community/District Specialist User Groups ')
+insert into Titles values('District Administrator',GETDATE(),GETDATE(),6,'Community/District Specialist User Groups ')
+insert into Titles values('Curriculum Coordinator',GETDATE(),GETDATE(),6,'Community/District Specialist User Groups')
+insert into Titles values('Assistant Superintendent',GETDATE(),GETDATE(),6,'Community/District Specialist User Groups')
+insert into Titles values('Other',GETDATE(),GETDATE(),6,'Community/District Specialist User Groups')
+
+--Principal / Director User Groups 
+insert into Titles values('Principal',GETDATE(),GETDATE(),7,'Principal / Director User Groups')
+insert into Titles values('Assistant Principal',GETDATE(),GETDATE(),7,'Principal / Director User Groups')
+insert into Titles values('Center Director/Manager',GETDATE(),GETDATE(),7,'Principal / Director User Groups')
+insert into Titles values('Program Director/Manager',GETDATE(),GETDATE(),7,'Principal / Director User Groups')
+insert into Titles values('Specialist/Coach',GETDATE(),GETDATE(),7,'Principal / Director User Groups')
+insert into Titles values('Other',GETDATE(),GETDATE(),7,'Principal / Director User Groups')
+
+--School Specialist User Groups
+insert into Titles values('Literacy Specialist/Coach',GETDATE(),GETDATE(),8,'School Specialist User Groups')
+insert into Titles values('Reading Intervention Specialist',GETDATE(),GETDATE(),8,'School Specialist User Groups')
+insert into Titles values('Early Childhood Department Chair',GETDATE(),GETDATE(),8,'School Specialist User Groups')
+insert into Titles values('Reading Teacher',GETDATE(),GETDATE(),8,'School Specialist User Groups')
+insert into Titles values('Reading Recovery Teacher',GETDATE(),GETDATE(),8,'School Specialist User Groups')
+insert into Titles values('Speech-Language Pathologist',GETDATE(),GETDATE(),8,'School Specialist User Groups')
+insert into Titles values('School Psychologist',GETDATE(),GETDATE(),8,'School Specialist User Groups')
+insert into Titles values('Other',GETDATE(),GETDATE(),8,'School Specialist User Groups')

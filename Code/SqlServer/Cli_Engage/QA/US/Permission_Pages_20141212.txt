@@ -1,0 +1,10 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(2400,'Offline',1,2000,'',4,1,'Offline',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+
+
+
+insert into Permission_PageAuthorities values(2400,1)

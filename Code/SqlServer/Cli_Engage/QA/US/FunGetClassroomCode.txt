@@ -1,0 +1,30 @@
+﻿ 
+
+/****** Object:  UserDefinedFunction [dbo].[GetSchoolCode]    Script Date: 2014/10/9 16:25:11 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date, ,>
+-- Description:	<Description, ,>
+-- =============================================
+CREATE FUNCTION [dbo].[GetClassroomCode] 
+(
+	 @schoolYear varchar(5)
+)
+RETURNS varchar(50)
+AS
+BEGIN
+     DECLARE @count int
+	 select @count = count(1) from Classrooms where SchoolYear = @schoolYear
+	  
+	  return 'ECR'+ CONVERT(varchar(2), GETDATE(), 12)+RIGHT('00000'+CONVERT(VARCHAR(50),(@count+1)),'5')
+END
+
+GO
+
+

@@ -1,0 +1,468 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.UIBase.Models
+
+@{
+    ViewBag.Title = "CIRCLE Assessment Offline";
+    Layout = "~/Views/Shared/_Layout_Offline.cshtml";
+    int leftWidth = 133;
+    ViewBag.LeftWidth = leftWidth; // Partial
+    ViewBag.Target = "Student";
+    var heightOfTop = 175;
+}
+@section Styles
+{
+    <style type="text/css">
+        .benchmarkColor {
+            color: #000;
+            font-weight: bold;
+            border-radius: 20px;
+            height: 19px;
+            line-height: 19px;
+            width: 20px;
+            margin: 0 2px;
+            display: inline-table;
+            text-align: center;
+        }
+
+        .fixed-column div {
+            width: 147px;
+        }
+
+        tr:nth-child(1) > td.fixed-column > div, tr:nth-child(n+3) > td.fixed-column > div {
+            height: 41px;
+        }
+    </style>
+}
+@Html.Partial("~/Views/Shared/Offline/_Partial_Pin.cshtml")
+@Html.Partial("~/Views/Shared/Offline/_Partial_Unlock.cshtml")
+<div class="row">
+    <div class="col-sm-6 col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Basic Information
+            </div>
+            <div class="panel-body ">
+                <form class="form-horizontal" role="form">
+                    <label class="control-label">Assessment</label>
+                    <label class="control-label-text" data-bind="html:assessment">
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">Community/District</label>
+                    <label class="control-label-text" data-bind="html:community==''?'<span class=hide>community</span>':community">
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">School</label>
+                    <label class="control-label-text" data-bind="html:school==''?'<span class=hide>school</span>':school">
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <br />
+                    <label class="control-label">Year</label>
+                    <label class="control-label-text" data-bind="html:year==''?'<span class=hide>year</span>':year">
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">Wave</label>
+                    <label class="control-label-text" data-bind="html:wave==''?'<span class=hide>wave</span>':wave">
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">Class</label>
+                    <label class="control-label-text" data-bind="html:className==''?'<span class=hide>className</span>':className">
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">Teacher</label>
+                    <label class="control-label-text" data-bind="html:teachers==''?'<span class=hide>teachers</span>':teachers">
+                    </label>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Log&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;<span data-bind="text:network.online()?'Online':'Offline'"></span>&nbsp;<span data-bind="    visible:network.online(),text:network.logged()?'[Logged in]':''"></span>&nbsp;<span data-bind="    text:network.date(),visible:network.online()"></span></div>
+            <div class="panel-body panel-body-log" id="log_Container">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clearfix" style="height: 5px;"></div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Students
+                <button class="btn btn-default btn-lg" data-bind="visible:$root.showSyncAll(),click:$root.syncAllStudent,enable:$root.network.online()" style="display: none;">
+                    <i class="icon-cloud-upload "></i>
+                    Sync All
+                </button>
+            </div>
+            <div class="menu-left-hint">
+                @*<ul>
+                    <li><a class="tab-btn"><i class="icon-play"></i></a>Administer the test</li>
+                    <li><a class="tab-btn" style="width: 30px;"><i class="icon-play-more"></i></a>Multi Launch</li>
+                    <li><a class="tab-btn"><i class="icon-pause"></i></a>The test was paused</li>
+                    <li><a class="tab-btn on-btn NoChange"><i class="icon-circle"></i></a>Exclude the student from the test for current language</li>
+                    <li><a class="tab-btn off-btn NoChange"><i class="icon-circle-blank"></i></a>The student was excluded from the test for current language</li>
+                    <li>
+                        <a class="table-btn cpalls_normal NoChange" style="color: #000;"
+                           onmouseover="this.style.cssText = 'color:#000;margin:0px;margin-bottom:5px;margin-left:0px;margin-right:10px;display:inline-block;width:23px;height:23px;'">#</a>or &nbsp;&nbsp;
+                        <a class="table-btn cpalls_normal_light NoChange" style="color: #000;"
+                           onmouseover="this.style.cssText = 'color:#000;margin:0px;margin-bottom:5px;margin-left:0px;margin-right:10px;display:inline-block;width:23px;height:23px;'">#</a>
+                        Proficient (at or above benchmark)
+                    </li>
+                    <li>
+                        <a class="table-btn cpalls_three NoChange" style="color: #000;"
+                           onmouseover="this.style.cssText = 'color:#000;margin:0px;margin-bottom:5px;margin-left:0px;margin-right:10px;display:inline-block;width:23px;height:23px;'">#</a>or &nbsp;&nbsp;
+                        <a class="table-btn cpalls_three_light NoChange" style="color: #000;"
+                           onmouseover="this.style.cssText = 'color:#000;margin:0px;margin-bottom:5px;margin-left:0px;margin-right:10px;display:inline-block;width:23px;height:23px;'">#</a>
+                        Younger than 4 years-old, Developing (below benchmark)
+                    </li>
+                    <li>
+                        <a class="table-btn cpalls_four NoChange" style="color: #000;"
+                           onmouseover="this.style.cssText = 'color:#000;margin:0px;margin-bottom:5px;margin-left:0px;margin-right:10px;display:inline-block;width:23px;height:23px;'">#</a>or &nbsp;&nbsp;
+                        <a class="table-btn cpalls_four_light NoChange" style="color: #000;"
+                           onmouseover="this.style.cssText = 'color:#000;margin:0px;margin-bottom:5px;margin-left:0px;margin-right:10px;display:inline-block;width:23px;height:23px;'">#</a>
+                        4 years-old and older, Emergent (below benchmark)
+                    </li>
+                    <li>
+                        <a class="table-btn cpalls_three_less NoChange" style="color: #000;"
+                           onmouseover="this.style.cssText = 'color:#000;margin:0px;margin-bottom:5px;margin-left:0px;margin-right:10px;display:inline-block;width:23px;height:23px;'">#</a>or &nbsp;&nbsp;
+                        <a class="table-btn cpalls_three_less_light NoChange" style="color: #000;"
+                           onmouseover="this.style.cssText = 'color:#000;margin:0px;margin-bottom:5px;margin-left:0px;margin-right:10px;display:inline-block;width:23px;height:23px;'">#</a>
+                        Out of age range,no benchmark apply
+                    </li>
+                    <li>
+                        <a class="table-btn cpalls_no_benchmark" style="color: #000; background-color: #fff"
+                           onmouseover="this.style.cssText = 'color:#000;margin:0px;margin-bottom:5px;margin-left:0px;margin-right:10px;display:inline-block;width:23px;height:23px;'">#</a>Measure has no benchmarks
+                    </li>
+                    <li style="line-height:29px"><span style="color:#000">Light colors : </span> For instructional planning only</li>
+                </ul>*@
+            </div>
+            <div class="clearfix">
+                <div class="col-sm-2">
+                    <!--ko if(LegendUITextPosition=='Top')-->
+                    <span style="color: #047B2E;display:block;" data-bind="html:LegendUIText"></span>
+                    <img style="max-width:100%;"  data-bind="attr:{src:LegendUIFilePath},visible:LegendUIFilePath!=''" alt="legend" />
+                    <!--/ko-->
+                    <!--ko if(LegendUITextPosition=='Bottom')-->
+                    <img style="max-width:100%;"  data-bind="attr:{src:LegendUIFilePath},visible:LegendUIFilePath!=''" alt="legend" />
+                    <span style="color: #047B2E;display:block;" data-bind="html:LegendUIText"></span>
+                    <!--/ko-->
+                </div>
+                <div class="panel-body fixed-columns-container col-sm-10">
+                    <div class="fixed-columns-overflow" style="margin-left: @(leftWidth - 1)px;">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr class="fixed-columns-rotate">
+                                    <th class="fixed-column-title" style="border-color: #fff #ddd #fff #fff; width:  @(ViewBag.LeftWidth)px; height: 30px;">
+                                        &nbsp;<span class="hide">th</span>
+                                    </th>
+                                    <th><span class="hide">th</span></th>
+                                    <!-- style="left:75px;" -->
+                                    <!--ko foreach:{data:headers.parents,as:'parent'}-->
+                                    <th data-bind="css:{'fixed-columns-rotate':children<=1,'fixed-columns-rotate-super':children>1},attr:{colspan:children>1?(visible()?children:1):1,rowspan:children>1?1:2}">
+                                        <div class="tab-th-h" data-bind="attr:{title:name},style:{left:children>1?'75px':''},click:$root.selectHeader,css:{'table-th-expanded':isParent && visible(),'table-th-collapsed':isParent && !visible(),'measure-split-line-left':children>1,'measure-split-line-right':children>1,'measure-split-line-top':children>1,'active':selected()}">
+                                            <span data-bind="title:name,attr:{'title-length':children>1?(visible()?children:1)*6:25}"></span>
+                                        </div>
+                                    </th>
+                                    <!--/ko-->
+                                    <th>&nbsp;<span class="hide">th</span></th>
+                                    <th>&nbsp;<span class="hide">th</span></th>
+                                    <th>&nbsp;<span class="hide">th</span></th>
+                                    <th width="100%" style="border-color: #fff;">&nbsp;<span class="hide">th</span></th>
+                                </tr>
+                                <tr class="fixed-columns-rotate">
+                                    <th class="fixed-column-title" style="border-color: #fff #fff #ddd;">
+                                        <div style="width: @(ViewBag.LeftWidth)px">
+                                            <b>Student Name</b>
+                                        </div>
+                                    </th>
+                                    <th class="fixed-columns-rotate">
+                                        <div>
+                                            <span>
+                                                Launch Selected
+                                                <i class="icon-question-sign question-tip" id="tooltip1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click the table headers to select measures. Click 'Launch selected' to administer selected measures together."></i>
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <!--ko foreach:{data:headers.measures,as:'measure'}-->
+                                    <!--ko if:isTotal==true || parent && parent.visible()-->
+                                    <th class="fixed-columns-rotate">
+                                        <div class="" data-bind="attr:{title:name},click:$root.selectHeader,css:{'table-th-expanded':isTotal && parent.visible(),'table-th-collapsed':isTotal && !parent.visible(),'tab-th-h':!isTotal,'measure-split-line-left':isFirstOfParent || (isLastOfParent && parent && !parent.visible()),'measure-split-line-right':isLastOfParent,'active':!isTotal && selected()}">
+                                            <!-- ko if:!isTotal-->
+                                            <span data-title-length="25" data-bind="title:name"></span>
+                                            <!--/ko-->
+                                            <!-- ko if:isTotal-->
+                                            <span>
+                                                <span>Total&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                <i data-bind="css:{'icon-folder-open-alt':parent.visible(),'icon-folder-close-alt':!parent.visible()}"></i>
+                                                <br />
+                                                <span data-bind="html: parent.visible()?'click to collapse':'click to expand'"></span>
+                                            </span>
+                                            <!--/ko-->
+                                        </div>
+                                    </th>
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                    <th class="fixed-columns-rotate">
+                                        <div>
+                                            <span>
+                                                Launch Selected
+                                                <i class="icon-question-sign question-tip" id="tooltip1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click the table headers to select measures. Click 'Launch selected' to administer selected measures together."></i>
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <th>&nbsp;<span class="hide">th</span></th>
+                                    <th>&nbsp;<span class="hide">th</span></th>
+                                    <th>&nbsp;<span class="hide">th</span></th>
+                                    <th width="100%" style="border-color: #fff;">&nbsp;<span class="hide">th</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fixed-column">
+                                        <div style="text-align: right;top:@(heightOfTop)px;">
+                                            <b>Exclude All</b>
+                                        </div>
+                                        @{
+                                            heightOfTop += 41;
+                                        }
+                                    </td>
+                                    <td>
+                                        &nbsp;
+                                    </td>
+                                    <!--ko foreach:{data:headers.allMeasures,as:'measure'}-->
+                                    <!--ko if:isTotal == true-->
+                                    <td data-bind="css:{'measure-split-line-left':parent && !parent.visible()}" class="measure-split-line-right"></td>
+                                    <!--/ko-->
+                                    <!--ko if:isTotal == false && (parent==null || (parent && parent.visible() ) )-->
+                                    <td data-bind="css:{'measure-split-line-left':parent && isFirstOfParent && parent.visible()}">
+                                        <a href="#" class="tab-btn on-btn"
+                                           data-bind="click:$root.switchExcludedAll,css:{'on-btn':initialised()>0,'off-btn':initialised()==0},visible:showExcludeBtn()" title="Exclude All" style="padding: 3px 10px;">
+                                            <i class="icon-circle"></i>
+                                            <span class="hide">Exclude All</span>
+                                        </a>
+                                    </td>
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td width="100%">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td class="fixed-column">
+                                        <div style="text-align: right;top:@(heightOfTop)px;">
+                                            <b>Maximum Score</b>
+                                        </div>
+                                        @{
+                                            heightOfTop += 35;
+                                        }
+                                    </td>
+
+                                    <td>&nbsp;</td>
+                                    <!--ko foreach:{data:headers.allMeasures,as:'measure'}-->
+                                    <!--ko if:isTotal == true || parent == null || parent.visible()-->
+                                    <td data-bind="text: totalScored ? total : '-',css:{'measure-split-line-left':(parent && isFirstOfParent)||(parent && isLastOfParent && !parent.visible()),'measure-split-line-right':parent && isLastOfParent}"></td>
+                                    <!--/ko-->
+                                    <!--/ko-->
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td width="100%">&nbsp;</td>
+                                </tr>
+                                <!-- ko foreach: { data: students, as: 'student' } -->
+                                <tr>
+                                    <td class="fixed-column">
+                                        <div data-bind="style:{top:@(heightOfTop)    + $index() * 41 + 'px'}">
+                                            <!--ko if: changed() -->
+                                            <button class="btn btn-xs" data-bind="click:$root.syncStudent,css:{'btn-default':syncStatus()!=OfflineStatus.Error,'btn-success':syncStatus()==OfflineStatus.Synced,'btn-danger':syncStatus()== OfflineStatus.Error},enable:$root.network.online() && syncStatus()==OfflineStatus.Changed">
+                                                <i data-bind="css:{'icon-cloud-upload':syncStatus()==OfflineStatus.Changed ,'icon-spinner icon-spin':syncStatus()==OfflineStatus.Syncing,'icon-ok':syncStatus()==OfflineStatus.Synced,'icon-warning-sign':syncStatus()==OfflineStatus.Error}"></i>
+                                                <span data-title-length="15" data-bind="title: firstName + ' ' + lastName"></span>
+                                            </button>
+                                            <!--/ko-->
+                                            <!--ko ifnot:changed()-->
+                                            <span data-title-length="15" data-bind="title: firstName + ' ' + lastName"></span>
+                                            <!--/ko-->
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="tab-btn" data-bind="click:function(){$root.playAllMeasure(student);}" title="Multi Launch"><i class="icon-play-more"></i></a>
+                                    </td>
+                                    <!--ko template:{name:'_td_Measure',foreach:$root.headers.allMeasures,as:'measureHeader'}-->
+                                    <!--/ko-->
+                                    <td>
+                                        <a class="tab-btn" data-bind="click:function(){$root.playAllMeasure(student);}" title="Multi Launch"><i class="icon-play-more"></i></a>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td width="100%">&nbsp;</td>
+                                </tr>
+                                <!-- /ko -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="_td_Measure">
+    <!--ko template:{name:function(){return $root.getMeasureTemplate(student,measureHeader);},data:$root.getMeasureData(student,measureHeader)}-->
+    <!--/ko-->
+</script>
+<script type="text/html" id="_td_Null">
+</script>
+<script type="text/html" id="_td_Play">
+    <td data-bind="css:{'measure-split-line-left':measureHeader.isFirstOfParent,'measure-split-line-bottom':measureHeader.parent && !measureHeader.isParent}">
+        <a class="tab-btn" data-bind="click:function(){$root.playMeasure($data,student);},attr:{title:'Launch '+measureHeader.name}"><i class="icon-play"></i></a>
+        <a class="tab-btn on-btn" data-bind="click:function(){$root.switchLock($data,student);},attr:{title:'Exclude '+measureHeader.name}"><i class="icon-circle"></i></a>
+    </td>
+</script>
+
+<script type="text/html" id="_td_Paused">
+    <td data-bind="css:{'measure-split-line-left':measureHeader.isFirstOfParent,'measure-split-line-bottom':measureHeader.parent && !measureHeader.isParent}">
+        <a class="tab-btn" data-bind="click:function(){$root.playMeasure($data,student);},attr:{title:'Paused: '+measureHeader.name}">
+            <i class="icon-pause"></i>
+        </a>
+    </td>
+</script>
+
+<script type="text/html" id="_td_Locked">
+    <td data-bind="css:{'measure-split-line-left':measureHeader.isFirstOfParent,'measure-split-line-bottom':measureHeader.parent && !measureHeader.isParent}">
+        <a class="tab-btn off-btn" data-bind="click:function(){$root.switchLock($data,student);},attr:{title:'Restore '+measureHeader.name}">
+            <i class="icon-circle-blank"></i>
+        </a>
+    </td>
+</script>
+<script type="text/html" id="_td_Score">
+    <td data-bind="css:{'measure-split-line-left':measureHeader.isFirstOfParent ||(measureHeader.isLastOfParent && !measureHeader.parent.visible()),'measure-split-line-bottom':measureHeader.parent && !measureHeader.isParent}">
+        <!--ko ifnot: (dataFrom==='')-->
+            <!-- ko if: (totalScored) -->
+            <span class=""
+               data-bind="text: showText(),style:{background:benchmarkColor},css:{'benchmarkColor':benchmarkColor!=''},attr:{title:measureHeader.name}"></span>
+            <!-- /ko-->
+            <!-- ko ifnot: (totalScored) -->
+            <span class="table-btn icon-ok ok-btn" data-bind="attr:{title:measureHeader.name}"></span>
+            <!-- /ko-->
+        <!-- /ko-->
+        
+        <!--ko if: (dataFrom==='')-->
+            <!-- ko if: (totalScored) -->
+            <a class=""
+               data-bind="text: showText(),style:{background:benchmarkColor},css:{'benchmarkColor':benchmarkColor!=''},click:function(){$root.viewResult(student,$data);},attr:{title:measureHeader.name}"
+               href="#"></a>
+            <!-- /ko-->
+            <!-- ko ifnot: (totalScored) -->
+            <a class="table-btn icon-ok ok-btn"
+               data-bind="click:function(){$root.viewResult(student,$data);},attr:{title:measureHeader.name}"
+               href="#"></a>
+            <!-- /ko-->
+        <!-- /ko-->
+    </td>
+</script>
+<script type="text/html" id="_td_Total_Score">
+    <td data-bind="css:{'measure-split-line-left':parent && !parent.visible(),'measure-split-line-bottom':measureHeader.parent && !measureHeader.isParent},attr:{title:'Total: ' + measureHeader.parent.name}" class="measure-split-line-right">
+        <!--ko ifnot: (dataFrom==='')-->
+            <!-- ko if: (totalScored) -->
+            <span class=""
+               data-bind="text: showText(),style:{background:benchmarkColor},css:{'benchmarkColor':benchmarkColor!=''}" style="width: 40px;"></span>
+            <!-- /ko-->
+        <!-- /ko-->
+        
+        <!--ko if: (dataFrom==='')-->
+            <!-- ko if: (totalScored) -->
+            <a class=""
+               data-bind="text: showText(),style:{background:benchmarkColor},css:{'benchmarkColor':benchmarkColor!=''}" style="width: 40px;"></a>
+            <!-- /ko-->
+        <!-- /ko-->
+    </td>
+</script>
+<script type="text/html" id="_td_Total">
+    <td data-bind="css:{'measure-split-line-left':parent && !parent.visible(),'measure-split-line-bottom':measureHeader.parent && !measureHeader.isParent},attr:{title:'Total: ' + measureHeader.parent.name}" class="measure-split-line-right">
+        -
+    </td>
+</script>
+@section Scripts{
+    @Scripts.Render("~/scripts/cpalls/practiceoffline")
+    <script type="text/javascript">
+        function log(type, message) {
+            var log = '<div class="alert alert-' + type + ' alert-log" role="alert" title="' + message + '">' + message + '</div>';
+            $(log).appendTo($log);
+            $log.scrollTop($log[0].scrollHeight);
+        }
+
+        function cpallsDone(execModel, measureResult) {
+            console.log(arguments);
+            var executedMeasures = [];
+            executedMeasures.measureByKey = {};
+            var date = new Date().Format("yyyy-MM-dd HH:mm:ss");
+            for (var i = 0; i < measureResult.length; i++) {
+                var executedMeasure = measureResult[i];
+                var measureForUpdate = {
+                    measureId: executedMeasure.MeasureId,
+                    goal: 0,
+                    status: { value: executedMeasure.Status },
+                    pauseTime: executedMeasure.PauseTime,
+                    items: [],
+                    itemByKey: {},
+                    updatedOn: date,
+                    comment: executedMeasure.Comment
+                };
+                if (executedMeasure.Status === Cpalls_Status.Initialised) {
+                    measureForUpdate.status.value = Cpalls_Status.Initialised;
+                    measureForUpdate.goal = -1;
+                }
+
+                if (executedMeasure.Items && executedMeasure.Items.length) {
+                    for (var item = 0; item < executedMeasure.Items.length; item++) {
+                        var executedItem = executedMeasure.Items[item];
+                        var itemForUpdate = {
+                            createdOn: date,
+                            updatedOn: date,
+                            goal: executedItem.Goal,
+                            isCorrect: executedItem.IsCorrect,
+                            itemId: executedItem.ItemId,
+                            pauseTime: executedItem.PauseTime,
+                            scored: executedItem.Scored,
+                            selectedAnswers: executedItem.SelectedAnswers,
+                            siId: 0,
+                            status: { value: Cpalls_Status.Finished },
+                            details: executedItem.Details,
+                            executed: executedItem.Executed,
+                            lastItemIndex: executedItem.LastItemIndex,
+                            resultIndex: executedItem.ResultIndex
+                        };
+                        measureForUpdate.items.push(itemForUpdate);
+                        measureForUpdate.itemByKey[executedItem.ItemId] = itemForUpdate;
+                    }
+                }
+                executedMeasures.push(measureForUpdate);
+                executedMeasures.measureByKey[measureForUpdate.measureId] = measureForUpdate;
+            }
+            offlineApp.saveStudentScores(execModel.student.id, executedMeasures);
+            //console.error("Sorry, student lost, please get online and restart over.");
+        }
+
+        var offlineApp;
+        var $log;
+
+        $(function () {
+            $log = $("#log_Container");
+            offlineApp = getCpallsOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.writeLog = log;
+            offlineApp.init();
+            ko.applyBindings(offlineApp.viewModel);
+            var selectedMeasureId = offlineApp.getItem("keepMeasureSelected");
+            //console.log(selectedMeasureId);
+            if (selectedMeasureId != undefined && selectedMeasureId != "") {
+                for (var i = 0 ; i < selectedMeasureId.length; i++) {
+                    $.each(offlineApp.viewModel.headers.allMeasures, function (index, item) {
+                        if (item.id == selectedMeasureId[i]) {
+                            offlineApp.viewModel.selectHeader(item);
+                            return;
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,24 @@
+﻿
+drop table ApplicantContacts 
+CREATE TABLE [dbo].[ApplicantContacts](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ApplicantId] [int] NOT NULL,
+	[CommunityId] [int] NOT NULL,
+	[SchoolTypeId] [int] NOT NULL,
+	[SchoolName] [varchar](50) NOT NULL,
+	[Address] [varchar](200) NOT NULL,
+	[Address2] [varchar](200) NOT NULL,
+	[City] [varchar](100) NOT NULL,
+	[StateId] [int] NOT NULL,
+	[Zip] [varchar](5) NOT NULL,
+	[FirstName] [varchar](140) NOT NULL,
+	[LastName] [varchar](140) NOT NULL,
+	[WorkPhone] [varchar](50) NOT NULL,
+	[OtherPhone] [varchar](50) NOT NULL,
+	[Email] [varchar](50) NOT NULL,
+	[RoleType] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL
+)
+
+

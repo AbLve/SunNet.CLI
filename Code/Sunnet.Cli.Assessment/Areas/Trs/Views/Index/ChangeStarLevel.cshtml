@@ -1,0 +1,101 @@
+﻿@using Sunnet.Cli.Core.Trs
+@{
+    ViewBag.Title = "Star Level Change";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var currentVerifiedStar = (TRSStarEnum)ViewBag.currentVerifiedStar;
+}
+@using (Ajax.BeginForm("", "", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    <div class="form-group">
+        <label class="control-label col-sm-5">Verified Star</label>
+        <div class="col-sm-5">
+            @currentVerifiedStar.ToDescription()
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-5" for="verifiedStar">Select New Star Level</label>
+        <div class="col-sm-5">
+            @Html.DropDownList("verifiedStar", (IEnumerable<SelectListItem>)ViewBag.verifiedStar,
+                new { @class = "form-control required" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-5 required" for="ApprovalDate">Approval Date</label>
+        <div class="col-sm-5">
+            <input id="ApprovalDate" name="ApprovalDate" class="form-control date required" value="@DateTime.Now.FormatDateString()" />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" onclick="return SaveVerifiedStar()" type="button">OK</button>
+    </div>
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response) {
+                    if (response.success) {
+                        closeModal($("#@(formId)"));
+                    }
+                }
+            });
+        })();
+
+        $(function () {
+            console.log(1);
+            $("#verifiedStar option[value='@ViewBag.currentVerifiedStar']").attr("selected", "selected");
+            $("#ApprovalDate").val('@ViewBag.approvalDate')
+        })
+
+        function SaveVerifiedStar() {
+            if (!$('#@formId').valid()) {
+                return false;
+            }
+            var newStar = $("#verifiedStar").val();
+            if (newStar == '@ViewBag.currentVerifiedStar') {
+                showMessage("hint", "Please select a new star level. ");
+                return false;
+            }
+            var newStarLevel = $("#verifiedStar").find("option:selected").text();
+            var approveDateConfirm = $("#ApprovalDate").val();
+            var starConfirmHtml = "<div>"
+            starConfirmHtml += "<p>Verified Star : @currentVerifiedStar.ToDescription()</p>";
+            starConfirmHtml += "<p>New Star Level : " + newStarLevel + "</p>";
+            starConfirmHtml += "<p>Approval Date : " + approveDateConfirm + "</p>";
+            starConfirmHtml += "</div>";
+            jQuery.when(waitingConfirm(starConfirmHtml, "Change", "Cancel")).done(function () {
+                var verifiedStar = $("#verifiedStar").val();
+                var approveDate = $("#ApprovalDate").val();
+                if ('@ViewBag.logId' == '0') {
+                    eventLogModel.newEventLogList()[0].verifiedStar(verifiedStar);
+                    eventLogModel.newEventLogList()[0].notification(true);
+                    eventLogModel.newEventLogList()[0].approvalDate(approveDate);
+                    $("#EventType0").val(eventLogModel.newEventLogList()[0].eventTypeValue());
+                }
+                else {
+                    for (var i = 0; i < eventLogModel.eventLogList().length; i++) {
+                        var logData = eventLogModel.eventLogList()[i];
+                        if (logData.id == '@ViewBag.logId') {
+                            eventLogModel.eventLogList()[i].verifiedStar(verifiedStar);
+                            eventLogModel.eventLogList()[i].notification(true);
+                            eventLogModel.eventLogList()[i].approvalDate(approveDate);
+                            $("#EventType" + logData.id).val(logData.eventTypeValue());
+                            break;
+                        }
+                    }
+                }
+                closeModal($("#@(formId)"));
+            }).fail(function () {
+                return false;
+            });
+        }
+    </script>
+}

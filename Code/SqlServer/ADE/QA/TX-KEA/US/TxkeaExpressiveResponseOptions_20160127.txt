@@ -1,0 +1,7 @@
+﻿  if not exists(select * from syscolumns where id=object_id('TxkeaExpressiveResponseOptions') and name='Score')
+	alter table TxkeaExpressiveResponseOptions add Score decimal(18,2)
+
+go
+update TxkeaExpressiveResponseOptions set Score = 0 where Score is null
+go
+alter table TxkeaExpressiveResponseOptions alter column Score decimal(18,2) not null

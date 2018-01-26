@@ -1,0 +1,11 @@
+﻿ALTER FUNCTION [dbo].[GetTeacherCode] 
+(
+	 @schoolYear varchar(5)
+)
+RETURNS varchar(50)
+AS
+BEGIN
+    DECLARE @count int
+	select @count=count(1) from Teachers where SchoolYear=@schoolYear
+	return 'ETE'+ left(@schoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),(@count+1)),'5')
+END

@@ -1,0 +1,45 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.ApplicantContactEntity
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Confirmation";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#modalNormal').on('hidden.bs.modal', function (e) {
+                location = "/Home/SignUp";
+            })
+        })
+    </script>
+}
+@using (Ajax.BeginForm("ContactPrincipal", "Teacher", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    
+    
+    <div class="logup-container1">
+        <p>
+            Thank you for your interest in CLI Engage. 
+            An email has been sent to someone within your organization ( district representative,  principal,  or center director) who can verify your employment status and eligibility to access CLI Engage.
+        </p>
+        <p>&nbsp;</p>
+        <p>
+            You should receive an email invitation to continue your registration process with additional instructions soon.  If you do not receive an email invitation within one week, please contact cliengage@uth.tmc.edu for further assistance. (Be sure to check you spam folder for the email invitation, just in case.)
+        </p>
+        <div class=" btn-container"><a class="logbutton redbtn">Close</a></div>
+    </div>
+    
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Close</button>
+    </div>
+}
+
+

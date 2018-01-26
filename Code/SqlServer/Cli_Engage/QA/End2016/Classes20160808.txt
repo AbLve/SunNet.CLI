@@ -1,0 +1,5 @@
+﻿ go
+ update ClassRoles set [ClassInternalID] = 'R'
+ GO
+ update ClassRoles set [ClassInternalID] = 'RW' WHERE RoleId in( 1,110,115)
+ 

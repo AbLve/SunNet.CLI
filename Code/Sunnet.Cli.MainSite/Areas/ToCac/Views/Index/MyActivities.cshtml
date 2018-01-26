@@ -1,0 +1,286 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Framework
+@model Sunnet.Cli.Business.CAC.Models.MyActivityViewModel
+@{
+    ViewBag.Title = "My Activity";
+}
+<style>
+    .main-container {
+        padding: 20px 20px 0;
+    }
+
+    .main-con-right {
+        margin: 0;
+        width: 100%;
+        padding-top: 20px;
+    }
+
+    .main-con-right {
+        min-width: 950px;
+    }
+</style>
+<div id="dvMyActivities">
+    <div class="activity-top">
+        <h2><strong data-bind="text:IsEnglish()?'MY ACTIVITIES':'MIS ACTIVIDADES'"></strong> | <span data-bind="text:IsEnglish()?'CIRCLE ACTIVITY COLLECTIONS':'COLECCIÓN DE ACTIVIDADES CIRCLE'"></span></h2>
+        <p data-bind="text:IsEnglish()?'Welcome to My Activities, your personal collection of saved activities from the CIRCLE Activity Collection! The activities that you saved are below by collection, language, and domain. Visit the CIRCLE Activity Collection to find and add more activities to My Activities.':'¡Bienvenido a ‘Mis Actividades’, su colección personal de actividades que ha escogido guardar de la Colección de Actividades CIRCLE! Las actividades que guardó están organizadas por colección, idioma, y dominio. Visite la Colección de actividades CIRCLE para encontrar y agregar más actividades a ‘Mis Actividades’.'"></p>
+    </div>
+    <div class="activity-content">
+        <div class="activity-content-tab">
+            <ul class="clearfix">
+                <li><a href="javascript:void(0)" name="aCollectionType" onclick="ChangeMenu(this, 'aCollectionType');" value="Pre-K English" class="cur">PREK / KINDERGARTEN</a></li>
+                <li><a href="javascript:void(0)" name="aCollectionType" onclick="ChangeMenu(this, 'aCollectionType');" value="Infant & Toddler English">INFANT & TODDLER</a></li>
+                <li><a href="javascript:void(0)" name="aCollectionType" onclick="ChangeMenu(this, 'aCollectionType');" value="Parents English">FAMILY</a></li>
+                <li><a href="javascript:void(0)" name="aCollectionType" onclick="ChangeMenu(this, 'aCollectionType');" value="Pre-K Spanish">PREKÍNDER / KINDERGARTEN</a></li>
+                <li><a href="javascript:void(0)" name="aCollectionType" onclick="ChangeMenu(this, 'aCollectionType');" value="Infant & Toddler Spanish">BEBÉS Y NIÑOS PEQUEÑOS</a></li>
+                <li><a href="javascript:void(0)" name="aCollectionType" onclick="ChangeMenu(this, 'aCollectionType');" value="Parents Spanish">FAMILIA</a></li>
+            </ul>
+        </div>
+        <div class="activity-content-tab-content clearfix">
+            <div class="activity-content-tab-content-left">
+                <div class="left-title">
+                    <h3 id="h3collectionType">INFANT & TODDLER</h3>
+                    <h5 data-bind="text:IsEnglish()?'CIRCLE ACTIVITY COLLECTION':'COLECCIÓN DE ACTIVIDADES CIRCLE'"></h5>
+                    <p data-bind="text:IsEnglish()?'LEARNING DOMAINS':'ÁREAS DE APRENDIZAJE'"></p>
+                </div>
+                <ul>
+                    <li><a href="javascript:void(0);" class="cur" id="allDomain" onclick="ChangeMenu(this, 'aDomains');" name="aDomains" data-bind="text:allDomainField(),attr:{domainvalue:'ALL DOMAINS'}"></a></li>
+                </ul>
+                <ul style="margin-top: -10px" data-bind="foreach:{ data: Domains, as: 'domains' }">
+                    <li><a href="javascript:void(0);" onclick="ChangeMenu(this, 'aDomains');" name="aDomains" data-bind="text:$data,attr:{domainvalue:$data}"></a></li>
+                </ul>
+            </div>
+            <div class="activity-content-tab-content-right">
+                <!--ko if:list_MyActivity.MyActivities().length>0-->
+                <div class="right-title clearfix">
+                    <h3 style="cursor: pointer;text-decoration: underline;" onclick="PrintActivities();" data-bind="html:IsEnglish()?'PRINT LIST OF ACTIVITIES':'IMPRIMIR LISTA <br />DE ACTIVIDADES'"></h3>
+                    <div>
+                        <p data-bind="text:IsEnglish()?'SORT BY: ':'Ordenar por: '"></p>
+                        <select id="selSort" onchange="SortOrderResult()" aria-label="SORT BY">
+                            <option value="ActivityName" data-bind="text:IsEnglish()?'Title':'Título'">Title</option>
+                            <option value="Domain" data-bind="text:IsEnglish()?'Domain':'Dominio'">Domain</option>
+                        </select>
+                    </div>
+                    <div>
+                        <p data-bind="text:IsEnglish()?'ORDER: ':'Dirección: '"></p>
+                        <select id="selOrder" onchange="SortOrderResult()" aria-label="ORDER">
+                            <option value="ASC">ASC</option>
+                            <option value="DESC">DESC</option>
+                        </select>
+                    </div>
+                    <div>
+                        <p data-bind="text:IsEnglish()?'RESULTS: ':'Resultados: '"></p>
+                        <select id="selCount" onchange="SortOrderResult()" aria-label="RESULTS">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="50">ALL</option>
+                        </select>
+                    </div>
+                    <div class="fanye">
+                        <a href="javascript:void(0)" style="float: left" onclick="PrePage()"><span class="icon-angle-left"></span></a>
+                        <p style="float: left">
+                            <span style="float: left" id="currentPage">1</span>
+                            <span style="float: left;">of</span>
+                            <span style="float: right;" data-bind="text:TotlePage" id="totalPage">5</span>
+                        </p>
+                        <a href="javascript:void(0)" style="float: right" onclick="NextPage()"><span class="icon-angle-right"></span></a>
+                    </div>
+                </div>
+                <div data-bind="foreach: { data: MyActivities, as: 'item' }">
+                    <div class="right-con">
+                        <div class="right-content-tit clearfix">
+                            <a href="javascript:void(0);" data-bind="click:$root.GeneralCACUrl">
+                                <h2 data-bind="text:ActivityName"></h2>
+                            </a>
+                            <button type="button" class="btn" data-bind="click:$root.RemoveActivity,text:$root.IsEnglish()?'REMOVE ACTIVITY':'REMOVER LA ACTIVIDAD'"></button>
+                        </div>
+                        <div class="right-content-con clearfix">
+                            <div class="clearfix">
+                                <div class="right-content-con-div right-content-con-div1">
+                                    <strong data-bind="text:$root.domainField()+':'"></strong>
+                                    <span data-bind="text:Domain"></span>
+                                </div>
+                                <div class="right-content-con-div">
+                                    <strong data-bind="text:$root.subDomainField()+':'"></strong>
+                                    <span data-bind="text:SubDomain"></span>
+                                </div>
+                            </div>
+                            <div class="clearfix">
+                                <p><strong data-bind="text:$root.IsEnglish()?'AGE GROUPS:':'GRUPOS DE EDAD:',visible:(CollectionType!='Pre-K English' && CollectionType!='Pre-K Spanish')"></strong> <span data-bind="text:AgeGroup"></span></p>
+                                <p><strong data-bind="text:$root.IsEnglish()?'OBJECTIVE:':'OBJETIVO:'"></strong> <span data-bind="html:ObjectiveHtml"></span></p>
+                                <p>
+                                    <strong data-bind="text:$root.IsEnglish()?'MY NOTES:':'MIS NOTAS:'"></strong>
+                                </p>
+                                <p class="right-content-con-p" data-bind="html:Note,attr:{id:'note'+ID}"></p>
+                                <p class="right-content-con-p" data-bind="">
+                                    <textarea class="form-control" style="display: none;" data-bind="visible:false,attr:{id:'txtNote'+ID},text:Note" aria-label="MY NOTES"></textarea>
+                                </p>
+                            </div>
+                            <div class="clearfix" style="text-align: right;">
+                                <a data-bind="click:$root.ShowNoteText,attr:{id:'addMyNote'+ID},text:$root.IsEnglish()?'ADD/EDIT MY NOTES':'AÑADIR/EDITAR MIS NOTAS'"></a>
+                                <a data-bind="click:$root.SaveNote,attr:{id:'saveMyNote'+ID},visible:false,text:$root.IsEnglish()?'SAVE MY NOTES':'GUARDAR MIS NOTAS'"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/ko-->
+                <div style="padding-top: 100px;" id="dvNoData">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript" charset="utf-8">
+        var list_MyActivity = new MyActivityViewModel();
+        $(function() {
+            jQuery.when(BindData()).then(function() {
+                ko.applyBindings(list_MyActivity, document.getElementById("dvMyActivities"));
+            });
+        });
+
+        function MyActivityViewModel() {
+            var self = this;
+            self.MyActivities = ko.observableArray([]);
+            self.Domains = ko.observableArray([]);
+            self.TotlePage = ko.observableArray([]);
+            self.CurrentPage = ko.observableArray([]);
+            self.IsEnglish = ko.observableArray([]);
+            self.domainField = ko.observableArray([]);
+            self.subDomainField = ko.observableArray([]);
+            self.allDomainField = ko.observableArray([]);
+            self.RemoveActivity = function(item) {
+                jQuery.when(waitingConfirm("Are you sure?", "Yes", "No")).done(function() {
+                    $.post("/ToCac/Index/DeleteMyActivity?id=" + item.ID, function(data) {
+                        if (data.success) {
+                            window.showMessage('success');
+                            BindData();
+                        } else {
+                            window.showMessage('fail', data.msg);
+                        }
+                    }, 'json');
+                });
+            }
+            self.ShowNoteText = function(item) {
+                $("#note" + item.ID).hide();
+                $("#txtNote" + item.ID).show();
+                $("#addMyNote" + item.ID).hide();
+                $("#saveMyNote" + item.ID).show();
+            }
+            self.SaveNote = function(item) {
+                $.post("/ToCac/Index/SaveMyNote", { id: item.ID, note: $("#txtNote" + item.ID).val() }, function(data) {
+                    if (data.success) {
+                        window.showMessage('success');
+                        BindData();
+                    } else {
+                        window.showMessage('fail', data.msg);
+                    }
+                }, 'json');
+            }
+            self.GeneralCACUrl = function (item) {
+                CACUrl(item.Url);
+            }
+        }
+        function CACUrl(url) {
+            $.get('@Url.Action("GenerateCacUrl")' + "?paramStr=" + url, function (data) {
+                window.location = data;
+            }, "text");
+        }
+        function BindData() {
+            var deffered = $.Deferred();
+            var collectionType = $("[name='aCollectionType'][class='cur']").attr("value");
+            var domain = $("[name='aDomains'][class='cur']").attr("domainvalue");
+            var sort = $("#selSort").val();
+            var order = $("#selOrder").val();
+            var count = $("#selCount").val();
+            var first = ($("#currentPage").text() * 1 - 1) * count;
+            var condination = { collectionType: collectionType, domain: domain, sort: sort, order: order, count: count, first: first };
+            $.getJSON('SearchMyActivities', condination, function (data) {
+                    switch (collectionType) {
+                    case "Pre-K English":
+                        var noDataHtml = '<strong>Visit the <a href="javascript:void(0);" style="color:#006CA5;text-decoration: underline;" onclick="CACUrl(\'@(SFConfig.CACDomain)pre-k/en/home/\')">CIRCLE Activity Collection</a> to add activities to your personal collection here, in My Activities. Your saved activities are listed in My Activities by learning domain.</strong>';
+                        $("#dvNoData").html(noDataHtml);
+                        break;
+                    case "Infant & Toddler English":
+                        var noDataHtml = '<strong>Visit the <a href="javascript:void(0);" style="color:#006CA5;text-decoration: underline;" onclick="CACUrl(\'@(SFConfig.CACDomain)infant-toddler/en/home/\')">CIRCLE Activity Collection</a> to add activities to your personal collection here, in My Activities. Your saved activities are listed in My Activities by learning domain.</strong>';
+                        $("#dvNoData").html(noDataHtml);
+                        break;
+                    case "Parents English":
+                        var noDataHtml = '<strong>Visit the <a href="javascript:void(0);" style="color:#006CA5;text-decoration: underline;" onclick="CACUrl(\'@(SFConfig.CACDomain)family/en/home/\')">CIRCLE Activity Collection</a> to add activities to your personal collection here, in My Activities. Your saved activities are listed in My Activities by learning domain.</strong>';
+                        $("#dvNoData").html(noDataHtml);
+                        break;
+                    case "Pre-K Spanish":
+                        var noDataHtml = '<strong>Visite <a href="javascript:void(0);" style="color:#006CA5;text-decoration: underline;" onclick="CACUrl(\'@(SFConfig.CACDomain)pre-k/sp/home/\')">la colección de actividades CIRCLE</a> para añadir actividades a su colección personal, en ‘Mis actividades’. Sus actividades que han sido guardadas están en ‘Mis actividades’ clasificadas por dominio de aprendizaje.</strong>';
+                        $("#dvNoData").html(noDataHtml);
+                        break;
+                    case "Infant & Toddler Spanish":
+                        var noDataHtml = '<strong>Visite <a href="javascript:void(0);" style="color:#006CA5;text-decoration: underline;" onclick="CACUrl(\'@(SFConfig.CACDomain)infant-toddler/sp/home/\')">la colección de actividades CIRCLE</a> para añadir actividades a su colección personal, en ‘Mis actividades’. Sus actividades que han sido guardadas están en ‘Mis actividades’ clasificadas por dominio de aprendizaje.</strong>';
+                        $("#dvNoData").html(noDataHtml);
+                        break;
+                    case "Parents Spanish":
+                        var noDataHtml = '<strong>Visite <a href="javascript:void(0);" style="color:#006CA5;text-decoration: underline;" onclick="CACUrl(\'@(SFConfig.CACDomain)family/sp/home/\')">la colección de actividades CIRCLE</a> para añadir actividades a su colección personal, en ‘Mis actividades’. Sus actividades que han sido guardadas están en ‘Mis actividades’ clasificadas por dominio de aprendizaje.</strong>';
+                        $("#dvNoData").html(noDataHtml);
+                        break;
+                        default:
+                            break;
+                    }
+                $("#h3collectionType").html($("[name='aCollectionType'][class='cur']").html());
+                list_MyActivity.MyActivities(data.data);
+                list_MyActivity.Domains(data.domains);
+                list_MyActivity.IsEnglish(data.IsEnglish);
+                list_MyActivity.domainField(data.domainField);
+                list_MyActivity.subDomainField(data.subDomainField);
+                list_MyActivity.allDomainField(data.allDomainField);
+                var page = Math.floor(data.total / ($("#selCount").val() * 1));
+                list_MyActivity.TotlePage(data.total % ($("#selCount").val() * 1) == 0 ? page : page + 1);
+                deffered.resolve();
+            });
+            return deffered.promise();
+        }
+
+        function ChangeMenu(object, element) {
+            $("#currentPage").html(1);
+            if (element == "aCollectionType") {
+                $("[name='aDomains']").removeClass("cur");
+                $("#allDomain").addClass("cur");
+                $("#selSort").val("ActivityName");
+                $("#selOrder").val("ASC");
+                $("#selCount").val("5");
+            }
+            $("[name='" + element + "']").removeClass("cur");
+            $(object).addClass("cur");
+            BindData();
+        }
+
+        function SortOrderResult() {
+            $("#currentPage").html(1);
+            BindData();
+        }
+
+        function NextPage() {
+            if ($("#currentPage").text() * 1 < $("#totalPage").text() * 1) {
+                $("#currentPage").text($("#currentPage").text() * 1 + 1);
+                BindData();
+            }
+        }
+
+        function PrePage() {
+            if ($("#currentPage").text() * 1 > 1) {
+                $("#currentPage").text($("#currentPage").text() * 1 - 1);
+                BindData();
+            }
+        }
+
+        function PrintActivities() {
+            var collectionType = $("[name='aCollectionType'][class='cur']").attr("value");
+            var domain = $("[name='aDomains'][class='cur']").attr("domainvalue");
+            var sort = $("#selSort").val();
+            var order = $("#selOrder").val();
+            location.href = "/ToCac/Index/MyActivitiesPdf?collectionType=" + encodeURIComponent(collectionType) + "&domain=" + domain + "&sort=" + sort + "&order" + order;
+        }
+    </script>
+}

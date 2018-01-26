@@ -1,0 +1,16 @@
+GO 
+ALTER TABLE dbo.Measures ADD HasCutOffScores BIT NOT NULL DEFAULT 0;
+GO 
+UPDATE  dbo.Measures
+SET     HasCutOffScores = 1
+WHERE   ID IN (
+        SELECT  DISTINCT
+                ( C.HostId )
+        FROM    dbo.CutOffScores AS C
+        WHERE   C.HostType = 'Sunnet.Cli.Core.Ade.Entities.MeasureEntity'
+                AND ( C.FromYear != 0
+                      OR C.FromMonth != 0
+                      OR C.ToYear != 0
+                      OR C.ToMonth != 0
+                      OR C.CutOffScore != 0.00
+                    ) ); 

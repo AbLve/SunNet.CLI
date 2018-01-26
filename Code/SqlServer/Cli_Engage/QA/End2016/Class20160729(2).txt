@@ -1,0 +1,8 @@
+﻿USE [主站点数据库名称]
+ALTER TABLE [dbo].[Classes] DROP CONSTRAINT [ClassLevel的Constraint名称]
+GO 
+alter table Classes alter column [Classlevel] int not null 
+GO
+ALTER TABLE [dbo].[Classes] ADD  DEFAULT ((0)) FOR [Classlevel]
+GO
+alter table DataProcesses alter column [Classlevel] int not null 

@@ -1,0 +1,2 @@
+﻿if exists(select * from syscolumns where id=object_id('Files') and name='StrategyId')
+alter table Files drop column StrategyId

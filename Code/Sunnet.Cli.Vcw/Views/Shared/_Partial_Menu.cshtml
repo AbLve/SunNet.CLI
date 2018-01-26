@@ -1,0 +1,25 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    var menus = Cli_Menus.Home.ToList().Cast<Cli_Menus>().ToDictionary(module => module, module => "");
+}
+
+
+
+<nav class="navbar navbar-default">
+    <div id="nav">
+        <ul class="nav navbar-nav @(ViewBag.Login ?"main-container1 new-nav":"") " style=" @(ViewBag.Login ? "padding:0 120px;" : "") ">
+            <li class=" @(menus[Cli_Menus.Dashboard]) "><a class=" @menus[Cli_Menus.Home] menutext" href="@(SFConfig.MainSiteDomain)/home/Dashboard">Dashboard</a></li>
+
+
+            <li class="@(menus[Cli_Menus.Calendar])"><a class="@menus[Cli_Menus.Calendar] menutext" href="@(SFConfig.MainSiteDomain)Calendar">Calendar</a></li>
+
+            @if (ViewBag.Login)
+            {
+                <li class="@(menus[Cli_Menus.Resources])"><a class="@menus[Cli_Menus.Resources] menutext" href="@(SFConfig.MainSiteDomain)resources">Resources</a></li>
+            }
+            <li class="@(menus[Cli_Menus.Helps])"><a class="@menus[Cli_Menus.Helps] menutext" href="http://www.texasschoolready.org/help">Help Ticket</a></li>
+
+        </ul>
+    </div>
+</nav>

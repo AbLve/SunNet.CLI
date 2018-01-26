@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+}
+<div class="modal" id="unlock" data-backdrop="static">
+    <div class="modal-dialog-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Input your PIN code to unlock the page</h4>
+            </div>
+            <div class="modal-body">
+                <div class="modal-main-content">
+                    <div class="modal-content-body">
+                        <form class="form-horizontal" novalidate="novalidate">
+                            <div class="form-group">
+                                <label for="" class="col-sm-5 control-label">PIN Code</label>
+                                <div class="col-sm-7">
+                                      <label for="anotherfakenameUnLock" style="display: none">1</label>
+                                          <label for="txtUnlock" style="display: none">2</label>
+                                    <input style="display:none;" type="password" name="anotherfakename" id="anotherfakenameUnLock" />
+                                    <input type="password" id="txtUnlock" maxlength="10" class="form-control pin" />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnUnlock" style="background:#3979AF;">Unlock</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

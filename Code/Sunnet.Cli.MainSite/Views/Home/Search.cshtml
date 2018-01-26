@@ -1,0 +1,75 @@
+﻿@using System.Web.UI.WebControls
+
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Search";
+    ViewBag.CurrentMenu = Cli_Menus.Search;
+}
+ @Styles.Render("~/css/home")
+<!-- CSS styles for standard search box -->
+<style type="text/css">
+
+    h2 {
+        font-size: 3em;
+        margin: 0.3em auto;
+        text-align: left;
+        align: left;
+    }
+	
+	#tfheader{
+		background-color:#c3dfef;
+	}
+	#tfnewsearch{
+		float:right;
+		padding:20px;
+	}
+	.tftextinput{
+		margin: 0;
+		padding: 5px 15px;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size:14px;
+		border:1px solid #0076a3; border-right:0px;
+		border-top-left-radius: 5px 5px;
+		border-bottom-left-radius: 5px 5px;
+	}
+	.tfbutton {
+		margin: 0;
+		padding: 5px 15px;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size:14px;
+		outline: none;
+		cursor: pointer;
+		text-align: center;
+		text-decoration: none;
+		color: #ffffff;
+		border: solid 1px #d13f48 border-right:0px;
+		background: #d13f48;
+		border-top-right-radius: 5px 5px;
+		border-bottom-right-radius: 5px 5px;
+	}
+	.tfbutton:hover {
+		text-decoration: none;
+		background: #d13f48;;
+	}
+	/* Fixes submit button height problem in Firefox */
+	.tfbutton::-moz-focus-inner {
+	  border: 0;
+	}
+	.tfclear{
+		clear:both;
+	}
+</style>
+<div class="row" style="padding-bottom: 50px;">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+        <h2 style="color: #92c83e;">Search</h2>
+		<form id="tfnewsearch" method="get" action="#">
+		        <label class="hidden-text" for="search">Search</label>
+				<input type="text" class="tftextinput" id="search" size="21" maxlength="120"><input type="submit" value="search" class="tfbutton">
+		</form>
+        <p align="left">
+The search feature of the Engage Website will be added at a later time.
+        </p> 
+    </div>
+    <div class="col-sm-3"></div>
+</div>

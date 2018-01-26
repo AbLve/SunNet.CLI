@@ -1,0 +1,1845 @@
+﻿/****** Object:  Table [dbo].[TRSItems]    Script Date: 2015/2/24 16:39:47 ******/
+DROP TABLE [dbo].[TRSItems]
+GO
+/****** Object:  Table [dbo].[TRSItemAnswers]    Script Date: 2015/2/24 16:39:47 ******/
+DROP TABLE [dbo].[TRSItemAnswers]
+GO
+/****** Object:  Table [dbo].[TRSAnswers]    Script Date: 2015/2/24 16:39:47 ******/
+DROP TABLE [dbo].[TRSAnswers]
+GO
+/****** Object:  Table [dbo].[TRSAnswers]    Script Date: 2015/2/24 16:39:47 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[TRSAnswers](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Text] [varchar](500) NULL,
+	[Score] [int] NOT NULL,
+ CONSTRAINT [PK_TRSAnswers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[TRSItemAnswers]    Script Date: 2015/2/24 16:39:47 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TRSItemAnswers](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[AnswerId] [int] NOT NULL,
+ CONSTRAINT [PK_TRSItemAnswers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[TRSItems]    Script Date: 2015/2/24 16:39:47 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[TRSItems](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Category] [tinyint] NOT NULL,
+	[Item] [varchar](50) NOT NULL,
+	[Text] [varchar](500) NOT NULL,
+	[Description] [varchar](2000) NOT NULL,
+	[Filter] [tinyint] NOT NULL,
+	[TAPlanItem] [varchar](200) NOT NULL,
+	[TAPlanItemType] [varchar](200) NOT NULL,
+	[TAItemInstructions] [varchar](200) NOT NULL,
+	[LinkingDocument] [varchar](200) NOT NULL,
+	[IsRequired] [bit] NOT NULL,
+	[Sort] [int] NOT NULL,
+	[ShowByInfants] [bit] NOT NULL,
+	[ShowByToddlers] [bit] NOT NULL,
+	[ShowByPreschool] [bit] NOT NULL,
+	[ShowBySchoolAge] [bit] NOT NULL,
+	[Type] [tinyint] NOT NULL,
+	[SubCategoryId] [int] NOT NULL,
+	[LCSA] [tinyint] NOT NULL,
+	[LCCH] [tinyint] NOT NULL,
+	[RCCH] [tinyint] NOT NULL,
+	[LCAA] [tinyint] NOT NULL,
+	[KeyBehavior] [varchar](2000) NOT NULL,
+	[Playground] [bit] NOT NULL,
+ CONSTRAINT [PK_TRSItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+SET IDENTITY_INSERT [dbo].[TRSAnswers] ON 
+
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (1, N'None', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (2, N'Valid CCA OR 5 to 9 years as a director in a TRS or currently recognized nationally accredited provider.', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (3, N'Valid CDA, CCP w/ 6 hrs College Credit in BM', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (4, N'9 in ECE 9 in BM', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (5, N'60 w/ 9 in CD 6 in MB', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (6, N'CCA from College w/ 15 in CD and 3 BM', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (7, N'AA/AAS w/ 12 ECE  & 6 BM ', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (8, N'BA/BS w/ 12 ECE & 6 BM ', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (9, N'Valid CCA w/o CCL waiver OR 5 to 9 years as a director in a TRS or currently recognized nationally accredited provider.', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (10, N'Valid CDA, CCP w/ 3 hrs College Credit in BM OR 72  clock hrs training in CD w/24 clock hrs in BM', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (11, N'AA/AAS w/ 6 & 3', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (12, N'B w/ 12 & 3', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (13, N'Valid CCAC', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (14, N'Valid CCA, w/ 15/3 ', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (15, N'Valid CDA/CCP w/ 6', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (16, N'9/9 in CD & BM', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (17, N'60 w/ 9 ECE/related & 6 in BM', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (18, N'AA/AAS in ECE closely 6 BM', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (19, N'BA/BS in closely related field & 6 BM', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (20, N'< 21 yrs old', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (21, N'< 2 yrs exp', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (22, N'>= 21 yrs old', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (23, N'> 2 yrs exp but < 3 yrs exp ', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (24, N'>= 21 yrs old', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (25, N'> 3 yrs exp but < 4 yrs exp ', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (26, N'>= 21 yrs old', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (27, N'>= 4 yrs exp', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (28, N'< 1 yr exp', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (29, N'>= 21 yrs old', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (30, N'1 yr exp but < 2 yrs  exp', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (31, N'>= 21 yrs old', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (32, N'2 yrs exp but < 3 yrs exp', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (33, N'>= 3 yrs exp', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (34, N'< 36 hrs of training', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (35, N'36 hrs of training (6 in PA,M,S) ', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (36, N'36 hrs of training (6 in PA,M,S and 3 ITELG or PrekG) ', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (37, N'36 hrs of training (6 in PA,M,S and 6 ITELG or PrekG) ', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (38, N'< 29%', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (39, N'>= 30% but < 50% ', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (40, N'>= 50% but < 75% ', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (41, N'>= 75%', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (42, N'< 50% aligned', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (43, N'>= 50% aligned but < 65%  ', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (44, N'>= 65% but < 80% ', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (45, N'>= 80% aligned', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (46, N'2 to 10', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (47, N'1 to 4', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (48, N'1 to 5 or 2 to 13', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (49, N'1 to 9', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (50, N'1 to 7', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (51, N'1 to 6', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (52, N'1 to 11', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (53, N'1 to 9', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (54, N'1 to 8', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (55, N'1 to 6', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (56, N'1 to 15', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (57, N'1 to 12', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (58, N'1 to 11', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (59, N'1 to 9', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (60, N'1 to 18', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (61, N'1 to 14', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (62, N'1 to 12', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (63, N'1 to 10', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (64, N'1 to 10', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (65, N'1 to 10', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (66, N'1 to 10', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (67, N'1 to 26', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (68, N'1 to 19', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (69, N'1 to 16', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (70, N'1 to 12', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (71, N'0', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (72, N'1', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (73, N'2', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (74, N'3', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (75, N'Met', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (76, N'Not Met', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (77, N'N/A', -1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (78, N'10 to 14 years as a director in a TRS or currently recognized nationally accredited provider.', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (79, N'15 or more years as a director in a TRS or currently recognized nationally accredited provider.', 3)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (80, N'2 to 9', 2)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (81, N'1 to 22', 0)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (82, N'1 to 16', 1)
+GO
+INSERT [dbo].[TRSAnswers] ([ID], [Text], [Score]) VALUES (83, N'1 to 13', 2)
+GO
+SET IDENTITY_INSERT [dbo].[TRSAnswers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[TRSItemAnswers] ON 
+
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (1, 1, 1)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (2, 1, 2)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (3, 1, 3)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (4, 1, 4)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (5, 1, 5)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (6, 1, 6)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (7, 1, 7)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (8, 1, 8)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (9, 2, 1)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (10, 2, 9)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (11, 2, 10)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (12, 2, 4)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (13, 2, 5)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (14, 2, 6)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (15, 2, 7)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (16, 2, 8)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (17, 3, 1)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (18, 3, 13)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (19, 3, 14)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (20, 3, 15)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (21, 3, 16)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (22, 3, 17)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (23, 3, 18)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (24, 3, 19)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (25, 4, 20)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (26, 137, 21)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (27, 4, 22)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (28, 137, 23)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (29, 4, 24)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (30, 137, 25)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (31, 4, 26)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (32, 137, 27)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (33, 5, 20)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (34, 138, 28)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (35, 5, 29)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (36, 138, 30)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (37, 5, 31)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (38, 138, 32)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (39, 5, 26)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (40, 138, 33)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (41, 6, 1)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (42, 6, 35)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (43, 6, 36)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (44, 6, 37)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (45, 7, 38)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (46, 7, 39)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (47, 7, 40)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (48, 7, 41)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (49, 8, 38)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (50, 8, 39)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (51, 8, 40)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (52, 8, 41)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (53, 9, 42)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (54, 9, 43)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (55, 9, 44)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (56, 9, 45)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (59, 10, 46)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (60, 10, 47)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (63, 11, 48)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (64, 11, 47)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (65, 12, 49)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (66, 12, 50)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (67, 12, 51)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (68, 12, 47)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (69, 13, 52)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (70, 13, 53)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (71, 13, 54)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (72, 13, 55)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (73, 14, 56)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (74, 14, 57)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (75, 14, 58)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (76, 14, 59)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (77, 15, 60)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (78, 15, 61)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (79, 15, 62)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (80, 15, 63)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (81, 16, 81)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (82, 16, 82)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (83, 16, 83)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (84, 16, 63)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (85, 17, 67)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (86, 17, 68)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (87, 17, 69)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (88, 17, 70)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (89, 18, 67)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (90, 18, 68)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (91, 18, 69)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (92, 18, 70)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (93, 19, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (94, 19, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (95, 19, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (96, 19, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (97, 20, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (98, 20, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (99, 20, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (100, 20, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (101, 21, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (102, 21, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (103, 21, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (104, 21, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (105, 22, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (106, 22, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (107, 22, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (108, 22, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (109, 23, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (110, 23, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (111, 23, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (112, 23, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (113, 24, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (114, 24, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (115, 24, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (116, 24, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (117, 25, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (118, 25, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (119, 25, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (120, 25, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (121, 26, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (122, 26, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (123, 26, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (124, 26, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (125, 27, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (126, 27, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (127, 27, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (128, 27, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (129, 28, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (130, 28, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (131, 28, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (132, 28, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (133, 29, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (134, 29, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (135, 29, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (136, 29, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (137, 30, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (138, 30, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (139, 30, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (140, 30, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (141, 31, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (142, 31, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (143, 31, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (144, 31, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (145, 32, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (146, 32, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (147, 32, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (148, 32, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (149, 33, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (150, 33, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (151, 33, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (152, 33, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (153, 34, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (154, 34, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (155, 34, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (156, 34, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (157, 35, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (158, 35, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (159, 35, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (160, 35, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (161, 36, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (162, 36, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (163, 36, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (164, 36, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (165, 37, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (166, 37, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (167, 37, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (168, 37, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (169, 38, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (170, 38, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (171, 38, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (172, 38, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (173, 39, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (174, 39, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (175, 39, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (176, 39, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (177, 40, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (178, 40, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (179, 40, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (180, 40, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (181, 41, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (182, 41, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (183, 41, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (184, 41, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (185, 42, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (186, 42, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (187, 42, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (188, 42, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (189, 43, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (190, 43, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (191, 43, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (192, 43, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (193, 44, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (194, 44, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (195, 44, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (196, 44, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (197, 45, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (198, 45, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (199, 45, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (200, 45, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (201, 46, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (202, 46, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (203, 46, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (204, 46, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (205, 47, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (206, 47, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (207, 47, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (208, 47, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (209, 48, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (210, 48, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (211, 48, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (212, 48, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (213, 49, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (214, 49, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (215, 49, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (216, 49, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (217, 50, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (218, 50, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (219, 50, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (220, 50, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (221, 51, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (222, 51, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (223, 51, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (224, 51, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (225, 52, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (226, 52, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (227, 52, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (228, 52, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (229, 53, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (230, 53, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (231, 53, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (232, 53, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (233, 54, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (234, 54, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (235, 54, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (236, 54, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (237, 55, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (238, 55, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (239, 55, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (240, 55, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (241, 56, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (242, 56, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (243, 56, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (244, 56, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (245, 57, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (246, 57, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (247, 57, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (248, 57, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (249, 58, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (250, 58, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (251, 58, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (252, 58, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (253, 59, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (254, 59, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (255, 59, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (256, 59, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (257, 60, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (258, 60, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (259, 60, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (260, 60, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (261, 61, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (262, 61, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (263, 61, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (264, 61, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (265, 62, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (266, 62, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (267, 62, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (268, 62, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (269, 63, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (270, 63, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (271, 63, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (272, 63, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (273, 64, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (274, 64, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (275, 64, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (276, 64, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (277, 65, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (278, 65, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (279, 65, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (280, 65, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (281, 66, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (282, 66, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (283, 66, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (284, 66, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (285, 67, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (286, 67, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (287, 67, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (288, 67, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (289, 68, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (290, 68, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (291, 68, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (292, 68, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (293, 69, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (294, 69, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (295, 69, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (296, 69, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (297, 70, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (298, 70, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (299, 70, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (300, 70, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (301, 71, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (302, 71, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (303, 71, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (304, 71, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (305, 72, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (306, 72, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (307, 72, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (308, 72, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (309, 73, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (310, 73, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (311, 73, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (312, 73, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (313, 74, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (314, 74, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (315, 74, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (316, 74, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (317, 75, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (318, 75, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (319, 75, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (320, 75, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (321, 76, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (322, 76, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (323, 76, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (324, 76, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (325, 77, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (326, 77, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (327, 77, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (328, 77, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (329, 78, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (330, 78, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (331, 78, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (332, 78, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (333, 79, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (334, 79, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (335, 79, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (336, 79, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (337, 80, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (338, 80, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (339, 80, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (340, 80, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (341, 81, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (342, 81, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (343, 81, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (344, 81, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (345, 82, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (346, 82, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (347, 82, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (348, 82, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (349, 83, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (350, 83, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (351, 83, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (352, 83, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (353, 84, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (354, 84, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (355, 84, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (356, 84, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (357, 85, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (358, 85, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (359, 85, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (360, 85, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (361, 86, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (362, 86, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (363, 86, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (364, 86, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (365, 87, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (366, 87, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (367, 87, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (368, 87, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (369, 88, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (370, 88, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (371, 88, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (372, 88, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (373, 89, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (374, 89, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (375, 89, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (376, 89, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (377, 90, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (378, 90, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (379, 90, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (380, 90, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (381, 91, 71)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (382, 91, 72)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (383, 91, 73)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (384, 91, 74)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (385, 93, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (386, 93, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (387, 94, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (388, 94, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (389, 95, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (390, 95, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (391, 96, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (392, 96, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (393, 97, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (394, 97, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (395, 98, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (396, 98, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (397, 99, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (398, 99, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (399, 100, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (400, 100, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (401, 101, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (402, 101, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (403, 102, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (404, 102, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (405, 103, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (406, 103, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (407, 104, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (408, 104, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (409, 105, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (410, 105, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (411, 106, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (412, 106, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (413, 107, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (414, 107, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (415, 108, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (416, 108, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (417, 109, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (418, 109, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (419, 110, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (420, 110, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (421, 111, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (422, 111, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (423, 112, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (424, 112, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (425, 113, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (426, 113, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (427, 114, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (428, 114, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (429, 115, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (430, 115, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (431, 116, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (432, 116, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (433, 117, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (434, 117, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (435, 118, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (436, 118, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (437, 119, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (438, 119, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (439, 120, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (440, 120, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (441, 121, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (442, 121, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (443, 122, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (444, 122, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (445, 123, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (446, 123, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (447, 124, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (448, 124, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (449, 125, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (450, 125, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (451, 126, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (452, 126, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (453, 127, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (454, 127, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (455, 128, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (456, 128, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (457, 129, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (458, 129, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (459, 130, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (460, 130, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (461, 131, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (462, 131, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (463, 132, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (464, 132, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (467, 134, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (468, 134, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (469, 135, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (470, 135, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (471, 136, 75)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (472, 136, 76)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (473, 1, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (474, 2, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (475, 3, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (476, 4, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (477, 5, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (478, 6, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (479, 7, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (480, 8, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (481, 9, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (482, 10, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (483, 11, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (484, 12, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (485, 13, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (486, 14, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (487, 15, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (488, 16, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (489, 17, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (490, 18, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (491, 19, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (492, 20, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (493, 21, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (494, 22, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (495, 23, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (496, 24, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (497, 25, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (498, 26, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (499, 27, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (500, 28, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (501, 29, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (502, 30, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (503, 31, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (504, 32, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (505, 33, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (506, 34, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (507, 35, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (508, 36, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (509, 37, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (510, 38, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (511, 39, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (512, 40, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (513, 41, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (514, 42, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (515, 43, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (516, 44, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (517, 45, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (518, 46, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (519, 47, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (520, 48, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (521, 49, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (522, 50, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (523, 51, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (524, 52, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (525, 53, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (526, 54, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (527, 55, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (528, 56, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (529, 57, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (530, 58, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (531, 59, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (532, 60, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (533, 61, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (534, 62, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (535, 63, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (536, 64, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (537, 65, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (538, 66, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (539, 67, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (540, 68, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (541, 69, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (542, 70, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (543, 71, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (544, 72, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (545, 73, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (546, 74, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (547, 75, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (548, 76, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (549, 77, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (550, 78, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (551, 79, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (552, 80, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (553, 81, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (554, 82, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (555, 83, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (556, 84, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (557, 85, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (558, 86, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (559, 87, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (560, 88, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (561, 89, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (562, 90, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (563, 91, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (564, 93, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (565, 94, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (566, 95, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (567, 96, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (568, 97, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (569, 98, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (570, 99, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (571, 100, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (572, 101, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (573, 102, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (574, 103, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (575, 104, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (576, 105, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (577, 106, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (578, 107, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (579, 108, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (580, 109, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (581, 110, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (582, 111, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (583, 112, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (584, 113, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (585, 114, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (586, 115, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (587, 116, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (588, 117, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (589, 118, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (590, 119, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (591, 120, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (592, 121, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (593, 122, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (594, 123, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (595, 124, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (596, 125, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (597, 126, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (598, 127, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (599, 128, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (600, 129, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (601, 130, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (602, 131, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (603, 132, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (605, 134, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (606, 135, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (607, 136, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (608, 1, 78)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (609, 1, 79)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (610, 2, 78)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (611, 2, 79)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (612, 10, 80)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (613, 11, 80)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (614, 137, 77)
+GO
+INSERT [dbo].[TRSItemAnswers] ([ID], [ItemId], [AnswerId]) VALUES (615, 138, 77)
+GO
+SET IDENTITY_INSERT [dbo].[TRSItemAnswers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[TRSItems] ON 
+
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (1, 1, N'P-DEQT-01', N'Director Education  LC(AA)', N'FORMAL EDUCATION', 10, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (2, 1, N'P-DEQT-02', N'Director Education LC(CH) Only', N'FORMAL EDUCATION', 11, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 2, 1, 1, 1, 1, 2, 3, 1, 3, 3, 1, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (3, 1, N'P-DEQT-03', N'Director Education LC(SA)', N'FORMAL EDUCATION', 12, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 3, 0, 0, 0, 0, 2, 3, 3, 1, 1, 1, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (4, 1, N'P-DEQT-04a', N'Director Experience Age & Yrs in ECE ', N'DIRECTOR EXPERIENCE', 21, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 4, 1, 1, 1, 1, 2, 3, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (5, 1, N'P-DEQT-05a', N'Director Experience Age & Yrs in ECE (School Age Only)', N'DIRECTOR EXPERIENCE', 20, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 5, 0, 0, 0, 0, 2, 3, 3, 1, 1, 1, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (6, 1, N'P-DEQT-06', N'Director Training', N'DIRECTOR TRAINING', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 6, 1, 1, 1, 1, 2, 3, 1, 1, 1, 3, N'An individualized written training plan that contains 36 clock hours of training on an annual basis', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (7, 1, N'P-CQT-01', N'Caregiver Qualifications', N'CAREGIVER QUALIFICATIONS', 21, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 7, 1, 1, 1, 1, 2, 4, 1, 1, 1, 3, N'
+1. Not counting the center director, all caregiver staff must meet one of the following measures: 
+<br />&nbsp;A. Have a Child Development Associate (CDA) credential, OR (CCP) credential, or  working toward a CDA/CCP credential or AA in a related field;
+<br />&nbsp;OR B. Have successfully completed twelve college credit hours at an accredited university;
+<br />&nbsp;OR C. Have two years paid experience in a school-age program;
+<br />&nbsp;OR D. Have two years paid experience working with children in a licensed program;
+<br />&nbsp;OR E. Have successfully completed 192 training clock hours within the last 5 years in child development, early childhood education or related field and two years of full time paid experience as a caregiver working with children in a licensed or registered facility.
+<br />&nbsp;OR F.  Have a Bachelor’s or Associate’s degree in early childhood development or related field.
+', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (8, 1, N'P-CQT-02', N'Caregiver Qualifications', N'CAREGIVER QUALIFICATIONS', 20, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 8, 0, 0, 0, 0, 2, 4, 3, 1, 1, 1, N'1. Not counting the center director, full-time caregiver staff must meet one of the following measures:* (For centers having only 3 or fewer staff and at least one full time staff caregiver) A. Have a Child Development Associate (CDA) credential, OR B. Have a Certified Child Care Professional (CCP) credential, OR C. Have successfully completed twelve college credit hours in child development, early childhood education or related field and two years of full time paid experience as a caregiver working with children in a licensed or registered facility; OR D. Have two years full-time paid experience working with children as a caregiver in a licensed or registered child care facility while presently working toward a CDA or a CCP credential; OR E. Have successfully completed 192 training clock hours within the last 5 years in child development, early childhood education or related field and two years of full time paid experience as a caregiver working with children in a licensed or registered facility. OR F. Have a Bachelor’s or Associate’s degree in early childhood development or related field.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (9, 1, N'P-CQT-03', N'Caregiver Training', N'CAREGIVER STAFF TRAINING', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 9, 1, 1, 1, 1, 2, 4, 3, 1, 1, 3, N'2. Caregiver training topics are aligned with core competencies', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (10, 2, N'P-SR-01', N'Infants (Younger)', N'Age 0-11 months', 31, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 10, 1, 0, 0, 0, 2, 7, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (11, 2, N'P-SR-02', N'Infants (Older)', N'Age 12-17 months', 32, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 11, 1, 0, 0, 0, 2, 7, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (12, 2, N'P-SR-03', N'Toddlers (Younger)', N'Age 18-23 months', 33, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 12, 0, 1, 0, 0, 2, 7, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (13, 2, N'P-SR-04', N'Toddlers (Older)', N'Age 2 years', 34, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 13, 0, 1, 0, 0, 2, 7, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (14, 2, N'P-SR-05', N'Age 3', N'Age 3', 35, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 14, 0, 0, 1, 0, 2, 7, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (15, 2, N'P-SR-06', N'Age 4', N'Age 4', 36, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 15, 0, 0, 1, 0, 2, 7, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (16, 2, N'P-SR-07', N'Age 5', N'Age 5', 37, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 16, 0, 0, 1, 1, 2, 7, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (17, 2, N'P-SR-08', N'Age 6-8 years', N'Age 6-8', 38, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 17, 0, 0, 0, 1, 2, 7, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (18, 2, N'P-SR-09', N'Age 9-12 years', N'Age 9-13', 39, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 18, 0, 0, 0, 1, 2, 7, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (19, 2, N'P-WRS-01', N'Physical/Emotional Security', N'Provides physical and emotional security (creates a warm, safe, and nurturing environment.)', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 19, 1, 1, 1, 1, 2, 8, 3, 3, 3, 3, N'Refrains from using negative/harsh language, behaviors, and discipline; does not make critical or demeaning comments', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (20, 2, N'P-WRS-02', N'Positive Non-verbal Behavior', N'Uses frequent positive non-verbal behaviors to increase feelings of acceptance ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 20, 1, 1, 1, 1, 2, 8, 3, 3, 3, 3, N'smiles, sits at child''s level, allows child to sit near or with teacher, reassuring touch', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (21, 2, N'P-WRS-03', N'Patient, Relaxed Style', N'Has a patient, relaxed style that helps maintain calmness in the classroom ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 21, 1, 1, 1, 1, 2, 8, 3, 3, 3, 3, N'Uses a positive tone of voice, does not seem rushed, reacts calmly when conflicts arise or children need support', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (22, 2, N'P-WRS-04', N'Attends to Child''s Needs', N'Notices and attends to children’s needs and signals (i.e., very few missed signals) ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 22, 1, 1, 1, 1, 2, 8, 3, 3, 3, 3, N'Recognizes signs of stress in individual children listens to children’s attempts at communication/expression; notices subtle signals from more shy or withdrawn children; responds to children’s comments, questions, vocalizations', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (23, 2, N'P-WRS-05', N'Responds Promptly', N'Responds promptly and sensitively to children’s cognitive and affective signals (acknowledges and expands on children’s attempts at communication, play, and expression of needs.)', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 23, 1, 1, 1, 1, 2, 8, 3, 3, 3, 3, N'Comforts child, celebrates accomplishments, values needs, shows acceptance of feelings, etc.;  responds with language that is positive in content and tone', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (24, 2, N'P-WRS-06', N'Shows Flexibility', N'Shows flexibility and an ability to adjust one’s own behavior to meet the needs, interests, and abilities of individual/groups of children ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 24, 1, 1, 1, 1, 2, 8, 3, 3, 3, 3, N'Caregiver does not show preference/acceptance of some children and rejection/lack of acceptance of others; treats all children with fairness and respect; Seems to know which children respond well to humor, soft voices, etc., adjusts response style to match each child’s personality and temperament', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (25, 2, N'P-LFS-01', N'Listens Attentively', N'Listens to children attentively and responds appropriately to their language, vocalizations, and non-verbal attempts at communication.', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 25, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Notices and responds to individual children’s gestures, vocalizations, comments, questions; listens patiently while children work to express themselves, offering support if needed', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (26, 2, N'P-LFS-02', N'Positive Verbal Responses', N'Uses positive verbal responses and encouragement to provide reinforcement or acknowledge positive behavior/accomplishments ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 26, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Good job, your drawing looks great, You can do it; Praises and encourages children’s attempts at communication; Provides frequent descriptive praise to reinforce positive behavior, efforts, interests, and accomplishments, descriptive praise offers more detailed feedback about specific behaviors or ideas to be reinforced (“Wow, you write your name! versus “nice job”)', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (27, 2, N'P-LFS-03', N'Uses Language to Add Meaning', N'Uses language to add meaning/expand on child(ren)s interests or agenda  ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 27, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Comments or asks questions using positive verbal content and tone of voice in connection with something the child is interested/engaged in or in response to something a child has said/vocalized, talk/explanation about the caregivers own interest/agenda is not considered in this item', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (28, 2, N'P-LFS-04', N'Communicates Throughout the Day', N'Communicates with children throughout the day (in whole group activities, small groups, mealtimes, outdoor play.)', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 28, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Teacher/caregiver provides frequent language stimulation; Routinely talks to children and imitates sounds infants and toddlers make throughout the day', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (29, 2, N'P-LFS-05', N'Uses Specific Labels and Descriptions', N'Uses specific labels and descriptors throughout the day (“It’s time to drink your bottle” versus “here, take this, hand me the blue marker in that cup,” versus “give me that (points to marker).”) ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 29, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Uses rich language when responding/interacting with children; talks to infants throughout care routines using specific language; narrating or thinking aloud about actions', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (30, 2, N'P-LFS-06', N'Provides Frequent Talk Opportunities', N'Provides children with frequent opportunities to talk with caregivers throughout the day (small group, whole group, outdoor play, mealtimes.) ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 30, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Teacher/caregiver actively encourages children to communicate (i.e., teacher should not be doing all of the talking/vocalizing); uses a variety of questions (open/closed) to encourage critical or creative thought', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (31, 2, N'P-LFS-07', N'Allows Children Response Time', N'Allows children time to respond to questions before providing the answer or asking another question.', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 31, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Gives children time to think and respond before moving on; speaks and interacts at a pace comfortable for individual children', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (32, 2, N'P-LFS-08', N'Engages Variety of Conversation', N'Engages children in conversations (3-5 turns) about a variety of topics (their likes, dislikes, family, books, lessons.); or provides commentary and encourages back and forth vocalization/gestures with infants and toddlers ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 32, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Initiates conversations about a child’s own interests and uses open-ended questions (if age-appropriate) to elicit more elaborate responses; encourages infants to coo or babble back and forth with teacher', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (33, 2, N'P-LFS-09', N'Expands on Understanding ', N'Expands on children’s understanding or initiation by  elaborating on what children say or draw attention to  ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 33, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Teacher’s language is contingently responsive. child says; “I went to the  zoo.” Depending on level of  child, teacher adds, “Did you see an elephant or a lion?” or “Can you tell me about some of the animals you saw?”;  provides infant or toddler with a label or description of something they have pointed to or attempted to talk about', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (34, 2, N'P-LFS-10', N'Extends Language', N'Extends children’s language and/or models for children how to express complete ideas or sentences (child gestures and says “ball” and adult says “you see the red ball.”) ', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 34, 1, 1, 1, 1, 2, 9, 3, 3, 3, 3, N'Recasting or restating what a child has said/indicating in a less fragmented/incomplete manner than the child expressed', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (35, 2, N'P-PBIG-01', N'Supports Play/Make-believe', N'Supports a playful attitude on an ongoing basis by creating opportunities for children to make-believe, make choices, and adjust activities to their own interests', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 35, 1, 1, 1, 1, 2, 10, 3, 3, 3, 3, N'Engages children in playful activities throughout the day; Intentionally engages children in songs, books, games, etc.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (36, 2, N'P-PBIG-02', N'Participates and Expands on Play', N'Participates and expands on play initiated by children to reinforce language, ideas, and social development', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 36, 1, 1, 1, 1, 2, 10, 3, 3, 3, 3, N'Takes time to follow the agenda of individual children (e.g., joining child in the block center and building/talking about building; following an infant’s gaze toward a toy and demonstrating how the toy works/talking about the toy while infant manipulates the object', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (37, 2, N'P-PBIG-03', N'Provides Guidance During Play', N'Provides guidance when children are working to complete a task/play rather than using overly directive strategies', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 37, 1, 1, 1, 1, 2, 10, 3, 3, 3, 3, N'Accepts a child’s way of doing things versus requiring a child to do things the caregiver’s way; Models problem-solving skills during play; Uses guidance strategies that help children solve their own problems rather than relying on overly directive approaches (offers choices, encourages communication and problem-solving skills, models appropriate actions.)', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (38, 2, N'P-SCR-01', N'Models/Encourages Emotional Expression', N'Models and encourages emotional expression (encourages children to express feelings, labels feelings, thinks aloud to model their own feelings and reactions, makes connections between actions and emotional reactions.)', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 38, 0, 1, 1, 1, 2, 11, 3, 3, 3, 3, N'Uses specific and intentional strategies and activities to model and support emotional development (reads and discusses books about feelings, uses puppets and role play to increase understanding.)', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (39, 2, N'P-SCR-02', N'Provide Short Explanations of Feelings', N'Providing children with short explanations that help them understand why they are feeling a certain way', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 39, 0, 1, 1, 1, 2, 11, 3, 3, 3, 3, N'Teacher says, “Are you angry because he took your toy away?” I know you are excited about this toy, but you need to let Mary have a turn too.”', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (40, 2, N'P-SCR-03', N'Explains Logical Consequences', N'Explains logical consequences for behaviors rather providing arbitrary consequences', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 40, 0, 1, 1, 1, 2, 11, 3, 3, 3, 3, N'Verbalizes for children logical consequences for behaviors', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (41, 2, N'P-SCR-04', N'Encourages Self-Regulation', N'Encourages self-regulation by consistently implementing program rules and routines (signals transitions, referring to the sequence and structure of the day, balancing structured and unstructured playing and learning opportunities.)', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 41, 0, 1, 1, 1, 2, 11, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (42, 2, N'P-SCR-05', N'Demonstrates Tolerance for Minor Misbehaviors', N'Demonstrates flexibility and tolerance for minor mishaps and misbehaviors', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 42, 0, 1, 1, 1, 2, 11, 3, 3, 3, 3, N'Wipes up messes without making a child feel bad; calmly ask a child to pick up a toy the child has thrown rather than criticizing; with very young children teacher use distraction to help child avoid a meltdown when frustrated or cannot get their way.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (43, 2, N'P-SCR-06', N'Logical Consequences', N'Recognizes rising tensions and helps children understand  the logical consequences of their actions before problem behaviors occur.', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 43, 0, 1, 1, 1, 2, 11, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (44, 2, N'P-SCR-07', N'Communication with Peers', N'Assists children when needed in their communications and interactions with peers (guides them as they resolve conflicts, speak respectfully to each other, initiate and expand on each other’s play ideas.)', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 44, 0, 1, 1, 1, 2, 11, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (45, 2, N'P-SCR-08', N'Encourages Conversation with Teacher', N'Teacher supports students efforts to ask questions, offer ideas, and openly discuss with the teacher.', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 45, 0, 1, 1, 1, 2, 11, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (46, 3, N'P-LPC-01', N'Health and Well-being Domain', N'1 Health and Well-being Domain Key evidence: Activities to promote health and well-being (personal safety and health, hygiene, health nutrition and wellness) are well described with information on how to encourage involvement so that children can be successful.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 46, 1, 1, 0, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (47, 3, N'P-LPC-02', N'Social and Emotional Development', N'Social and Emotional Development - Key Evidence: Activities and teacher strategies appropriate for both infants and toddlers that support teachers/staff to promote social and emotional development are well described with information on how to encourage involvement including types of materials and books to use to be able to actively involve infants and toddlers.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 47, 1, 1, 0, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (48, 3, N'P-LPC-03', N'Languge and Communication', N'Language and Communication Development - Key Evidence: Activities and teacher strategies appropriate for both infants and toddlers that support teachers/staff to promote language and communication  development are well described with information including questioning techniques and ways to provide child friendly explanations to encourage involvement including types of materials and books to use to be able to actively involve infants and toddlers.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 48, 1, 1, 0, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (49, 3, N'P-LPC-04', N'Cognitive Development', N'Cognitive Development - Key Evidence: Activities and teacher strategies appropriate for both infants and toddlers that support teachers/staff to promote cognitive development are well described with information on how to encourage involvement including types of materials  (blocks and other manipulatives) to use to actively involve infants and toddlers.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 49, 1, 1, 0, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (50, 3, N'P-LPC-05', N'Social and Emotional Development', N'Social and Emotional - Key Evidence: Planned daily activities are implemented to support social and emotional development including trust and emotional security, self-awareness, self-regulation, and relationships with others, engaging children’s interests and active involvement.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 50, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (51, 3, N'P-LPC-06', N'Languge and Communication', N'Language and Communication Key evidence: Planned daily activities are implemented to support language and communication development including listening and understanding, communication and speaking to engage children’s interests and active involvement.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 51, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (52, 3, N'P-LPC-07', N'Emergent Literacy - Reading', N'Emergent Literacy – Reading - Key evidence: Activities for phonological awareness, print knowledge, and letter sound relations  engaging children’s interests and involvement', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 52, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (53, 3, N'P-LPC-08', N'Emergent Literacy - Writing', N'Emergent Literacy - Writing - Key evidence: Activities for book and print knowledge and opportunities for early writing, in line with each child’s level of engaging children’s interests and involvement', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 53, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (54, 3, N'P-LPC-09', N'Mathematics', N'Mathematics - Key evidence: Activities for mathematics, in line with each child’s level of development in this area, engaging children’s interests and involvement', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 54, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (55, 3, N'P-LPC-10', N'Science', N'Science - Key evidence: Activities for science skill development in line with each child’s level of development in this area, engaging children’s interests and involvement', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 55, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (56, 3, N'P-LPC-11', N'Social Studies', N'Social Studies - Key evidence: Activities for the development of social studies knowledge about people, their environment, various cultures, community building, and citizenship.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 56, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (57, 3, N'P-LPC-12', N'Fine Arts', N'Fine Arts - Key evidence: Activities for the development of fine arts skills that include art, music and/or dramatic expression for engaging children’s interests and involvement', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 57, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (58, 3, N'P-LPC-13', N'Health and Well-being Domain', N'9 Health and Well-being Domain  Key evidence: Activities to promote health and well-being (personal safety and health, hygiene, health nutrition and wellness) are well described with information on how to encourage involvement so that children can be successful.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 58, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (59, 3, N'P-LPC-14', N'Technology', N'Technology - Key evidence: Activities for the development of technology skills and knowledge are well described to support children’s use and understanding of different forms of technology. Examples of appropriate technology may include vocabulary, letter recognition, and math games on a computer or tablet, or exploration using a mouse.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 59, 0, 0, 1, 0, 2, 12, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (60, 3, N'P-LPC-15', N'Physical Activity and Motor Development ', N'1 Physical Activity and Motor Development  Key evidence: Activities appropriate for infants, toddlers, and preschool children that support teachers and staff to promote physical health, activity, and motor development for engaging children’s interests and involvement.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 60, 1, 1, 1, 1, 2, 12, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (61, 3, N'P-PSNRD-01', N'Bilinqual/ESL', N'Consideration for children in a Bilingual/ESL program.  - Key evidence: Plan includes specific strategies for using child’s   home language to support the development of English language skills. This could include supports such as visual and gestural cues to promote learning.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 61, 1, 1, 1, 1, 2, 13, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (62, 3, N'P-PSNRD-02', N'Children with Disabilities', N'Consideration for students with disabilities. - Key evidence: plan includes specifications on how to make accommodations for children with disabilities. Accommodations should include, but not be limited to, those that support learning for children with visual, motoric, and/or auditory problems.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 62, 1, 1, 1, 1, 2, 13, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (63, 3, N'P-PSNRD-03', N'Children from Culturally Diverse Backgrounds', N'Consideration for students from culturally diverse backgrounds. - Key evidence: Activities and teacher strategies are included that address the many cultures of children’s families that attend the program (e.g., songs, customs, nursery rhymes, books, celebrations, foods)', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 63, 1, 1, 1, 1, 2, 13, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (64, 3, N'P-IFAL-01', N'Learning through Manipulation of Objects', N'Staff supports learning through encouraging hands-on manipulation of real objects (e.g., books, puzzles, toys, etc.).', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 64, 1, 1, 1, 1, 2, 14, 3, 3, 3, 3, N'encourages exploration and experimentation of props, manipulatives, objects connected to learning goals and encourages; provides guidance and support while children work with materials rather than taking objects away and completing a task for a child ', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (65, 3, N'P-IFAL-02', N'Intentional Teacher-Child Initiated Instruction', N'Intentional instructional activities that are both teacher and child initiated are balanced throughout the planned daily activities. ', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 65, 1, 1, 1, 1, 2, 14, 3, 3, 3, 3, N'Activities, play, and conversations should be initiated in balanced ways by both teachers/staff and children. There should be evidence that teachers/staff are attentive to children’s suggestions and input about what they like to do and say but teacher/staff should also take responsibility for introducing engaging and challenging activities and experiences with support for all children’s learning.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (66, 3, N'P-IFAL-03', N'Transition Times for Incidental Learning', N'Routine and transition times are used as opportunities for incidental learning.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 66, 1, 1, 1, 1, 2, 14, 3, 3, 3, 3, N'staff uses routines and transition time to reinforce concepts learned during curriculum activities.  For example staff uses children lining up as a time to count, learn vocabulary such as “first” and “last”, and talks about behaviors that are appropriate and promotes self-regulation.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (67, 3, N'P-IFAL-04', N'Transition Times are Planned', N'Transition times are planned to avoid frequent disruption of children''s activities and long waits between activities.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 67, 1, 1, 1, 1, 2, 14, 3, 3, 3, 3, N'staff is organized, prepared materials and flow of activities so that children can move effortlessly without frequent disruptions or long waits', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (68, 3, N'P-IFAL-05', N'Repeated Exposure to New Concepts', N'Repeated exposure of a new concept (e.g. vocabulary word) in different learning contexts (e.g. lunch, circle time, outdoors) across the day.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 68, 1, 1, 1, 1, 2, 14, 3, 3, 3, 3, N'Staff uses a range of learning strategies and opportunities across the day to reinforce learning of a new concept (e.g. counting at circle time, lunch, lining up, counting books, math in a learning center)', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (69, 3, N'P-IFAL-06', N'Progressive Learning Activities', N'Implemented learning activities are organized to build skills and knowledge progressively by moving the child from current developmental levels to the targeted developmental benchmarks', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 69, 1, 1, 1, 1, 2, 14, 3, 3, 3, 3, N'Staff demonstrates the ability to help a child progress by providing support in terms of demonstrations, questioning, explanations that are in line with each child’s current level of learning.  For example when a learning task is too difficult for a child, staff adjusts the support provided so that the child can be successful in completing the task.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (70, 4, N'P-N-01', N'Items to Observe', N'Items to Observe: Yes/No Indicators; total possible score = 7<br />* Drinks are offered with food. <br />* Seconds of healthy options are available. <br />* Children are not hurried to finish eating. <br />* Children are not viewing television during mealtime. <br />* Food is not used as a reward or punishment-Children are encouraged to engage in conversation during meal time. <br />* Children  have the opportunity to feed themselves consistent with their developmental levels.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 70, 1, 1, 1, 1, 2, 17, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (71, 4, N'P-N-02', N'Caregivers Model Dining Etiquette', N'Caregivers model appropriate dining etiquette.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 71, 0, 1, 1, 1, 2, 17, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (72, 4, N'P-N-03', N'Infants - Held and Talked To', N'Infants are held (if developmentally appropriate) and talked to in reassuring tones while bottle fed.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 72, 1, 0, 0, 0, 2, 17, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (73, 4, N'P-N-04', N'Infants - Caregivers Feed on Infants'' Cue', N'Caregivers feed infants on the infant’s cue, such as the infant opening the mouth and making suckling noises or  moving hands at random, unless the parent and the child’s physician give written instructions otherwise. The caregivers also stop feeding upon satiety. Caregivers observe satiation indicators such as the infant keeping the mouth closed, turning away from the bottle, and paying increased attention to surroundings.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 73, 1, 0, 0, 0, 2, 17, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (74, 4, N'P-N-05', N'Meals Served in Small Groupings', N'Meals are served to children seated in small groupings with their assigned caregivers when not helping with the meal service routine or providing necessary assistance to children. Children are encouraged to sample a variety of food of different colors and textures.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 74, 0, 1, 1, 1, 2, 17, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (75, 4, N'P-N-06', N'Meals Served Family Stype', N'Meals are served family style; all children may assist with mealtime activities, with staff supervision. Children are encouraged to serve themselves as their abilities permit (ex. set tables, put out napkins, scoop food using sturdy serving spoons, pour milk from child sized pitchers). Items to observe: * Meals are served family style. * Children are encouraged to set tables, put out napkins, clean place mats etc. * Children are encouraged to serve themselves as their abilities permit ex. scoop food using sturdy serving spoons, pour milk from child sized pitchers. * An orderly process is in place for taking turns and varying tasks.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 75, 0, 0, 1, 1, 2, 17, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (76, 4, N'P-ILE-01', N'Facilitate Division of Interest Areas', N'Indoor environment is arranged to facilitate division of interest areas for play (as developmentally appropriate) and allow children to move easily from one area to another.  For infants, a variety of stimulating opportunities for learning that may change throughout the day. Key elements: Developmentally appropriate materials organized to facilitate independent use and provide choices for children to engage in activities based on interest centers  such as:  literacy/creative writing, dramatic play/theater, art, blocks/wood working, music/listening, sensory discovery/natural science, manipulative/table games/ puzzles, cozy area with soft furnishings, and gross motor materials for preschool and school age children.  Appropriate materials for infants may include soft blocks, rattles, push and pull toys and colorful mobiles for infants; and large cardboard blocks, cloth books, wooden puzzles, dramatic play items, and art supplies for toddlers. ', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 76, 1, 1, 1, 1, 2, 18, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (77, 4, N'P-ILE-02', N'Non-stereotypical and Culturally Sensitive', N'Equipment/materials portray people in a manner that is non-stereotypical and culturally sensitive. Key indicators include:  Pictures of males and females used in the classroom; books, puzzles, puppets, dolls, dress up clothes, music, foods, and stories portray different cultures and ethnicity', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 77, 1, 1, 1, 1, 2, 18, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (78, 4, N'P-ILE-03', N'Materials Displayed at Eye-Level', N'Developmentally appropriate visual caregiver- and children-created materials are displayed at children''s eye level', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 78, 1, 1, 1, 1, 2, 18, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (79, 4, N'P-ILE-04', N'Equipment/Materials Arrangement', N'Equipment/materials reflect children''s interest, appear inviting to children, and are arranged so children know where to find things and may easily select and return items', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 79, 1, 1, 1, 1, 2, 18, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (80, 4, N'P-ILE-05', N'Equipment/Materials Encourage Hands-On', N'Equipment/materials encourage hands on manipulation of real objects. Key elements may include:  plastic bowls, plastic cups, hats, scarves, dish towels, food boxes, scoops, measuring cups, mirrors, baskets, magnifying glasses, telephones, calculators, keyboards, etc.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 80, 1, 1, 1, 1, 2, 18, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (81, 4, N'P-ILE-06', N'Equipment/Materials Facilitate Interaction', N'Equipment/materials facilitate social interaction and experiencing the environment through all five senses', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 81, 1, 1, 1, 1, 2, 18, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (82, 4, N'P-OLE-01', N'Activities Linked to Indoor Learning', N'Outdoor environment and activities are linked to and reinforce indoor learning.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 82, 1, 1, 1, 1, 2, 19, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (83, 4, N'P-OLE-02', N'Natural Environment', N'The outdoor environment provides children with the opportunity to care for living things and appreciate nature/beauty such as: Non-toxic trees, shrubs, or vines; topographic variations (such as mounds, terraces, slopes); a variety of ground surfaces (mulch, grass, pebbles); smooth rocks, wood or logs; non-poisonous flowering plants or garden plants and vegetables; birdfeeders, bird baths and birdhouses', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 83, 1, 1, 1, 1, 2, 19, 3, 3, 3, 3, N'', 1)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (84, 4, N'P-OLE-03', N'Equipment/Materials Encourage Activity', N'Outdoor environment and natural and manufactured equipment/materials, provides partial shade, motivates children to be physically active and engage in active play such as balancing, climbing, crawling, moving, pushing/pulling, riding, walking, and running. Key elements may include: balls, swings, balance beams, climbing structures, tumbling pads, tricycles or riding toys, marching music, jump ropes, space to skip, hop, and roll', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 84, 1, 1, 1, 1, 2, 19, 3, 3, 3, 3, N'', 1)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (85, 4, N'P-OLE-04', N'Supports Social/Emotional Development', N'Natural outdoor environment supports social emotional development including but not limited to areas that invite social gatherings, , tummy time, dramatic play, group games, music and movement, and spaces for quiet and calm activities. Key elements may include: Natural additions such as boulders, tree stumps, sand area and benches, design elements such as stages, platforms, wind chimes, canopies, teepees, gazebos.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 85, 1, 1, 1, 1, 2, 19, 3, 3, 3, 3, N'', 1)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (86, 4, N'P-OLE-05', N'Encourage Environment through all Senses', N'Outdoor equipment/materials encourage infants to experience the environment through all five senses', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 86, 1, 0, 0, 0, 2, 19, 1, 3, 3, 3, N'', 1)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (87, 5, N'P-PE-01', N'Face-to-Face Orientation', N'The provider conducts an orientation to the family at enrollment. A signed and dated copy of the content of the orientation is kept in the child''s file.
+<br />The orientation includes: 
+<br />1. Tour of the facility 
+<br />2. Introduction to teaching staff. 
+<br />3. Parent visit with the classroom teacher. 
+<br />4. Overview of parent handbook. 
+<br />5. Policy for arrival & late arrival. 
+<br />6. Opportunity for an extended visit in the classroom by both parent and child for a period of time to allow both to be comfortable. 
+<br />7. An explanation of Texas Rising Star Quality Certification is provided. 
+<br />8. Encourage parents to inform the center/provider of any elements related to their CCS enrollment that the provider may be of assistance. 
+<br />9. An overview of family support resources and activities in the community 
+<br />10. Child development and developmental milestones provided. Expectations of the family: 
+<br />11. Parents are informed of the significance of consistent arrival time: * before educational portion of school readiness  program begins. * impact of disrupting learning of other children. * importance of consistent routines in preparing children for the transition to kindergarten. 
+<br />12. Statement about limiting technology use on site to improve communication between staff, children, and families (e.g., refrain from cell phone use). In order to facilitate better communication between the parent(s) and teacher and the parent and child it is best if parents are not distracted by use of electronic devices while at the center/home. 
+<br />13. Statement reflecting the role and influence of families.', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 87, 1, 1, 1, 1, 2, 22, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (88, 5, N'P-PE-02', N'Opportunities to Understand Child''s Development', N'The provider provides families with opportunities to better understand the child''s growth and development.', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 88, 1, 1, 1, 1, 2, 22, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (89, 5, N'P-PI-01', N'Parent Input', N'Parents have structured opportunities to provide input that may influence the program.', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 89, 1, 1, 1, 1, 2, 23, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (90, 5, N'P-PI-02', N'Parent-Teacher Conferences', N'Parent Teacher conferences are held. Conferences can be held in person or by phone.', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 90, 1, 1, 1, 1, 2, 23, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (91, 5, N'P-PI-03', N'Parents Invited to Program-Related Activities', N'Parents are invited to participate in program related activities.', 1, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 91, 1, 1, 1, 1, 2, 23, 3, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (93, 1, N'S-DQT-01', N'Director Education', N'DIRECTOR EDUCATION: CAREER LATTICE LEVEL ', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 92, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, N'1. The director assesses their education, experience and ongoing education to determine their career lattice level. Provider determines their current career lattice level, identifies how they want to progress to a higher career lattice level.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (94, 1, N'S-DQT-02', N'Director Training', N'DIRECTOR TRAINING', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 93, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, N'2. * TRS Director Certification Course Similar to model of Taking Charge of Change - TCC  Leadership Academy can count towards annual CCL training hour requirements * Based on availability', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (95, 1, N'S-DQT-03', N'Director Training', N'DIRECTOR TRAINING', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 94, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, N'1. An individualized written training plan that contains 24 clock hours of training on an annual basis (of the 24 hours, a minimum of 6 hours need to be in program administration, management and supervision) is observed in the director''s staff file.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (96, 1, N'S-DQT-04', N'Director Responsibilities', N'DIRECTOR RESPONSIBILITIES', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 95, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, N'Ensure all caregiver staff have a formal training plan', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (97, 1, N'S-COTQ-01', N'Caregiver Orientation (All Staff)', N'CAREGIVER ORIENTATION', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 96, 1, 1, 1, 1, 1, 2, 2, 2, 1, 2, N'1. Before beginning child care duties all caregiver staff receives documented, in-person, interactive orientation with the director/administrator to improve knowledge of the child care operation, specific job responsibilities and needs of children. Orientation documentation is dated on/prior to the date the caregiver starts working in the classroom and is observed in the caregiver''s staff file by the TRS assessor and includes the following topics:
+<br />A. Texas Rising Star  (TRS) program and criteria    
+<br />B. Policies of the facility
+<br />C. An overview of the developmental needs/expectations of children in the assigned age group  
+<br />D. The planned daily activities of the facility, which reflects the ethnic background, gender, abilities and makeup of families of the children, as well as the diversity of cultures represented in the community.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (98, 1, N'S-COTQ-02', N'Caregiver Orientation (Volunteer & Substitutes)', N'CAREGIVER ORIENTATION', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 97, 1, 1, 1, 1, 1, 2, 2, 2, 1, 2, N'2. Before beginning child care duties, all volunteers and substitute caregivers are provided orientation that defines the task to which they are assigned. Orientation documentation is observed in the caregiver''s staff file by the TRS assessor. It is dated on/prior to the date the caregiver starts working in the classroom.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (99, 1, N'S-COTQ-03', N'Caregiver Training (30 hours)', N'CAREGIVER STAFF TRAINING', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 98, 1, 1, 1, 0, 1, 2, 1, 1, 1, 2, N'1. The plan provides for a minimum of 30 clock hours of child care related training specific to the age of children in their care.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (100, 1, N'S-COTQ-04', N'Caregiver Training (20 hours)', N'CAREGIVER STAFF TRAINING (FULL-TIME)', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 99, 0, 0, 0, 1, 1, 2, 2, 1, 1, 1, N'2. An individualized written training plan that contains 20 clock hours of training on an annual basis (of the 20 hours, a minimum of 12 hours need to be in school-age development and curriculum) was in the caregiver’s staff file.  ', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (101, 1, N'S-COTQ-05', N'Caregiver Training (15 hours)', N'CAREGIVER STAFF TRAINING (PART-TIME)', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 100, 0, 0, 0, 1, 1, 2, 2, 1, 1, 1, N'3. An individualized written training plan that contains 15 clock hours of training on an annual basis (of the 15 hours, a minimum of 10 hours need to be in school-age development and curriculum) was in the caregiver’s staff file.    ', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (102, 1, N'S-COTQ-06', N'Caregiver Training LC(CH) or RC(CH) (36 hours)', N'CAREGIVER STAFF TRAINING', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 101, 1, 1, 1, 0, 1, 2, 1, 2, 2, 2, N'4. All child care staff participates in training according to the approved plan. The training certificates do align to the individualized written training plan.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (103, 1, N'S-COTQ-07', N'Caregiver Training LC(CH) for Caregiver (if applicable) (30 hours)', N'CAREGIVER STAFF TRAINING', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 102, 1, 1, 1, 1, 1, 2, 1, 2, 2, 1, N'1. Primary Caregiver has 36 hours of documented training, with a minimum of 12 clock hours of instructor-led training.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (104, 1, N'S-COTQ-08', N'Caregiver Training Certificates           ', N'CAREGIVER STAFF TRAINING', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 103, 1, 1, 1, 1, 1, 2, 1, 2, 2, 1, N'1. If applicable, caregivers have 30 hours of documented training, with a minimum of 12 clock hours of instructor-led training (not including director-led training).', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (105, 1, N'S-COTQ-09', N'Caregiver Qualifications LC(CH) & RC(CH)', N'CAREGIVER QUALIFICATIONS', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 104, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, N'2.
+<br /> Each primary caregiver: 
+<br />A. Meets DFPS Minimum Child Care Licensing Standards 
+<br />B. Has a minimum of one year of experience as a caregiver working with children unrelated to the caregiver in a licensed or registered facility; and has 36 clock hours of child care related training acquired during the previous year of operation or employment. 
+<br />Applicable only to primary caregiver.', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (106, 2, N'S-GSNMAC-01', N'Infants (Younger)', N'Maximum Group Size = 10', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 105, 1, 0, 0, 0, 1, 5, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (107, 2, N'S-GSNMAC-02', N'Infants (Older)', N'Maximum Group Size = 12', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 106, 1, 0, 0, 0, 1, 5, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (108, 2, N'S-GSNMAC-03', N'Toddlers (Younger)', N'Maximum Group Size = 14', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 107, 0, 1, 0, 0, 1, 5, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (109, 2, N'S-GSNMAC-04', N'Toddlers (Older)', N'Maximum Group Size = 14', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 108, 0, 1, 0, 0, 1, 5, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (110, 2, N'S-GSNMAC-05', N'Age 3', N'Maximum Group Size = 18', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 109, 0, 0, 1, 0, 1, 5, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (111, 2, N'S-GSNMAC-06', N'Age 4', N'Maximum Group Size = 21', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 110, 0, 0, 1, 0, 1, 5, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (112, 2, N'S-GSNMAC-07', N'Age 5', N'Maximum Group Size = 25', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 111, 0, 0, 1, 1, 1, 5, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (113, 2, N'S-GSNMAC-08', N'Age 6-8 years', N'Maximum Group Size = 25', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 112, 0, 0, 0, 1, 1, 5, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (114, 2, N'S-GSNMAC-09', N'Age 9-12 years', N'Maximum Group Size = 30', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 113, 0, 0, 0, 1, 1, 5, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (115, 2, N'S-GSMAC-01', N'Infants ', N'Maximum Group Size = 10', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 114, 1, 0, 0, 0, 1, 6, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (116, 2, N'S-GSMAC-02', N'Toddlers', N'Maximum Group Size = 12', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 115, 1, 0, 0, 0, 1, 6, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (117, 2, N'S-GSMAC-03', N'2''s  & 3''s ', N'Maximum Group Size = 16', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 116, 0, 1, 0, 0, 1, 6, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (118, 2, N'S-GSMAC-04', N'3''s & 4''s', N'Maximum Group Size = 18', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 117, 0, 0, 1, 0, 1, 6, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (119, 2, N'S-GSMAC-05', N'3 yrs  - 5 yrs (Multi-age)', N'Maximum Group Size = 18', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 118, 0, 0, 1, 0, 1, 6, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (120, 2, N'S-GSMAC-06', N' 4 yrs  - 5 yrs                 ', N'Maximum Group Size = 21', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 119, 0, 0, 1, 0, 1, 6, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (121, 2, N'S-GSMAC-07', N'5 yrs - 8 yrs ', N'Maximum Group Size = 25', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 120, 0, 0, 0, 1, 1, 6, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (122, 2, N'S-GSMAC-08', N'9-12 years ', N'Maximum Group Size = 30', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 121, 0, 0, 0, 1, 1, 6, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (123, 4, N'S-N-01', N'Program Practices', N'1. Program Practices.  
+<br />Written policies include the following –  
+<br />a) liquids and food hotter than 110 degrees F are kept out of reach. 
+<br />b) Staff are educated on food allergies and they take precautions to ensure children are protected. 
+<br />c) on days that  providers serve meals, prepared food that is brought into the program to be shared among children is commercially prepared OR prepared in a kitchen that is inspected by local health officials. 
+<br />d) that healthy snacks (as listed by the Texas Department of Agriculture) are available for school aged children as students arrive. 
+<br />e) that staff do not reward good behavior or clean plate with foods of any kind 
+<br />f) that, on days that providers serve meals, milk, fresh fruit and vegetables are available for children who bring lunches from home.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 122, 1, 1, 1, 1, 1, 15, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (124, 4, N'S-N-02', N'Home Lunch Practices', N'2. Home Lunch Practices 
+<br />a) Include in written policies procedures to ensure the safety of food brought from home, including refrigeration or other means to maintain appropriate temperatures. 
+<br />b) Programs have policies in place outlining strategies to educate children and their parents on nutrition. 
+<br />c) Programs provide parents with information about foods that may cause allergic reactions. 
+<br />d) Providers provide sample menus of healthful lunches for parents whose children bring food from home.  
+<br />Parents are encouraged to provide meals with adequate nutritional value.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 123, 1, 1, 1, 1, 1, 15, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (125, 4, N'S-N-03', N'Menu Planning', N'3. Menu Planning: The provider documents one of the following options:   <br />A. 12 months of menus that have been reviewed and approved by:  <br />&nbsp;A1. a dietitian licensed by the Texas State Board of Examiners of Dietitians(http://www.dshs.state.tx.us/dietitian/dt_roster.shtm),   <br />&nbsp;OR A2. a certified child care health consultant (healthy child care Texas);   <br />&nbsp;OR A3. an individual with a Bachelor’s or graduate degree with major in human nutrition, food and nutrition, nutrition education, dietetics, or food systems   <br />OR B. provider menu policies are structured to provide children with a variety of foods with different colors and textures to include whole grains, fresh fruits and vegetables; less process items; AND meets the Dietary Guidelines for Americans guidelines established by the USDA. Sample menus must be provided.   <br />OR C.  The Provider is participating in and in good standing with CACFP.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 124, 1, 1, 1, 1, 1, 15, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (126, 4, N'S-N-04', N'Breastfeed Education and Resources ', N'4. Policies specify that, upon request, a compilation of breastfeeding education and support resources in the community is provided to parents.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 125, 1, 1, 0, 0, 1, 15, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (127, 4, N'S-ILE-01', N'Distinct Divisions (Active/Quiet)', N'1. Indoor environment is arranged to facilitate a distinct division of active and quiet spaces 
+<br />2. Nap/rest space is conducive for children to relax, rest or sleep as appropriate for the ages and abilities of children 
+<br />3. Indoor environment includes space where children can play protected from interference by other children, yet be supervised by the caregiver 
+<br />4. Equipment/materials are clean and in good repair and no parts are missing. Providers supply a checklist of cleaning and maintenance tasks they use to ensure safe and sanitary environment for children. 
+<br />5. Equipment/materials are readily available and adapted to allow for equal participation by all children.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 126, 1, 1, 1, 1, 1, 16, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (128, 4, N'S-ILE-02', N'Sleeping, Feeding, Diapering', N'1. Indoor environment includes sufficient quantity of sleeping, diapering and feeding equipment to accommodate the number of children served 
+<br />2. Indoor environment includes sufficient space to allow for different kinds of experiences such as tummy time, active play, quiet play, and messy play 
+<br />3. Diapering areas include items that enhance cognitive and communication skills such as mobiles or colorful hanging objects 
+<br />4. Indoor environment includes space and equipment where caregivers and mothers can sit comfortably and hold infants while feeding or breast feeding', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 127, 1, 1, 0, 0, 1, 16, 1, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (129, 4, N'S-ILE-03', N'Indoor Arranged Quiet & Age Appropriate Materials', N'3. Indoor environment is arranged to include a quiet place with age appropriate tables, chairs and appropriate lighting to facilitate completion of homework.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 128, 0, 0, 0, 1, 1, 16, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (130, 5, N'S-PE-01', N'Written Policies', N'1. Parents are provided with written policies and procedures which includes: 
+<br />* Program philosophy and goal 
+<br />* Curriculum goals 
+<br />* Admission procedures 
+<br />* Family participation 
+<br />* Drop off/pick up procedures 
+<br />* Parent conferences 
+<br />* Fee structure 
+<br />* Late payments and refund information 
+<br />* Absences 
+<br />* Clothing guidelines 
+<br />* Inclement weather policy 
+<br />* Separation procedures 
+<br />* Nutrition standards used for menu planning 
+<br />* Physical activity and screen time policies 
+<br />* Procedure in place to allow parents to update contact information at all times without staff assistance. 
+<br />Policies are reviewed annually and updated if necessary.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 129, 1, 1, 1, 1, 1, 20, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (131, 5, N'S-PE-02', N'Communication System', N'2. The program has systems in place for communication between the facility and parents, which may include emailing or phone calls.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 130, 1, 1, 1, 1, 1, 20, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (132, 5, N'S-PE-03', N'Designated Notice Area', N'3. A designated area is maintained where daily schedules, menus and other important notices are available to parents.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 131, 1, 1, 1, 1, 1, 20, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (134, 5, N'S-PI-02', N'Collaboration Challenging Behavior/Challenging <br />Behavior Written Policy/Process', N'1. Parent/Teacher collaboration rgarding challenging behavior <br />
+2. Provider has a written policy/process for addressing challenging behaviors of children.   The policy/process includes teacher and/or Director have ongoing conversations with parents to express concerns and discuss strategies in addressing challenging behaviors. Conversations are framed around school readiness, the objective of the program. Parents are kept informed as to their child’s progress.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 133, 1, 1, 1, 1, 1, 21, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (135, 5, N'S-PI-03', N'Communication Log', N'3. The director and teachers should be able to provide evidence that they are working together with the parents about decisions regarding the child''s successful experience, which may include written daily reports for children under 3 years and parent communication log.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 134, 1, 1, 1, 1, 1, 21, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (136, 5, N'S-PI-04', N'Community Resources', N'4. Introduction to community resources available to the parent/family.', 50, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 135, 1, 1, 1, 1, 1, 21, 2, 2, 2, 2, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (137, 1, N'P-DEQT-04b', N'Director Experience Age & Yrs in ECE ', N'DIRECTOR EXPERIENCE', 21, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 4, 1, 1, 1, 1, 2, 3, 1, 3, 3, 3, N'', 0)
+GO
+INSERT [dbo].[TRSItems] ([ID], [Category], [Item], [Text], [Description], [Filter], [TAPlanItem], [TAPlanItemType], [TAItemInstructions], [LinkingDocument], [IsRequired], [Sort], [ShowByInfants], [ShowByToddlers], [ShowByPreschool], [ShowBySchoolAge], [Type], [SubCategoryId], [LCSA], [LCCH], [RCCH], [LCAA], [KeyBehavior], [Playground]) VALUES (138, 1, N'P-DEQT-05b', N'Director Experience Age & Yrs in ECE (School Age Only)', N'DIRECTOR EXPERIENCE', 20, N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"  target="_blank">TBD</a>', N'<a href="#Waiting"target="_blank">TBD</a>', N'<a href="#Waiting" target="_blank">TBD</a>', 0, 5, 0, 0, 0, 0, 2, 3, 3, 1, 1, 1, N'', 0)
+GO
+SET IDENTITY_INSERT [dbo].[TRSItems] OFF
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  DEFAULT ((0)) FOR [Sort]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  DEFAULT ((0)) FOR [ShowByInfants]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  DEFAULT ((0)) FOR [ShowByToddlers]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  DEFAULT ((0)) FOR [ShowByPreschool]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  DEFAULT ((0)) FOR [ShowBySchoolAge]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  CONSTRAINT [DF__TRSItems__Type__3B40CD36]  DEFAULT ((0)) FOR [Type]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  DEFAULT ((0)) FOR [SubCategoryId]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  CONSTRAINT [DF_TRSItems_LCSA]  DEFAULT ((0)) FOR [LCSA]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  CONSTRAINT [DF_TRSItems_LCCH]  DEFAULT ((0)) FOR [LCCH]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  CONSTRAINT [DF_TRSItems_RCCH]  DEFAULT ((0)) FOR [RCCH]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  CONSTRAINT [DF_TRSItems_LCAA]  DEFAULT ((0)) FOR [LCAA]
+GO
+ALTER TABLE [dbo].[TRSItems] ADD  CONSTRAINT [DF_TRSItems_KeyBehavior]  DEFAULT ('') FOR [KeyBehavior]
+GO

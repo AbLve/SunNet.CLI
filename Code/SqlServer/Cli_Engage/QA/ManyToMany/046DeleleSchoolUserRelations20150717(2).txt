@@ -1,0 +1,62 @@
+﻿ 
+GO
+/****** Object:  StoredProcedure [dbo].[DeleleSchoolUserRelations]    Script Date: 2015/7/17 13:54:52 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[DeleleSchoolUserRelations]
+    @schoolId int 
+AS
+BEGIN
+	   
+		--DELETE FROM SchoolStudentRelations WHERE SchoolId = @schoolId 
+		UPDATE Classrooms SET Status =2 WHERE SchoolId = @schoolId;
+ 
+		-- School and class RelationShip
+		DECLARE classCursor CURSOR FOR  SELECT ID FROM Classes WHERE SchoolId = @schoolId
+		  OPEN classCursor
+		   DECLARE @classId int
+		   FETCH NEXT FROM classCursor INTO @classId
+		   WHILE(@@FETCH_STATUS =0)
+			BEGIN
+			  BEGIN
+				UPDATE Classes SET Status=2 WHERE ID=@classId;
+				 EXEC dbo.DeleleStudentClassRelations @classId;
+			  END
+			 FETCH NEXT FROM classCursor INTO @classId
+			END
+		CLOSE classCursor
+		DEALLOCATE classCursor
+
+		-- school user relationShip
+		DECLARE userSchoolCursor CURSOR FOR  SELECT userId FROM UserComSchRelations WHERE SchoolId = @schoolId
+		  OPEN userSchoolCursor
+		   DECLARE @userId int
+		   FETCH NEXT FROM userSchoolCursor INTO @userId
+		   WHILE(@@FETCH_STATUS =0)
+			BEGIN
+			  BEGIN
+				--DELETE FROM UserComSchRelations  WHERE SchoolId = @schoolId AND UserId = @userId;
+				DECLARE @count2 int SET @count2 = 1;
+				DECLARE @count3 int SET @count3 = 1;
+				SELECT @count2=COUNT(0) FROM UserComSchRelations A Join Schools B ON A.SchoolId = B.ID WHERE (UserId = @userId and B.Status = 1)
+				SELECT @count3=COUNT(0) FROM UserComSchRelations C Join Communities D ON C.CommunityId = D.ID WHERE (UserId = @userId and D.Status = 1)
+
+				 IF(@count2=0 AND @count3=0)
+				    UPDATE Users SET [Status] =2 WHERE ID = @userId AND [Role] IN(135,125,143,142,133,130)
+		 
+			  END
+			 FETCH NEXT FROM userSchoolCursor INTO @userId
+			END
+		CLOSE userSchoolCursor
+		DEALLOCATE userSchoolCursor
+ 
+END
+

@@ -1,0 +1,1 @@
+﻿update Users set faxnumber='('+REPLACE(SUBSTRING(faxnumber,1,5),'-',')')+SUBSTRING(faxnumber,6,10) where FaxNumber !='' and SUBSTRING(FaxNumber,4,1)='-'

@@ -1,0 +1,25 @@
+﻿update [dbo].[Auditors] set AuditorId = 'ECO' + left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqUserCode ),'5') 
+go 
+update [dbo].[StateWides] set StateWideId = 'EST' + left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqUserCode ),'5') 
+go
+update [dbo].[CommunityUsers] set CommunityUserId = 'EDD' + left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqUserCode ),'5')  
+where UserId in (select id from Users where Role = 110)
+go
+update [dbo].[CommunityUsers] set CommunityUserId = 'EED' + left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqUserCode ),'5') 
+where UserId in (select id from Users where Role = 115)
+go
+update [dbo].[CommunityUsers] set CommunityUserId = 'EDE' + left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqUserCode ),'5') 
+where UserId in (select id from Users where Role in(140,120))
+go
+update Principals set PrincipalId ='EPR' + left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqUserCode ),'5') 
+where UserId in (select id from users where role = 125)
+go
+update Principals set PrincipalId ='EED' + left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqUserCode ),'5') 
+where UserId in (select id from users where role = 130)
+go
+update Principals set PrincipalId ='EDE' + left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqUserCode ),'5') 
+where UserId in (select id from users where role in(142,135))
+go
+
+update Communities set CommunityId ='EDS' + left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqCommunityCode ),'5') 
+go

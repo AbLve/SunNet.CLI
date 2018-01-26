@@ -1,0 +1,54 @@
+﻿IF EXISTS (SELECT 1 FROM SYS.objects WHERE name = 'TypedResponseOptions') 
+ALTER TABLE [dbo].[TypedResponseOptions] DROP CONSTRAINT [FK_TypedResponseOptions_TypedResponses]
+GO
+
+/****** Object:  Table [dbo].[TypedResponseOptions]    Script Date: 6/17/2015 16:19:30 ******/
+IF EXISTS (SELECT 1 FROM SYS.objects WHERE name = 'TypedResponseOptions') 
+DROP TABLE [dbo].[TypedResponseOptions]
+
+GO
+IF EXISTS (SELECT 1 FROM SYS.objects WHERE name = 'TypedResonses') 
+ALTER TABLE [dbo].[TypedResonses] DROP CONSTRAINT [FK_TypedResonses_TypedResponseItems]
+GO
+
+/****** Object:  Table [dbo].[TypedResonses]    Script Date: 6/17/2015 16:17:50 ******/
+IF EXISTS (SELECT 1 FROM SYS.objects WHERE name = 'TypedResonses') 
+DROP TABLE [dbo].[TypedResonses]
+GO
+
+/****** Object:  Table [dbo].[TypedResonses]    Script Date: 6/17/2015 16:17:50 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[TypedResonses](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[Required] [bit] NOT NULL,
+	[Type] [tinyint] NOT NULL,
+	[Length] [int] NOT NULL,
+	[Text] [nvarchar](1000) NOT NULL,
+	[Picture] [nvarchar](100) NOT NULL,
+	[TextTimeIn] [int] NOT NULL,
+	[PictureTimeIn] [int] NOT NULL,
+	[IsDeleted] [bit] NOT NULL,
+ CONSTRAINT [PK_TypedResonses] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[TypedResonses]  WITH CHECK ADD  CONSTRAINT [FK_TypedResonses_TypedResponseItems] FOREIGN KEY([ItemId])
+REFERENCES [dbo].[TypedResponseItems] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[TypedResonses] CHECK CONSTRAINT [FK_TypedResonses_TypedResponseItems]
+GO
+
+

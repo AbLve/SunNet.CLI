@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Ade_CannotDeleteAssessment" xml:space="preserve">
+    <value>You cannot delete this assessment because it contains a measure.</value>
+    <comment>Updated by us</comment>
+  </data>
+  <data name="Ade_CannotDeleteMeasure" xml:space="preserve">
+    <value>You cannot delete this measure because it contains an item.</value>
+    <comment>Updated by us</comment>
+  </data>
+  <data name="Ade_SameItemLabel" xml:space="preserve">
+    <value>An item with the same label already exists in the system.</value>
+  </data>
+  <data name="Ade_SameMeasureLabel" xml:space="preserve">
+    <value>A measure with the same label already exists in the system.</value>
+    <comment>Updated by us</comment>
+  </data>
+  <data name="Ade_SameLayoutName" xml:space="preserve">
+    <value>A layout with the same name already exists in the system.</value>
+  </data>
+  <data name="CommunityNameError" xml:space="preserve">
+    <value>Community / District Name error.</value>
+  </data>
+  <data name="CommunityNameHasBeenUsed" xml:space="preserve">
+    <value>The Community / District Name has been used.</value>
+  </data>
+  <data name="DbError" xml:space="preserve">
+    <value>Access database error. Please contact your webmaster (cliengage@uth.tmc.edu).</value>
+    <comment>Updated by us</comment>
+  </data>
+  <data name="DefautlPackage" xml:space="preserve">
+    <value>The default package already exists.</value>
+    <comment>系统User Role/Type 对应权限已存在</comment>
+  </data>
+  <data name="global_noauthorization" xml:space="preserve">
+    <value>You are not authorized to process the data.</value>
+    <comment>没有数据权限(比如 必须是创建者才能修改等) Updated by us</comment>
+  </data>
+  <data name="PackageSamename" xml:space="preserve">
+    <value>Package name already exists.</value>
+    <comment>检查  Package 是否重名</comment>
+  </data>
+  <data name="DeleteDefaultPackage" xml:space="preserve">
+    <value>The default package cannot be deleted.</value>
+    <comment>不能删除默认权限</comment>
+  </data>
+  <data name="Ade_AssessmentExsited" xml:space="preserve">
+    <value>An assessment with the same language and same name already exists in the system.</value>
+    <comment>检查相同Display Name的Assessment只能存在两个语言版本.</comment>
+  </data>
+  <data name="Ade_Assessment_Locked" xml:space="preserve">
+    <value>This assessment is locked.</value>
+    <comment>CPALLS+执行过之后, Assessment | Measure | Items会被锁定而不允许编辑.</comment>
+  </data>
+  <data name="Ade_SameAssessmentLabel" xml:space="preserve">
+    <value>An assessment with the same label already exists in the system.</value>
+    <comment>Updated by us</comment>
+  </data>
+  <data name="IsSameName" xml:space="preserve">
+    <value>This name already exists.</value>
+    <comment>添加或编辑Toolbox各项时,检查是否重名</comment>
+  </data>
+  <data name="Assessment_No_Community" xml:space="preserve">
+    <value>You don't have an assigned community/district.</value>
+    <comment>updated by us</comment>
+  </data>
+  <data name="assessment_unavaiable" xml:space="preserve">
+    <value>The assessment is not available now, please try later.</value>
+    <comment>Updated by David</comment>
+  </data>
+  <data name="Upload_a_file" xml:space="preserve">
+    <value>Please upload a file.</value>
+    <comment>请上传一个文件</comment>
+  </data>
+  <data name="DownloadReportError" xml:space="preserve">
+    <value>Download error.</value>
+    <comment>下载报表时发生错误</comment>
+  </data>
+  <data name="DataExport_FieldEmpty" xml:space="preserve">
+    <value>No field is selected to shown.</value>
+    <comment>请至少选择一个需要显示的字段</comment>
+  </data>
+  <data name="SameName" xml:space="preserve">
+    <value>This name already exists.</value>
+    <comment>name已存在</comment>
+  </data>
+  <data name="No_STG_Report" xml:space="preserve">
+    <value>There is no reports existed.</value>
+    <comment>Reset Short Term Goals 时，系统中没有Report可用</comment>
+  </data>
+  <data name="No_COT_Wave" xml:space="preserve">
+    <value>You have not finalized the Wave.</value>
+    <comment>相关Wave尚未finalize</comment>
+  </data>
+  <data name="No_Cot_Assessment" xml:space="preserve">
+    <value>There is no assessment records for current teacher.</value>
+    <comment>Teacher没有COT Assessment记录</comment>
+  </data>
+  <data name="Can_Not_Reset_Year" xml:space="preserve">
+    <value>You can not reset the records of previous year.</value>
+    <comment>不能Reset 历史的数据</comment>
+  </data>
+  <data name="Trs_Playgournd_Blank" xml:space="preserve">
+    <value>The following classes don't have playground: {0}</value>
+    <comment>有部分Class的Playground没有设置，不能做Trs Assessment</comment>
+  </data>
+  <data name="Trs_TypeOfClassroom_Blank" xml:space="preserve">
+    <value>The age of children along with the # of children must be entered on the class management page for class(es): {0}. Please click Edit to continue.</value>
+    <comment>Updated by David</comment>
+  </data>
+  <data name="Trs_School_Has_No_Class" xml:space="preserve">
+    <value>There is no class in the school, can not start assessment.</value>
+    <comment>School 没有Class，不能做Assessment</comment>
+  </data>
+  <data name="UserExistedInCommunity" xml:space="preserve">
+    <value>A {Role} with the same first name, last name, and primary email already exists in the community.</value>
+    <comment>存在相同的FirstName，LastName，Email用户，且选择的Community也已经存在，这样说明该用户已经存在于列表中，不需要添加了</comment>
+  </data>
+  <data name="UserExistedInSchool" xml:space="preserve">
+    <value>A {Role} with the same first name, last name, and primary email already exists in the school.</value>
+    <comment>存在相同的FirstName，LastName，Email用户，且选择的School也已经存在，这样说明该用户已经存在与列表，不需要添加了</comment>
+  </data>
+  <data name="UserExistedInSystemSendEmail" xml:space="preserve">
+    <value>A {Role} with the same first name, last name, and primary email already exists in CLI Engage. Do you want to send him/her an invitation?</value>
+    <comment>存在相同的FirstName，LastName，Email用户，且角色和当前添加的用户角色相同，但当前用户没有权限访问的，则需要发送邮件邀请别人</comment>
+  </data>
+  <data name="UserExistedInCurrentRole" xml:space="preserve">
+    <value>A {Role} with the same first name, last name, and primary email already exists in CLI Engage.  Do you want to assign now?</value>
+    <comment>内部用户或有权限的用户操作时，可以直接从列表分配</comment>
+  </data>
+  <data name="Trs_CalcStar_NeedCompleted" xml:space="preserve">
+    <value>*The Star is not calculated until all measures are completed.*</value>
+    <comment>Trs 预览时不显示Star</comment>
+  </data>
+  <data name="EnableAutoAssign4StarTips" xml:space="preserve">
+    <value>If check any one of National Accreditation or the U.S.Military is selected on Regulation Entity, the Verified Star Designation will be 4 ★.</value>
+  </data>
+  <data name="Offline_Message" xml:space="preserve">
+    <value>Please log in to CLI Engage before syncing data.</value>
+    <comment>// 需要修改JsMsg.js文件</comment>
+  </data>
+  <data name="Report_Queue_Submitted" xml:space="preserve">
+    <value>Your report request has been recorded, you will get an email containing a link to the report later.</value>
+    <comment>异步报表请求提交之后的提示消息</comment>
+  </data>
+  <data name="UserExistedInSystem" xml:space="preserve">
+    <value>A {Role} with the same first name, last name, and primary email already exists in CLI Engage.  Do you want to continue?</value>
+  </data>
+  <data name="Report_Queue_Report_404" xml:space="preserve">
+    <value>Report is not found.</value>
+  </data>
+  <data name="Report_Queue_Report_Not_Ready" xml:space="preserve">
+    <value>Report is not ready yet.</value>
+  </data>
+  <data name="UserExistedInStatewide" xml:space="preserve">
+    <value>A {Role} with the same first name, last name, and primary email already exists.</value>
+    <comment>存在相同的FirstName，LastName，Email用户，且角色和当前添加的用户角色相同,这样说明该用户已经存在于列表中，不需要添加了</comment>
+  </data>
+  <data name="HasInactive" xml:space="preserve">
+    <value>{Entity} has been inactive.</value>
+    <comment>提示对象是 inactive状态的</comment>
+  </data>
+  <data name="OnlyOneClass" xml:space="preserve">
+    <value>{StudentNames} is only assigned to this class! Students must be assigned to at least 1 class.</value>
+    <comment>Student只有一个Class</comment>
+  </data>
+  <data name="ReportTempNameExists" xml:space="preserve">
+    <value>Another Report Template with the same name already exists!</value>
+    <comment>Export中ReportTemlate重名</comment>
+  </data>
+  <data name="NotPercentileRank" xml:space="preserve">
+    <value>Percentile Rank is invalid for {0}</value>
+    <comment>用来判断Percentile Rank在PercentileRankLookup表中是否存在</comment>
+  </data>
+</root>

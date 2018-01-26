@@ -1,0 +1,18 @@
+﻿
+UPDATE [BasicCommunities]  SET 
+[Type] = ''
+,[Address1] = ''
+,[City] = ''
+,[Zip] = ''
+,[Phone] = ''
+
+UPDATE BasicSchools  SET 
+ [Address1] = ''
+,[City] = ''
+,[Zip] = ''
+,[Phone] = ''
+
+
+
+UPDATE  [BasicCommunities] SET [CountyId] =0 ,[StateId] = 0
+UPDATE  BasicSchools SET [CountyId] =0 ,[StateId] = 0

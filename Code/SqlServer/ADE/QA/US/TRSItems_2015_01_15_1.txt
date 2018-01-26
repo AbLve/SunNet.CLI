@@ -1,0 +1,7 @@
+﻿if exists(select * from syscolumns where id=object_id('TRSItems') and name='SubCategory')
+begin
+
+alter table dbo.TRSItems add SubCategoryId int not null default(0)
+
+end
+GO

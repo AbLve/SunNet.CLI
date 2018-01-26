@@ -1,0 +1,561 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.CommunityUserEntity
+@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Core.Users.Entities
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Users.Enums
+@{
+    bool isCommunitySpecialist = ViewBag.RoleType == Role.Community_Specialist_Delegate;
+    int roleType = isCommunitySpecialist ? (int)Role.District_Community_Delegate : (int)Role.District_Community_Specialist;
+    ViewBag.Title = isCommunitySpecialist ? "My Delegate Invite" : "Community/District Specialist Invite";
+    string navigationText = isCommunitySpecialist ? "My Delegate" : "Community/District Specialist";
+    string backtoText = isCommunitySpecialist ? "Back to My Delegate List" : "Back to Community/District Specialist List";
+    string iDText = isCommunitySpecialist ? "My Delegate Engage ID" : "Community/District Specialist Engage ID";
+    IEnumerable<SelectItemModel> certificateList = ViewBag.CertificateList;
+    certificateList = certificateList.Where(e => e.Selected == true).ToList();
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var selectedCommunity;
+        jQuery(function () {
+            $("#communityId").rules("add", { required: true, messages: { required: "The community field is required." } });
+            $form = $("#@(formId)");
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response) {
+                    if (response.success) {
+                        var promise;
+                        if (typeof response.data == "string") {
+                            if (response.data == "waiting") {
+                                promise = window.waitingAlert("warning", response.msg);
+                            } else {
+                                promise = window.showMessage("success", response.msg);
+                            }
+                            $.when(promise).done(function () {
+                                redirectBack("Index");
+                            });
+                        } else if (response.data == null) {
+                            $.when(window.showMessage("success", response.msg)).done(function () {
+                                redirectBack("Index");
+                            });
+                        } else if (typeof response.data == "object") {
+                            if (response.data.type == "confirmAssign") {
+                                $.when(window.waitingConfirm(response.msg, "OK", "Cancel")).done(function () {
+                                    location.href = response.data.url + "&returnurl=@(Server.UrlDecode(Request.QueryString["returnurl"]))";
+                                });
+                            } else if (response.data.type == "noauthority") {
+                                $.when(window.waitingAlert("warning", response.msg)).done(function () {
+                                    location.href = response.data.url;
+                                });
+                            } else if (response.data.type == "continue") {
+                                $.when(window.waitingConfirm(response.msg, "Continue", "Cancel")).done(function () {
+                                    $form.find("#confirm").val(true);
+                                    $form.submit();
+                                }).fail(function () {
+                                    $form.find("#confirm").val(false);
+                                });
+                            } else if (response.data.type == "confirmEmail") {
+                                $.when(window.waitingConfirm(response.msg, "Send", "No")).done(function () {
+                                    $.post('@Url.Action("SendEmail")', {
+                                        communityId: $("#communityId").val(),
+                                        txtCommunity: $("#txtCommunity").val(),
+                                        email: $("#UserInfo_PrimaryEmailAddress").val(),
+                                        userId: response.data.userId
+                                    },
+                                        function (responseOfEmail) {
+                                            if (responseOfEmail.success) {
+                                                window.showMessage("success", "Email sent");
+                                            } else {
+                                                window.showMessage("fail",
+                                                    responseOfEmail.msg);
+                                            }
+
+                                        }, "json");
+                                });
+                                }
+                }
+    } else {
+        window.showMessage("fail",
+            response.msg);
+    }
+                }
+            });
+            $("#PrimaryLanguageId").change(function () {
+                if ($("#PrimaryLanguageId :selected").text() == "Other")
+                    $("#PrimaryLanguageOther").attr("type", "text");
+                else {
+                    $("#PrimaryLanguageOther").val("");
+                    $("#PrimaryLanguageOther").attr("type", "hidden");
+                }
+            });
+            $("#PositionId").change(function () {
+                if ($("#PositionId :selected").text() == "Other")
+                    $("#PositionOther").attr("type", "text");
+                else {
+                    $("#PositionOther").val("");
+                    $("#PositionOther").attr("type", "hidden");
+                }
+            });
+            $("#UserInfo_Status").change(function () {
+                if ($("#UserInfo_Status").val() == "@((int)EntityStatus.Inactive)")
+                    $("#SaveInvite").hide();
+                else
+                    $("#SaveInvite").show();
+            })
+
+            $("#dvCertificate input[type='radio']").click(function (event) {
+                var $container = $("#txtCers");
+                if ($container.length == 0) {
+                    $container = $("<input type='hidden' name='certificates' id='txtCers'/>").appendTo($("#@(formId)"));
+                }
+                var values = "";
+
+                $("#dvCertificate input[type='radio']").each(function (index, radio) {
+                    var $r = $(radio);
+                    if ($r[0].checked) {
+                        values += $r.val() + ",";
+                    }
+                });
+                $container.val(values);
+            });
+
+            $("[name='IsSameAddress']").click(function () {
+                if ($(this).val() == "1") {
+                    if (selectedCommunity) {
+                        $("#Address").val(selectedCommunity.Address);
+                        $("#Address2").val(selectedCommunity.Address2);
+                        $("#City").val(selectedCommunity.City);
+                        viewModel.defaultCounty(selectedCommunity.CountyId);
+                        viewModel.selectedState(selectedCommunity.StateId);
+                        $("#Zip").val(selectedCommunity.Zip);
+                    }
+                }
+                else {
+                    $("#Address").val("");
+                    $("#Address2").val("");
+                    $("#City").val("");
+                    viewModel.defaultCounty("");
+                    viewModel.selectedState("");
+                    $("#Zip").val("");
+                }
+            })
+
+            $("#SaveInvite").click(function () {
+                $("<input type='hidden' name='isInvite' id='isInvite' value='true' />").appendTo($("#@(formId)"));
+            });
+            $("#txtCommunity").on("selected.sunnet.datalist", function (event) {
+                $.post("/Invitation/Public/GetAssignedPackages?userType=" + @roleType
+                    + "&communityId=" + $("#communityId").val() + "&schoolId=null", function (result) {
+                        if (result) {
+                            var strHtml = "";
+                            for (i = 0; i < result.length; i++) {
+                                strHtml += '<div class="with50">';
+                                strHtml += '<label class="checkbox-inline">';
+                                strHtml += '<input type="checkbox" name="chkPackages" value="' + result[i].PackageId + '">';
+                                strHtml += result[i].PackageName;
+                                strHtml += '</label>';
+                                strHtml += '</div>';
+                            }
+                        }
+                        $("#dvPackage").html(strHtml);
+                    }, 'json');
+                selectedCommunity = event.selected;
+                if ($("[name='IsSameAddress']:checked").val() == "1") {
+                    $("#Address").val(selectedCommunity.Address);
+                    $("#Address2").val(selectedCommunity.Address2);
+                    $("#City").val(selectedCommunity.City);
+                    viewModel.defaultCounty(selectedCommunity.CountyId);
+                    viewModel.selectedState(selectedCommunity.StateId);
+                    $("#Zip").val(selectedCommunity.Zip);
+                }
+            });
+            AccessControl();
+        });
+
+            function AccessControl() {
+                if ("@ViewBag.Readonly" == "R") {
+                    $("#BirthDate").add("#Gender1").add("#Gender2").add("#PrimaryLanguageId").add("#TotalYearCurrentRole")
+                        .add("#EducationLevel").add("#TotalYearCurrentRole")
+                    .each(function () {
+                        $(this).prop("disabled", "true");
+                    });
+                    $("#dvCertificate").find("*").prop("disabled", true);
+                }
+            }
+
+            var viewModel = {
+                defaultCounty: ko.observable(@Model.CountyId),
+                selectedCounty: ko.observable(@Model.CountyId),
+                countiesOptions: ko.observableArray([]),
+                selectedState: ko.observable(@Model.StateId)
+            };
+            viewModel.selectedState.subscribe(function (state) {
+                $.getJSON('/Invitation/Public/GetCountiesByStateId', { stateId: state }, function (data) {
+                    viewModel.countiesOptions.removeAll();
+                    viewModel.countiesOptions.push.apply(viewModel.countiesOptions, data);
+                    viewModel.selectedCounty(viewModel.defaultCounty());
+                });
+            });
+            ko.applyBindings(viewModel);
+    </script>
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.User)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("User Management", "Dashboard", "Public"))
+    <i class="icon-angle-right"></i>
+    @if (isCommunitySpecialist)
+    {
+        @Html.ActionLink(navigationText, "MyDelegate", "CommunitySpecialist")
+    }
+    else
+    {
+        @Html.ActionLink(navigationText, "Index", "CommunitySpecialist")
+    }
+    <i class="icon-angle-right"></i>New
+}
+
+@using (Ajax.BeginForm("SaveInvitation", "CommunitySpecialist", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.UserInfo.Role) 
+    @Html.Hidden("confirm", false)
+    if (ViewBag.Readonly == "R")
+    {
+    <input type="hidden" name="BirthDate" value="@Model.BirthDate" />
+    <input type="hidden" name="Gender" value="@Model.Gender" />
+    <input type="hidden" name="PrimaryLanguageId" value="@Model.PrimaryLanguageId" />
+    <input type="hidden" name="TotalYearCurrentRole" value="@Model.TotalYearCurrentRole" />
+    <input type="hidden" name="EducationLevel" value="@Model.EducationLevel" />
+    <input type="hidden" name="TotalYearCurrentRole" value="@Model.TotalYearCurrentRole" />     
+    }
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >@backtoText</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.Label("Community/District", null, new { @class = "col-sm-2 control-label required", @for = "txtCommunity" })
+                <div class="col-sm-4">
+                    @if (isCommunitySpecialist)
+                    {
+                        @Html.Display("X", "List", new { Objects = ViewBag.ParentCommunityNames })
+                        @Html.Hidden("communityId", "0", new { @class = "form-control validate", placeholder = "selected from autocomplete" })
+                    }
+                    else
+                    {
+                        @Html.TextBox("txtCommunity", (string)ViewBag.CommunityName, new
+                   {
+                       autocomplete = "off",
+                       @class = "form-control",
+                       data_list = "true",
+                       data_for = "#communityId",
+                       data_remote = "/Community/Community/GetCommunitySelectList",
+                       data_text = "Name",
+                       data_value = "ID",
+                       id = "txtCommunity",
+                       name = "txtCommunity",
+                       @for = "communityId",
+                       placeholder = "Enter key text to search"
+                   })
+                        @Html.Hidden("communityId", "", new { @class = "form-control validate", placeholder = "selected from autocomplete" })
+                        @Html.ValidationMessage("communityId")
+                    }
+                </div>
+                @Html.LabelFor(model => model.SchoolYear, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PositionId, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(e => e.PositionId, (IEnumerable<SelectListItem>)ViewBag.PositionOptions, new { @class = "form-control" })
+                    @Html.LabelFor(model => model.PositionOther, new { @class = "control-label hide" })
+                    @Html.TextBoxFor(model => model.PositionOther, new { @class = "form-control", type = "hidden" })
+                    @Html.ValidationMessageFor(model => model.PositionId)
+                </div>
+                @Html.Label("CommunityUserId", iDText, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.CommunityUserId, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.FirstName, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.FirstName)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.MiddleName, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.MiddleName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.LastName, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.LastName)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.PreviousLastName, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.PreviousLastName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.BirthDate, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.BirthDate, new { @class = "form-control date" })
+                </div>
+                <span class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Gender)</span>
+                <div class="col-sm-4">
+                    @Html.RadioButtonFor(model => model.Gender, Gender.Male, new { id = "Gender1" })
+                    @Html.Label("", Gender.Male.ToDescription(), new { @for = "Gender1" })
+                    @Html.RadioButtonFor(model => model.Gender, Gender.Female, new { id = "Gender2" })
+                    @Html.Label("", Gender.Female.ToDescription(), new { @for = "Gender2" })
+                    @Html.RadioButtonFor(model => model.Gender, 0, new { id = "Gender3", @class = "hide" })
+                    @Html.Label("Gender3", new { @class = "hide" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimaryLanguageId, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(e => e.PrimaryLanguageId, (IEnumerable<SelectListItem>)ViewBag.Language, new { @class = "form-control" })
+                    @Html.LabelFor(model => model.PrimaryLanguageOther, new { @class = "control-label hide" })
+                    @Html.TextBoxFor(model => model.PrimaryLanguageOther, new { @class = "form-control", type = "hidden" })
+                </div>
+                @Html.LabelFor(model => model.UserInfo.Status, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.UserInfo.Status, Model.UserInfo.Status.ToSelectList(), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.Status)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.InternalID, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.InternalID, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="content-title">Contact Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @if (isCommunitySpecialist)
+                {
+                    @Html.Label("Community/District", null, new { @class = "col-sm-3 control-label", @for = "txtCommunity" })
+                    <div class="col-sm-3">
+                        @Html.TextBox("txtCommunity", (string)ViewBag.CommunityName, new
+                           {
+                               autocomplete = "off",
+                               @class = "form-control",
+                               data_list = "true",
+                               data_for = "#communityId",
+                               data_remote = "/Community/Community/GetCommunitySelectList",
+                               data_text = "Name",
+                               data_value = "ID",
+                               id = "txtCommunity",
+                               name = "txtCommunity",
+                               @for = "communityId",
+                               placeholder = "Enter key text to search"
+                           })
+                    </div>
+                    <span class="col-sm-3 control-label">@Html.DisplayNameFor(model => model.IsSameAddress)</span>
+                    <div class="col-sm-3">
+                        @Html.RadioButtonFor(model => model.IsSameAddress, 1, new { id = "IsSameAddress1" })
+                        @Html.Label("", ViewTextHelper.BoolInTexts[true], new { @for = "IsSameAddress1" })
+                        @Html.RadioButtonFor(model => model.IsSameAddress, 2, new { id = "IsSameAddress2" })
+                        @Html.Label("", ViewTextHelper.BoolInTexts[false], new { @for = "IsSameAddress2" })
+                        @Html.RadioButtonFor(model => model.IsSameAddress, 0, new { id = "IsSameAddress3", @class = "hide" })
+                        @Html.Label("IsSameAddress3", new { @class = "hide" })
+                        <br />@Html.ValidationMessageFor(model => model.IsSameAddress)
+                    </div>
+                }
+                else
+                {
+                    <span class="col-sm-6 control-label">@Html.DisplayNameFor(model => model.IsSameAddress)</span>
+                    <div class="col-sm-6">
+                        @Html.RadioButtonFor(model => model.IsSameAddress, 1, new { id = "IsSameAddress1" })
+                        @Html.Label("", ViewTextHelper.BoolInTexts[true], new { @for = "IsSameAddress1" })
+                        @Html.RadioButtonFor(model => model.IsSameAddress, 2, new { id = "IsSameAddress2" })
+                        @Html.Label("", ViewTextHelper.BoolInTexts[false], new { @for = "IsSameAddress2" })
+                        @Html.RadioButtonFor(model => model.IsSameAddress, 0, new { id = "IsSameAddress3", @class = "hide" })
+                        @Html.Label("IsSameAddress3", new { @class = "hide" })
+                        <br />@Html.ValidationMessageFor(model => model.IsSameAddress)
+                    </div>
+                }
+            </div>
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address, null, new { @class = "col-sm-3 control-label required" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(model => model.Address, new { @class = "form-control m-b", placeholder = "Address 1*" })
+                        @Html.ValidationMessageFor(model => model.Address)
+                        @Html.LabelFor(model => model.Address2, null, new { @class = "control-label hide" })
+                        @Html.TextBoxFor(model => model.Address2, new { @class = "form-control m-b", placeholder = "Address 2(optional)" })
+                        <div class="col-lg-3 m-l-n">
+                            @Html.LabelFor(model => model.City, null, new { @class = "control-label hide" })
+                            @Html.TextBoxFor(model => model.City, new { @class = "form-control", placeholder = "City*" })
+                            @Html.ValidationMessageFor(model => model.City)
+                        </div>
+                        <div class="col-lg-3 m-l-n">
+                            @Html.LabelFor(model => model.StateId, null, new { @class = "control-label hide" })
+                            @Html.DropDownListFor(model => model.StateId, (IEnumerable<SelectListItem>)ViewBag.State,
+                            new { @class = "form-control", placeholder = "State*", data_bind = "value:selectedState" })
+                            @Html.ValidationMessageFor(model => model.StateId)
+                        </div>
+                        <div class="col-lg-3 m-l-n">
+                            @Html.LabelFor(model => model.CountyId, null, new { @class = "control-label hide" })
+                            @Html.DropDownListFor(model => model.CountyId, (IEnumerable<SelectListItem>)ViewBag.County,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "County*",
+                                data_bind = "options: countiesOptions, optionsText: 'Text', optionsValue: 'Value',value:selectedCounty"
+                            })
+                            @Html.ValidationMessageFor(model => model.CountyId)
+                        </div>
+                        <div class="col-lg-3 m-l-n">
+                            @Html.LabelFor(model => model.Zip, null, new { @class = "control-label hide" })
+                            @Html.TextBoxFor(model => model.Zip, new { @class = "form-control _num_5", placeholder = "Zip*" })
+                            @Html.ValidationMessageFor(model => model.Zip)
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.PrimaryPhoneNumber, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.PrimaryPhoneNumber, new { @class = "form-control _homephone" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.PrimaryPhoneNumber)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.PrimaryNumberType, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.EnumDropDownListFor(model => model.UserInfo.PrimaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.PrimaryNumberType)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.SecondaryPhoneNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.SecondaryPhoneNumber, new { @class = "form-control _homephone" })
+                </div>
+                @Html.LabelFor(model => model.UserInfo.SecondaryNumberType, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.EnumDropDownListFor(model => model.UserInfo.SecondaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.FaxNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.FaxNumber, new { @class = "_phone form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.PrimaryEmailAddress, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.PrimaryEmailAddress, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.PrimaryEmailAddress)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.SecondaryEmailAddress, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.SecondaryEmailAddress, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.SecondaryEmailAddress)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Receive Requests for new", null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    <span style="padding-top: 6px; vertical-align: middle;">
+                        <label for="CommunityLevelRequest" class="control-label">Community/District Level Requests </label>
+                        @Html.CheckBoxFor(model => model.CommunityLevelRequest)</span>
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: -15px;">
+                <div class="col-sm-3">
+                </div>
+                <div class="col-sm-9">
+                    <span style="padding-top: 6px; vertical-align: middle;">
+                        <label for="SchoolLevelRequest" class="control-label">School Level Requests </label>
+                        @Html.CheckBoxFor(model => model.SchoolLevelRequest)</span>
+                </div>
+            </div>
+        </div>
+        <div class="content-title">Professional Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.TotalYearCurrentRole, null, new { @class = "col-sm-5 control-label" })
+                <div class="col-sm-7">
+                    @Html.TextBoxFor(model => model.TotalYearCurrentRole, new { @class = "_num_2 form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.EducationLevel, null, new { @class = "col-sm-5 control-label" })
+                <div class="col-sm-7">
+                    @Html.EnumDropDownListFor(model => model.EducationLevel, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-5 control-label">Certificates and Credentials (check all that apply)</span>
+                <div class="col-sm-7" id="dvCertificate">
+                    @foreach (var item in certificateList)
+                    {
+                        <span class="col-lg-8 control-label m-l-n m-b">
+                            @item.Name</span>
+                        <div class="col-lg-4 m-l-n m-b">
+                            <label class="radio-inline">
+                                <input type="radio" name="certificate@(item.ID)" value="@item.ID">
+                                Yes</label>
+                            <label class="radio-inline">
+                                <input type="radio" name="certificate@(item.ID)" value="@(item.ID + 1)">
+                                No</label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="content-title"></div>
+        <div class="content-body">
+            @if (!isCommunitySpecialist)
+            {
+                <div class="form-group">
+                    <span class="col-sm-3 control-label">Additional Packages</span>
+                    <div class="col-sm-9" id="dvPackage">
+                    </div>
+                </div>
+            }
+
+            @if (ViewBag.CommunitySpecialistNote != "X")
+            {
+                <div class="form-group" id="divCommunityNotes">
+                    @Html.LabelFor(model => model.CommunityNotes, null, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextAreaFor(model => model.CommunityNotes, new { @class = "form-control", style = "height:70px; margin:0px; padding:0px;" })
+                        @Html.ValidationMessageFor(model => model.CommunityNotes)
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit">
+            <input type="submit" id="SaveInvite" class="mainbutton mainright-btn submit-btn" value="Submit & Invite">
+            <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,6 @@
+﻿if exists(select * from syscolumns where id=object_id('Classes') and name='LCchildrenNumber')
+	alter table 	Classes  DROP COLUMN LCchildrenNumber
+go
+
+if exists(select * from syscolumns where id=object_id('Classes') and name='LCchildrenTypeId')
+	alter table 	Classes  DROP COLUMN LCchildrenTypeId

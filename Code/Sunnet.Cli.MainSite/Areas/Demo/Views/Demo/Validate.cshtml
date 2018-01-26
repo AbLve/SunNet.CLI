@@ -1,0 +1,119 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.MainSite.Areas.Demo.Models.Products
+
+@{
+    ViewBag.Title = "Validate";
+    Layout = "~/Views/Shared/_Layout_Base.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+
+    var logoOptions = new List<SelectListItem>()
+    {
+        new SelectListItem(){Text = "0",Value = ""},
+        new SelectListItem(){Text = "10",Value = "10"},
+        new SelectListItem(){Text = "20",Value = "20"}
+    };
+}
+@section Scripts
+{
+    <script>
+        $(function () {
+            $("#btnAdd").click(function () {
+                // 通过这句代码增加验证规则, 详细支持方法列表请参考http://jqueryvalidation.org/documentation/ , 如果还不能满足,请联系Jack
+                $("#Price").rules("add", { min: 10, max: 30, messages: { min: "Price 必须大于{0}", max: "Price 必须小于{0}" } });
+            });
+            $("#btnRemove").click(function () {
+                // 通过这句代码移除验证规则, 以空格分隔符 可以删除多个规则
+                $("#Price").rules("remove", "max required");
+            });
+        });
+
+    </script>
+}
+<h2>Validate</h2>
+
+@using (Html.BeginForm("SaveProduct", "Products", FormMethod.Post, new { id = formId }))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Products</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Logo, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Logo)
+
+                @Html.ValidationMessageFor(model => model.Logo)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("TT", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("TT", logoOptions, new { multiple = "multiple",@class="required" })
+                @Html.ValidationMessage("TT")
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Price, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Price)
+                <button class="btn btn-primary" id="btnAdd">增加规则</button>
+                <button class="btn btn-default" id="btnRemove">删除规则</button>
+                @Html.ValidationMessageFor(model => model.Price)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreatedOn, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CreatedOn)
+                @Html.ValidationMessageFor(model => model.CreatedOn)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreatedOnTime, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CreatedOnTime)
+                @Html.ValidationMessageFor(model => model.CreatedOnTime)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreatedOnDateTime, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CreatedOnDateTime)
+                @Html.ValidationMessageFor(model => model.CreatedOnDateTime)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

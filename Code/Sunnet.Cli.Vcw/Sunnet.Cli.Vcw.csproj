@@ -1,0 +1,490 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EE8528D6-1EF5-4F60-86C3-ED8C9761AFB2}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sunnet.Cli.Vcw</RootNamespace>
+    <AssemblyName>Sunnet.Cli.Vcw</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\OpenXMLSDK\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\EF\6.0\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\EF\6.0\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap, Version=2.6.1.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\IoC\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="404.html" />
+    <Content Include="error.html" />
+    <Content Include="error_page.html" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="robot.txt" />
+    <Content Include="Areas\Teacher\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Teacher\Views\Summary\Index.cshtml" />
+    <Content Include="Areas\Teacher\Views\VIP\Index.cshtml" />
+    <Content Include="Areas\Teacher\Views\General\Index.cshtml" />
+    <Content Include="Areas\Teacher\Views\Assignment\Index.cshtml" />
+    <Content Include="Areas\Coach\Views\web.config" />
+    <Content Include="Areas\Coach\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Coach\Views\Summary\Index.cshtml" />
+    <Content Include="Areas\Coach\Views\General\Index.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherVIP\Index.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherGeneral\Index.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherAssignment\Index.cshtml" />
+    <Content Include="Areas\Coach\Views\CoachAssignment\Index.cshtml" />
+    <Content Include="Areas\PM\Views\web.config" />
+    <Content Include="Areas\PM\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\PM\Views\Summary\Index.cshtml" />
+    <Content Include="Areas\PM\Views\Coach\Index.cshtml" />
+    <Content Include="Areas\PM\Views\CoachGeneral\Index.cshtml" />
+    <Content Include="Areas\PM\Views\CoachAssignment\Index.cshtml" />
+    <Content Include="Areas\PM\Views\CoachSendAssignment\Index.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherSendAssignment\Partials\TeacherAssignment.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherSendAssignment\Partials\TeacherVIPAssignment.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherSendAssignment\New.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherSendAssignment\AssignmentIndex.cshtml" />
+    <Content Include="Areas\Teacher\Views\General\New.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherSendAssignment\TeacherIndex.cshtml" />
+    <Content Include="Areas\STGReport\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\STGReport\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\STGReport\Views\STGSend\Pdf.cshtml" />
+    <Content Include="Areas\STGReport\Views\STGSend\STGReport.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherVIP\LinkToAssignment.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherAssignment\LinkToAssignment.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherGeneral\LinkToAssignment.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherGeneral\LinkToVIP.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherVIP\LinkToAssignment.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherAssignment\LinkToAssignment.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherGeneral\LinkToAssignment.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherGeneral\LinkToVIP.cshtml" />
+    <Content Include="Areas\PM\Views\Summary\ExportPdf_CoachFiles.cshtml" />
+    <Content Include="Areas\PM\Views\Summary\ExportPdf_TeacherFiles.cshtml" />
+    <Content Include="Areas\Admin\Views\Summary\ExportPdf_CoachFiles.cshtml" />
+    <Content Include="Areas\Admin\Views\Summary\ExportPdf_TeacherFiles.cshtml" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\CoachAssignmentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CoachGeneralController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CoachSendAssignmentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SummaryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TeacherAssignmentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TeacherGeneralController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TeacherSendAssignmentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TeacherVIPController.cs" />
+    <Compile Include="Areas\Coach\CoachAreaRegistration.cs" />
+    <Compile Include="Areas\Coach\Controllers\CoachAssignmentController.cs" />
+    <Compile Include="Areas\Coach\Controllers\GeneralController.cs" />
+    <Compile Include="Areas\Coach\Controllers\SummaryController.cs" />
+    <Compile Include="Areas\Coach\Controllers\TeacherAssignmentController.cs" />
+    <Compile Include="Areas\Coach\Controllers\TeacherGeneralController.cs" />
+    <Compile Include="Areas\Coach\Controllers\TeacherSendAssignmentController.cs" />
+    <Compile Include="Areas\Coach\Controllers\TeacherVIPController.cs" />
+    <Compile Include="Areas\PM\Controllers\CoachAssignmentController.cs" />
+    <Compile Include="Areas\PM\Controllers\CoachGeneralController.cs" />
+    <Compile Include="Areas\PM\Controllers\CoachSendAssignmentController.cs" />
+    <Compile Include="Areas\PM\Controllers\SummaryController.cs" />
+    <Compile Include="Areas\PM\Controllers\TeacherAssignmentController.cs" />
+    <Compile Include="Areas\PM\Controllers\TeacherGeneralController.cs" />
+    <Compile Include="Areas\PM\Controllers\TeacherVIPController.cs" />
+    <Compile Include="Areas\PM\PMAreaRegistration.cs" />
+    <Compile Include="Areas\STGReport\Controllers\STGSendController.cs" />
+    <Compile Include="Areas\STGReport\STGReportAreaRegistration.cs" />
+    <Compile Include="Areas\Teacher\Controllers\AssignmentController.cs" />
+    <Compile Include="Areas\Teacher\Controllers\GeneralController.cs" />
+    <Compile Include="Areas\Teacher\Controllers\SummaryController.cs" />
+    <Compile Include="Areas\Teacher\Controllers\VIPController.cs" />
+    <Compile Include="Areas\Teacher\TeacherAreaRegistration.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DownLoadFileController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\FeedbackController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LinkVideoController.cs" />
+    <Compile Include="Controllers\SearchUserController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DownLoadFile.cs" />
+    <Compile Include="Models\GetDropDownItems.cs" />
+    <Compile Include="Models\GetExpression.cs" />
+    <Compile Include="Models\LeftmenuModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config" />
+    <Content Include="packages.config" />
+    <Content Include="log4net.config" />
+    <Content Include="StructureMap.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Error\nonauthorized.cshtml" />
+    <Content Include="Views\Shared\404.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Partial_Menu.cshtml" />
+    <Content Include="Views\Shared\_Partial_Left.cshtml" />
+    <Content Include="Areas\Teacher\Views\web.config" />
+    <Content Include="Views\Home\LogOut.cshtml" />
+    <Content Include="Views\Home\dashboard.cshtml" />
+    <Content Include="Views\Shared\_Partial_Pager.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherSendAssignment\Edit.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherSendAssignment\Partials\TeacherAssignmentEdit.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherSendAssignment\Partials\TeacherVIPAssignmentEdit.cshtml" />
+    <Content Include="Areas\Teacher\Views\General\Edit.cshtml" />
+    <Content Include="Areas\Teacher\Views\General\View.cshtml" />
+    <Content Include="Areas\Coach\Views\Partials\Tab.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherVIP\View.cshtml" />
+    <Content Include="Areas\Teacher\Views\Assignment\View.cshtml" />
+    <Content Include="Areas\Teacher\Views\VIP\View.cshtml" />
+    <Content Include="Areas\Teacher\Views\VIP\UploadVideo.cshtml" />
+    <Content Include="Views\Shared\_Modal_Layout.cshtml" />
+    <Content Include="Areas\Teacher\Views\VIP\ViewFile.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherVIP\ViewFile.cshtml" />
+    <Content Include="Areas\Teacher\Views\Assignment\UploadVideo.cshtml" />
+    <Content Include="Areas\Teacher\Views\Assignment\ViewFile.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherVIP\UploadVideo.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherVIP\LinkToAssignment.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherAssignment\View.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherAssignment\ViewAssignmentFiles.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherAssignment\ViewFile.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherAssignment\LinkToAssignment.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherAssignment\UploadVideo.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherGeneral\New.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherGeneral\View.cshtml" />
+    <Content Include="Views\Shared\_Layout_Report.cshtml" />
+    <Content Include="Areas\Teacher\Views\Summary\ExportPDF.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherGeneral\LinkToAssignment.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherGeneral\LinkToVIP.cshtml" />
+    <Content Include="Areas\Coach\Views\General\Upload.cshtml" />
+    <Content Include="Areas\Coach\Views\General\View.cshtml" />
+    <Content Include="Areas\Coach\Views\General\SharedFiles.cshtml" />
+    <Content Include="Areas\Coach\Views\CoachAssignment\View.cshtml" />
+    <Content Include="Areas\Coach\Views\CoachAssignment\ViewAssignmentFiles.cshtml" />
+    <Content Include="Areas\Coach\Views\CoachAssignment\UploadVideo.cshtml" />
+    <Content Include="Areas\Coach\Views\General\Edit.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherAssignment\Partials\FileView.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherAssignment\Partials\FileEdit.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherVIP\Partials\FileView.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherVIP\Partials\FileEdit.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherGeneral\Partials\FileView.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherGeneral\Partials\FileEdit.cshtml" />
+    <Content Include="Areas\Teacher\Views\VIP\EditFile.cshtml" />
+    <Content Include="Areas\Coach\Views\Partials\UploadedFile.cshtml" />
+    <Content Include="Areas\Teacher\Views\Assignment\EditFile.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherAssignment\ExportPDF.cshtml" />
+    <Content Include="Areas\Coach\Views\CoachAssignment\EditFile.cshtml" />
+    <Content Include="Areas\Coach\Views\Summary\TeacherFiles.cshtml" />
+    <Content Include="Areas\Coach\Views\Summary\ExportPdf_CoachFiles.cshtml" />
+    <Content Include="Areas\Coach\Views\Summary\ExportPdf_TeacherFiles.cshtml" />
+    <Content Include="Areas\PM\Views\Partials\Tab.cshtml" />
+    <Content Include="Areas\PM\Views\CoachGeneral\View.cshtml" />
+    <Content Include="Areas\PM\Views\CoachGeneral\Partials\FileEdit.cshtml" />
+    <Content Include="Areas\PM\Views\CoachGeneral\Partials\FileView.cshtml" />
+    <Content Include="Areas\PM\Views\CoachGeneral\Upload.cshtml" />
+    <Content Include="Areas\PM\Views\CoachSendAssignment\New.cshtml" />
+    <Content Include="Areas\PM\Views\CoachSendAssignment\AssignmentIndex.cshtml" />
+    <Content Include="Areas\PM\Views\CoachAssignment\View.cshtml" />
+    <Content Include="Areas\PM\Views\CoachAssignment\ViewAssignmentFiles.cshtml" />
+    <Content Include="Areas\PM\Views\CoachAssignment\UploadVideo.cshtml" />
+    <Content Include="Areas\PM\Views\CoachSendAssignment\View.cshtml" />
+    <Content Include="Areas\PM\Views\Partials\SummaryTab.cshtml" />
+    <Content Include="Areas\PM\Views\Summary\TeacherFiles.cshtml" />
+    <Content Include="Areas\PM\Views\CoachAssignment\ViewFile.cshtml" />
+    <Content Include="Areas\PM\Views\CoachAssignment\Partials\FileEdit.cshtml" />
+    <Content Include="Areas\PM\Views\CoachAssignment\Partials\FileView.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherVIP\Index.cshtml" />
+    <Content Include="Areas\PM\Views\Partials\Tab_Teacher.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherVIP\View.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherVIP\UploadVideo.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherVIP\ViewFile.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherVIP\Partials\FileEdit.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherVIP\Partials\FileView.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherVIP\ExportPDF.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherGeneral\Index.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherGeneral\View.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherGeneral\Upload.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherGeneral\Partials\FileEdit.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherGeneral\Partials\FileView.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherAssignment\Index.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherAssignment\ExportPDF.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherAssignment\View.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherAssignment\ViewAssignmentFiles.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherAssignment\UploadVideo.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherAssignment\ViewFile.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherAssignment\Partials\FileEdit.cshtml" />
+    <Content Include="Areas\PM\Views\TeacherAssignment\Partials\FileView.cshtml" />
+    <Content Include="Areas\Coach\Views\Partials\UploadedFile2.cshtml" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Admin\Views\Summary\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Summary\TeacherFiles.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherVIP\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Partials\Tab.cshtml" />
+    <Content Include="Areas\Admin\Views\Partials\Tab_Teacher.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherVIP\View.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherVIP\UploadVideo.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherVIP\ViewFile.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherVIP\ExportPDF.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherGeneral\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherGeneral\View.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherGeneral\Upload.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherAssignment\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherAssignment\ExportPDF.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherAssignment\View.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherAssignment\ViewAssignmentFiles.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherAssignment\UploadVideo.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherAssignment\ViewFile.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherSendAssignment\TeacherIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherSendAssignment\New.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherSendAssignment\Partials\TeacherAssignment.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherSendAssignment\Partials\TeacherAssignmentEdit.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherSendAssignment\Partials\TeacherVIPAssignment.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherSendAssignment\Partials\TeacherVIPAssignmentEdit.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherSendAssignment\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherSendAssignment\AssignmentIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachGeneral\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachGeneral\View.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachGeneral\Upload.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachAssignment\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachAssignment\View.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachAssignment\ViewAssignmentFiles.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachAssignment\UploadVideo.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachAssignment\ViewFile.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachSendAssignment\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachSendAssignment\New.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachSendAssignment\AssignmentIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachSendAssignment\View.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherVIP\Export1.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherVIP\Export.cshtml" />
+    <Content Include="Areas\Teacher\Views\Summary\STG.cshtml" />
+    <Content Include="Areas\Coach\Views\TeacherGeneral\TeacherList.cshtml" />
+    <Content Include="Areas\PM\Views\CoachGeneral\ViewShared.cshtml" />
+    <Content Include="Areas\Admin\Views\CoachGeneral\ViewShared.cshtml" />
+    <Content Include="Areas\Admin\Views\TeacherVIP\VIPDocuments.cshtml" />
+    <Content Include="Areas\Teacher\Views\Summary\CotPdf.cshtml" />
+    <Content Include="Areas\Teacher\Views\Summary\CECReport.cshtml" />
+    <Content Include="Areas\STGReport\Views\web.config" />
+    <None Include="Properties\PublishProfiles\Hunk.config.pubxml" />
+    <None Include="Properties\PublishProfiles\Hunk.pubxml" />
+    <None Include="Properties\PublishProfiles\Irving.pubxml" />
+    <None Include="Properties\PublishProfiles\IrvingNEW.pubxml" />
+    <None Include="Properties\PublishProfiles\David.pubxml" />
+    <Content Include="Views\Home\dashboard_coach.cshtml" />
+    <Content Include="Views\Home\dashboard_pm.cshtml" />
+    <Content Include="Views\Home\dashboard_admin.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\DateTime.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\decimal.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\EmailAddress.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Enum.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Int32.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Int64.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\List.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\NoData.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\String.cshtml" />
+    <Content Include="Views\DownLoadFile\DownLoadFile.cshtml" />
+    <Content Include="Views\TeacherInfo\TeacherInfo.cshtml" />
+    <Content Include="Views\Shared\_Layout_STG_Report.cshtml" />
+    <Content Include="Views\Shared\_Layout_CEC_Report.cshtml" />
+    <Content Include="Views\SearchUser\TeacherList.cshtml" />
+    <Content Include="Views\SearchUser\CoachList.cshtml" />
+    <Content Include="Views\Feedback\FileFeedback.cshtml" />
+    <Content Include="Views\Feedback\AssignmentFeedback.cshtml" />
+    <Content Include="Views\TeacherInfo\CoachInfo.cshtml" />
+    <None Include="Properties\PublishProfiles\Xiaowu.pubxml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Coach\Models\" />
+    <Folder Include="Areas\Coach\Views\Shared\" />
+    <Folder Include="Areas\PM\Models\" />
+    <Folder Include="Areas\PM\Views\Shared\" />
+    <Folder Include="Areas\STGReport\Models\" />
+    <Folder Include="Areas\Teacher\Models\" />
+    <Folder Include="Areas\Teacher\Views\Shared\" />
+    <Folder Include="Views\Base\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sunnet.Cli.Business\Sunnet.Cli.Business.csproj">
+      <Project>{c6616ca8-1f8a-403a-8726-0b333071dad4}</Project>
+      <Name>Sunnet.Cli.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Cli.Core\Sunnet.Cli.Core.csproj">
+      <Project>{aef8d87a-9af5-47e1-bd90-f77fc916affe}</Project>
+      <Name>Sunnet.Cli.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Cli.Impl\Sunnet.Cli.Impl.csproj">
+      <Project>{0c8f14ca-5530-4a9d-9875-f1cf91974a88}</Project>
+      <Name>Sunnet.Cli.Impl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Cli.UIBase\Sunnet.Cli.UIBase.csproj">
+      <Project>{81e9aca3-4391-4ff4-abdd-3c36e6989088}</Project>
+      <Name>Sunnet.Cli.UIBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Framework\Sunnet.Framework.csproj">
+      <Project>{14a83fe3-67ab-4bd7-b171-870de20f5bf1}</Project>
+      <Name>Sunnet.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>14553</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

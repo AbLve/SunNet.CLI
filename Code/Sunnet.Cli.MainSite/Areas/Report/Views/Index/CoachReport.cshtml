@@ -1,0 +1,145 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Index";
+    IEnumerable<SelectItemModel> fundings = ViewBag.Fundings;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        function CoachReport() {
+            var funding = "";
+            $("[name='funding']:checked").each(function () {
+                funding += $(this).val() + ",";
+            });
+            if (funding.length > 0) {
+                funding = funding.substring(0, funding.length - 1);
+            }
+            location.href = "/Report/Index/GetCoachReport?communityId=" + $("#CommunityId").val()
+                + "&mentorCoach=" + $("#ddlMentorCoach").val() + "&funding=" + funding
+                + "&status=" + $("[name='status']:checked").val();
+        }
+
+        $(function () {
+            $("#txtCommunity").on("selected.sunnet.datalist", function (event) {
+                //if (event.selected && event.selected.ID) {
+                    $.post("/Report/Index/GetCoachCoordByCommunity?communityId=" + event.selected.ID, function (data) {
+                        if (data) {
+                            var strHtml = "";
+                            for (var i = 0; i < data.length; i++) {
+                                strHtml += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                            }
+                            $("#ddlMentorCoach").html("").append(strHtml);
+                        }
+                    }, 'json');
+                //}
+            });
+        });
+
+        function CheckedAll() {
+            if ($("#chkAll").prop("checked")) {
+                $("[name='funding']").prop("checked", true);
+            } else {
+                $("[name='funding']").prop("checked", false);
+            }
+        }
+    </script>
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Reports)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Reports", "Index", "Index"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Coach Report
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back </a>
+</div>
+<div class="main-content form-horizontal">
+    <div class="content-title">Coach Report</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.Label("Community/District", new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+            <div class="col-sm-4">
+                @Html.TextBox("txtCommunity", "", new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#CommunityId",
+                    data_remote = "/Community/Community/GetCommunitySelectList",
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "txtCommunity",
+                    name = "txtCommunity",
+                    @for = "CommunityId",
+                    placeholder = "Enter key text to search",
+                    data_bind = "value: searchCriteria.txtCommunity",
+                    data_required = "false"
+                })
+                <span class="field-validation-error" data-valmsg-for="MenterList" data-valmsg-replace="true">
+                    <span id="Community-error" style="display: none;" class="">The Community/District field is required.</span>
+                </span>
+                @Html.Hidden("CommunityId", "", new
+           {
+               @class = "form-control ",
+               placeholder = "selected from autocomplete",
+               data_bind = "value: searchCriteria.communityId"
+           })
+            </div>
+            @Html.Label("", "Coach", new { @class = "control-label col-sm-2", @for = "ddlMentorCoach", style = "padding-left: 16px;" })
+            <div class="col-sm-4">
+                @Html.DropDownList("ddlMentorCoach", (IEnumerable<SelectListItem>)ViewBag.MentorCoachs, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Teacher CLI Funding", new { @class = "control-label col-sm-2" })
+        </div>
+        <div class="form-group">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div style="width: 25%; float: left;">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="chkAll" onclick=" CheckedAll(); ">
+                        All
+                    </label>
+                </div>
+                @foreach (var item in fundings)
+                {
+                    <div style="width: 25%; float: left;">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="funding" value="@item.ID">
+                            @item.Name
+                        </label>
+                    </div>
+                }
+                <div style="width: 25%; float: left;">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="funding" value="0">
+                        Missing Funding
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                @Html.RadioButton("status", 1, new { @checked = true, id = "Active" })
+                @Html.Label("", "Active", new { @for = "Active" })
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                    @Html.RadioButton("status", 2, new { id = "Inactive" })
+                @Html.Label("", "Inactive", new { @for = "Inactive" })
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                    @Html.RadioButton("status", 3, new { id = "Both" })
+                @Html.Label("", "Both", new { @for = "Both" })
+            </div>
+        </div>
+    </div>
+
+    <div class="button-content">
+        <input type="button" class="mainbutton mainright-btn submit-btn" value="Export Report" onclick=" CoachReport(); ">
+    </div>
+</div>

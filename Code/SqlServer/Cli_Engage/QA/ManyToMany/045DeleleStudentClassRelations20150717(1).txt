@@ -1,0 +1,41 @@
+﻿ 
+GO
+/****** Object:  StoredProcedure [dbo].[DeleleStudentClassRelations]    Script Date: 2015/7/17 11:28:11 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[DeleleStudentClassRelations]
+    @classId int 
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON; 
+	 --delete from StudentClassRelations where ClassId = @classId
+	 -- delete from TeacherClassRelations where ClassId = @classId
+
+ 	DECLARE studentClassCursor CURSOR FOR  SELECT StudentId FROM StudentClassRelations WHERE ClassId = @classId
+		  OPEN studentClassCursor
+		   DECLARE @studentId int
+		   FETCH NEXT FROM studentClassCursor INTO @studentId
+		   WHILE(@@FETCH_STATUS =0)
+			BEGIN
+			  BEGIN 
+				DECLARE @count2 int SET @count2 = 1;
+				SELECT @count2 = COUNT(0) FROM StudentClassRelations A join Classes B ON A.ClassId = B.ID  WHERE (StudentId = @studentId and B.Status = 1 );
+				 IF(@count2=0)
+				     update Students set Status =2 where ID = @studentId;
+			  END
+			 FETCH NEXT FROM userSchoolCursor INTO @studentId
+			END
+		CLOSE userSchoolCursor
+		DEALLOCATE userSchoolCursor
+
+	 
+END

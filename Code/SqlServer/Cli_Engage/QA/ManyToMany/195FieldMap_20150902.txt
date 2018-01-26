@@ -1,0 +1,156 @@
+GO
+--Communities
+UPDATE  dbo.FieldMap
+SET     ID = ID + 1
+WHERE   ID > 1
+        AND ID < 100;
+
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 2 , -- ID - int
+          'CommunityId' , -- FieldName - varchar(100)
+          'Community Engage ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+GO
+--Schools
+UPDATE  dbo.FieldMap
+SET     ID = ID + 1
+WHERE   ID > 101
+        AND ID < 200;
+
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 102 , -- ID - int
+          'SchoolId' , -- FieldName - varchar(100)
+          'School Engage ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+GO
+--Classrooms
+
+UPDATE  dbo.FieldMap
+SET     ID = ID + 1
+WHERE   ID > 201
+        AND ID < 300;
+
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 202 , -- ID - int
+          'ClassroomId' , -- FieldName - varchar(100)
+          'Classroom Engage ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+GO
+--Classes
+UPDATE  dbo.FieldMap
+SET     ID = ID + 1
+WHERE   ID > 301
+        AND ID < 400;
+
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 302 , -- ID - int
+          'ClassId' , -- FieldName - varchar(100)
+          'Class Engage ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+GO
+--Students
+UPDATE  dbo.FieldMap
+SET     ID = ID + 1
+WHERE   ID > 401
+        AND ID < 500;
+
+INSERT  INTO dbo.FieldMap
+        ( ID ,
+          FieldName ,
+          DisplayName ,
+          CreatedOn ,
+          UpdatedOn ,
+          AssociateSql ,
+          SelectName
+        )
+VALUES  ( 402 , -- ID - int
+          'StudentId' , -- FieldName - varchar(100)
+          'Student Engage ID' , -- DisplayName - varchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE() , -- UpdatedOn - datetime
+          '' , -- AssociateSql - varchar(500)
+          ''  -- SelectName - varchar(200)
+        );
+GO
+--CommunityUsers
+UPDATE  dbo.FieldMap
+SET     DisplayName = 'Community User Engage Id'
+WHERE   DisplayName = 'Community User Id';
+GO
+--StateWide
+UPDATE  dbo.FieldMap
+SET     DisplayName = 'StateWide User Engage Id'
+WHERE   DisplayName = 'StateWide User Id';
+GO
+--Principal
+UPDATE  dbo.FieldMap
+SET     DisplayName = 'Principal User Engage Id'
+WHERE   DisplayName = 'Principal User Id';
+GO
+--Teacher
+UPDATE  dbo.FieldMap
+SET     DisplayName = 'Teacher User Engage Id'
+WHERE   DisplayName = 'Teacher User Id';
+GO
+--Parent
+UPDATE  dbo.FieldMap
+SET     DisplayName = 'Parent User Engage Id'
+WHERE   DisplayName = 'Parent User Id';
+GO
+--Auditor
+UPDATE  dbo.FieldMap
+SET     DisplayName = 'Auditor User Engage Id'
+WHERE   DisplayName = 'Auditor User Id';
+GO
+--Auditor
+UPDATE  dbo.FieldMap
+SET     DisplayName = 'Auditor User Engage Id'
+WHERE   DisplayName = 'Auditor User Id';

@@ -1,0 +1,429 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C6616CA8-1F8A-403A-8726-0B333071DAD4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sunnet.Cli.Business</RootNamespace>
+    <AssemblyName>Sunnet.Cli.Business</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\OpenXMLSDK\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="LinqKit">
+      <HintPath>..\Sunnet.Framework\_Dlls\LinqKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\UT\SunNet.Teem_upgrade\SunNet.Teem.Web\Lib\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap, Version=2.6.1.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\IoC\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\Mvc\5.2\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Ade\AdeBupBusiness.cs" />
+    <Compile Include="Ade\AdeBusiness.cs" />
+    <Compile Include="Ade\AdeBusiness2.cs" />
+    <Compile Include="Ade\AdeLayoutBusiness.cs" />
+    <Compile Include="Ade\AdeScoreBusiness.cs" />
+    <Compile Include="Ade\Models\AdeLinkModel.cs" />
+    <Compile Include="Ade\Models\AssessmentModel.cs" />
+    <Compile Include="Ade\Models\BaseAssessmentModel.cs" />
+    <Compile Include="Ade\Models\BenchmarkModel.cs" />
+    <Compile Include="Ade\Models\BranchingScoreModel.cs" />
+    <Compile Include="Ade\Models\ScoreAgeOrWaveBandsModel.cs" />
+    <Compile Include="Ade\Models\ScoreModel.cs" />
+    <Compile Include="Ade\Models\ScoreReportModel.cs" />
+    <Compile Include="Ade\Models\TxkeaBupTaskModel.cs" />
+    <Compile Include="Ade\Models\TxkeaExpressiveImageModel.cs" />
+    <Compile Include="Ade\Models\TxkeaExpressiveItemModel.cs" />
+    <Compile Include="Ade\Models\TxkeaExpressiveResponseModel.cs" />
+    <Compile Include="Ade\Models\TxkeaExpressiveResponseOptionModel.cs" />
+    <Compile Include="Ade\Models\TxkeaLayoutModel.cs" />
+    <Compile Include="Ade\Models\TxkeaReceptiveItemModel.cs" />
+    <Compile Include="Ade\Models\TypedResopnseModel.cs" />
+    <Compile Include="Ade\Models\TypedResponseItemModel.cs" />
+    <Compile Include="Ade\Models\TypedResponseOptionModel.cs" />
+    <Compile Include="Ade\Models\ObservableChoiceModel.cs" />
+    <Compile Include="Ade\Models\ObservableEntryModel.cs" />
+    <Compile Include="Ade\GetItemSqlBusiness.cs" />
+    <Compile Include="BUP\BUPProcessBusiness.cs" />
+    <Compile Include="BUP\BUPTaskBusiness.cs" />
+    <Compile Include="BUP\AutomationSettingBusiness.cs" />
+    <Compile Include="BUP\GetDataHelp.cs" />
+    <Compile Include="BUP\Model\AutomationSettingModel.cs" />
+    <Compile Include="BUP\Model\NameModel.cs" />
+    <Compile Include="CAC\CACBusiness.cs" />
+    <Compile Include="CAC\Models\MyActivityQueryModel.cs" />
+    <Compile Include="CAC\Models\MyActivityViewModel.cs" />
+    <Compile Include="Cec\Model\CecAnswerModel.cs" />
+    <Compile Include="Cec\Model\CecItemModel.cs" />
+    <Compile Include="Cec\Model\CecItemAnswerModel.cs" />
+    <Compile Include="Cec\Model\CecResultModel.cs" />
+    <Compile Include="Ade\Models\IMultiChoiceProperty.cs" />
+    <Compile Include="Ade\Models\ItemFactory.cs" />
+    <Compile Include="Ade\Models\ChecklistItemModel.cs" />
+    <Compile Include="Ade\Models\MeasureReportModel.cs" />
+    <Compile Include="Ade\Models\RelateModel.cs" />
+    <Compile Include="Cache\CacheHelper.cs" />
+    <Compile Include="Cec\CecBusiness.cs" />
+    <Compile Include="Cec\Model\CecHistoryModel.cs" />
+    <Compile Include="Cec\Model\CECOfflineModel.cs" />
+    <Compile Include="Cec\Model\CECOfflineTeacherModel.cs" />
+    <Compile Include="Cec\Model\CecReportModel.cs" />
+    <Compile Include="Cec\Model\CecSchoolTeacherModel.cs" />
+    <Compile Include="Cec\Model\CECSeachModel.cs" />
+    <Compile Include="Cec\Model\CECTeacherCommunityAndSchoolNameModel.cs" />
+    <Compile Include="Cec\Model\OfflineUrlModel.cs" />
+    <Compile Include="Classes\Models\ChildrenTypeModel.cs" />
+    <Compile Include="Classes\Models\ClassCountAgeModel.cs" />
+    <Compile Include="Classes\Models\ClassEntityModel.cs" />
+    <Compile Include="Classes\Models\ClassroomClassRelationModel.cs" />
+    <Compile Include="Classes\Models\TRSChildrenResultModel.cs" />
+    <Compile Include="Classes\Models\AssignClassToSpecialistModel.cs" />
+    <Compile Include="Common\Enum\SelectItemModelOther.cs" />
+    <Compile Include="Communities\Enums\LocalAssessment.cs" />
+    <Compile Include="Communities\Models\AssessmentFeatureModel.cs" />
+    <Compile Include="Communities\Models\AssessmentSimpleModel.cs" />
+    <Compile Include="Communities\Models\BasicCommunityModel.cs" />
+    <Compile Include="Communities\Models\CommunityNotesModel.cs" />
+    <Compile Include="Cot\CotBusiness.cs" />
+    <Compile Include="Cot\CotReportBusiness.cs" />
+    <Compile Include="Cot\Cumulative\MeasureModel.cs" />
+    <Compile Include="Cot\Cumulative\CumulativeReportModel.cs" />
+    <Compile Include="Cot\Cumulative\ReportModel.cs" />
+    <Compile Include="Cot\Enum\CotReportType.cs" />
+    <Compile Include="Cot\Growth\GrowthItemModel.cs" />
+    <Compile Include="Cot\Growth\MeasureModel.cs" />
+    <Compile Include="Cot\Growth\ReportModel.cs" />
+    <Compile Include="Cot\Models\CotAssessmentModel.cs" />
+    <Compile Include="Cot\Models\CotItemModel.cs" />
+    <Compile Include="Cot\Models\CotMeasureModel.cs" />
+    <Compile Include="Cot\Cumulative\AdeCotItemModel.cs" />
+    <Compile Include="Cot\Models\CotSchoolTeacherModel.cs" />
+    <Compile Include="Cot\Models\CotStgGroupModel.cs" />
+    <Compile Include="Cot\Report\CotItemModel.cs" />
+    <Compile Include="Cot\Report\CotMeasureModel.cs" />
+    <Compile Include="Cot\Report\CotReportMeasureModel.cs" />
+    <Compile Include="Cot\Report\CotReportModel.cs" />
+    <Compile Include="Cot\Summary\SummaryItemModel.cs" />
+    <Compile Include="Cot\Summary\SummaryMeasureModel.cs" />
+    <Compile Include="Cot\Summary\SummaryReportModel.cs" />
+    <Compile Include="Cpalls\CpallsBusiness_Report_Score.cs" />
+    <Compile Include="Cpalls\Group\GroupDataModel.cs" />
+    <Compile Include="Cpalls\Models\ExecCpallsCutOffScoreModel.cs" />
+    <Compile Include="Cpalls\Models\CustomScoreReportModel.cs" />
+    <Compile Include="Cpalls\Models\GrowthReportModel.cs" />
+    <Compile Include="Cpalls\Satisfactory\SatisfactoryByMeasureGenerator.cs" />
+    <Compile Include="Cpalls\Satisfactory\SatisfactoryByWaveGenerator.cs" />
+    <Compile Include="Ade\PercentileRankLookupBusiness.cs" />
+    <Compile Include="DataProcess\Models\DataProcessModel.cs" />
+    <Compile Include="Export\ExportBusiness.cs" />
+    <Compile Include="Export\Models\ExportInfoModel.cs" />
+    <Compile Include="Export\Models\FieldListModel.cs" />
+    <Compile Include="Export\Models\FieldMapModel.cs" />
+    <Compile Include="Export\Models\ReportTemplateModel.cs" />
+    <Compile Include="Export\Models\ReportTemplateWithUserModel.cs" />
+    <Compile Include="Observable\Models\ObservableMeasureModel.cs" />
+    <Compile Include="Observable\Models\ObservableAssessmentModel.cs" />
+    <Compile Include="Observable\Models\ObservableReportModel.cs" />
+    <Compile Include="Observable\ObservableBusiness.cs" />
+    <Compile Include="Permission\Enum\Permission.cs" />
+    <Compile Include="Practices\Models\PracticeAssessmentModel.cs" />
+    <Compile Include="Practices\Models\PracticeStudentModel.cs" />
+    <Compile Include="Practices\PracticeBusiness_Report_Growth.cs" />
+    <Compile Include="Practices\OfflineBusiness.cs" />
+    <Compile Include="Practices\Models\DemoStudentModel.cs" />
+    <Compile Include="Practices\Models\ExcelModel.cs" />
+    <Compile Include="Practices\Models\PracticeStudentItemModel.cs" />
+    <Compile Include="Practices\Models\PracticeStudentMeasureModel.cs" />
+    <Compile Include="Practices\PracticeBusiness_Group.cs" />
+    <Compile Include="Practices\PracticeBusiness.cs" />
+    <Compile Include="Practices\PracticeBusiness_Report_Completion.cs" />
+    <Compile Include="Practices\PracticeBusiness_Report_Summary.cs" />
+    <Compile Include="Reports\BeechReportBusiness.cs" />
+    <Compile Include="Reports\CircleDataExportBusiness.cs" />
+    <Compile Include="Reports\CoachingHoursbyCommunityBusiness.cs" />
+    <Compile Include="Reports\CoachReportBusiness.cs" />
+    <Compile Include="Reports\COTCECCompletionReport.cs" />
+    <Compile Include="Reports\CountbyFacilityTypeReport.cs" />
+    <Compile Include="Reports\MediaConsentReportBusiness.cs" />
+    <Compile Include="Reports\Model\CircleDataExportExcelExtensions.cs" />
+    <Compile Include="Reports\Model\CoachingHoursbyCommunityStylesheet.cs" />
+    <Compile Include="Reports\Model\ParentReportModel.cs" />
+    <Compile Include="Reports\Model\TeacherTrunoverStylesheet.cs" />
+    <Compile Include="Reports\Model\XAxis.cs" />
+    <Compile Include="Reports\Model\YAxis.cs" />
+    <Compile Include="Reports\ParticipationReportBusiness.cs" />
+    <Compile Include="Reports\PdReportBusiness.cs" />
+    <Compile Include="Reports\ReportQueueBusiness.cs" />
+    <Compile Include="Reports\STGRCompletionReport.cs" />
+    <Compile Include="Reports\TSRTurnoverReport.cs" />
+    <Compile Include="Reports\ServiceReport.cs" />
+    <Compile Include="Reports\ParentReportBusiness.cs" />
+    <Compile Include="Schools\Models\BasicSchoolModel.cs" />
+    <Compile Include="Schools\Models\CommunitySchoolRelationModel.cs" />
+    <Compile Include="Schools\Models\AssignSchoolModel.cs" />
+    <Compile Include="StatusTracking\Models\StatusTrackingModel.cs" />
+    <Compile Include="StatusTracking\StatusTrackingBusiness.cs" />
+    <Compile Include="Students\ChildBusiness.cs" />
+    <Compile Include="Students\Models\ChildListModel.cs" />
+    <Compile Include="Students\Models\StudentClassModel.cs" />
+    <Compile Include="Students\Models\StudentListModel.cs" />
+    <Compile Include="Students\Models\ParentStudentListModel.cs" />
+    <Compile Include="TRSClasses\Models\ChildrenTypeModel.cs" />
+    <Compile Include="TRSClasses\Models\TRSClassIndexModel.cs" />
+    <Compile Include="Trs\Models\NotificationUserModel.cs" />
+    <Compile Include="Trs\Models\OfflineUrlModel.cs" />
+    <Compile Include="Trs\Models\TrsAssessmentClassModel.cs" />
+    <Compile Include="Trs\Models\TRSEventLogModel.cs" />
+    <Compile Include="Trs\Models\TrsOfflineAssessmentModel.cs" />
+    <Compile Include="Trs\Models\TrsOfflineItemModel.cs" />
+    <Compile Include="Trs\Models\TrsOfflineModel.cs" />
+    <Compile Include="Trs\Models\TrsOfflineSchoolModel.cs" />
+    <Compile Include="Trs\Models\TrsOfflineSubcategoryModel.cs" />
+    <Compile Include="Trs\Models\TrsRecentStarModel.cs" />
+    <Compile Include="Trs\TrsBusiness_EventLog.cs" />
+    <Compile Include="Tsds\AssessmentXml\ItemXmlModel.cs" />
+    <Compile Include="Tsds\AssessmentXml\AssessmentXmlModel.cs" />
+    <Compile Include="Tsds\AssessmentXml\MeasureXmlModel.cs" />
+    <Compile Include="Tsds\Models\MultiselectGroupModel.cs" />
+    <Compile Include="Tsds\Models\MultiselectModel.cs" />
+    <Compile Include="Tsds\StuAssessmentXml\AssessmentReferenceModel.cs" />
+    <Compile Include="Tsds\Models\DownloadListModel.cs" />
+    <Compile Include="Tsds\StuAssessmentXml\StuAssessmentXmlModel.cs" />
+    <Compile Include="Tsds\StuAssessmentXml\StudentAssessmentItemModel.cs" />
+    <Compile Include="Tsds\StuAssessmentXml\StudentAssessmentModel.cs" />
+    <Compile Include="Tsds\StuAssessmentXml\StudentReferenceModel.cs" />
+    <Compile Include="Tsds\StuParentExtXml\StudentModel.cs" />
+    <Compile Include="Tsds\StuParentExtXml\StuParentExtXmlModel.cs" />
+    <Compile Include="Tsds\TsdsBusiness.cs" />
+    <Compile Include="Tsds\TsdsBusiness2.cs" />
+    <Compile Include="UpdateCluster\Models\UpdateClusterModel.cs" />
+    <Compile Include="UpdateCluster\UpdateClusterBusiness.cs" />
+    <Compile Include="Users\Enum\UserExistedStatus.cs" />
+    <Compile Include="Users\Models\PrincipalUserModel.cs" />
+    <Compile Include="Users\Models\TeacherModel.cs" />
+    <Compile Include="Cot\Models\CotStgReportModel.cs" />
+    <Compile Include="Cot\Models\CotTeacherStatus.cs" />
+    <Compile Include="Cpalls\CpallsBusiness_Group.cs" />
+    <Compile Include="Cpalls\CpallsBusiness_Report_Comparison.cs" />
+    <Compile Include="Cpalls\CpallsBusiness_Report_Completion.cs" />
+    <Compile Include="Cpalls\CpallsBusiness_Report_Growth.cs" />
+    <Compile Include="Cpalls\CpallsBusiness_Report_Summary.cs" />
+    <Compile Include="Cpalls\CpallsOfflineBusiness.cs" />
+    <Compile Include="Cpalls\Enums\GrowthReportType.cs" />
+    <Compile Include="Cpalls\Group\GroupModel.cs" />
+    <Compile Include="Cpalls\Group\MeasureGroupModel.cs" />
+    <Compile Include="Cpalls\Growth\AverageGenerator.cs" />
+    <Compile Include="Cpalls\Growth\AverageByWavePdfGenerator.cs" />
+    <Compile Include="Cpalls\Growth\AverageBySourcePdfGenerator.cs" />
+    <Compile Include="Cpalls\Growth\Generator.cs" />
+    <Compile Include="Cpalls\Satisfactory\SatisfactoryGenerator.cs" />
+    <Compile Include="Cpalls\Growth\SourceGenerator.cs" />
+    <Compile Include="Cpalls\Models\BentchmarkColor.cs" />
+    <Compile Include="Cpalls\Models\CpallsAssessmentModel.cs" />
+    <Compile Include="Cpalls\Models\CpallsHeaderModel.cs" />
+    <Compile Include="Cpalls\Models\StudentAssessmentModel.cs" />
+    <Compile Include="Cpalls\Models\StudentItemModel.cs" />
+    <Compile Include="Ade\Models\ItemListModel.cs" />
+    <Compile Include="Ade\Models\ItemModel.cs" />
+    <Compile Include="Ade\Models\CecItemModel.cs" />
+    <Compile Include="Ade\Models\CotItemModel.cs" />
+    <Compile Include="Ade\Models\DirectionItemModel.cs" />
+    <Compile Include="Ade\Models\MultipleItemModel.cs" />
+    <Compile Include="Ade\Models\PaItemModel.cs" />
+    <Compile Include="Ade\Models\QuadrantItemModel.cs" />
+    <Compile Include="Ade\Models\RapidExpressiveItemModel.cs" />
+    <Compile Include="Ade\Models\ReceptiveItemModel.cs" />
+    <Compile Include="Ade\Models\ReceptivePromptItemModel.cs" />
+    <Compile Include="Cpalls\Models\CpallsSchoolModel.cs" />
+    <Compile Include="Cpalls\Models\CpallsStudentModel.cs" />
+    <Compile Include="Cpalls\Models\ExecCpallsAssessmentModel.cs" />
+    <Compile Include="Cpalls\Models\ExecCpallsClassModel.cs" />
+    <Compile Include="Cpalls\Models\ExecCpallsItemModel.cs" />
+    <Compile Include="Cpalls\Models\ExecCpallsParentMeasureModel.cs" />
+    <Compile Include="Cpalls\Models\ExecCpallsStudentModel.cs" />
+    <Compile Include="Cpalls\Models\StudentMeasureModel.cs" />
+    <Compile Include="Ade\Models\MeasureModel.cs" />
+    <Compile Include="Classes\Models\AssignClassModel.cs" />
+    <Compile Include="Classes\ClassBusiness.cs" />
+    <Compile Include="Cpalls\Models\ClassForCpallsModel.cs" />
+    <Compile Include="Classes\Models\ClassIndexModel.cs" />
+    <Compile Include="Classes\Models\ClassSelectItemModel.cs" />
+    <Compile Include="Classrooms\ClassroomBusiness.cs" />
+    <Compile Include="Classrooms\Models\ClassroomModel.cs" />
+    <Compile Include="Common\CommonAgent.cs" />
+    <Compile Include="Common\UsernameModel.cs" />
+    <Compile Include="Communities\CommunityBusiness.cs" />
+    <Compile Include="Communities\Models\CommunityFeatureModel.cs" />
+    <Compile Include="Communities\Models\CommunityModel.cs" />
+    <Compile Include="Cpalls\CpallsBusiness.cs" />
+    <Compile Include="Cpalls\CpallsBusiness_Execute.cs" />
+    <Compile Include="Cpalls\Models\ExecCpallsMeasureModel.cs" />
+    <Compile Include="Cpalls\Models\ReportText.cs" />
+    <Compile Include="Cpalls\Models\Report\ReportCellModel.cs" />
+    <Compile Include="Cpalls\Models\Report\ReportRowModel.cs" />
+    <Compile Include="Cpalls\Models\CpallsClassModel.cs" />
+    <Compile Include="DataProcess\DataProcessBusiness.cs" />
+    <Compile Include="Log\OperationLogBusiness.cs" />
+    <Compile Include="MasterData\MasterDataBusiness.cs" />
+    <Compile Include="Permission\Models\AssignedPackageModel.cs" />
+    <Compile Include="Permission\Models\AuthorityModel.cs" />
+    <Compile Include="Permission\Models\AuthorityWithSelectModel.cs" />
+    <Compile Include="Permission\Models\PageAuthorityModel.cs" />
+    <Compile Include="Permission\Models\PageModel.cs" />
+    <Compile Include="Permission\Models\RoleModel.cs" />
+    <Compile Include="Permission\Models\UserAuthorityModel.cs" />
+    <Compile Include="Permission\Models\UserRoleModel.cs" />
+    <Compile Include="Permission\PermissionBusiness.cs" />
+    <Compile Include="Profile\ProfileBusiness.cs" />
+    <Compile Include="Reports\ReportBusiness.cs" />
+    <Compile Include="Reports\DataExportBusiness.cs" />
+    <Compile Include="Schools\Models\SchoolModel.cs" />
+    <Compile Include="Trs\Models\StarCalculator.cs" />
+    <Compile Include="Trs\Models\TrsAssessmentListModel.cs" />
+    <Compile Include="Trs\Models\TrsAssessmentModelBase.cs" />
+    <Compile Include="Trs\Models\TrsAssessmentReportModel.cs" />
+    <Compile Include="Trs\Models\TrsCategoryStarModel.cs" />
+    <Compile Include="Trs\Models\TrsClassItemModel.cs" />
+    <Compile Include="Trs\Models\TrsItemBaseModel.cs" />
+    <Compile Include="Trs\Models\TrsItemReportModel.cs" />
+    <Compile Include="Trs\Models\TrsReportModel.cs" />
+    <Compile Include="Trs\Models\TrsSchoolModel.cs" />
+    <Compile Include="Schools\SchoolBusiness.cs" />
+    <Compile Include="Students\Models\ParentChildModel.cs" />
+    <Compile Include="Students\Models\StudentModel.cs" />
+    <Compile Include="Students\Models\SchoolCompletionReport.cs" />
+    <Compile Include="Students\StudentBusiness.cs" />
+    <Compile Include="Trs\Models\TrsAnswerModel.cs" />
+    <Compile Include="Trs\Models\TrsAssessmentModel.cs" />
+    <Compile Include="Trs\Models\TrsAgeModel.cs" />
+    <Compile Include="Trs\Models\TrsClassModel.cs" />
+    <Compile Include="Trs\Models\TRSItemModel.cs" />
+    <Compile Include="Trs\Models\TrsSubcategoryModel.cs" />
+    <Compile Include="Trs\Models\TrsTeacherModel.cs" />
+    <Compile Include="Trs\TrsBusiness_Items.cs" />
+    <Compile Include="Trs\TrsBusiness.cs" />
+    <Compile Include="Trs\TrsBusiness_Report2.cs" />
+    <Compile Include="Trs\TrsBusiness_Report.cs" />
+    <Compile Include="Users\BasisBusiness.cs" />
+    <Compile Include="Users\Models\UserBaseModel.cs" />
+    <Compile Include="Users\Models\UserCommunityRelationModel.cs" />
+    <Compile Include="Users\Models\UserVerificationModel.cs" />
+    <Compile Include="Users\Models\VCW\TeacherSelectModel.cs" />
+    <Compile Include="Users\Models\SchoolSpecialistUserModel.cs" />
+    <Compile Include="Users\Models\CommunitySpecialistUserModel.cs" />
+    <Compile Include="Users\Models\TeacherUserModel.cs" />
+    <Compile Include="Users\Models\DelegateModel.cs" />
+    <Compile Include="Users\SignUpBusiness.cs" />
+    <Compile Include="Users\Models\ApplicantCommunityModel.cs" />
+    <Compile Include="Users\Models\ApplicantSpecialistModel.cs" />
+    <Compile Include="Users\Models\ApplicantTeacherModel.cs" />
+    <Compile Include="Users\Models\TeacherTransactionModel.cs" />
+    <Compile Include="Users\Models\UserModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Users\UserBusiness.cs" />
+    <Compile Include="Users\ParentBusiness.cs" />
+    <Compile Include="Users\UserObjectBusiness.cs" />
+    <Compile Include="Users\VCWBusiness.cs" />
+    <Compile Include="Vcw\CoachBusiness.cs" />
+    <Compile Include="Vcw\Models\AssignmentListModel.cs" />
+    <Compile Include="Vcw\Models\AssignmentModel.cs" />
+    <Compile Include="Vcw\Models\BaseDataModel.cs" />
+    <Compile Include="Vcw\Models\CoachFileModel.cs" />
+    <Compile Include="Vcw\Models\CoachInfoModel.cs" />
+    <Compile Include="Vcw\Models\ConvertNumber.cs" />
+    <Compile Include="Vcw\Models\DeleteModel.cs" />
+    <Compile Include="Vcw\Models\FeedbackModel.cs" />
+    <Compile Include="Vcw\Models\FileListModel.cs" />
+    <Compile Include="Vcw\Models\MasterDataModel.cs" />
+    <Compile Include="Vcw\Models\SchoolCommunityModel.cs" />
+    <Compile Include="Vcw\Models\TeacherAssignmentFileModel.cs" />
+    <Compile Include="Vcw\Models\TeacherGeneralFileModel.cs" />
+    <Compile Include="Vcw\Models\TeacherInfoModel.cs" />
+    <Compile Include="Vcw\Models\TeacherListModel.cs" />
+    <Compile Include="Vcw\Models\TeacherVIPFileModel.cs" />
+    <Compile Include="Vcw\PMBusiness.cs" />
+    <Compile Include="Vcw\TeacherBusiness.cs" />
+    <Compile Include="Vcw\VcwReport.cs" />
+    <Compile Include="Vcw\VCW_MasterDataBusiness.cs" />
+    <Compile Include="TRSClasses\TRSClassBusiness.cs" />
+    <Compile Include="TRSClasses\Models\CHChildrenTRSResultModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sunnet.Cli.Core\Sunnet.Cli.Core.csproj">
+      <Project>{aef8d87a-9af5-47e1-bd90-f77fc916affe}</Project>
+      <Name>Sunnet.Cli.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Framework\Sunnet.Framework.csproj">
+      <Project>{14a83fe3-67ab-4bd7-b171-870de20f5bf1}</Project>
+      <Name>Sunnet.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Common\Model\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

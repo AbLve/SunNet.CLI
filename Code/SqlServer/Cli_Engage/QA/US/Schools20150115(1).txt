@@ -1,0 +1,124 @@
+﻿if not exists(select * from syscolumns where id=object_id('Schools') and name='TrsMentorId')
+	alter table Schools add TrsMentorId int 
+go
+update Schools set TrsMentorId = 0 
+go
+alter table Schools alter column TrsMentorId int not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='TrsTaStatus')
+	alter table Schools add TrsTaStatus varchar(500) 
+go
+update Schools set TrsTaStatus = '' 
+go
+alter table Schools alter column TrsTaStatus varchar(500) not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='StarStatus')
+	alter table Schools add StarStatus tinyint
+go
+update Schools set StarStatus = 0 
+go
+alter table Schools alter column StarStatus tinyint not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='DfpsNumber')
+	alter table Schools add [DfpsNumber] varchar(100)
+go
+update Schools set [DfpsNumber] = ''
+go
+alter table Schools alter column [DfpsNumber] varchar(100) not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='OwnerFirstName')
+	alter table Schools add [OwnerFirstName] varchar(100)
+go
+update Schools set [OwnerFirstName] = ''
+go
+alter table Schools alter column [OwnerFirstName] varchar(100) not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='OwnerLastName')
+	alter table Schools add [OwnerLastName] varchar(100)
+go
+update Schools set [OwnerLastName] = ''
+go
+alter table Schools alter column [OwnerLastName] varchar(100) not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='OwnerEmail')
+	alter table Schools add [OwnerEmail] varchar(100)
+go
+update Schools set [OwnerEmail] = ''
+go
+alter table Schools alter column [OwnerEmail] varchar(100) not null
+go
+
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='OwnerPhone')
+	alter table Schools add [OwnerPhone] varchar(20)
+go
+update Schools set [OwnerPhone] = ''
+go
+alter table Schools alter column [OwnerPhone] varchar(20) not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='RegulatingEntity')
+	alter table Schools add [RegulatingEntity] tinyint
+go
+update Schools set [RegulatingEntity] = 0
+go
+alter table Schools alter column [RegulatingEntity] tinyint not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='NAEYC')
+	alter table Schools add [NAEYC] bit
+go
+update Schools set [NAEYC] = 0
+go
+alter table Schools alter column [NAEYC] bit not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='CANASA')
+	alter table Schools add [CANASA] bit
+go
+update Schools set [CANASA] = 0
+go
+alter table Schools alter column [CANASA] bit not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='NECPA')
+	alter table Schools add [NECPA] bit
+go
+update Schools set [NECPA] = 0
+go
+alter table Schools alter column [NECPA] bit not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='NACECCE')
+	alter table Schools add [NACECCE] bit
+go
+update Schools set [NACECCE] = 0
+go
+alter table Schools alter column [NACECCE] bit not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='NAFCC')
+	alter table Schools add [NAFCC] bit
+go
+update Schools set [NAFCC] = 0
+go
+alter table Schools alter column [NAFCC] bit not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='ACSI')
+	alter table Schools add [ACSI] bit
+go
+update Schools set [ACSI] = 0
+go
+alter table Schools alter column [ACSI] bit not null
+go
+ 
+
+
+

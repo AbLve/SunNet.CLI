@@ -1,0 +1,3 @@
+﻿select * into PracticeStudentMeasures20171208 from PracticeStudentMeasures
+go
+update PracticeStudentMeasures set Goal=-1 where MeasureId in (select ID from CLI_ADE_Measures where ParentId>0) and Status=1 and goal=0

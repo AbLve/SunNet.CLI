@@ -1,0 +1,471 @@
+
+--31.1 S-DQT-03
+GO
+UPDATE  dbo.TRSItems
+SET     KeyBehavior = 'Certificates contain 24 clock hours of training on an annual basis (of the 24 hours, a minimum of 6 hours need to be in program administration, management and supervision) in the director''s file.'
+WHERE   Item = 'S-DQT-03';
+
+--31.1.1 P-DEQT-04
+GO
+UPDATE  dbo.TRSAnswers
+SET     Text = 'None'
+WHERE   Text = '< 21 yrs old & < 2 yrs exp'
+        AND ID IN ( SELECT  TIA.AnswerId
+                    FROM    dbo.TRSItemAnswers AS TIA
+                    WHERE   TIA.ItemId IN ( SELECT  TI.ID
+                                            FROM    dbo.TRSItems AS TI
+                                            WHERE   TI.Item = 'P-DEQT-04' ) );
+GO
+UPDATE  dbo.TRSAnswers
+SET     Text = '2 years of experience in early childhood'
+WHERE   Text = '>= 21 yrs old & > 2 yrs exp but < 3 yrs exp'
+        AND ID IN ( SELECT  TIA.AnswerId
+                    FROM    dbo.TRSItemAnswers AS TIA
+                    WHERE   TIA.ItemId IN ( SELECT  TI.ID
+                                            FROM    dbo.TRSItems AS TI
+                                            WHERE   TI.Item = 'P-DEQT-04' ) );
+GO
+UPDATE  dbo.TRSAnswers
+SET     Text = '3 years of experience in early childhood'
+WHERE   Text = '>= 21 yrs old & > 3 yrs exp but < 4 yrs exp'
+        AND ID IN ( SELECT  TIA.AnswerId
+                    FROM    dbo.TRSItemAnswers AS TIA
+                    WHERE   TIA.ItemId IN ( SELECT  TI.ID
+                                            FROM    dbo.TRSItems AS TI
+                                            WHERE   TI.Item = 'P-DEQT-04' ) );
+GO
+UPDATE  dbo.TRSAnswers
+SET     Text = '4 or more  years of experience in early childhood'
+WHERE   Text = '>= 21 yrs old & >= 4 yrs exp'
+        AND ID IN ( SELECT  TIA.AnswerId
+                    FROM    dbo.TRSItemAnswers AS TIA
+                    WHERE   TIA.ItemId IN ( SELECT  TI.ID
+                                            FROM    dbo.TRSItems AS TI
+                                            WHERE   TI.Item = 'P-DEQT-04' ) );
+
+--31.1.2 P-DEQT-05
+GO
+UPDATE  dbo.TRSAnswers
+SET     Text = 'None'
+WHERE   Text = '< 21 yrs old & < 1 yr exp'
+        AND ID IN ( SELECT  TIA.AnswerId
+                    FROM    dbo.TRSItemAnswers AS TIA
+                    WHERE   TIA.ItemId IN ( SELECT  TI.ID
+                                            FROM    dbo.TRSItems AS TI
+                                            WHERE   TI.Item = 'P-DEQT-05' ) );
+GO
+UPDATE  dbo.TRSAnswers
+SET     Text = '1 year of experience in afterschool child care'
+WHERE   Text = '>= 21 yrs old & > 1 yr exp but < 2 yrs  exp'
+        AND ID IN ( SELECT  TIA.AnswerId
+                    FROM    dbo.TRSItemAnswers AS TIA
+                    WHERE   TIA.ItemId IN ( SELECT  TI.ID
+                                            FROM    dbo.TRSItems AS TI
+                                            WHERE   TI.Item = 'P-DEQT-05' ) );
+GO
+UPDATE  dbo.TRSAnswers
+SET     Text = '2 years of experience in afterschool child care'
+WHERE   Text = '>= 21 yrs old & > 2 yrs exp but < 3 yrs exp'
+        AND ID IN ( SELECT  TIA.AnswerId
+                    FROM    dbo.TRSItemAnswers AS TIA
+                    WHERE   TIA.ItemId IN ( SELECT  TI.ID
+                                            FROM    dbo.TRSItems AS TI
+                                            WHERE   TI.Item = 'P-DEQT-05' ) );
+GO
+UPDATE  dbo.TRSAnswers
+SET     Text = '3 or more  years of experience in afterschool child care'
+WHERE   Text = '>= 21 yrs old & >= 3 yrs exp'
+        AND ID IN ( SELECT  TIA.AnswerId
+                    FROM    dbo.TRSItemAnswers AS TIA
+                    WHERE   TIA.ItemId IN ( SELECT  TI.ID
+                                            FROM    dbo.TRSItems AS TI
+                                            WHERE   TI.Item = 'P-DEQT-05' ) );
+
+--31.2 S-COTQ-01
+GO
+UPDATE  dbo.TRSItems
+SET     KeyBehavior = 'Orientation documentation is dated on/prior to the date the caregiver starts working in the classroom and is observed in the caregiver''s staff file by the TRS assessor and includes the following topics:
+<br />A. Texas Rising Star (TRS) program and criteria
+<br />B. Policies of the facility
+<br />C. An overview of the developmental needs/expectations of children in the assigned age group
+<br />D. The planned daily activities of the facility'
+WHERE   Item = 'S-COTQ-01';
+
+--31.2.1 S-COTQ-03
+GO
+UPDATE  dbo.TRSItems
+SET     KeyBehavior = 'An individualized plan provides for a minimum of 30 clock hours of child care related training specific to the age of children in their care.'
+WHERE   Item = 'S-COTQ-03';
+
+--31.2.2 S-COTQ-05
+GO
+UPDATE  dbo.TRSItems
+SET     KeyBehavior = 'An individualized written training plan that contains 15 clock hours of training on an annual basis (of the 15 hours, a minimum of 10 hours need to be in school-age development and curriculum) is in the caregiver''s staff file.'
+WHERE   Item = 'S-COTQ-05';
+
+--31.3 S-N-01
+GO
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Written policies include the following:
+<br />a) liquids and food hotter than 110 degrees F are kept out of reach.
+<br />b) All staff are educated on food allergies and they take precautions to ensure children are protected.
+<br />c) on days that providers serve meals, prepared food that is brought into the program to be shared among children is commercially prepared OR prepared in a kitchen that is inspected by local health officials.
+<br />d) that healthy snacks (as listed by the Texas Department of Agriculture) are available for school aged children as children arrive.
+<br />e) on days that providers serve meals, milk, fresh fruit and vegetables are available for children who bring lunches from home.'
+WHERE   Item = 'S-N-01';
+
+--31.4 S-PE-01
+GO
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Parents are provided with written policies and procedures which include:
+<br />*Program philosophy and goal
+<br />*Curriculum goals
+<br />*Family participation
+<br />*Drop off/pick up procedures
+<br />*Parent conferences
+<br />*Fee structure
+<br />*Late payments and refund information
+<br />*Absences
+<br />*Clothing guidelines
+<br />*Inclement weather policy
+<br />*Separation procedures
+<br />*Physical activity
+<br />*Screen time policies
+<br />*Procedure in place to allow parents to update contact information at all times without staff assistance
+<br /><br />
+Policies are reviewed annually and updated if necessary.'
+WHERE   Item = 'S-PE-01';
+
+--31.4.1 S-PE-02
+GO
+UPDATE  dbo.TRSItems
+SET     [Description] = 'The program has systems in place for communication between the facility and parents.'
+WHERE   Item = 'S-PE-02';
+
+--31.4.2 Delete S-PE-03
+GO
+UPDATE  dbo.TRSItems
+SET     IsDeleted = 1
+WHERE   Item = 'S-PE-03';
+
+--31.5 P-PE-01
+GO
+UPDATE  dbo.TRSItems
+SET     [Description] = 'The provider conducts an orientation to the family at enrollment. A signed and dated copy of the content of the orientation is kept in the child''s file. The orientation includes:
+<br />
+<br />1.	The opportunity to tour the 
+<br />2.	facility Introduction to staff
+<br />3.	Parent visit with the classroom teacher
+<br />4.	Overview of parent handbook 
+<br />5.	Policy for arrival & late arrival
+<br />6.	Opportunity for an extended visit in the classroom by both parent and child for a period of time to allow both to be comfortable
+<br />7.	An explanation of Texas Rising Star Quality Certification is provided.
+<br />8.	Encourage parents to inform the center/provider of any elements related to their CCS enrollment that the provider may be of assistance.
+<br />9.	An overview of family support resources and activities in the community
+<br />10.	Child development and developmental milestones provided.
+<br />
+<br />Expectations of the family:
+<br />
+<br />11. Parents are informed of the significance of consistent arrival time:
+<br />-before educational portion of school readiness program begins
+<br />-impact of disrupting learning of other children
+<br />-importance of consistent routines in preparing children for the transition to kindergarten.
+<br />12. Statement about limiting technology use on site to improve communication between staff, children, and families (e.g., refrain from cell phone use). In order to facilitate better communication between the parent(s) and teacher and the parent and child it is best if parents are not distracted by use of electronic devices while at the center/home.
+<br />13. Statement reflecting the role and influence of families.'
+WHERE   Item = 'P-PE-01';
+
+GO
+--31.6 S-PI-02
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Director/Parent/Caregiver Collaboration Regarding Challenging Behavior.
+<br />
+<br />Provider has a written policy/process for addressing challenging behaviors of children.  The policy/process includes caregiver and/or Director have ongoing conversations with parents to express concerns and discuss strategies in addressing challenging behaviors. Conversations are framed around the objective of the program. Parents are kept informed as to their child''s progress.'
+WHERE   Item = 'S-PI-02';
+
+GO
+--31.6.1 S-PI-03
+UPDATE  dbo.TRSItems
+SET     [Description] = 'The director and caregivers should be able to provide evidence that they are working together with the parents about decisions regarding the child''s experience, which may include written reports for children and parent communication log.'
+WHERE   Item = 'S-PI-03';
+
+GO
+--31.6.2 S-PI-04
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Information about community resources is available to the parent/family.'
+WHERE   Item = 'S-PI-04';
+
+GO
+--31.7 P-PI-03
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Parents are invited to participate in program related activities, including but not limited to, birthdays, holidays, or other special occasions.'
+WHERE   Item = 'P-PI-03';
+
+GO
+--32.0 P-WRS-01
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Creates a warm, safe, and nurturing environment.' ,
+        KeyBehavior = 'Refrains from using negative language, behaviors, and discipline; does not make critical or demeaning comments'
+WHERE   Item = 'P-WRS-01';
+
+GO
+--32.0.1 P-WRS-06
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Ability to adjust one''s own behavior  to meet the needs, interests, and abilities of individual / groups of children'
+WHERE   Item = 'P-WRS-06';
+
+GO
+--P-LFS-04
+UPDATE  dbo.TRSItems
+SET     KeyBehavior = 'Caregiver provides frequent language stimulation; Routinely talks to children and imitates sounds infants and toddlers make throughout the day'
+WHERE   Item = 'P-LFS-04';
+
+GO
+--32.1 P-LFS-05
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Uses descriptive language (specific labels such as "It''s time to drink your bottle" versus "Here, take this", or "Hand me the blue marker in that cup" versus "Give me that [points to marker]'
+WHERE   Item = 'P-LFS-05';
+
+GO
+--32.1.1 P-LFS-06
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Provides children with frequent opportunities to talk with caregivers (small group, whole group, outdoor play, and mealtimes).' ,
+        KeyBehavior = 'Caregiver actively encourages children to communicate (i.e., teacher should not be doing all of the talking/vocalizing); uses a variety of questions (open/closed) to encourage critical or creative thought'
+WHERE   Item = 'P-LFS-06';
+
+GO
+--32.1.2 P-LFS-08
+UPDATE  dbo.TRSItems
+SET     KeyBehavior = 'Initiates conversations about a child''s own interests and uses open-ended questions (if age-appropriate) to elicit more elaborate responses; encourages infants to coo or babble back and forth with caregiver'
+WHERE   Item = 'P-LFS-08';
+
+GO
+--32.1.3 P-LFS-09
+UPDATE  dbo.TRSItems
+SET     KeyBehavior = 'Caregiver''s language is contingently responsive. child says; "I went to the  zoo." Depending on level of  child, caregiver adds, "Did you see an elephant or a lion?" or "Can you tell me about some of the animals you saw?";  provides infant or toddler with a label or description of something they have pointed to or attempted to talk about'
+WHERE   Item = 'P-LFS-09';
+
+GO 
+--32.2 P-SCR-01
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Models or encourages emotional expression (encourages children to express feelings, labels feelings, thinks aloud to model their own feelings and reactions, makes connections between actions and emotional reactions).'
+WHERE   Item = 'P-SCR-01';
+
+GO 
+--32.2.1 P-SCR-02
+UPDATE  dbo.TRSItems
+SET     KeyBehavior = 'Caregiver says, "Are you angry because he took your toy away?" I know you are excited about this toy, but you need to let Mary have a turn too."'
+WHERE   Item = 'P-SCR-02';
+
+GO 
+--32.2.2 P-SCR-07
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Assists children in their communications and interactions with peers.'
+WHERE   Item = 'P-SCR-07';
+
+GO
+--32.2.3 Delete P-SCR-08
+UPDATE  dbo.TRSItems
+SET     IsDeleted = 1
+WHERE   Item = 'P-SCR-08';
+
+GO
+--32.3 Delete P-LPC-01
+UPDATE  dbo.TRSItems
+SET     IsDeleted = 1
+WHERE   Item = 'P-LPC-01';
+
+GO 
+--32.3.1 P-LPC-02
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Social and Emotional Development.' ,
+        KeyBehavior = 'Key Evidence: Activities and caregiver strategies appropriate for both infants and toddlers that support caregivers/staff to promote social and emotional development are well described with information on how to encourage involvement including types of materials and books to use to be able to actively involve infants and toddlers.'
+WHERE   Item = 'P-LPC-02';
+
+GO 
+--32.3.2 P-LPC-03
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Language and Communication Development.' ,
+        KeyBehavior = 'Key Evidence: Activities and caregiver strategies appropriate for both infants and toddlers that support caregiver/staff to promote language and communication  development are well described with information including questioning techniques and ways to provide child friendly explanations to encourage involvement including types of materials and books to use to be able to actively involve infants and toddlers.'
+WHERE   Item = 'P-LPC-03';
+
+GO 
+--32.3.2 P-LPC-04
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Cognitive Development.' ,
+        KeyBehavior = 'Key Evidence: Activities and caregiver strategies appropriate for both infants and toddlers that support caregiver/staff to promote cognitive development are well described with information on how to encourage involvement including types of materials  (blocks and other manipulatives) to use to actively involve infants and toddlers.'
+WHERE   Item = 'P-LPC-04';
+
+GO 
+--32.3.3 P-LPC-05
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Social and Emotional.' ,
+        KeyBehavior = 'Key Evidence: Planned daily activities are implemented to support social and emotional development including trust and emotional security, self-awareness, self-regulation, and relationships with others, engaging children''s interests and active involvement.'
+WHERE   Item = 'P-LPC-05';
+
+GO 
+--32.3.4 P-LPC-06
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Language and Communication.' ,
+        KeyBehavior = 'Key evidence: Planned daily activities are implemented to support language and communication development including listening and understanding, communication and speaking to engage children''s interests and active involvement.'
+WHERE   Item = 'P-LPC-06';
+
+GO 
+--32.3.5 P-LPC-07
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Emergent Literacy - Reading.' ,
+        KeyBehavior = 'Key evidence: Activities for phonological awareness, print knowledge, and letter sound relations  engaging children''s interests and involvement.'
+WHERE   Item = 'P-LPC-07';
+
+GO 
+--32.3.6 P-LPC-08
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Emergent Literacy - Writing.' ,
+        KeyBehavior = 'Key evidence: Activities for book and print knowledge and opportunities for early writing, in line with each child''s level of engaging children''s interests and involvement.'
+WHERE   Item = 'P-LPC-08';
+
+GO 
+--32.3.7 P-LPC-09
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Mathematics.' ,
+        KeyBehavior = 'Key evidence: Activities for mathematics, in line with each child''s level of development in this area, engaging children''s interests and involvement.'
+WHERE   Item = 'P-LPC-09';
+
+GO 
+--32.3.8 P-LPC-10
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Science.' ,
+        KeyBehavior = 'Key evidence: Activities for science skill development in line with each child''s level of development in this area, engaging children''s interests and involvement.'
+WHERE   Item = 'P-LPC-10';
+
+GO 
+--32.3.9 P-LPC-11
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Social Studies.' ,
+        KeyBehavior = 'Key evidence: Activities for the development of social studies knowledge about people, their environment, various cultures, community building, and citizenship.'
+WHERE   Item = 'P-LPC-11';
+
+GO 
+--32.3.10 P-LPC-12
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Fine Arts.' ,
+        KeyBehavior = 'Key evidence: Activities for the development of fine arts skills that include art, music and/or dramatic expression for engaging children''s interests and involvement.'
+WHERE   Item = 'P-LPC-12';
+
+GO 
+--32.3.11 P-LPC-14
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Technology.' ,
+        KeyBehavior = 'Key evidence: Activities for the development of technology skills and knowledge are well described to support children''s use and understanding of different forms of technology. Examples of appropriate technology may include technology  tools encompasses a broad range of digital devices such as computers, tablets, multi-touch screens, interactive whiteboards, mobile devices, cameras, DVD and music players, audio recorders, electronic toys, games, e-book readers, and older analog devices still being used such as tape recorders, VCRs, VHS tapes, record and cassette players, light tables, projectors, and microscopes, vocabulary, letter recognition, and math games on a computer or tablet, or exploration using a mouse.'
+WHERE   Item = 'P-LPC-14';
+
+GO 
+--32.3.12 P-LPC-15
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Physical Activity and Motor Development.' ,
+        KeyBehavior = 'Key evidence: Activities appropriate for infants, toddlers, and preschool children that support caregiver and staff to promote physical health, activity, and motor development for engaging children''s interests and involvement.'
+WHERE   Item = 'P-LPC-15';
+
+GO 
+--32.3.13 Delete P-LPC-13
+UPDATE  dbo.TRSItems
+SET     IsDeleted = 1
+WHERE   Item = 'P-LPC-13';
+
+GO 
+--32.4 P-PSNRD-01
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Consideration for children in a Bilingual program. Key Evidence: Plan includes specific strategies for using child''s home language to support the development of English language skills. This could include supports such as visual and gestural cues to promote learning.' ,
+        KeyBehavior = 'Key evidence: Plan includes specific strategies for using child''s   home language to support the development of English language skills. This could include supports such as visual and gestural cues to promote learning.'
+WHERE   Item = 'P-PSNRD-01';
+
+GO 
+--32.4.1 P-PSNRD-02
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Consideration for children with disabilities Key Evidence: Plan includes specifications on how to make accommodations for children with disabilities. Accommodations should include, but not be limited to, those that support learning for children with visual, motoric, and/or auditory problems.' ,
+        KeyBehavior = 'Key evidence: plan includes specifications on how to make accommodations for children with disabilities. Accommodations should include, but not be limited to, those that support learning for children with visual, motoric, and/or auditory problems.'
+WHERE   Item = 'P-PSNRD-02';
+
+GO 
+--32.4.2 P-PSNRD-03
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Consideration for children from culturally diverse backgrounds. Key Evidence: Activities and caregiver strategies are included that address the many cultures of children''s families that attend the program (e.g., songs, customs, nursery rhymes, books, celebrations, foods)' ,
+        KeyBehavior = 'Key evidence: Activities and teacher strategies are included that address the many cultures of children''s families that attend the program (e.g., songs, customs, nursery rhymes, books, celebrations, foods)'
+WHERE   Item = 'P-PSNRD-03';
+
+GO 
+--32.5 Delete P-IFAL-01
+UPDATE  dbo.TRSItems
+SET     IsDeleted = 1
+WHERE   Item = 'P-IFAL-01';
+
+GO 
+--32.5.1 P-IFAL-02
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Intentional instructional activities that are both caregiver and child initiated are balanced throughout the planned daily activities.'
+WHERE   Item = 'P-IFAL-02';
+
+GO 
+--32.5.2 P-IFAL-06
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Implemented learning activities are organized to progressively build skills and knowledge by moving the child from current 
+<br />developmental levels to the targeted developmental benchmarks.'
+WHERE   Item = 'P-IFAL-06';
+
+GO 
+--32.6 P-N-01
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Items to Observe: Yes/No Indicators; total possible score = 6
+<br />-Drinks are offered with food
+<br />-Seconds of healthy options are available
+<br />-Children are not hurried to finish eating
+<br />-Children are not viewing television during mealtime
+<br />-Children are encouraged to engage in conversation during meal time
+<br />-Children have the opportunity to feed themselves consistent with their developmental levels'
+WHERE   Item = 'P-N-01';
+
+GO 
+--32.6.1 P-N-05
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Meals are served to children seated with their assigned caregivers when not helping with the meal service routine or providing necessary assistance to children. Children are encouraged to sample a variety of food of different colors and textures.'
+WHERE   Item = 'P-N-05';
+
+GO 
+--32.6.2 P-N-06
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Children assist with mealtime activities, with staff supervision. Children are encouraged to serve themselves as their abilities permit (ex. set tables, put out napkins, scoop food using sturdy serving spoons, pour milk from child sized pitchers).
+<br />Items to observe:
+<br />-Children are encouraged to set tables, put out napkins, clean place mats etc.
+<br />-Children are encouraged to serve themselves as their abilities permit ex. scoop food using sturdy serving spoons, pour milk from child sized pitchers
+<br />-An orderly process is in place for taking turns and varying tasks.'
+WHERE   Item = 'P-N-06';
+
+GO 
+--32.7 S-ILE-01
+UPDATE  dbo.TRSItems
+SET     [Description] = '1.	Indoor environment is arranged to facilitate a distinct division of active and quiet spaces
+<br />2.	Nap/rest space is conducive for children to relax, rest or sleep as appropriate for the ages and abilities of children
+<br />3.	Indoor environment includes space where children can play protected from interference by other children, yet be supervised by the caregiver
+<br />4.	Equipment/materials are clean and in good repair. Providers supply a checklist of cleaning and maintenance tasks they use to ensure a safe and sanitary environment for children.
+<br />5.	Equipment/materials are readily available and adapted to allow for equal participation by all children.'
+WHERE   Item = 'S-ILE-01';
+
+GO 
+--32.7.1 S-ILE-02
+UPDATE  dbo.TRSItems
+SET     [Description] = '1.	Indoor environment includes sufficient quantity of sleeping, diapering and feeding equipment to accommodate the number of children served
+<br />2.	Indoor environment includes sufficient space to allow for different kinds of experiences such as tummy time, active play, quiet play, and messy play
+<br />3.	Diapering areas include items that enhance cognitive and communication skills
+<br />4.	Indoor environment includes space and equipment where caregivers and mothers can sit comfortably and hold infants while feeding or breast feeding'
+WHERE   Item = 'S-ILE-02';
+
+GO 
+--32.8 P-ILE-06
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Equipment/materials facilitate social interaction and experiencing the environment.'
+WHERE   Item = 'P-ILE-06';
+
+GO 
+--32.9 P-OLE-05
+UPDATE  dbo.TRSItems
+SET     [Description] = 'Outdoor equipment/materials encourage infants to experience the environment.'
+WHERE   Item = 'P-OLE-05';

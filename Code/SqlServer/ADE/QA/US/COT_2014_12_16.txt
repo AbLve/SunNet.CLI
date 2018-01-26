@@ -1,0 +1,166 @@
+﻿GO
+
+/****** Object:  Table [dbo].[COTAssessments]    Script Date: 12/16/2014 10:18:15 ******/
+IF EXISTS (SELECT 1 FROM SYS.ALL_OBJECTS WHERE [object_id] = OBJECT_ID('COTAssessments') AND TYPE_DESC = 'USER_TABLE')
+DROP TABLE [dbo].[COTAssessments]
+GO
+
+/****** Object:  Table [dbo].[COTAssessments]    Script Date: 12/16/2014 12:07:52 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[COTAssessments](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[TeacherId] [int] NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[SchoolYear] [nvarchar](10) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_COTAssessments] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+/****** Object:  Index [IX_COTAssessments_1]    Script Date: 12/16/2014 12:08:40 ******/
+CREATE UNIQUE CLUSTERED INDEX [IX_COTAssessments_1] ON [dbo].[COTAssessments]
+(
+	[AssessmentId] ASC,
+	[TeacherId] ASC,
+	[SchoolYear] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+----------------------------------------------------------------------------------------------------
+GO
+
+/****** Object:  Table [dbo].[COTAssessmentItems]    Script Date: 12/16/2014 12:18:04 ******/
+IF EXISTS (SELECT 1 FROM SYS.ALL_OBJECTS WHERE [object_id] = OBJECT_ID('COTAssessmentItems') AND TYPE_DESC = 'USER_TABLE')
+DROP TABLE [dbo].[COTAssessmentItems]
+GO
+
+/****** Object:  Table [dbo].[COTAssessmentItems]    Script Date: 12/16/2014 12:18:04 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[COTAssessmentItems](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[CotAssessmentId] [int] NOT NULL,
+	[GoalSetDate] [datetime] NOT NULL,
+	[GoalMetDate] [datetime] NOT NULL,
+	[BoyObsDate] [datetime] NOT NULL,
+	[MoyObsDate] [datetime] NOT NULL,
+	[NeedSupport] [datetime] NOT NULL,
+	[CotUpdatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_COTAssessmentItems] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+/****** Object:  Index [IX_COTAssessmentItems_1]    Script Date: 12/16/2014 12:20:51 ******/
+CREATE UNIQUE CLUSTERED INDEX [IX_COTAssessmentItems_1] ON [dbo].[COTAssessmentItems]
+(
+	[CotAssessmentId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+----------------------------------------------------------------------------------------------------
+GO
+
+/****** Object:  Table [dbo].[CotWaves]    Script Date: 12/16/2014 12:31:23 ******/
+IF EXISTS (SELECT 1 FROM SYS.ALL_OBJECTS WHERE [object_id] = OBJECT_ID('CotWaves') AND TYPE_DESC = 'USER_TABLE')
+DROP TABLE [dbo].[CotWaves]
+GO
+
+/****** Object:  Table [dbo].[CotWaves]    Script Date: 12/16/2014 12:31:23 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[CotWaves](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CotAssessmentId] [int] NOT NULL,
+	[Wave] [tinyint] NOT NULL,
+	[VisitDate] [datetime] NOT NULL,
+	[SpentTime] [nvarchar](10) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_CotWaves] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+/****** Object:  Index [IX_CotWaves_1]    Script Date: 12/16/2014 12:32:00 ******/
+CREATE CLUSTERED INDEX [IX_CotWaves_1] ON [dbo].[CotWaves]
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+----------------------------------------------------------------------------------------------------
+GO
+
+/****** Object:  Table [dbo].[CotStgReports]    Script Date: 12/16/2014 13:50:26 ******/
+IF EXISTS (SELECT 1 FROM SYS.ALL_OBJECTS WHERE [object_id] = OBJECT_ID('CotStgReports') AND TYPE_DESC = 'USER_TABLE')
+DROP TABLE [dbo].[CotStgReports]
+GO
+
+/****** Object:  Table [dbo].[CotStgReports]    Script Date: 12/16/2014 13:51:49 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[CotStgReports](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CotAssessmentId] [int] NOT NULL,
+	[GoalSetDate] [datetime] NOT NULL,
+	[SpentTime] [datetime] NOT NULL,
+	[GoalMetDate] [datetime] NOT NULL,
+	[OnMyOwn] [nvarchar](4000) NOT NULL,
+	[WithSupport] [nvarchar](4000) NOT NULL,
+	[AdditionalComments] [nvarchar](4000) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_CotStgReports] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+/****** Object:  Index [IX_CotStgReports_1]    Script Date: 12/16/2014 13:52:19 ******/
+CREATE CLUSTERED INDEX [IX_CotStgReports_1] ON [dbo].[CotStgReports]
+(
+	[CotAssessmentId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+

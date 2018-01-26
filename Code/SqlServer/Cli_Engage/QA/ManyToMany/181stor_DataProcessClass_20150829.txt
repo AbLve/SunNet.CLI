@@ -1,0 +1,126 @@
+﻿ALTER PROCEDURE [dbo].[DataProcessClass] 
+@TeacherId INT,
+@TeacherUserId INT,
+@TeacherFirstName VARCHAR(150),
+@TeacherLastName VARCHAR(150),
+@ClassDayType TINYINT,
+@ClassLevel TINYINT,
+@StudentId INT,
+@CreatedClasses VARCHAR(500) OUTPUT --return createdclasses' ids
+AS
+BEGIN
+		DECLARE @ClassName VARCHAR(200)
+		DECLARE @ClassId INT
+		DECLARE @AssignedSchoolId INT
+		SET @CreatedClasses=',';
+
+
+		DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+		SELECT DISTINCT(SchoolId) FROM UserComSchRelations
+		WHERE UserId = @TeacherUserId AND Status=1
+		OPEN cur FETCH NEXT FROM cur INTO @AssignedSchoolId
+		WHILE @@FETCH_STATUS=0
+		BEGIN
+			IF(EXISTS(SELECT * FROM Users U INNER JOIN UserComSchRelations UC
+			ON U.ID=UC.UserId AND UC.SchoolId=@AssignedSchoolId AND U.LastName=@TeacherLastName
+			AND U.ID != @TeacherUserId))
+				BEGIN
+					IF(EXISTS(SELECT * FROM Users U INNER JOIN UserComSchRelations UC
+					ON U.ID=UC.UserId AND UC.SchoolId=@AssignedSchoolId AND U.LastName=@TeacherLastName 
+					AND SUBSTRING(U.FirstName,1,1)=SUBSTRING(@TeacherFirstName,1,1) 
+					AND U.ID != @TeacherUserId))
+						SET @ClassName=@TeacherFirstName+' '+@TeacherLastName+'''s';
+					ELSE
+						SET @ClassName=SUBSTRING(@TeacherFirstName,1,1)+' '+@TeacherLastName+'''s';
+				END
+			ELSE
+				SET @ClassName = @TeacherLastName+'''s';
+
+			SET @ClassName=@ClassName+CASE @ClassDayType WHEN 1 THEN ' AM' WHEN 2 THEN ' PM' ELSE '' END;
+			SET @ClassName=@ClassName+CASE @ClassLevel WHEN 2 THEN ' K' ELSE '' END;
+			SET @ClassName=@ClassName+' Class';
+
+			SELECT @ClassId=ID FROM Classes WHERE SchoolId=@AssignedSchoolId AND Name=@ClassName
+			IF(@ClassId IS NULL)
+			BEGIN
+			INSERT INTO dbo.Classes
+					( SchoolId ,
+					  ClassId ,
+					  Name ,
+					  Status ,
+					  StatusDate ,
+					  SchoolYear ,
+					  IsSameAsSchool ,
+					  AtRiskPercent ,
+					  DayType ,
+					  CurriculumId ,
+					  CurriculumOther ,
+					  SupplementalCurriculumId ,
+					  SupplementalCurriculumOther ,
+					  MonitoringToolId ,
+					  MonitoringToolOther ,
+					  UsedEquipment ,
+					  EquipmentNumber ,
+					  ClassType ,
+					  Notes ,
+					  CreatedOn ,
+					  UpdatedOn ,
+					  Previous_Teacher_TEA_ID ,
+					  Classlevel ,
+					  LeadTeacherId ,
+					  playgroundId ,
+					  TypeOfClass ,
+					  TrsAssessorId ,
+					  TrsMentorId ,
+					  ClassInternalID
+					)
+			VALUES  ( @AssignedSchoolId , -- SchoolId - int
+					  '' , -- ClassId - varchar(32)
+					  @ClassName , -- Name - varchar(150)
+					  1 , -- Status - tinyint
+					  GETDATE() , -- StatusDate - datetime
+					  DBO.GetSchoolYear() , -- SchoolYear - varchar(5)
+					  0 , -- IsSameAsSchool - bit
+					  0 , -- AtRiskPercent - int
+					  @ClassDayType , -- DayType - tinyint
+					  0 , -- CurriculumId - int
+					  '' , -- CurriculumOther - varchar(150)
+					  0 , -- SupplementalCurriculumId - int
+					  '' , -- SupplementalCurriculumOther - varchar(150)
+					  0 , -- MonitoringToolId - int
+					  '' , -- MonitoringToolOther - varchar(150)
+					  0 , -- UsedEquipment - tinyint
+					  '' , -- EquipmentNumber - varchar(150)
+					  0 , -- ClassType - tinyint
+					  '' , -- Notes - varchar(600)
+					  GETDATE() , -- CreatedOn - datetime
+					  GETDATE() , -- UpdatedOn - datetime
+					  '' , -- Previous_Teacher_TEA_ID - varchar(50)
+					  @ClassLevel , -- Classlevel - tinyint
+					  @TeacherId , -- LeadTeacherId - int
+					  0 , -- playgroundId - int
+					  0 , -- TypeOfClass - tinyint
+					  0 , -- TrsAssessorId - int
+					  0 , -- TrsMentorId - int
+					  ''  -- ClassInternalID - varchar(32)
+					)
+				
+				SELECT @ClassId=SCOPE_IDENTITY()
+
+				SET @CreatedClasses += CONVERT(varchar(20),@ClassId) + ',';
+			END
+
+			IF(NOT EXISTS(SELECT * FROM TeacherClassRelations WHERE TeacherId=@TeacherId AND ClassId =@ClassId ))
+			INSERT INTO TeacherClassRelations(TeacherId,ClassId) 
+			VALUES(@TeacherId,@ClassId)
+
+			--create relationship(student-class)
+			IF(NOT EXISTS(SELECT * FROM StudentClassRelations WHERE StudentId=@StudentId AND ClassId=@ClassId))
+				INSERT INTO StudentClassRelations([StudentId],[ClassId])
+				VALUES(@StudentId,@ClassId)
+			
+			FETCH NEXT FROM cur INTO @AssignedSchoolId
+	    END
+		CLOSE cur
+		DEALLOCATE cur
+END

@@ -1,0 +1,2 @@
+﻿ IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[V_CEC_Teachers]') AND OBJECTPROPERTY(ID, 'IsView') = 1) 
+	drop view V_CEC_Teachers

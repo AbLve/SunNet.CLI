@@ -1,0 +1,182 @@
+﻿@using Sunnet.Framework
+@{
+    Layout = "~/Areas/Cpalls/Views/Shared/_Layout_Cpalls_Report.cshtml";
+
+    var cpallsUrl = "~/scripts/cpalls";
+    //var assessmentModel = ViewBag.Model as ExecCpallsAssessmentModel;
+
+    //var measures = assessmentModel.Measures;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var execModel, $form, $btnExport;
+
+        function exportPdf() {
+            $btnExport.hide();
+            $form.find("#body").val(document.body.innerHTML);
+            $form.submit();
+            $btnExport.show();
+            return false;
+        }
+
+        function getExecCpallsData() {
+            var execJson = @Html.Raw(ViewBag.Json);
+            if (!execJson) {
+                execJson = execHelper.getLocalStorage(execHelper.keys.execCpalls, false);
+            }
+            return execJson;
+        }
+
+        function getExecModel() {
+            var execJson = getExecCpallsData();
+            if (execJson) {
+                var model = getAssessmentModel(execJson);
+                return model;
+            }
+            return null;
+        }
+
+        function getReady(execModel) {
+            $form.find("#name").val(execModel.name);
+            if (execModel) {
+                ko.cleanNode(document.body);
+                console.log("ready for export");
+
+                $("#modalWaiting").modal("hide");
+                var measureExecuted = execModel.measures && execModel.measures.length && execModel.measures[0].status === Cpalls_Status.Finished;
+                if (execModel.mode === Exec_Mode.View || measureExecuted) {
+                    ko.applyBindings(execModel);
+                }
+                $btnExport.show();
+            }
+        }
+
+        $(function() {
+            $form = $("#@(formId)");
+            $btnExport = $("#btn_Export");
+            @*$("#modalWaiting").modal("show");
+            execModel = getExecModel();
+            if (execModel) {
+                $.when(execModel.prepared()).done(function() {
+                    execModel.status(Exec_Status.resulting);
+                    execModel.init();
+                    execModel.showAllItems();
+                    getReady(execModel);
+                });
+            }*@
+        });
+    </script>
+}
+<div data-bind="foreach:{data:measures,as:'measureModel'}">
+    <!-- ko if:status == Cpalls_Status.Finished -->
+    <table cellpadding="0" cellspacing="0" class="noborder header" style="width:100%;">
+        <thead>
+            <tr>
+                <th style="width: 8%;"></th>
+                <th style="width: 8%;"></th>
+                <th style="width: 8%;"></th>
+                <th style="width: 8%;"></th>
+
+                <th style="width: 8%;"></th>
+                <th style="width: 8%;"></th>
+                <th style="width: 8%;"></th>
+                <th style="width: 8%;"></th>
+
+                <th style="width: 8%;"></th>
+                <th style="width: 8%;"></th>
+                <th style="width: 8%;"></th>
+                <th style="width: 8%;"></th>
+            </tr>
+            <tr>
+                <th colspan="4">&nbsp;</th>
+                <th colspan="4" class="title">
+                    CIRCLE Progress Monitoring
+                </th>
+                <th colspan="4" rowspan="3">
+                    <img src="@(SFConfig.PracticeDomain)Resources/cli_logo.png" alt="CLI Logo" style="width:150px; " />
+                </th>
+            </tr>
+            <tr>
+                <th colspan="4">&nbsp;</th>
+                <th colspan="4" class="title" data-bind="text:name">
+                </th>
+            </tr>
+            <tr>
+                <th colspan="4">&nbsp;</th>
+                <th colspan="4" class="title">
+                    Student: <span data-bind="text:$root.student.name"></span>
+                </th>
+
+            </tr>
+            <tr>
+                <th colspan="4" class="heading">
+                    Community/District: <span data-bind="text:$root.communityName"></span>
+                </th>
+                <th colspan="3">&nbsp;</th>
+                <th colspan="5" class="heading">
+                    Assessment Language: <span data-bind="text:$root.language.text"></span>
+                </th>
+            </tr>
+            <tr>
+                <th colspan="4" class="heading">
+                    School: <span data-bind="text:$root.schoolName"></span>
+                </th>
+                <th colspan="3">&nbsp;</th>
+                <th colspan="5" class="heading">
+                    Class: <span data-bind="text:$root.classModel.name"></span>
+                </th>
+            </tr>
+            <tr>
+                <th colspan="4" class="heading">
+                    School Year: <span data-bind="text:$root.schoolYear"></span>
+                </th>
+                <th colspan="3">&nbsp;</th>
+                <th colspan="5" class="heading">
+                    Homeroom Teacher: <span data-bind="text:$root.classModel.homeroomTeacher"></span>
+                </th>
+            </tr>
+            <tr>
+                <th colspan="4" class="heading">
+                    Wave <span data-bind="text:$root.wave.text"></span>: <span data-bind="text:updatedOn"></span>
+                </th>
+                <th colspan="3">&nbsp;</th>
+                <th colspan="5" class="heading">
+                    Goal for Student: <span data-bind="text:benchmark >= 0 ? benchmark : 'N/A'"></span>
+                </th>
+            </tr>
+            <tr>
+                <th colspan="4" class="heading">
+                    <span data-bind="text:timeout > 0 ? (timeout /1000) + ' -second time limited task' : 'Unlimited Time Task'"></span>
+                </th>
+                <th colspan="3">&nbsp;</th>
+                <th colspan="5" class="heading">
+                    Score: <span data-bind="text:goal()"></span>&nbsp;&nbsp;&nbsp;&nbsp;Benchmark: <span data-bind="text:metBenchmark()"></span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="12">
+                    <div class="item-main-body item-view-body"
+                         data-bind='template:{name:"_cpalls_measure_List",data:$data}'></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!--/ko-->
+</div>
+
+@Html.Partial("_Partial_MeasureResultList")
+
+@using (Html.BeginForm("GetListPdf", null, FormMethod.Post, new { id = formId, target = "_blank" }))
+{
+    @Html.Hidden("name")
+    @Html.Hidden("body")
+    @Html.Hidden("export", true)
+    <button type="button" class="btn-export" id="btn_Export" onclick="javascript:return exportPdf();">
+        <i class="icon-pdf"></i>
+        Export
+    </button>
+}

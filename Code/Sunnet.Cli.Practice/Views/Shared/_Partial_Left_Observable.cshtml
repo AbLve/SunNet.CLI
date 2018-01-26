@@ -1,0 +1,31 @@
+﻿@using Sunnet.Cli.Assessment.Areas.Cpalls.Controllers
+@using Sunnet.Cli.Core.Users.Enums;
+
+<h4>
+    <a class="main-ade-left-active" href="@(DomainHelper.MainSiteDomain)Home/Dashboard">
+        <i class="icon-dashboard"></i>Dashboard
+    </a>
+</h4>
+<ul>
+    <li>
+        <a href="/Observable/Observable/Index" class="active">Assessment</a>
+    </li>
+    
+
+</ul>
+@if (ViewContext.Controller is StudentController)
+{ 
+    <ul class="menu-left-hint">
+        <li><a class="tab-btn"><i class="icon-play"></i></a>Administer the test</li>
+        <li><a class="tab-btn" style="width: 30px;"><i class="icon-play-more"></i></a>Multi Launch</li>
+        <li><a class="tab-btn"><i class="icon-pause"></i></a>The test was paused</li>
+        @*<li><a class="table-btn ok-btn"><i class="icon-ok"></i></a>The test was completed</li>*@
+        <li><a class="tab-btn on-btn"><i class="icon-circle"></i></a>Exclude the student from the test for current language</li>
+        <li><a class="tab-btn off-btn"><i class="icon-circle-blank"></i></a>The student was excluded from the test for current language</li>
+        <li><a class="table-btn ok-btn">#</a>Proficient (3.5 years old and older)</li>
+        <li><a class="table-btn cpalls_three">#</a>Developing (3.5 to 3.9 years old)</li>
+        <li><a class="table-btn trash-btn">#</a>Emerging (4 years old and older)</li>
+        <li><a class="table-btn cpalls_no_benchmark">#</a>Younger than 3.5 or no benchmark established</li>
+    </ul>
+
+}

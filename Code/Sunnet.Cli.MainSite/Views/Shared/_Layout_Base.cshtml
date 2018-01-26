@@ -1,0 +1,325 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework
+@using Sunnet.Cli.UIBase.Controllers
+
+<!DOCTYPE html>
+@{
+    const string siteName = "Cli Engage";
+    var relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    var lastModified = FileHelper.GetFileLastModified(Server.MapPath(relativePath));
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword" content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>@ViewBag.Title - @siteName</title>
+    @Styles.Render("~/css/basic")
+    @Styles.Render("~/css/home")
+    @RenderSection("Styles", false)
+    @Scripts.Render("~/scripts/modernizr")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/scripts/ie68")
+    <![endif]-->
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+
+    </script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700,700italic,400italic,300italic,900' rel='stylesheet' type='text/css'>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .footer a {
+            font-weight: normal;
+        }
+
+        .main-style {
+            font-family: Helvetica,Arial,sans-serif;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.42857143;
+            margin-top: -50px;
+        }
+
+            .main-style h1, .main-style h2, .main-style h3, .main-style h4, .main-style h5, .main-style h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+                font-family: inherit;
+                font-weight: 500;
+                line-height: 1.1;
+                color: inherit;
+            }
+
+            .main-style .dashboard-text h3 {
+                color: #018a01;
+                text-align: left;
+            }
+
+            .main-style h3, .h3 {
+                font-size: 24px;
+            }
+
+            .main-style h4, .h4 {
+                font-size: 18px;
+            }
+
+            .main-style a {
+                outline: none;
+                text-decoration: underline;
+                color: #4a8250;
+            }
+
+        .parent-dashboard {
+            background: #fff;
+        }
+
+        .parent-dashboard-content {
+            width: 100%;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <div class="title-bar-title"><span class="icon-reorder menu-btn"></span>Menu</div>
+    </div>
+    <div class="parent-dashboard clearfix">
+        <div class="parent-dashboard-nav">
+            <ul class="clearfix parent-dashboard-nav-ul">
+                <li style="vertical-align:top;">
+                    <div class="parent-dashboard-logo">
+                        <img src="/images/cli-engage-logo-bp-20.png" alt="CLI Logo">
+                    </div>
+                </li>
+                <li class="li-none"><a href="@(DomainHelper.MainSiteDomain)public">HOME</a></li>
+                <li>
+                    <a href="@(DomainHelper.MainSiteDomain)public/about">ABOUT<em class="icon-sort-down"></em></a>
+                    <div class="parent-dashboard-nav-dropdown-menu parent-dashboard-nav-dropdown-menu-1">
+                        <ul>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/about/history" style="font-weight:300;">History & Mission</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/about/eligibility">Eligibility</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/about/research">Research Support</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/about/participants">Partners & Participants</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/contact-us">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="static-li">
+                    <a href="@(DomainHelper.MainSiteDomain)public/tools" style="position:static;">TOOLS & RESOURCES <em class="icon-sort-down"></em></a>
+                    <div class="parent-dashboard-nav-dropdown-menu parent-dashboard-nav-dropdown-menu-4">
+                        <ul>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/online-learning/" style="width:95%;">Online Learning & Professional Development</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/online-learning/ecircle/">eCIRCLE Professional Development</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/online-learning/circle-cda">CIRCLE CDA Training Program</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/online-learning/circle-infant-toddler">CIRCLE Infant & Toddler Teacher Training: Play with Me Series </a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/online-learning/infant-toddler-guidelines-training/">Infant, Toddler, & Three-Year-Old Early Learning Guidelines & Training</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/online-learning/prek-guidelines/">TX Prekindergarten Guidelines Training</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/online-learning/core-competencies-training/">TX Core Competencies for Practitioners and Administrators Training</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/online-learning/beech/">Beginning Education: Early Childcare at Home</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/materials/" style="width:45%;">Activities & Materials</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/materials/cac-family">CIRCLE Activity Collection: Family</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/materials/cac-infant-toddler">CIRCLE Activity Collection: Infant & Toddler Classroom</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/materials/cac-prek">CIRCLE Activity Collection: Prekindergarten Classroom</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/assessment/" style="width:95%;">Screening, Progress Monitoring, & Observation</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/assessment/understanding-child-development">Understanding Developmental Screening & Early Intervention</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/assessment/infant-toddler-checklists">Infant & Toddler Developmental Checklists</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/assessment/circle-progress-monitoring">CIRCLE Progress Monitoring System (PreK)</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/assessment/tx-kea">Texas Kindergarten Entry Assessment</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/quality/" style="width:75%;">Quality Improvement & Innovation </a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/quality/public-private-partnerships">Public-Private Partnerships</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/quality/coaching">Teacher Coaching</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/quality/hb4">High Quality Prekindergarten (HB 4)</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/quality/national-resources">State & National Resources</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/assessment/cot">Classroom Observation Tool</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/assessment/cec">Classroom Environment Checklist</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="static-li">
+                    <a href="@(DomainHelper.MainSiteDomain)public/training" style="position:static;">TRAINING & SUPPORT<em class="icon-sort-down"></em></a>
+                    <div class="parent-dashboard-nav-dropdown-menu parent-dashboard-nav-dropdown-menu-2">
+                        <ul>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/training/support/">Getting Started</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/training/support/how-to-guides/">How-to Guides</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/training/support/account-setup/">Setting Up Your Account</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/training/support/uploading-data/">Uploading Teacher and Student Data</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/training/diving-deeper/">Diving Deeper</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/training/diving-deeper/calendar">Training Calendar</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/training/diving-deeper/presentations/">Webinars & Presentations</a></li>
+                            <li><a href="@(DomainHelper.MainSiteDomain)public/tools/online-learning/">Online Learning</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="li-none">
+                    <a href="http://www.texasschoolready.org/help/TicketFormGeneral.aspx?Section15">HELP</a>
+                </li>
+                <li class="li-none">
+                    <a href="@(DomainHelper.MainSiteDomain)public/search">SEARCH</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="parent-dashboard-content clearfix">
+        <div class="parent-dashboard-content-title col-sm-12" style="float:none;">
+            <h1>Welcome, @ViewBag.FirstName</h1>
+            <a href="@(SFConfig.MainSiteDomain)home/Dashboard" style="color:#000;">DASHBOARD VIEW </a> |
+            <a href="@(DomainHelper.MainSiteDomain)Profile/MyProfile">MY PROFILE </a> |
+            <a href="@(DomainHelper.SsoSiteDomain)home/LogOut">LOGOUT</a>
+        </div>
+    </div>
+    <div class="main-container" style="font-size:14px;">
+        @if (IsSectionDefined("LeftMenu"))
+        {
+            <div class="main-con-left menu-side">
+                @RenderSection("LeftMenu", false)
+            </div>
+        }
+        <div class="main-con-right">
+            @if (IsSectionDefined("BreadPath"))
+            {
+                <h4 class="backlink">@RenderSection("BreadPath", false)</h4>
+            }
+            <div class="right-content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-up">
+            <div class="small-12 columns" style="height:38px;">
+                <p class="links" style="margin:4px 0;">
+                    <a href="@(DomainHelper.MainSiteDomain)public">HOME</a>
+                    <a href="@(DomainHelper.MainSiteDomain)public/about">ABOUT</a>
+                    <a href="@(DomainHelper.MainSiteDomain)public/tools">TOOLS & RESOURCES</a>
+                    <a href="@(DomainHelper.MainSiteDomain)public/training">TRAINING & SUPPORT</a>
+                    <a href="http://www.texasschoolready.org/help/TicketFormGeneral.aspx?Section15">HELP</a>
+                    <a href="@(DomainHelper.MainSiteDomain)public/search">SEARCH</a>
+                    <a href="@(DomainHelper.MainSiteDomain)public/contact-us">CONTACT US</a>
+                </p>
+            </div>
+        </div>
+        <div class="footer-content clearfix">
+            <div class="clearfix" style="max-width:1200px;margin:0 auto;">
+                <div class="col-md-3">
+                    <p class="footerheader">RECEIVE OUR NEWSLETTER</p>
+                    <p><a class="btn btn-default footerlink" href="http://visitor.r20.constantcontact.com/manage/optin?v=001uxu9h741ik21QwTj2fX_kssB2o93cAd8WnJxJCTJJ8ufUzTruJeLJM3wBav7plT2LMOCMGOEz6etL-V_2_YmcEfwTBqpO2gJEhz_gYFG-kV_G3nVb2UleQ%3D%3D">STAY IN TOUCH</a></p>
+                </div>
+                <div class="col-md-6">
+                    <p class="footerheader"><img src="~/Content/images/CLI-engage-logo-transparent.png" alt="CLI engage logo transparent" /></p>
+                    <p class="center-text-footer" style="margin-bottom:30px;">CLI Engage houses research-based early learning resources for educators and families of children from birth through kindergarten.</p>
+                </div>
+                <div class="col-md-3" style="text-align:center;">
+                    <p class="footerheader" style="margin:0 0 8px;">CONNECT WITH US</p>
+                    <div style="text-align:center;">
+                        <a href="https://www.facebook.com/cliengage" style="display:inline-block;">
+                            <img class="img-responsive socialicon" width="50" src="/images/ReDesign/facebookrnd.png" alt="facebook">
+                        </a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="https://twitter.com/CLIEngage" style="display:inline-block;">
+                            <img class="img-responsive socialicon" width="50" src="/images/ReDesign/twitterrnd.png" alt="Twitter">
+                        </a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="#" style="display:inline-block;">
+                            <img class="img-responsive socialicon" width="50" src="/images/ReDesign/youtubernd.png" alt="YouTube">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 footer-img">
+                    <br />
+                    <img src="~/Content/images/updated-cobranding-engage-nt.png" alt="updated cobranding engage nt" style="margin-bottom:16px;margin-left:4px;" />
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="text-center footer-down">
+            <p>CLI Engage is part of the Children's Learning Institute at UTHealth</p>
+            <p>
+                Copyright © 2017 by <a style="color: #ffffff;text-decoration:underline;" href="https://www.uth.edu/">The University of Texas Health Science Center</a> at Houston (UTHealth)<br />
+                All rights reserved. <a style="color: #ffffff;text-decoration:underline;" href="https://www.uth.edu/index/policies.htm">Site Policies</a> | <a style="color: #ffffff;text-decoration:underline;" href="https://www.uth.edu/index/file-viewing-information.htm">Web File Viewing</a> | Webmaster: <a style="color: #ffffff;text-decoration:underline;" href="mailto:bang.n.pham@uth.tmc.edu">bang.n.pham@uth.tmc.edu</a>&nbsp;  | Last modified on: 08-03-2017 | <a style="color: #ffffff;text-decoration:underline;" href="#"><strong>Return to Top</strong></a>
+            </p>
+        </div>
+    </div>
+    @Scripts.Render("~/scripts/jquery")
+    @Scripts.Render("~/scripts/jquery_val")
+    @Scripts.Render("~/scripts/bootstrap")
+    @Scripts.Render("~/scripts/knockout")
+    @Scripts.Render("~/scripts/format")
+    @Scripts.Render("~/scripts/cli")
+    @RenderSection("Scripts", false)
+
+    <div id="modalSmall" class="modal" data-cache="false" data-confirm="true" data-backdrop="static" style="font-size: 14px;">
+        <div class="modal-dialog-sm">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static" style="font-size: 14px;">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalLarge" class="modal" data-cache="false" data-confirm="true" data-backdrop="static" style="font-size: 14px;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $('.parent-dashboard-nav ul li').hover(function () {
+                $(this).siblings('li').children('a').removeClass('active');
+                $(this).children('a').addClass('active cur');
+                $(this).find('.parent-dashboard-nav-dropdown-menu').stop().slideDown();
+            }, function () {
+                $(this).children('a').removeClass('active cur');
+                $(this).find('.parent-dashboard-nav-dropdown-menu').hide();
+            });
+            $('.parent-dashboard-nav ul .li-none').hover(function () {
+                $(this).children('a').addClass('active').removeClass('cur');
+            }, function () {
+                $(this).children('a').removeClass('active cur');
+            });
+            $('.parent-dashboard-nav-btn').click(function (event) {
+                $('.parent-dashboard-nav-ul').stop().slideToggle();
+            });
+            $('.box').css({
+                property1: 'value1',
+                property2: 'value2'
+            });
+            $('.parent-dashboard-content-left-title').click(function (event) {
+                $(this).siblings('.parent-dashboard-content-admini-list').stop().slideToggle();
+                if ($(this).children('.titleLink').hasClass('icon-angle-up')) {
+                    $(this).children('.titleLink').removeClass('icon-angle-up').addClass('icon-angle-down');
+                } else {
+                    $(this).children('.titleLink').removeClass('icon-angle-down').addClass('icon-angle-up');
+                }
+            });
+            $('.menu-btn').click(function () {
+                $('.parent-dashboard').toggle();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+﻿@{
+    Layout = null;
+}
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th width="3%"></th>
+            <th width="20%">Picture</th>
+            <th width="15%">Time in (ms)</th>
+            <th width="*"></th>
+            <th width="20%">Audio</th>
+            <th width="15%">Time in (ms)</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:{data:Answers,as:'anser'}">
+        <tr>
+            <td ></td>
+            <td>
+                <div data-bind="attr:{id:'btnPickAnswer'+$index()+'Picture'}">Browse</div>
+                <div class="webuploader-preview" data-bind="visible:ID > 0">
+                    <a class="table-btn icon-zoom-in preview-btn"
+                       data-bind="attr:{href:$root.BasePath + Picture}"
+                       target="_blank"></a>
+                </div>
+                <div class="clearfix"></div>
+                <div data-bind="attr:{id:'Answer'+$index()+'PictureFilelist'}" class="uploader-list"></div>
+                <input type="hidden" class="validate"
+                       data-submitbutton="#btnSubmit"
+                       data-accept='{"title":"Image","extensions":"gif,jpg,jpeg,bmp,png",
+                                "mimeTypes":"image/gif,image/jpeg,image/bmp,image/png"}'
+                       data-bind="attr:{
+    id:'Answer'+$index()+'Picture',name:'Answer'+$index()+'Picture',
+    'data-pick':'#btnPickAnswer'+$index()+'Picture',
+    'data-container':'#Answer'+$index()+'PictureFilelist',
+    'data-targetfield':'#Answer'+$index()+'Picture'
+},
+    upload:true,
+    value:Picture,required:true" />
+                <div class="field-validation-valid" data-valmsg-replace="true"
+                     data-bind="attr:{'data-valmsg-for':'Answer'+$index()+'Picture'}">
+                </div>
+            </td>
+            <td>
+                <label class="hide" data-bind="attr:{for:'PictureTime'+$index()}">Picture Timeout</label>
+                <input type="text" class="form-control input-sm  uint timeout" maxlength="5" data-bind="
+    value:PictureTime,
+    number:true,
+    attr:{name:'PictureTime'+$index(),id:'PictureTime'+$index()}"
+                       style="width: 50px; display: inline-block;">
+                <div class="field-validation-valid" data-valmsg-replace="true"
+                     data-bind="attr:{'data-valmsg-for':'PictureTime'+$index()}">
+                </div>
+            </td>
+            <td width="*"></td>
+            <td>
+                <div data-bind="attr:{id:'btnPickAnswer'+$index()+'Audio'}">Browse</div>
+                <div class="webuploader-preview" data-bind="visible:Audio.length>0">
+                    <a class="table-btn icon-zoom-in preview-btn"
+                       data-bind="attr:{href:$root.BasePath + Audio}"
+                       target="_blank"></a>
+                </div>
+                <div class="clearfix"></div>
+                <div data-bind="attr:{id:'Answer'+$index()+'AudioFilelist'}" class="uploader-list"></div>
+                <input type="hidden" class="validate"
+                       data-submitbutton="#btnSubmit"
+                       data-accept='{"title":"Audio","extensions":"mp3","mimeTypes":"audio/mpeg"}'
+                       data-bind="attr:{
+    id:'Answer'+$index()+'Audio',name:'Answer'+$index()+'Audio',
+    'data-pick':'#btnPickAnswer'+$index()+'Audio',
+    'data-container':'#Answer'+$index()+'AudioFilelist',
+    'data-targetfield':'#Answer'+$index()+'Audio'
+},upload:true,value:Audio" />
+                <div class="field-validation-valid" data-valmsg-replace="true"
+                     data-bind="attr:{'data-valmsg-for':'Answer'+$index()+'Audio'}">
+                </div>
+            </td>
+            <td>
+                <label class="hide" data-bind="attr:{for:'AudioTime'+$index()}">Audio Timeout</label>
+                <input type="text" class="form-control input-sm  uint timeout" maxlength="5" data-bind="
+    value:AudioTime,
+    number:true,
+    attr:{name:'AudioTime'+$index(),id:'AudioTime'+$index()}"
+                       style="width: 50px; display: inline-block;">
+                <div class="field-validation-valid" data-valmsg-replace="true"
+                     data-bind="attr:{'data-valmsg-for':'AudioTime'+$index()}">
+                </div>
+
+            </td>
+
+        </tr>
+    </tbody>
+</table>

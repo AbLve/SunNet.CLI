@@ -1,0 +1,197 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Vcw.Enums
+@using Sunnet.Framework.Extensions
+@using System.Web.Optimization
+@using Sunnet.Cli.Business.Vcw.Models
+
+@{
+    ViewBag.Title = "Send Assignment";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<SelectItemModel> UploadTypes = ViewBag.UploadTypes as List<SelectItemModel>;
+    List<SelectItemModel> Strategies = ViewBag.Strategies as List<SelectItemModel>;
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.PM_Coaches)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("My Coaches", "Index", "CoachGeneral"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;
+    @(Html.ActionLink("Send Assignment", "Index", "CoachSendAssignment"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;
+    @(Html.ActionLink("Coach List", "Index", "CoachSendAssignment"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;
+    Send Assignment
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var isFeedback=true;
+    </script>
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload_file")
+    <script type="text/javascript">
+
+        $(function () {
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "Index")");
+                }
+            })           
+        });
+
+            function getUploaderPrefix() {
+                return "@(ViewBag.EncryptUserID)_";
+            }          
+    </script>
+}
+
+@using (Ajax.BeginForm(ViewBag.Coaches == null ? "New" : "NewBatch", "CoachSendAssignment", null, PostFormHelper.DefaultAjaxOptions, new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.ReceiveUserId, new { @Value = "" + (int)ViewBag.Coach + "" })
+    @Html.Hidden("coaches", (string)ViewBag.Coaches)
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Coach List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div>@Html.LabelFor(model => model.DueDate, new { @class = "control-label required" })</div>
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextBoxFor(model => model.DueDate, new { @class = "form-control date", @Value = "" })
+                            @Html.ValidationMessageFor(model => model.DueDate)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div>@Html.LabelFor(model => model.CallDate, new { @class = "control-label" })</div>
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextBoxFor(model => model.CallDate, new { @class = "form-control date", @Value = "" })
+                            @Html.ValidationMessageFor(model => model.CallDate)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            @Html.LabelFor(model => model.SessionId, new { @class = "control-label" })
+                        </div>
+                        <div class="inputtext-con">
+                            @Html.DropDownListFor(model => model.SessionId, ViewBag.Session as IEnumerable<SelectListItem>
+                            , new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.SessionId)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Upload Type</div>
+                        </div>
+                        @if (UploadTypes != null)
+                        {
+                            foreach (SelectItemModel item in UploadTypes)
+                            {                    
+                            <div class="checkbox-con">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="UploadType" value="@(item.ID)">@item.Name
+                                </label>
+                            </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Coaching strategies</div>
+                        </div>
+                        @if (Strategies != null)
+                        {
+                            foreach (SelectItemModel item in Strategies)
+                            {
+                            <div class="checkbox-con checkbox-con-double">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="Strategy" value="@item.ID">@item.Name
+                                </label>
+                            </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">
+                                <label>Resources</label>
+                                (<span class="redtext">@ViewTextHelper.Vcw_MulitipleLinks</span>)
+                            </div>
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextAreaFor(model => model.Watch, new { @class = "form-control", @rows = "5" })
+                            @Html.ValidationMessageFor(model => model.Watch)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">
+                                PM Assignment File 
+                                (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                            </div>
+                        </div>
+                        <div class="upload-btn">
+                            <div id="picker">1) Select File</div>
+                        </div>
+                        <div id="filelists" class="uploader-list"></div>
+                        <div class="upload-btn">
+                            <a id="ctlBtn">2) Start Upload</a>
+                        </div>
+                        <input type="hidden" id="filetarget" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            @Html.LabelFor(model => model.Description, null, new { @class = "control-label" })
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = "2" })
+                            @Html.ValidationMessageFor(model => model.Description)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="uploadfiles" id="uploadfiles" />
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit('Vcw_PMFiles_Inqueue');">
+            <input type="button" class="mainbutton modal-btn cancel-btn" value="Cancel" 
+                onclick='redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "Index")    ")'>
+        </div>
+    </div>  
+}

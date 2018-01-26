@@ -1,0 +1,134 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentListModel
+@using Sunnet.Cli.Core.Vcw.Entities
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.UIBase;
+@{
+    ViewBag.Title = "My VIP Assignments";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Teacher_VIP)
+}
+@section BreadPath
+{
+My VIP Assignments
+}
+<div class="right-content-top">
+    <form class="form-horizontal" role="form" id="formSearch">
+        <div class="form-group">
+            <span class="control-label col-sm-2">VIP Documents</span>
+            <div class="col-sm-10">
+                @foreach (VIPDocumentEntity item in @ViewBag.VIPDicList)
+                {
+                    <i class="icon-paper-clip"></i>
+                    <a href="@(DownLoadFile.GetDownFilePath(item.FilePath, item.FileName))" 
+                        class="form-link4" style="margin-right:15px">@item.FileName</a>                
+                }
+            </div>
+        </div>
+    </form>
+</div>
+<div class="main-content main-content">
+    <div class="content-title">VIP Assignments</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.SendUserName"></td>
+                    <td data-bind="text: item.DueDate == minDate ? '' : item.DueDate"></td>
+                    <td data-bind="text: item.WaveText"></td>
+                    <td data-bind="text: item.Context"></td>
+                    <td data-bind="text: item.Content"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td>
+                        <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 100 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Package = {};
+
+        $(function () {
+
+            list_Package = new ViewModel(
+                {
+                    instanceName: "list_Package",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: 'Redirect',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: '@Html.DisplayName("Sender")',
+                            field: "@Html.NameFor(model => model.SendUserName)",
+                            width: '12%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Due Date")',
+                            field: "@Html.NameFor(model => model.DueDate)",
+                            order: true,
+                            width: '12%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Wave")',
+                            field: "@Html.NameFor(model => model.WaveId)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Context")',
+                            field: "@Html.NameFor(model => model.Context)",
+                            width: '*'
+                        },
+                        {
+                            text: '@Html.DisplayName("Content")',
+                            field: "@Html.NameFor(model => model.Content)",
+                            width: '20%'
+                        },
+                       {
+                           text: '@Html.DisplayName("Status")',
+                           field: "@Html.NameFor(model => model.Status)",
+                           order: true,
+                           width: '10%'
+                       },
+                        { text: "Action", width: '10%' }
+                    ],
+                    searchCriteria: {
+                    }
+                }
+            );
+
+            list_Package.search();
+            ko.applyBindings(list_Package);
+        });
+    </script>
+}
+

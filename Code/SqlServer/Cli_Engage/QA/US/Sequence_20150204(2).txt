@@ -1,0 +1,10 @@
+﻿update Classes set ClassId = 'ECL'+ left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqClassCode ),'5') 
+go
+update Classrooms set ClassroomId = 'ECR'+ left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqClassroomCode ),'5') 
+go
+update Students set StudentId = 'ESU'+ left(SchoolYear,2)+RIGHT('0000000'+CONVERT(VARCHAR(50),next value for SeqStudentCode ),'7') 
+go
+update Schools set SchoolId = 'EDD'+ left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqSchoolCode ),'5') 
+go
+update Teachers set TeacherId = 'ETE'+ left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqTeacherCode ),'5') 
+go

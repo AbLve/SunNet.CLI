@@ -1,0 +1,8 @@
+﻿if not exists(select * from syscolumns where id=object_id('Schools') and name='FacilityType')
+alter table Schools add [FacilityType] tinyint not null default 0
+if not exists(select * from syscolumns where id=object_id('Schools') and name='TrsAssessorId')
+alter table Schools add [TrsAssessorId] int not null default 0
+
+
+
+

@@ -1,0 +1,115 @@
+﻿@model Sunnet.Cli.Business.Cot.Growth.GrowthReportModel
+@using Sunnet.Cli.Business.Cot.Growth
+@{
+    var model = Model;
+}
+<thead>
+    <tr>
+        <td style="width: 90px;"></td>
+        <td style="width: 90px;"></td>
+        <td style="width: 90px;"></td>
+        <td style="width: 90px;"></td>
+
+        <td style="width: 90px;"></td>
+        <td style="width: 90px;"></td>
+        <td style="width: 90px;"></td>
+        <td style="width: 90px;"></td>
+
+        <td style="width: 90px;"></td>
+        <td style="width: 90px;"></td>
+        <td style="width: 90px;"></td>
+        <td style="width: 90px;"></td>
+    </tr>
+    <tr>
+        <td colspan="4">
+            &nbsp;
+        </td>
+        <th class="title" style="vertical-align: middle;" colspan="4">
+            @(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))<br />
+            @(model.Type.ToDescription())
+        </th>
+        <td colspan="4" style="text-align: right;" rowspan="2">
+            <img src="@(SFConfig.AssessmentDomain)/Resources/cli_logo.png" alt="CLI logo" style="width: 150px;" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4">&nbsp;</td>
+        <th class="title" colspan="4">
+            @(ViewData["measureName"])
+        </th>
+    </tr>
+    <tr>
+        <td colspan="7">
+            @Html.DisplayNameFor(x => model.Community):
+            &nbsp;@(model.Community)
+        </td>
+        <td colspan="2"></td>
+        <td colspan="3" style="text-align:right;">
+            @if (model.Type == GrowthReportType.SingleTeacher || model.Type == GrowthReportType.AssignedTeachers)
+            {
+                @Html.DisplayNameFor(x => model.Teacher)
+            }
+            else
+            {
+                @Html.Raw("Teachers")
+            }
+            :
+            &nbsp;@(model.Teacher)
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+            @if (model.Type == GrowthReportType.AssignedTeachersAverage
+                            || model.Type == GrowthReportType.DistrictAverage)
+            {
+                @Html.Raw("Schools")
+            }
+            else
+            {
+                @Html.DisplayNameFor(x => model.School)
+            }
+            :
+            &nbsp;@(model.School)
+        </td>
+
+        <td></td>
+        <td colspan="2"></td>
+        <td colspan="3" style="text-align:right;">
+            @Html.DisplayNameFor(x => model.Mentor):
+            &nbsp;@(model.Mentor)
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+            @Html.DisplayNameFor(x => model.SchoolYear):
+            &nbsp;@(model.FullSchoolYear)
+        </td>
+        <td></td>
+        <td colspan="2"></td>
+        <td colspan="3" style="text-align:right;">
+
+            @Html.DisplayNameFor(x => model.BoyDate):
+            &nbsp;@(model.BoyDate.FormatDateString())
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+        </td>
+        <td></td>
+        <td colspan="2"></td>
+        <td colspan="3" style="text-align:right;">
+            @Html.DisplayNameFor(x => model.MoyDate):
+            &nbsp;@(model.MoyDate.FormatDateString())
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+        </td>
+        <td></td>
+        <td colspan="2"></td>
+        <td colspan="3" style="text-align:right;">
+            @Html.DisplayNameFor(x => model.MetDate):
+            &nbsp;@(model.MetDate.FormatDateString())
+        </td>
+    </tr>
+</thead>

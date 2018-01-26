@@ -1,0 +1,148 @@
+﻿@model Sunnet.Cli.Business.StatusTracking.Models.StatusTrackingModel
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Request Information";
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.StatusTracking)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("StatusTricking", "Index"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;View
+}
+
+
+<form class="form-horizontal">
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to Invitation List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ApproverName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.ApproverName)
+                </div>
+                @Html.LabelFor(model => model.RequestorName, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.RequestorName)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.RequestTime, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.Label(Model.RequestTime.FormatDetailDateString(), new { @class = "control-label-text", @for = "RequestTime" })
+                </div>
+                @Html.LabelFor(model => model.SApproverName, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SApproverName)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Request is", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-1">
+                    @Html.DisplayFor(model => model.Days)
+                </div>
+                @Html.Label("days old", new { @class = "control-label-nocontent col-sm-2" })
+                @Html.LabelFor(model => model.RequestorCommunities, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.RequestorCommunities)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ExpiredTime, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.Label(Model.ExpiredTime.FormatDetailDateString(), new { @class = "control-label-text", @for = "ExpiredTime" })
+                </div>
+                @Html.LabelFor(model => model.ApprovedTime, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.Label(Model.ApprovedTime.FormatDetailDateString(), new { @class = "control-label-text", @for = "ApprovedTime" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.DeniedTime, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.Label(Model.DeniedTime.FormatDetailDateString(), new { @class = "control-label-text", @for = "DeniedTime" })
+                </div>
+                @Html.LabelFor(model => model.RequestorEmail, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.RequestorEmail)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ResendTime, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.Label(Model.ResendTime.FormatDetailDateString(), new { @class = "control-label-text", @for = "ResendTime" })
+                </div>
+                @Html.LabelFor(model => model.ResendNumber, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.Label(Model.ResendNumber > 0 ? Model.ResendNumber.ToString() : " ", new { @class = "control-label-text", @for = "ResendNumber" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.RealStatus, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.RealStatus)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-title">Supposed Approver Contact Information</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.SApproverFirstName, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SApproverFirstName)
+            </div>
+            @Html.LabelFor(model => model.SApproverLastName, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SApproverLastName)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SApproverPNumber, new { @class = "control-label col-sm-2" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SApproverPNumber)
+            </div>
+            @Html.LabelFor(model => model.SApproverPType, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SApproverPType)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SApproverSNumber, new { @class = "control-label col-sm-2" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SApproverSNumber)
+            </div>
+            @Html.LabelFor(model => model.SApproverSType, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SApproverSType)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SApproverFaxNumber, new { @class = "control-label col-sm-2" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SApproverFaxNumber)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SApproverPEAddress, new { @class = "control-label col-sm-2" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SApproverPEAddress)
+            </div>
+            @Html.LabelFor(model => model.SApproverSEAddress, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SApproverSEAddress)
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton mainright-btn create-btn" type="button" onclick='redirectBack("index")' data-dismiss="modal" id="btnBack">Back</button>
+    </div>
+</form>

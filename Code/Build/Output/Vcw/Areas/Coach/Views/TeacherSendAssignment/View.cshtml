@@ -1,0 +1,71 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Vcw.Enums
+@{
+    ViewBag.Title = "ViewAssignment";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Teachers)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Coach Teachers", "Index", "TeacherVIP"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    @(Html.ActionLink("Assignment List", "AssignmentIndex", "TeacherSendAssignment"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    View Assignment
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+
+            $(this).find("*").each(
+                function () {
+                    $(this).attr("disabled","disabled");
+                }
+                )
+            })
+    </script>
+}
+
+@using (Ajax.BeginForm("", "", null, PostFormHelper.DefaultAjaxOptions, new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("AssignmentIndex"))" >Back to Assignment List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Assignment</div>
+        <div class="content-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="Type">Assignment Type</label>
+                    <div class="col-sm-3">
+                        @Html.DropDownListFor(model => model.Type, ViewBag.AssignmentType as IEnumerable<SelectListItem>, new { @class = "form-control" })
+                    </div>
+                </div>
+                @if (Model.Type == AssignmentTypeEnum.TeacherAssignment)
+                {
+                    @Html.Partial("/Areas/Coach/Views/TeacherSendAssignment/Partials/TeacherAssignmentView.cshtml")
+                }
+                else
+                {
+                    @Html.Partial("/Areas/Coach/Views/TeacherSendAssignment/Partials/TeacherVIPAssignmentView.cshtml")   
+                }
+            </form>
+        </div>
+    </div>  
+}
+
+

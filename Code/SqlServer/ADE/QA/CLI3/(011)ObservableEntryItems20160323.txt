@@ -1,0 +1,21 @@
+﻿GO
+
+/****** Object:  Table [dbo].[ObservableEntryItems]    Script Date: 2016/3/23 17:12:50 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ObservableEntryItems](
+	[ID] [int] NOT NULL,
+	[TargetText] [nvarchar](1000) NOT NULL,
+ CONSTRAINT [PK_ObservableEntryItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+

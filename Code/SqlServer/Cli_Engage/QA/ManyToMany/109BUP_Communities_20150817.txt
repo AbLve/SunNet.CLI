@@ -1,0 +1,48 @@
+﻿SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[BUP_Communities](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[TaskId] [int] NOT NULL,
+	[Action] [tinyint] NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[EngageID] [varchar](32) NOT NULL,
+	[InternalID] [varchar](100) NOT NULL,
+	[Address1] [varchar](500) NOT NULL,
+	[Address2] [varchar](500) NOT NULL,
+	[City] [varchar](140) NOT NULL,
+	[State] [int] NOT NULL,
+	[Zip] [varchar](10) NOT NULL,
+	[PhoneNumber] [varchar](15) NOT NULL,
+	[PHoneNumberType] [tinyint] NOT NULL,
+	[PrimarySalutation] [tinyint] NOT NULL,
+	[PrimaryName] [varchar](150) NOT NULL,
+	[PrimaryTitleId] [int] NOT NULL,
+	[PrimaryPhone] [varchar](150) NOT NULL,
+	[PrimaryPhoneType] [tinyint] NOT NULL,
+	[PrimaryEmail] [varchar](150) NOT NULL,
+	[SecondarySalutation] [tinyint] NOT NULL,
+	[SecondaryName] [varchar](150) NOT NULL,
+	[SecondaryTitleId] [int] NOT NULL,
+	[SecondaryPhone] [varchar](150) NOT NULL,
+	[SecondaryPhoneType] [tinyint] NOT NULL,
+	[SecondaryEmail] [varchar](50) NOT NULL,
+	[WebAddress] [varchar](500) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[Remark] [varchar](200) NOT NULL,
+	[FundingId] [int] NOT NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[BUP_Communities] ADD  DEFAULT ((0)) FOR [FundingId]
+GO

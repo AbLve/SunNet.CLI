@@ -1,0 +1,5 @@
+﻿if not exists(select * from syscolumns where id=object_id('Assessments') and name='GroupbyParentMeasure')
+alter table [dbo].[Assessments] add    GroupbyParentMeasure bit
+go
+update [Assessments] set GroupbyParentMeasure = 0 where GroupbyParentMeasure is null
+alter table [dbo].[Assessments] alter column    GroupbyParentMeasure bit not null

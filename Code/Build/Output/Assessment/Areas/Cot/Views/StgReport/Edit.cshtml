@@ -1,0 +1,356 @@
+﻿@using Sunnet.Cli.Core.Cot
+@model Sunnet.Cli.Business.Cot.Models.CotStgReportModel
+@{
+    ViewBag.Title = "Short Term Goals";
+    var assessmentId = (int)ViewBag.assessmentId;
+    var teacherId = (int)ViewBag.teacherId;
+    var teacher = (string)ViewBag.teacher;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var controlOptions = new Dictionary<string, object>();
+    controlOptions.Add("class", "form-control validate");
+    controlOptions.Add("rows", 8);
+    if (Model.Status == CotStgReportStatus.Saved || Model.Status == CotStgReportStatus.Completed)
+    {
+        controlOptions.Add("disabled", true);
+    }
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a>
+    <i class="icon-angle-right"></i>
+    @Html.ActionLink("Teachers", "All", "Teacher", new { Area = "Cot", id = assessmentId }, new { })
+    <i class="icon-angle-right"></i>
+    @Html.ActionLink(teacher, "Index", "Teacher", new { Area = "Cot", assessmentId = assessmentId, id = teacherId, year = Request.QueryString["year"] }, new { })
+    <i class="icon-angle-right"></i>
+    Short Term Goals
+}
+@section Styles{
+    <style type="text/css">
+        .tDnD_whileDrag {
+            -moz-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .table .tDnD_whileDrag td {
+            border-top: solid 1px #008000;
+            border-bottom: solid 1px #008000;
+            cursor: s-resize;
+        }
+
+        .tDnD_whileDrag td:first-child {
+            border-left: solid 1px #008000;
+        }
+
+        .tDnD_whileDrag td:last-child {
+            border-right: solid 1px #008000;
+        }
+
+        .dragHandle {
+            cursor: s-resize;
+        }
+    </style>
+}
+@section Scripts{
+    @Scripts.Render("~/scripts/cot")
+    @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        var assessmentJson = @Html.Raw(ViewBag.Json);
+        var assessmentModel = new CotAssessment(assessmentJson);
+
+        CKEDITOR.replace('OnMyOwn',
+        {
+            toolbar: 'COT'
+        });
+        CKEDITOR.replace('WithSupport',
+        {
+            toolbar: 'COT'
+        });
+        CKEDITOR.replace('AdditionalComments',
+        {
+            toolbar: 'COT'
+        });
+        assessmentModel.prapare = function() {
+            var items = [];
+            for (var i = 0; i < assessmentModel.measures.length; i++) {
+                var measure = assessmentModel.measures[i];
+                if (measure.items && measure.items.length) {
+                    for (var j = 0; j < measure.items.length; j++) {
+                        var item = measure.items[j];
+                        if (item.goalMetAble && item.goalMetAbled) {
+                            items.push(item.itemId);
+                        }
+                    }
+                }
+                if (measure.children && measure.children.length) {
+                    for (var k = 0; k < measure.children.length; k++) {
+                        var child = measure.children[k];
+                        if (child.items && child.items.length) {
+                            for (var j = 0; j < child.items.length; j++) {
+                                var item = child.items[j];
+                                if (item.goalMetAble && item.goalMetAbled) {
+                                    items.push(item.itemId);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $("#hidItems").val(JSON.stringify(items));
+        };
+        assessmentModel.save = function() {
+            updateCkeditor();
+            if ("@(Model.Status)" == "@(CotStgReportStatus.Saved)") {
+                assessmentModel.prapare();
+            }
+            $("#@(formId)").submit();
+        };
+        assessmentModel.getPdf = function(type) {
+            //type: teacher,mentor
+            var urls = {
+                teacher: '@Html.Raw(Url.Action("Pdf", "StgReport", new {Area = "Cot", id = Model.ID, type = "teacher"}))',
+                mentor: '@Html.Raw(Url.Action("Pdf", "StgReport", new {Area = "Cot", id = Model.ID, type = "mentor"}))'
+            };
+            var $form = $("#@(formId)");
+            if ($form.data("_source") != $form.serialize()) {
+                $.when(window.waitingConfirm("Cot_Generate_Stg_Report_Confirm", "OK", "Cancel")).done(function() {
+                    window.open(urls[type]);
+                });
+            } else {
+                window.open(urls[type]);
+            }
+        };
+        assessmentModel.goalSetDateFilled = "@(Model.Status)" != "@(CotStgReportStatus.Initialised)";
+        assessmentModel.completed = "@(Model.Status)" == "@(CotStgReportStatus.Completed)";
+        assessmentModel.stepUpward = function(measure, event) {
+            var $tbody = $(event.target).closest("tbody");
+            var $elementsToMove, $target;
+            if (measure.parent) {
+                $elementsToMove = $tbody;
+                if ($elementsToMove.prev("tbody").attr("parent")) {
+                    $target = $elementsToMove.prev("tbody");
+                } else {
+                    // already on the top
+                    window.showMessage("success", "Cot_Sort_Top");
+                }
+            } else {
+                $elementsToMove = $tbody.add(jQuery("tbody[parent='" + measure.measureId + "']"));
+                if ($tbody.prevAll("tbody[measure]").length) {
+                    $target = $tbody.prevAll("tbody[measure]").last();
+                } else {
+                    // already on the top
+                    window.showMessage("success", "Cot_Sort_Top");
+                }
+            }
+            if ($target && $target.length) {
+                $elementsToMove.insertBefore($target);
+                dropEnd();
+            }
+        };
+        var saveEvent = 0;
+        function dropEnd() {
+            var params = $.tableDnD.serializeTable(document.getElementById("itemOrders")) + "&id=@(Model.ID)";
+            clearTimeout(saveEvent);
+            saveEvent = setTimeout(function() {
+                $.post('@Url.Action("SaveOrders")', params, function(response) {
+                    if (response.success) {
+                        window.showMessage("success", "Cot_New_Orders_Saved");
+                    } else {
+                        window.showMessage("fail", response.msg);
+                    }
+                }, 'json');
+            }, 2000);
+        }
+
+        $(function() {
+            window.registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    location.replace(location.href);
+                }
+            });
+
+
+            ko.applyBindings(assessmentModel, document.getElementById("@(formId)"));
+            $("#itemOrders").tableDnD({
+                onDrop: function(table, row) {
+                    dropEnd();
+                },
+                dragHandle: ".dragHandle"
+            });
+        });
+    </script>
+}
+@using (Ajax.BeginForm("Save", "StgReport", null, PostFormHelper.DefaultAjaxOptions, new { id = formId, @class = "form-horizontal" }))
+{
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn"
+           href="@Url.Action("Report", "Index", new { area = "Cot", assessmentid = assessmentId, teacherId = teacherId, year = Request.QueryString["year"] })">
+            Select Goals/Update COT
+        </a>
+        <a class="mainbutton mainright-btn nav-btn"
+           href="@Url.Action("Index", "Teacher" , new { area="Cot" , assessmentid=assessmentId, id=teacherId, year=Request.QueryString["year"] })">
+            Teacher Folder
+        </a>
+    </div>
+    <div class="modal-l-b"></div>
+    <div class="right-content-top">
+        @Html.HiddenFor(x => x.ID)
+        <div class="form-group">
+            @Html.LabelFor(x => x.GoalSetDate, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(x => x.GoalSetDate, new
+           {
+               @class = "form-control date",
+               Value = Model.GoalSetDate.FormatDateString(),
+               data_bind = "enable:!goalSetDateFilled"
+           })
+                @Html.ValidationMessageFor(model => model.GoalSetDate)
+            </div>
+            @Html.LabelFor(x => x.SpentTime, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-2">
+                @Html.DropDownListFor(x => x.SpentTime, (IEnumerable<SelectListItem>)ViewBag.SpentTimeOptions, new
+           {
+               @class = "form-control",
+               data_bind = "enable:!goalSetDateFilled"
+           })
+                @Html.ValidationMessageFor(model => model.SpentTime)
+            </div>
+            @Html.LabelFor(x => x.GoalMetDate, new { @class = "control-label col-sm-2" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(x => x.GoalMetDate, new
+                {
+                    @class = "form-control date",
+                    Value = Model.GoalMetDate.FormatDateString(),
+                    data_bind = "required:goalSetDateFilled && !completed,enable:goalSetDateFilled&&!completed"
+                })
+                @Html.ValidationMessageFor(model => model.GoalMetDate)
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-body">
+            <table class="table  table-hover table-striped   table-condensed" id="itemOrders">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;"></th>
+                        <th style="width: 50px;"></th>
+                        <th>Goal Item</th>
+                        <th style="width: 100px;">STGR<br />Goal Set Date</th>
+                        <th style="width: 100px;">STGR<br />Goal Met Date</th>
+                    </tr>
+                </thead>
+                <!--ko foreach:{data:measures,as:'measure'}-->
+                <!--    ko if:measure.visible && measure.items && measure.items.length-->
+                <tbody data-bind="attr:{id:'measure' + measure.measureId,measure:measure.measureId}">
+                    <!--        ko template:{name:'_tmp_measure',data:measure}-->
+                    <!--        /ko-->
+                    <!--    ko if:items-->
+                    <!--        ko template:{name:'_tmp_item',foreach:items,as:'item'}-->
+                    <!--        /ko-->
+                    <!--    /ko-->
+                </tbody>
+                <!--    /ko-->
+                <!--|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||-->
+                <!--    ko if:measure.visible && measure.children && measure.children.length-->
+                <tbody data-bind="attr:{id:'measure' + measure.measureId,measure:measure.measureId}">
+                    <!--        ko template:{name:'_tmp_measure',data:measure}-->
+                    <!--        /ko-->
+                </tbody>
+                <!--        ko if:children && children.length-->
+                <!--            ko foreach:{data:children,as:'childMeasure'}-->
+                <!--                ko if:childMeasure.visible-->
+                <tbody data-bind="attr:{id:'child' + childMeasure.measureId,parent:measure.measureId}">
+                    <!--                    ko template:{name:'_tmp_measure2',data:childMeasure}-->
+                    <!--                    /ko-->
+                    <!--                    ko template:{name:'_tmp_item',foreach:childMeasure.items,as:'childItem'}-->
+                    <!--                    /ko-->
+                </tbody>
+                <!--                /ko-->
+                <!--            /ko-->
+                <!--        /ko-->
+                <!--    /ko-->
+                <!--/ko-->
+            </table>
+            <div class="form-group">
+                <div class="col-sm-11 col-sm-offset-1">
+                    <h3>Action Plan</h3>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.OnMyOwn, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.OnMyOwn, controlOptions)
+                    @Html.ValidationMessageFor(model => model.OnMyOwn)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.WithSupport, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.WithSupport, controlOptions)
+                    @Html.ValidationMessageFor(model => model.WithSupport)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.AdditionalComments, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.AdditionalComments, controlOptions)
+                    @Html.ValidationMessageFor(model => model.AdditionalComments)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="button-content">
+        @Html.HiddenFor(x => x.Status)
+        <input type="hidden" id="hidItems" name="items" />
+        <input type="submit" class="mainbutton mainright-btn submit-btn" data-bind="click:save,visible:!completed" value="Save"
+               style="display:none;" />
+        <input type="button" class="mainbutton mainright-btn create-btn" data-bind="click:function(){$root.getPdf('teacher');}" value="Generate Teacher STG Report" />
+        <input type="button" class="mainbutton mainright-btn create-btn" data-bind="click:function(){$root.getPdf('mentor');}" value="Generate Mentor STG Report" />
+    </div>
+}
+<script type="text/html" id="_tmp_item">
+    <tr data-bind="attr:{id:id}">
+        <td>
+            <span class="dragHandle" title="Drag to sort">
+                <i class="icon-reorder"></i>
+            </span>
+        </td>
+        <td data-bind="css:{'level1':level.value == 1,'level2':level.value == 2,'level3':level.value == 3}">
+            <input type="checkbox" data-bind="enable:goalMetAble,checked:goalMetAbled" />
+        </td>
+        <td style="text-align: left;" data-bind="html:fullTargetText"></td>
+        <td data-bind="text:goalSetDate"></td>
+        <td data-bind="text:goalMetDate"></td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_measure">
+    <!--ko if:measure.visible  -->
+    <tr class="success nodrag nodrop">
+        <td>
+            <a class="table-btn view-btn" href="javascript:;" title="Step Upward" data-bind="click:$root.stepUpward">
+                <i class="icon-arrow-up"></i>
+            </a>
+        </td>
+        <td colspan="5" style="text-align: left;font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+    <!--/ko-->
+</script>
+<script type="text/html" id="_tmp_measure2">
+    <!--ko if:childMeasure.visible-->
+    <tr class="info  nodrag nodrop">
+        <td>
+            <a class="table-btn view-btn" href="javascript:;" title="Step Upward" data-bind="click:$root.stepUpward">
+                <i class="icon-arrow-up"></i>
+            </a>
+        </td>
+        <td colspan="5" style="text-align: left;padding-left: 40px;font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+    <!--/ko-->
+</script>

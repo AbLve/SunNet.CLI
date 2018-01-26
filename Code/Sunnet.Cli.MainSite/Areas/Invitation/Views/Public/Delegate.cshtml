@@ -1,0 +1,193 @@
+﻿@model Sunnet.Cli.Business.Users.Models.DelegateModel
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Users.Enums
+@using Sunnet.Cli.Core.Users.Entities
+@{
+    ViewBag.Title = "Delegate";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Sunnet.Cli.MainSite.Models.Leftmenu_MainSite.User)
+}
+@section BreadPath
+{
+    <a href="/Invitation/Public/Dashboard">User Management</a> <i class="icon-angle-right"></i>Delegate
+}
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        @Html.LabelFor(m => m.RoleType, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(m => m.RoleType, (IEnumerable<SelectListItem>)ViewBag.RoleTypeOptions, new
+           {
+               @class = "form-control",
+               data_bind = "value: searchCriteria.roleType"
+           })
+
+        </div>
+        @Html.LabelFor(m => m.Status, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(m => m.Status, ViewTextHelper.DefaultAllText, "-1", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.status"
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Keyword, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(m => m.Keyword, "", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.keyword"
+            })
+        </div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">Delegates</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.FirstName"></td>
+                    <td data-bind="text: item.LastName"></td>
+                    <td data-bind="text: item.CommunityNameText"></td>
+                    <td data-bind="text: item.RoleType.text == 0 ? '' : item.RoleType.text"></td>
+                    <td data-bind="text: item.GoogleAccount"></td>
+                    <td data-bind="text: item.Status.text == 0 ? '' : item.Status.text"></td>
+                    <td align="left" style="padding-left: 5px;">
+                        @if (ViewBag.accessView)
+                        {
+                            <a class="table-btn icon-folder-open view-btn" href="#" data-bind='event: { click: $root.onDataViewed }' title="Review"></a>
+                        }
+                        @if (ViewBag.accessEdit)
+                        {   
+                            <a class="table-btn icon-pencil pencil-btn" href="#" data-bind="event: { click: $root.onDataUpdated }" href="#" title="Edit"></a>
+                        }
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 7 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Delegate = {};
+
+        jQuery(function () {
+            list_Delegate = new ViewModel(
+                {
+                    instanceName: "list_Delegate",
+                    modalId: "modalNormal",
+                    showField: "FirstName",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchDelegates")))',
+                    orderBy: "LastName",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayNameFor(model => model.FirstName)",
+                            field: "@Html.NameFor(model => model.FirstName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.LastName)",
+                            field: "@Html.NameFor(model => model.LastName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.CommunityNameText)",
+                            field: "@Html.NameFor(model => model.CommunityNameText)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.RoleType)",
+                            field: "@Html.NameFor(model => model.RoleType)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.GoogleAccount)",
+                            field: "@Html.NameFor(model => model.GoogleAccount)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '15%'
+                        },
+                        { text: "Action", width: '10%' }
+                    ],
+                    searchCriteria: {
+                        roleType: ko.observable(window.queryString("roleType")),
+                        keyword: ko.observable(window.queryString("keyword", "")),
+                        status: ko.observable(window.queryString("status", -1))
+                    }
+                }, {
+                    onDataViewed: function (delegate) {
+                        if (delegate.RoleType.value == '@((int)Role.District_Community_Delegate)') {
+                            location.href = '@Url.Action("View", "Community")/' + delegate.ObjectId + "?roleType=@((int)Role.District_Community_Delegate)&returnurl=" + list_Delegate.getLocation();;
+                        } else if (delegate.RoleType.value == '@((int)Role.Community_Specialist_Delegate)') {
+                            location.href = '@Url.Action("View", "CommunitySpecialist")/' + delegate.ObjectId + "?roleType=@((int)Role.Community_Specialist_Delegate)&returnurl=" + list_Delegate.getLocation();;
+                        } else if (delegate.RoleType.value == '@((int)Role.Principal_Delegate)') {
+                            location.href = '@Url.Action("View", "Principal")/' + delegate.ObjectId + "?roleType=@((int)Role.Principal_Delegate)&returnurl=" + list_Delegate.getLocation();;
+                        } else if (delegate.RoleType.value == '@((int)Role.School_Specialist_Delegate)') {
+                            location.href = '@Url.Action("View", "SchoolSpecialist")/' + delegate.ObjectId + "?roleType=@((int)Role.School_Specialist_Delegate)&returnurl=" + list_Delegate.getLocation();
+                        } else if (delegate.RoleType.value == '@((int)Role.TRS_Specialist_Delegate)') {
+                            location.href = '@Url.Action("View", "TRSSpecialist")/' + delegate.ObjectId + "?roleType=@((int)Role.TRS_Specialist_Delegate)&returnurl=" + list_Delegate.getLocation();
+                        }
+                    },
+                    onDataUpdated: function (delegate) {
+                        if (delegate.RoleType.value == '@((int)Role.District_Community_Delegate)') {
+                            location.href = '@Url.Action("Edit", "Community")/' + delegate.ObjectId + "?roleType=@((int)Role.District_Community_Delegate)&returnurl=" + list_Delegate.getLocation();;
+                        } else if (delegate.RoleType.value == '@((int)Role.Community_Specialist_Delegate)') {
+                            location.href = '@Url.Action("Edit", "CommunitySpecialist")/' + delegate.ObjectId + "?roleType=@((int)Role.Community_Specialist_Delegate)&returnurl=" + list_Delegate.getLocation();;
+                        } else if (delegate.RoleType.value == '@((int)Role.Principal_Delegate)') {
+                            location.href = '@Url.Action("Edit", "Principal")/' + delegate.ObjectId + "?roleType=@((int)Role.Principal_Delegate)&returnurl=" + list_Delegate.getLocation();;
+                        } else if (delegate.RoleType.value == '@((int)Role.School_Specialist_Delegate)') {
+                            location.href = '@Url.Action("Edit", "SchoolSpecialist")/' + delegate.ObjectId + "?roleType=@((int)Role.School_Specialist_Delegate)&returnurl=" + list_Delegate.getLocation();
+                        } else if (delegate.RoleType.value == '@((int)Role.TRS_Specialist_Delegate)') {
+                            location.href = '@Url.Action("Edit", "TRSSpecialist")/' + delegate.ObjectId + "?roleType=@((int)Role.TRS_Specialist_Delegate)&returnurl=" + list_Delegate.getLocation();
+                        }
+                    }
+                });
+
+            list_Delegate.search();
+            ko.applyBindings(list_Delegate);
+        });
+    </script>
+}

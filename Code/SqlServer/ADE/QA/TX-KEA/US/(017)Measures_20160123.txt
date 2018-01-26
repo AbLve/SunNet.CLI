@@ -1,0 +1,26 @@
+﻿if not exists(select * from syscolumns where id=object_id('Measures') and name='StopButton')
+alter table Measures  add StopButton bit
+go
+update Measures set StopButton = 0 where StopButton is null
+go
+alter table Measures  alter column  StopButton bit not NULL
+GO
+
+
+
+if not exists(select * from syscolumns where id=object_id('Measures') and name='NextButton')
+alter table Measures  add NextButton bit
+go
+update Measures set NextButton = 0 where NextButton is null
+go
+alter table Measures  alter column  NextButton bit not NULL
+GO
+
+
+if not exists(select * from syscolumns where id=object_id('Measures') and name='PreviousButton')
+alter table Measures  add PreviousButton bit
+go
+update Measures set PreviousButton = 0 where PreviousButton is null
+go
+alter table Measures  alter column  PreviousButton bit not NULL
+GO

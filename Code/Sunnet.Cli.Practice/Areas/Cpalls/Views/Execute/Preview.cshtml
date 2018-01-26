@@ -1,0 +1,114 @@
+﻿@{
+    Layout = "~/Areas/Cpalls/Views/Shared/_Layout_Cpalls.cshtml";
+    ViewBag.Title = "Preview";
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var execJson;
+        var execModel;
+        $(function () {
+            $("#modalWaiting").modal("show");
+            execJson = @Html.Raw(ViewBag.Json);
+            execJson.Mode = Exec_Mode.Preview;
+            execModel = new getAssessmentModel(execJson);
+
+            $.when(execModel.prepared()).done(function () {
+                $("#modalWaiting").modal("hide");
+                execModel.init();
+                ko.applyBindings(execModel);
+                if ($("#divContent").length != 0)
+                {
+                    $("#divContent").height($("#divContent").width() * (565 / 1024));
+                }
+
+                if ($("#divResponseContent").length != 0)
+                {
+                    $("#divResponseContent").height($("#divContent").height()-80);
+                }
+            });
+        });
+    </script>
+}
+
+<style type="text/css">
+    html:-moz-full-screen {
+        background-color: #6faa29;
+    }
+
+    html:-webkit-full-screen {
+        background-color: #6faa29;
+    }
+
+    html:fullscreen {
+        background-color: #6faa29;
+    }
+</style>
+
+<div class="item-warp">
+    <div class="item-container">
+        <div class="item-main"  >
+            <div class="item-main-disable" data-bind="visible:!visible()"></div>
+            <div class="item-main-header" data-bind="visible:status() != Exec_Status.resulting">
+                <h4>
+                    <span data-bind="html:currentMeasure().name"></span>
+                    <span data-bind="html:': '+currentItem().label,visible:currentItem().isShowing(),visible:window._DEBUG"></span>
+                </h4>
+                <a class="item-fullscreen-btn stop-btn" data-bind="event:{click:fullscreen}"><i class="icon-fullscreen"></i></a>
+                <!-- ko if: (currentItem().type === Ade_ItemType.TxkeaReceptive.value || currentItem().type === Ade_ItemType.TxkeaExpressive.value) && currentMeasure().stopButton-->
+                <a class="item-stop-btn pass-btn" data-bind="event:{click:quit}"><i class="icon-undo"></i>Quit and Discard</a>
+                <!-- /ko-->
+                <p class="time-remaining" data-bind="visible:window._DEBUG">
+                    <i class="icon-time"></i>time remaining
+                    <a class="time-con" data-bind="text:timeRemaining"></a>
+                </p>
+            </div>
+            @****Items Page****@
+            <!-- ko template: {name:$root.itemTemplate, data:currentItem(), as:'item', if:$root.visible() && $root.status() === Exec_Status.going}-->
+            <!-- /ko-->
+            @****Checklist Page****@
+            @Html.Partial("_Partial_Checklist")
+
+            <div class="item-main-footer">
+                <div class="left-btns">
+                    <!-- ko if: (currentItem().type === Ade_ItemType.TxkeaReceptive.value || currentItem().type === Ade_ItemType.TxkeaExpressive.value) && currentMeasure().previousButton-->
+                    <a class="item-btn previous-btn" href="#">
+                        <i class='icon-hand-left'></i>Previous
+                    </a>
+                    <!-- /ko-->
+                </div>
+                <div class="middle-btns">
+
+                </div>
+                <div class="right-btns">
+                    <!-- ko if: (currentItem().type === Ade_ItemType.TxkeaReceptive.value || (currentItem().type === Ade_ItemType.TxkeaExpressive.value && (currentItem().ShowResponse() || currentItem().responseType===1))) && currentMeasure().nextButton-->
+                    <a class="item-btn next-btn" href="#" data-bind="html:nextHtml">
+                    </a>
+                    <!-- /ko-->
+                    <a class="item-btn next-btn" href="#" data-bind="event:{click:close}">
+                        <i class="icon-hand-left"></i>Close
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_Partial_ItemTemplates")
+<script>
+    $(function ()
+    {
+
+        var w = $(".item-container").width();
+        var h = $(".item-container").height();
+
+        if ((w / h) > (1024 / 660))
+        {
+            $(".item-container").width(h * (1024 / 660));
+        } else
+        {
+
+        }
+        //$(".item-container").width("800px");
+    });
+</script>

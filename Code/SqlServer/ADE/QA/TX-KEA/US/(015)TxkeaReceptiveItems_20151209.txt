@@ -1,0 +1,17 @@
+﻿if not exists(select * from syscolumns where id=object_id('TxkeaReceptiveItems') and name='EndInstructionAudio')
+  alter table TxkeaReceptiveItems  add EndInstructionAudio VARCHAR(200) 
+  go
+  update TxkeaReceptiveItems set EndInstructionAudio = '' where EndInstructionAudio is null
+  go
+  alter table TxkeaReceptiveItems  alter column  EndInstructionAudio VARCHAR(200) not NULL
+  GO
+  
+
+
+if not exists(select * from syscolumns where id=object_id('TxkeaReceptiveItems') and name='EndInstructionText')
+  alter table TxkeaReceptiveItems  add EndInstructionText VARCHAR(1000) 
+  go
+  update TxkeaReceptiveItems set EndInstructionText = '' where EndInstructionText is null
+  go
+  alter table TxkeaReceptiveItems  alter column  EndInstructionText VARCHAR(1000) not NULL
+  GO

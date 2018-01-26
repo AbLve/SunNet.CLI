@@ -1,0 +1,124 @@
+﻿@using Sunnet.Framework
+@{
+    ViewBag.Title = "Class Custom Groups";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    List<GroupModel> groupList = ViewBag.List as List<GroupModel>;
+    ClassModel classModel = ViewBag.ClassModel;
+}
+
+<style type="text/css">
+    table {
+        border: none;
+        margin: 0;
+        padding: 0;
+        margin-bottom: 20px;
+        font-family: Calibri;
+        font-size: 12px;
+    }
+
+        table td, table th {
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+    .group_pdf_context td {
+        border-bottom: 1px #333 solid;
+        line-height: 24px;
+    }
+</style>
+
+
+<div class="main-content main-content">
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover" width="99%">
+            <thead>
+                <tr>
+                    <td>
+                        <table class="table table-striped table-hover" width="100%">
+                            <tr>
+                                <td style="width: 180px;">&nbsp;</td>
+                                <td style="font-size: 14px; font-weight: bold;">@(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+                                    Class Custom Groups</td>
+                                <td style="width: 180px;">
+                                    <img src="@(DomainHelper.AssessmentDomain)images/cli_logo.png" style="width: 150px; height: 60px; vertical-align: middle;" alt="cli_logo"/></td>
+                            </tr>
+                        </table>
+                        <table class="table table-striped table-hover" width="100%">
+                            <tr>
+                                <th style="text-align: left; font-weight: normal;">Communtiy/District: @classModel.School.CommunitiesText</th>
+                                <th style="text-align: right; font-weight: normal;">Assessment Language: @ViewBag.Language</th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; font-weight: normal;">School: @classModel.School.Name</th>
+                                <th style="text-align: right; font-weight: normal;">Class: @classModel.ClassName</th>
+
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; font-weight: normal;">School Year: @ViewBag.Year</th>
+                                <th style="text-align: right; font-weight: normal;">Teacher:   &nbsp;
+                        @foreach (string s in ViewBag.Teacher as List<string>)
+                        {
+                            <div style="display: inline-block;">@(s); </div>
+                        }</th>
+                            </tr>
+                            <tr>
+                                <th><span style="display:none;">1</span></th>
+                                <th style="text-align: right; font-weight: normal;">Wave: @ViewBag.WaveString</th>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <table class="table table-striped table-hover group_pdf_context" width="100%">
+                            @foreach (GroupModel item in groupList)
+                            {
+                                <tr>
+                                    <th colspan="3" style="text-align: left; line-height: 24px;">
+                                        <strong>
+                                            @item.Name
+                                        </strong></th>
+                                </tr>
+                                <tr>
+                                    <th style="border-bottom: 1px solid #333; line-height: 24px; width: 180px;">Student</th>
+                                    <th style="border-bottom: 1px solid #333; width: 50px;">Score</th>
+                                    <th style="border-bottom: 1px solid #333;">Notes</th>
+                                </tr>
+                                foreach (GroupStudentModel studentItem in item.StudentList.OrderBy(r => r.LastName))
+                                {
+                                <tr>
+                                    <td style="width: 180px;">@studentItem.FirstName  @studentItem.LastName</td>
+                                    <td style="width: 50px;"></td>
+                                    <td></td>
+                                </tr>
+                                }
+                                <tr>
+                                    <td colspan="3" style="text-align: left; border: none; border-bottom: 1px solid #333"><strong>Activities: </strong>
+                                        @for (int i=0;i<item.MyActivityList.Count;i++)
+                                        {
+                                            var activity = item.MyActivityList[i];
+                                            <a href="@(SFConfig.CACDomain + activity.Url)" title="@activity.ActivityName" target="_blank">@activity.ActivityName</a>
+                                            if (i < (item.MyActivityList.Count - 1))
+                                            {
+                                                <span>|</span>
+                                            }
+
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="border: 0;">&nbsp;</td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+</div>
+

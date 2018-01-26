@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewBag.Title = "TRS Login";
+    Layout = "~/Views/Shared/_Layout_LogOut.cshtml";    
+}
+@section Styles
+{
+    <style type="text/css">
+        .logout-main { width: 480px; }
+        .logout-main-header { color: #018a01;margin-bottom: 10px; }
+        .logout-main-header p {line-height: 32px;font-size: 18px; }
+        .logout-main-header h3 {line-height: 36px;font-size: 24px; }
+        .logout-main-body {border: 2px #ddd solid;border-radius: 10px;padding: 10px;}
+        .logout-main-body p { color: #333333; }
+        .logout-main-btn {width: 300px;margin: 10px; }
+        .logout-main-body p .login-text-link { color:#007699 }
+    </style>
+}
+
+
+<div class="logout-main">
+    <div class="logout-main-header">
+        <p>Texas Rising Star Staff</p>
+        <h3>Welcome to CLI Engage</h3>
+        <a class="mainbutton logout-main-btn close-btn" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.SsoSiteDomain)home/Index?@(ViewBag.TRS_LoginUrl_Google)">Sign In with your Google Account</a>
+    </div>
+    <div class="logout-main-body">
+        
+        <p>You will need a Google or Gmail account to set up a new account or log in to your existing account on CLI Engage to access tools and resources for Texas Rising Star. If you do not have a Google account, you can create one using your existing email account or create a Gmail account by going to the following link:<br/><a href="https://accounts.google.com/signup" class="login-text-link" target="blank">https://accounts.google.com/signup </a>
+<br/><br/>
+            (To use your current email address, click "I prefer to use my current email address" below the Choose Your Username field.) 
+<br/><br/>
+            This process will allow you to use your Google account to log into the CLI Engage website. Only basic Google account information will be used by UTHealth to set up your CLI Engage account. </p>
+    </div>
+</div>

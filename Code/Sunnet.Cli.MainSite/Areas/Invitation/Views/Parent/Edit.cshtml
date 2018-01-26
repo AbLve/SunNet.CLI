@@ -1,0 +1,110 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.ParentEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Business.Permission.Models
+@{
+    ViewBag.Title = "Open";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function LoadSettingIds() {
+            var idStr = "@(Model.SettingIds)";
+            var listId = idStr.split(',');
+            for (var i = 0; i < listId.length; i++) {
+                $("[name='chkSetting'][value='" + listId[i] + "']").attr("checked", true);
+            }
+            if ("@ViewBag.SettingReadOnly" == "True") {
+                $("[name='chkSetting']").attr("readonly", "readonly");
+                $("[name='chkSetting']").click(function () { return false });
+                $("#txtOtherSetting").attr("readonly", "readonly");
+                $("[name='chkSetting']").rules("remove", "required");
+            }
+            ClickOtherSetting();
+        }
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("index");
+                }
+            });
+            if ($("#Relation :selected").text() == "Other")
+                $("#RelationOther").attr("type", "text");
+            $("#Relation").change(function () {
+                if ($("#Relation :selected").text() == "Other")
+                    $("#RelationOther").attr("type", "text");
+                else {
+                    $("#RelationOther").val("");
+                    $("#RelationOther").attr("type", "hidden");
+                }
+            })
+            $("#SaveInvite").click(function () {
+                $("<input type='hidden' name='isInvite' id='isInvite' value='true' />").appendTo($("#@(formId)"));
+            });
+            LoadSettingIds();
+        });
+        function changeInactive(v) {
+            $form = $("#@(formId)");
+            if ($(v).val() == "2") {
+                $.post("/Invitation/Public/Inactive?id=@(Model.UserInfo.ID)", function (result) {
+                    if (result) {
+                        $form.data("_source", $form.serialize());
+                        $.when(showMessage("success", "The user has been inactive.")).done(function () { redirectBack("index"); });
+                    } else {
+                        showMessage("fail");
+                    }
+                });
+            }
+        }
+        function ClickOtherSetting() {
+            if ($("#chkOther").is(":checked")) {
+                $("#txtOtherSetting").show();
+            } else {
+                $("#txtOtherSetting").hide();
+            }
+
+        }
+    </script>
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Sunnet.Cli.MainSite.Models.Leftmenu_MainSite.User)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("User Management", "Dashboard", "Public"))
+    <i class="icon-angle-right"></i>
+    @(Html.ActionLink("Open", "Index", "Parent")) <i class="icon-angle-right"></i>
+    @(Model.UserInfo.FirstName + " " + Model.UserInfo.LastName)
+}
+
+@using (Ajax.BeginForm("SaveParent", "Parent", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    <div class="main-content">
+        @Html.Partial("~/Areas/Invitation/Views/Parent/Partials/EditPartial.cshtml")
+        <div class="content-title"></div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ParentNotes, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextAreaFor(model => model.ParentNotes, new { @class = "form-control", style = "height:70px; margin:0px; padding:0px;" })
+                    @Html.ValidationMessageFor(model => model.ParentNotes)
+                </div>
+            </div>
+        </div>
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit">
+            <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+        </div>
+    </div>
+}
+

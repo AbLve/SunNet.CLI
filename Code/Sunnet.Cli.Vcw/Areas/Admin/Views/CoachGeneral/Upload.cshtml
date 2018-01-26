@@ -1,0 +1,256 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.CoachFileModel
+@using Sunnet.Cli.UIBase.Models;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using System.Web.Optimization;
+@using Sunnet.Cli.Business.Vcw.Models;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.Vcw.Models;
+@using Sunnet.Framework
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Admin_Coaches)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Coaches", "Index", "CoachGeneral"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    @(Html.ActionLink("Coach General", "Index", "CoachGeneral"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    Upload File
+}
+@{
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<CoachListModel> Coaches = ViewBag.Coaches as List<CoachListModel>;
+    List<SelectItemModel> Strategies = ViewBag.Strategies as List<SelectItemModel>;
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "Index")");
+                }
+            });
+
+
+            $("#OwnerId").change(function () {
+                if ($("#OwnerId").val() == "") {
+                    $("#div_pm").empty();
+                }
+                else {
+                    $.post(
+                    "GetPMByCoach",
+                    { coachId: $("#OwnerId").val() },
+                    function (data) {
+                        $("#div_pm").empty();
+                        var pm = eval('(' + data + ')');
+                        for (var i = 0; i < pm.length; i++) {
+                            var append = "<label class='checkbox-inline'><input type='checkbox' name='pm' value='" + pm[i].ID + "'>" + pm[i].Name + "</label>";
+                            $("#div_pm").append(append);
+                        }
+                    });
+                }
+            });
+        })
+
+            function getUploaderPrefix() {
+                return "@(ViewBag.EncryptUserID)_";
+            }
+
+            var arrSelectCoachList;
+            function receiveCoachList(v) {
+                if (v) {
+                    arrSelectCoachList = v;
+                    var tmpSelectCoachHtml = TemplateEngine(window["template_coach_select"].innerHTML, v);
+                    $("#divCoachSelect").html(tmpSelectCoachHtml);
+                }
+            }
+
+            function moveCoachList(id) {
+                for (var i = 0; i < arrSelectCoachList.length; i++) {
+                    if (arrSelectCoachList[i].id == id) {
+                        arrSelectCoachList.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+    </script>
+}
+@using (Ajax.BeginForm("Upload", "CoachGeneral", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to General List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            @Html.LabelFor(model => model.IdentifyFileName, new { @class = "control-label required" })
+                        </div>
+                        <div class="inputtext-con">
+                            @Html.TextBoxFor(model => model.IdentifyFileName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.IdentifyFileName)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Date Video Recorded</div>
+                        </div>
+                        <div class="textarea-con">
+                            <label for="DateRecorded" class="hide">&nbsp;</label>
+                            @Html.TextBoxFor(m => m.DateRecorded, new { @class = "form-control date", @Value = "" })
+                            @Html.ValidationMessageFor(m => m.DateRecorded)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label required">
+                                Upload File
+                                 (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                            </div>
+                        </div>
+                        <div class="upload-btn">
+                            <div id="picker">1) Select File</div>
+                        </div>
+                        <div id="filelists" class="uploader-list"></div>
+                        <div class="upload-btn">
+                            <a id="ctlBtn">2) Start Upload</a>
+                        </div>
+                        <input type="hidden" id="filetarget" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <label class="control-label required" for="OwnerId">Coach</label>
+                        </div>
+                        <div class="inputtext-con">
+                            @Html.DropDownListFor(model => model.OwnerId, ViewBag.CoachesBehalf as IEnumerable<SelectListItem>, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.OwnerId)
+                        </div>
+                    </div>
+
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Coaching Strategies</div>
+                        </div>
+                        @if (Strategies != null)
+                        {
+                            foreach (SelectItemModel item in Strategies)
+                            {
+                                if (item.Name.Trim().ToLower() == SFConfig.StrategyOther)
+                                {
+                            <div class="checkbox-con checkbox-con-double">
+                                <label class="checkbox-inline checkbox-other">
+                                    <input type="checkbox" name="Strategy"
+                                        onclick="StrategyClick(this)"  value="@item.ID">@item.Name
+                                </label>
+                                <label class="textbox-other">
+                                    @Html.TextBoxFor(model => model.StrategyOther, new { @class = "form-control form-control-double", @disabled = "disabled" })
+                                </label>
+                                @Html.ValidationMessageFor(model => model.StrategyOther)
+                            </div>
+                                }
+                                else
+                                {
+                            <div class="checkbox-con checkbox-con-double">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="Strategy"  value="@item.ID">@item.Name
+                                </label>
+                            </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Send Upload to PM</div>
+                            <input type="checkbox" name="pm" class="hide" />
+                        </div>
+                        <div class="checkbox-con-multi" id="div_pm">
+                        </div>
+                        <div class="content-title3">
+                            <div class="control-label">Send Upload to Coach</div>
+                            <a title="Coaches" href="/SearchUser/CoachList" data-target="#modalNormal"
+                                data-toggle="modal" class="t-teacher-btn">Coach List</a>
+                        </div>
+                        <script type="text/html" id="template_coach_select">
+                            <%for ( var i = 0; i < this.length ; i++) {%> 
+                                      <a class="del-btn t-del-btn">
+                                          <button type="button" class="close" data-dismiss="alert" onclick="moveCoachList(<% this[i].id %>)">
+                                              <span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                          <input type="hidden" name="coach" value="<% this[i].id %>" /><% this[i].fistName %> <% this[i].lastName %>
+                                      </a>
+                            <%}%>
+                        </script>
+                        <div style="max-height: 162px; overflow-y: scroll" id="divCoachSelect">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">
+                                Coaching Objectives
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                            </div>
+                            <label for="Objectives" class="hide">&nbsp;</label>
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextAreaFor(m => m.Objectives, new { @class = "form-control", row = "2" })
+                            @Html.ValidationMessageFor(m => m.Objectives)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">
+                                Coaching Effectiveness
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                            </div>
+                            <label class="hide" for="Effectiveness">&nbsp;</label>
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextAreaFor(m => m.Effectiveness, new { @class = "form-control", row = "2" })
+                            @Html.ValidationMessageFor(m => m.Effectiveness)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="uploadfiles" id="uploadfiles" />
+        <div class="modal-footer">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit_new(this);">
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal" 
+            onclick='redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "Index")")'>
+                Cancel</button>
+        </div>
+    </div>
+}

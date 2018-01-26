@@ -1,0 +1,34 @@
+﻿@using Sunnet.Cli.MainSite.Models
+
+@{
+    ViewBag.Title = "BUP";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Toolbox)
+}
+
+@section Styles{
+    <style type="text/css">
+        .ade-menu-dashboard li {
+            width: 170px;
+        }
+
+            .ade-menu-dashboard li a {
+                width: 170px;
+            }
+    </style>
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("BUP", "Index", "BUP"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Index
+}
+<ul class="ade-menu-dashboard">
+    <li><a href="Community" class="administrative-con"><span><i></i>Community/District</span></a></li>
+    <li><a href="/BUP/School/"  class="administrative-con"><span><i></i>School</span></a></li>
+    <li><a href="/BUP/Classroom/"  class="administrative-con"><span><i></i>Classroom</span></a></li>
+    <li><a href="/BUP/Class/"  class="administrative-con"><span><i></i>Class</span></a></li>
+    <li><a href="/BUP/Teacher"  class="administrative-con"><span><i></i>Teacher</span></a></li>
+    <li><a href="/BUP/Student"  class="administrative-con"><span><i></i>Student</span></a></li>
+</ul>

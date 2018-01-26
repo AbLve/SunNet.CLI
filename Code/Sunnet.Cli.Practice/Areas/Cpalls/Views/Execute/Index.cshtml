@@ -1,0 +1,137 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Cpalls.Models.ExecCpallsAssessmentModel
+@{
+    ViewBag.Title = "Start";
+
+    
+    var backUrl = Url.Action("Index", "Student", new
+    {
+       
+        assessmentId = Model.AssessmentId,
+        year = Sunnet.Cli.Business.Common.CommonAgent.Year,
+        wave = Request.QueryString["wave"]
+    });
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a>
+    <i class="icon-angle-right"></i><a href="@backUrl">Student View</a>
+    <i class="icon-angle-right"></i>@Model.Student.Name
+    <i class="icon-angle-right"></i>Start
+}
+@section Scripts
+{
+  @Scripts.Render("~/scripts/cpalls/practiceoffline")
+
+    @if (Model.Measures.Any(x => x.OrderType == OrderType.Sequenced && x.Status == CpallsStatus.Initialised && x.ShowLaunchPage))
+    {
+
+        <script type="text/javascript">
+            function cpallsDone() {
+                location.replace('@(Html.Raw(backUrl))');
+          }
+
+          var execJson = @Html.Raw(ViewBag.Json);
+            var jsonStr = '';
+            var execModel;
+            jQuery(function() {
+                jsonStr = JSON.stringify(execJson);
+                execHelper.setLocalStorage(execHelper.keys.execCpalls, jsonStr);
+                execModel = new getAssessmentModel(execJson);
+                execModel.prepared();
+
+                $("#btnStart").click(function() {
+                    $.each(execJson.Measures, function(i, measure) {
+                        $.extend(measure, { StartWith: +($("#measure" + measure.MeasureId).val()) || 0 });
+                        if (measure.StartWith >= measure.Items.length) {
+                            measure.StartWith = measure.Items.length - 1;
+                        }
+                        jsonStr = JSON.stringify(execJson);
+                        execHelper.setLocalStorage(execHelper.keys.execCpalls, jsonStr);
+                    });
+                    location.replace('@Url.Action("Go")');
+              });
+
+
+          });
+        </script>
+    }
+    else
+    {
+         <script type="text/javascript">
+             function cpallsDone() {
+                 location.replace('@(Html.Raw(backUrl))');
+            }
+            var execJson = @Html.Raw(ViewBag.Json);
+             var jsonStr = '';
+             var execModel;
+             jQuery(function() {
+                 jsonStr = JSON.stringify(execJson);
+                 execHelper.setLocalStorage(execHelper.keys.execCpalls, jsonStr);
+                 execModel = new getAssessmentModel(execJson);
+                 execModel.prepared();
+                 location.replace('@Url.Action("Go")');
+            });
+        </script>
+    }
+}
+@if (Model.Measures.Any(x => x.OrderType == OrderType.Sequenced && x.Status == CpallsStatus.Initialised && x.ShowLaunchPage))
+{
+    <div class="main-content top-form">
+        <form class="form-horizontal" role="form">
+            <label class="control-label">Assessment</label>
+            <p class="form-control-static">@Model.Name</p>
+            <label class="control-label">Student</label>
+            <p class="form-control-static">@Model.Student.Name</p>
+            <label class="control-label">Year</label>
+            <p class="form-control-static">@Model.SchoolYear</p>
+            <label class="control-label">Wave</label>
+            <p class="form-control-static">@Model.Wave.ToDescription()</p>
+            <label class="control-label">Measures</label>
+            <p class="form-control-static">@(string.Join(", ", Model.Measures.Select(x => x.Name)))</p>
+        </form>
+    </div>
+    <div class="right-content-top">
+        <button class="mainbutton mainright-btn nav-btn" id="btnStart">
+            Start
+        </button>
+    </div>
+    
+    <div class="main-content">
+        <div class="content-title">Measures</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td width="200">Measure</td>
+                        <td width="200">Start With</td>
+                        <td width="*"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Model.Measures.Where(x => x.OrderType == OrderType.Sequenced && x.Status == CpallsStatus.Initialised && x.ShowLaunchPage))
+                    {
+                        <tr>
+                            <td>@m.Name</td>
+                            <td>
+                                <input class="form-control" id="measure@(m.MeasureId)" value="0" />
+                            </td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+
+}

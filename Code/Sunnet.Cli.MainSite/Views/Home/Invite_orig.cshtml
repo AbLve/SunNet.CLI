@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "Invite";
+    Layout = null;
+}
+
+<h2>Invite</h2>
+@if (@ViewBag.Show)
+{
+    if (@ViewBag.Msg == string.Empty)
+    {   
+        <label>Please enter Unique Identifier</label>
+        <input type="text" id="txtEmail" />
+        <input type="button" value="Submit" onclick="login()" />
+
+    }
+    else
+    {
+        @ViewBag.Msg
+
+        if (@ViewBag.Url != string.Empty)
+        {
+        <a href="@(ViewBag.Url)">Login</a>
+        }
+    }
+
+
+    <script type="text/javascript">
+        function login() {
+            var m = document.getElementById("txtEmail").value;
+            if (m == "")
+                alert('Please enter Unique Identifier');
+            else {
+                location.href = '@ViewBag.Url' + m;
+        }
+    }
+    </script>
+}

@@ -1,0 +1,46 @@
+﻿@using Sunnet.Cli.Business.Cpalls.Models;
+@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.CustomClass = "main-con-right-vcw-dashboard";
+}
+
+@section BreadPath
+{
+    Collaborative Tools<i class="icon-angle-right"></i>Dashboard
+}
+<div class="right-content">
+
+    <h3 class="vcw-menu-h3">Collaborative Tools</h3>
+    <ul class="vcw-menu-dashboard">
+        @if ((bool)ViewBag.TeacherVip)
+        {
+            <li><a class="vcw-btn" href="@Url.Action("Index", "VIP", new { area = "Teacher" })" >Go to Video-Based Improvement Project (VIP) List
+            @Html.Raw(((int)ViewBag.VIPCount > 0 ? "<span>" + (int)ViewBag.VIPCount + "</span>" : ""))</a>
+            </li>
+        }
+
+        @if ((bool)ViewBag.TeacherAssignment)
+        {
+            <li><a class="vcw-btn2" href="@Url.Action("Index", "Assignment", new { area = "Teacher" })" >Go to Coaching Assignments
+           @Html.Raw(((int)ViewBag.CoachingCount > 0 ? "<span>" + (int)ViewBag.CoachingCount + "</span>" : ""))</a>
+            </li>
+        }
+
+        @if ((bool)ViewBag.TeacherGeneral)
+        {
+            <li><a class="vcw-btn3" href="@Url.Action("Index", "General", new { area = "Teacher" })">Share a file with my Coach</a></li>
+        }
+
+        @if ((bool)ViewBag.TeacherSummary)
+        {
+            <li><a class="vcw-btn4" href="@Url.Action("Index", "Summary", new { area = "Teacher" })">Go to my Collaborative Tools Summary Page</a></li>
+        }
+
+        @if ((bool)ViewBag.STGReport)
+        {
+            <li><a class="vcw-btn5" href="@Url.Action("STG", "Summary", new { area = "Teacher" })">Go to COT & CEC Reports Page</a></li>
+        }
+    </ul>
+</div>
+
+

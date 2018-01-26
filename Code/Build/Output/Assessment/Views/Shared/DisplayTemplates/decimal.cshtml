@@ -1,0 +1,9 @@
+﻿@model decimal
+    @{
+        var format = ViewData["format"] ?? "{0}";
+        var toFormat = ViewData["toFormat"] ?? "";
+    }
+
+    <label class="control-label-text">
+    @string.Format(format.ToString(), Model.ToString(toFormat.ToString()))
+</label>

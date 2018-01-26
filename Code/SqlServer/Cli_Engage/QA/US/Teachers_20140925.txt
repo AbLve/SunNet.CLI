@@ -1,0 +1,6 @@
+﻿if exists(select * from syscolumns where id=object_id('Teachers') and name='Batch')begin
+declare @name varchar(200)
+select @name=b.name from syscolumns a,sysobjects b where a.id=object_id('Teachers') and b.id=a.cdefault and a.name='Batch' and b.name like 'DF%'
+exec('alter table Teachers drop constraint '+@name)
+alter table [Teachers] drop column [Batch]
+end

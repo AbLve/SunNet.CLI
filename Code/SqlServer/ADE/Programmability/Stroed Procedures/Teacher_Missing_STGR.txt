@@ -1,0 +1,46 @@
+﻿
+/****** Object:  StoredProcedure [dbo].[Teacher_Missing_STGR]    Script Date: 2015/4/13 10:53:15 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[Teacher_Missing_STGR]
+	@assessmentId int 
+AS
+BEGIN
+
+
+with list as (
+select basicC.Name as CommunityName ,c.ID as CommunityID
+ , basicS.Name as SchoolName ,s.ID as SchoolID 
+  ,uTeacher.FirstName as TeacherFirstName ,uTeacher.LastName as TeacherLastName
+ , t.CoachId ,uMentor.FirstName as CoachFirstName ,uMentor.LastName as CoachLastName 
+from [Cli_Engage__Teachers] t 
+inner join [Cli_Engage__Users] uTeacher on t.UserId =uTeacher.ID and uTeacher.Status = 1
+inner join [Cli_Engage__Users] uMentor on t.CoachId = uMentor.ID and uMentor.Status = 1
+inner join [Cli_Engage__Schools] s on s.ID = t.SchoolId
+inner join [Cli_Engage__BasicSchools] basicS on basicS.ID = s.BasicSchoolId
+inner join [Cli_Engage__Communities]  c on  t.CommunityId = c.ID
+inner join [Cli_Engage__BasicCommunities] basicC on basicC.ID = c.BasicCommunityId
+where t.UserId 
+not in (select TeacherId from CotStgReports stg 
+inner join [COTAssessments] cot on stg.CotAssessmentId = cot.ID
+where stg.Status = 20 and AssessmentId =@assessmentId)
+)
+select l.* , isnull((select top 1 u.FirstName + ' ' + u.LastName  from [Cli_Engage__Users] u
+inner join [Cli_Engage__UserCommunityRelations] r on u.id = r.userid
+where Role = 20 and Status = 1 and r.CommunityId = l.CommunityID ),'') PM
+ from list l
+ order by l.CommunityName ,l.SchoolName
+END
+
+GO
+
+

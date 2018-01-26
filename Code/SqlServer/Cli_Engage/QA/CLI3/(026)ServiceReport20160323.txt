@@ -1,0 +1,28 @@
+﻿ALTER procedure [dbo].[ServiceReport]
+@communityIds varchar(max),
+@excludeCommunityIds varchar(max),
+@schoolIds varchar(max)
+AS
+begin
+declare @sql varchar(max)
+set @sql='select C.Name as CommunityName,S.Name as SchoolName,ESCName,S.Status,S.SchoolId as SchoolCode,S.PhysicalAddress1,S.PhysicalAddress2,
+S.City,CT.Name as County,STT.Name as State,S.Zip,S.PrimaryPhone as Phone,ST.Name as SchoolType,S.SchoolYear,S.SchoolNumber as ChildCareLicense,F.Name as Funding,
+(select COUNT(*) from Classrooms where SchoolId =S.ID) as ClassroomCount,
+(select COUNT(*) from Teachers T inner join Users U on U.ID=T.UserId where U.IsDeleted=0 and UserId in (select UserID from UserComSchRelations UCS where UCS.CommunityId=CSR.CommunityId and UCS.SchoolId=CSR.SchoolId)) as TeacherCount,
+(select COUNT(*) from Students S where IsDeleted=0 and ID in (select StudentId from SchoolStudentRelations SSR where SSR.SchoolId=CSR.SchoolId)) as StudentCount
+from Schools S 
+left join Counties CT on CT.ID=S.CountyId left join States STT on STT.ID=S.StateId 
+left join SchoolTypes ST on ST.ID=S.SchoolTypeId
+left join Fundings F on F.ID=S.FundingId
+left join CommunitySchoolRelations CSR on CSR.SchoolId=S.ID
+left join Communities C on CSR.CommunityId=C.ID 
+where SUBSTRING(ST.Name,1,4)!=''Demo'''
+if(@communityIds!='')
+	set @sql+=' and CSR.CommunityId in('+convert(varchar(max),@communityIds)+')'
+if(@excludeCommunityIds!='')
+	set @sql+=' and CSR.CommunityId not in('+convert(varchar(max),@excludeCommunityIds)+')'
+if(@schoolIds!='')
+	set @sql+=' and CSR.ID in('+convert(varchar(max),@schoolIds)+')'
+set @sql+=' order by C.Name,S.Name'
+exec(@sql)
+end

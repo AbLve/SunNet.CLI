@@ -1,0 +1,10 @@
+﻿IF NOT EXISTS (SELECT 1 FROM SYS.all_columns WHERE object_id = object_id('StudentMeasures') AND NAME = 'Comment')
+BEGIN
+
+ALTER TABLE [dbo].[StudentMeasures] 
+ADD Comment NVARCHAR(100) DEFAULT('')  NOT NULL
+
+END
+
+GO
+ 

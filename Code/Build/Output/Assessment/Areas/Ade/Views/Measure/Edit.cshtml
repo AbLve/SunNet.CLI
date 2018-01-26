@@ -1,0 +1,281 @@
+﻿@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Ade.Models.MeasureModel
+
+@{
+    ViewBag.Title = "Edit - " + Model.Label;
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var parentListObj = @Request.QueryString["listObj"];
+                    parentListObj.onDataUpdated(response);
+                }
+            });
+            var scoreModel = getAdeScoreModel(@Html.Raw(ViewBag.Scores),'@formId','scores','deleted');
+            scoreModel.wave1(@(Model.ApplyToWave.Contains(Wave.BOY).ToString().ToLower()));
+            scoreModel.wave2(@(Model.ApplyToWave.Contains(Wave.MOY).ToString().ToLower()));
+            scoreModel.wave3(@(Model.ApplyToWave.Contains(Wave.EOY).ToString().ToLower()));
+            ko.applyBindings(scoreModel, document.getElementById("@(formId)"));
+
+            var parent=JSON.parse('@Html.Raw(ViewBag.ParentData)');
+            var child=JSON.parse('@Html.Raw(ViewBag.ChildData)');
+
+            $("#ParentId").change(function() {
+                var tmpParentId = $(this).val() ;
+                if (tmpParentId == "1") {
+                    InitialDdl(parent);
+                } else {
+                    if(child){
+                        var tmpData = new Array();
+                        for(var i = 0;i<child.length ;i++)
+                        {
+                            if(child[i].ParentRelationId == tmpParentId){
+                                tmpData.push(child[i]);
+                            }
+                        }
+                        InitialDdl(tmpData);
+                    }else 
+                        InitialDdl(child);
+                }
+            });
+
+        })();
+
+        function InitialDdl(data) {        
+            $("#RelatedMeasureId").empty();            
+            $("#RelatedMeasureId").append("<option value='0'>Please select...</option>");
+            if (data!=""&&data!=undefined&&data!=false) {
+                $.each(data,function(index,item) {
+                    $("#RelatedMeasureId").append("<option value="+item.ID+">"+item.Name+"</option>");
+                });
+            }
+        }
+    </script>
+}
+@using (Ajax.BeginForm("Save", "Measure", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.Hidden("scores")
+    <div class="form-group">
+        @Html.LabelFor(model => model.ParentId, new { @class = "control-label col-sm-2 required" })
+        <div class="col-sm-10">
+            @Html.DropDownListFor(model => model.ParentId, (IEnumerable<SelectListItem>)ViewBag.Parents, baseClassObj)
+            @Html.ValidationMessageFor(model => model.ParentId)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Label, new
+   {
+       @class = "control-label col-sm-2  required",
+       @for = formId + "_Label"
+   })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.Label, new
+       {
+           @class = "form-control",
+           id = formId + "_Label"
+       })
+            @Html.ValidationMessageFor(model => model.Label)
+        </div>
+        @Html.LabelFor(model => model.Name, new
+   {
+       @class = "control-label col-sm-2  required",
+       @for = formId + "_Name"
+   })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control", id = formId + "_Name" })
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+    </div>
+    <div class="form-group">
+        <div class="control-label col-sm-2  required">@Html.DisplayNameFor(model => model.ItemType)</div>
+        <div class="col-sm-3">
+            @Html.RadioButtonFor(model => model.ItemType, ItemShowType.Sequenced, new { id = "New_Type1" })
+            @Html.Label("", ItemShowType.Sequenced.ToDescription(), new { @for = "New_Type1" })
+            @ViewTextHelper.HtmlEmptySeparator
+            @Html.RadioButtonFor(model => model.ItemType, ItemShowType.List, new { id = "New_Type2" })
+            @Html.Label("", ItemShowType.List.ToDescription(), new { @for = "New_Type2" })
+            @Html.ValidationMessageFor(model => model.ItemType)
+        </div>
+        <div class="control-label col-sm-3  required">@Html.DisplayNameFor(model => model.OrderType)</div>
+        <div class="col-sm-3">
+            @Html.RadioButtonFor(model => model.OrderType, OrderType.Sequenced, new { id = "New_Order1" })
+            @Html.Label("", OrderType.Sequenced.ToDescription(), new { @for = "New_Order1" })
+            &nbsp;&nbsp;
+            @Html.RadioButtonFor(model => model.OrderType, OrderType.Random, new { id = "New_Order2" })
+            @Html.Label("", OrderType.Random.ToDescription(), new { @for = "New_Order2" })
+            @Html.ValidationMessageFor(model => model.OrderType)
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="control-label col-sm-2  required">@Html.DisplayNameFor(model => model.ApplyToWave)</div>
+        <div class="col-sm-4">
+            <input type="checkbox" name="ApplyToWave" class="required" id="ApplyToWave1" value="@((byte)Wave.BOY)"
+                   @(Model.ApplyToWave.Contains(Wave.BOY) ? "checked=checked" : "") data-bind="checked:wave1" />
+            @Html.Label("e", Wave.BOY.ToDescription(), new { @for = "ApplyToWave1" })
+            @ViewTextHelper.HtmlEmptySeparator
+            <input type="checkbox" name="ApplyToWave" id="ApplyToWave2" value="@((byte)Wave.MOY)"
+                   @(Model.ApplyToWave.Contains(Wave.MOY) ? "checked=checked" : "") data-bind="checked:wave2" />
+            @Html.Label("e", Wave.MOY.ToDescription(), new { @for = "ApplyToWave2" })
+            @ViewTextHelper.HtmlEmptySeparator
+            <input type="checkbox" name="ApplyToWave" id="ApplyToWave3" value="@((byte)Wave.EOY)"
+                   @(Model.ApplyToWave.Contains(Wave.EOY) ? "checked=checked" : "") data-bind="checked:wave3" />
+            @Html.Label("e", Wave.EOY.ToDescription(), new { @for = "ApplyToWave3" })
+            <br />
+            @Html.ValidationMessageFor(model => model.ApplyToWave)
+        </div>
+    </div>
+  
+    <div class="form-group">
+        @Html.LabelFor(model => model.TotalScored, new { @class = "control-label col-sm-2  required", @for = formId + "_TotalScored" })
+        <div class="col-sm-4">
+            @Html.CheckBoxFor(model => model.TotalScored, new { id = formId + "_TotalScored" })
+            @Html.ValidationMessageFor(model => model.TotalScored)
+        </div>
+        @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2  required", @for = "Status_Edit" })
+        <div class="col-sm-4">
+            @Html.EnumDropDownListFor(model => model.Status, ViewTextHelper.DefaultPleaseSelectText, "",
+            new { @class = "form-control", id = "Status_Edit" })
+            @Html.ValidationMessageFor(model => model.Status)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.InnerTime, new { @class = "control-label col-sm-2  required" })
+        <div class="col-sm-4">
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.InnerTime, new
+           {
+               @class = "form-control timeout"
+           })
+                <span class="input-group-addon">ms</span>
+            </div>
+            @Html.ValidationMessageFor(model => model.InnerTime)
+        </div>
+        @Html.LabelFor(model => model.Timeout, new { @class = "control-label col-sm-2  required" })
+        <div class="col-sm-4">
+            <div class="input-group">
+                @Html.TextBoxFor(model => model.Timeout, new
+           {
+               @class = "form-control"
+           })
+                <span class="input-group-addon">seconds</span>
+            </div>
+            @Html.ValidationMessageFor(model => model.Timeout)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StartPageHtml, new { @class = "control-label col-sm-2" })
+
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.StartPageHtml, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.StartPageHtml)
+        </div>
+        <div class="col-sm-1">
+            @if (string.IsNullOrEmpty(Model.StartPageHtml))
+            {
+                <div class="webuploader-preview" title="Sample page">
+                    <a class="table-btn icon-zoom-in preview-btn"
+                        href="/Example_page.html" target="_blank"></a>
+                </div>
+            }
+            else
+            {
+                <div class="webuploader-preview" title="Preview">
+                    <a class="table-btn icon-zoom-in preview-btn"
+                       href="@FileHelper.GetPreviewPathofUploadFile(Model.StartPageHtml)" target="_blank"></a>
+                </div>
+            }
+        </div>
+
+        @Html.LabelFor(model => model.EndPageHtml, new { @class = "control-label col-sm-2" })
+
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.EndPageHtml, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.EndPageHtml)
+        </div>
+        <div class="col-sm-1">
+            @if (string.IsNullOrEmpty(Model.EndPageHtml))
+            {
+                <div class="webuploader-preview" title="Sample page">
+                    <a class="table-btn icon-zoom-in preview-btn"
+                        href="/Example_page.html" target="_blank"></a>
+                </div>
+            }
+            else
+            {
+                <div class="webuploader-preview" title="Preview">
+                    <a class="table-btn icon-zoom-in preview-btn"
+                       href="@FileHelper.GetPreviewPathofUploadFile(Model.EndPageHtml)" target="_blank"></a>
+                </div>
+            }
+        </div>
+    </div>
+            if (ViewBag.DefaultData != null)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RelatedMeasureId, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(model => model.RelatedMeasureId, (IEnumerable<SelectListItem>)ViewBag.DefaultData, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.RelatedMeasureId)
+                    </div>
+                    @Html.LabelFor(model => model.ShortName, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.ShortName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ShortName)
+                    </div>
+                </div>
+}
+    <div class="form-group">
+        <div class="col-sm-12">
+            Cutoff Scores:
+            @Html.ValidationMessage("FromYear", "", "div")
+            @Html.ValidationMessage("FromMonth", "", "div")
+            @Html.ValidationMessage("ToYear", "", "div")
+            @Html.ValidationMessage("ToMonth", "", "div")
+            @Html.ValidationMessage("CutoffScore", "", "div")
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="nav-tab">
+            <ul id="measureContainer" class="nav-container" role="tablist">
+                <li class="active"><a href="#Wave1" role="tab" data-toggle="tab">Wave @(Wave.BOY.ToDescription())</a></li>
+                <li><a href="#Wave2" role="tab" data-toggle="tab">Wave @(Wave.MOY.ToDescription())</a></li>
+                <li><a href="#Wave3" role="tab" data-toggle="tab">Wave @(Wave.EOY.ToDescription())</a></li>
+            </ul>
+        </div>
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade in active" id="Wave1">
+                @Html.Editor("", "CutoffScores", new { wave = Wave.BOY })
+            </div>
+            <div class="tab-pane fade" id="Wave2">
+                @Html.Editor("", "CutoffScores", new { wave = Wave.MOY })
+            </div>
+            <div class="tab-pane fade" id="Wave3">
+                @Html.Editor("", "CutoffScores", new { wave = Wave.EOY })
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" id="btnSubmit" type="button" data-bind="event:{click:submit}">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

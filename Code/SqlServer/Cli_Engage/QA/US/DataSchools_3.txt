@@ -1,0 +1,54 @@
+﻿/****** Object:  Table [dbo].[DataSchools]    Script Date: 2014/10/10 23:50:49 ******/
+IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'DataStudents') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+DROP TABLE [dbo].[DataSchools]
+GO
+
+/****** Object:  Table [dbo].[DataSchools]    Script Date: 2014/10/10 23:50:49 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[DataSchools](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[GroupId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[Remark] [varchar](200) NOT NULL,
+	[CommunityID] [int] NOT NULL,
+	[School_TEA_ID] [varchar](9) NOT NULL,
+	[School_Name] [varchar](500) NOT NULL,
+	[School_Physical_Address1] [varchar](500) NOT NULL,
+	[School_Physical_Address2] [varchar](500) NULL,
+	[School_City] [varchar](100) NOT NULL,
+	[School_County] [varchar](100) NOT NULL,
+	[School_State] [varchar](100) NOT NULL,
+	[School_ZIP] [varchar](10) NOT NULL,
+	[School_Phone_Number] [varchar](50) NOT NULL,
+	[School_Phone_Number_Type] [tinyint] NOT NULL,
+	[School_Type] [varchar](100) NOT NULL,
+	[School_Percent_At_Risk] [int] NOT NULL,
+	[School_Size] [int] NULL,
+	[School_Primary_Contact_Salutation] [tinyint] NULL,
+	[School_Primary_Contact_Name] [varchar](50) NULL,
+	[School_Primary_Contact_Title] [varchar](100) NOT NULL,
+	[School_Primary_Contact_Phone_Number] [varchar](50) NOT NULL,
+	[School_Primary_Contact_Phone_Type] [tinyint] NOT NULL,
+	[School_Primary_Contact_Email_Address] [varchar](50) NOT NULL,
+	[School_Secondary_Contact_Salutation] [tinyint] NULL,
+	[School_Secondary_Contact_Name] [varchar](50) NULL,
+	[School_Secondary_Contact_Title] [varchar](100) NULL,
+	[School_Secondary_Contact_Phone_Number] [varchar](50) NULL,
+	[School_Secondary_Contact_Phone_Type] [tinyint] NULL,
+	[School_Secondary_Contact_Email_Address] [varchar](50) NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

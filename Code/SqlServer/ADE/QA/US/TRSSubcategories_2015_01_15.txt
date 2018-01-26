@@ -1,0 +1,5 @@
+﻿if not exists(select * from syscolumns where id=object_id('TRSSubcategories') and name='Category')
+begin
+alter table dbo.TRSSubcategories
+add Category tinyint not null default 0
+end

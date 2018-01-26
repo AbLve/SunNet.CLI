@@ -1,0 +1,83 @@
+﻿@model Sunnet.Cli.Business.Ade.Models.TxkeaLayoutModel
+@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization
+@using Sunnet.Cli.Core.Ade.Enums
+@{
+    ViewBag.Title = "View";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Index", "Layout");
+}
+
+@section Styles
+{
+    @Styles.Render("~/css/cpalls")
+    @Styles.Render("~/css/colorpicker")
+    @Styles.Render("~/css/txkea")
+}
+
+@section BreadPath
+{
+    @Html.ActionLink("Layout", "Index", "Layout")
+    <i class="icon-angle-right"></i>
+    View
+}
+
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+</div>
+
+<form class="form-horizontal">
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.Name, new { @class = "form-control" })
+                </div>
+
+                @Html.LabelFor(model => model.NumberOfImages, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.NumberOfImages, new { @class = "form-control" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.Label("Choose background color fill or background image", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-5">
+                    @if (Model.BackgroundFillType == BackgroundFillType.Image && !string.IsNullOrEmpty(Model.BackgroundFill))
+                    {
+                        <div class="webuploader-preview">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <img src="@Sunnet.Cli.UIBase.FileHelper.GetPreviewPathofUploadFile(Model.BackgroundFill)" width="60" height="60" />
+                        </div>
+                    }
+                    else
+                    {
+                        if (Model.BackgroundFill != string.Empty)
+                        {
+                            <input type="color" value="@Model.BackgroundFill" disabled="disabled" />
+                        }
+                        else
+                        {
+                            <label class="control-label-text">None</label>
+                        }
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <div class="content-body" id="content-body">
+            <div class="item-main-header">
+                <h4><span>Layout Editor</span></h4>
+            </div>
+            @if (ViewBag.ImageUrl != null)
+            {
+                <img src="@(ViewBag.ImageUrl)" style="width:100%" />
+            }
+
+        </div>
+    </div>
+</form>

@@ -1,0 +1,307 @@
+﻿CREATE PROCEDURE [dbo].[DataProcessGroup_FixData]
+	@ID int
+AS
+BEGIN
+		DECLARE @DataProcessId BIGINT
+		DECLARE @CommunityId INT
+		DECLARE @CreatedBy INT
+		SELECT  @CommunityId = CommunityId, @CreatedBy=CreatedBy FROM DataGroups WHERE ID = @ID
+
+		DECLARE cur CURSOR  FOR
+		SELECT ID FROM dbo.DataProcesses WHERE GroupId = @ID 
+		OPEN cur FETCH NEXT FROM cur INTO @DataProcessId
+
+		WHILE @@FETCH_STATUS=0
+		BEGIN
+			EXECUTE DataProcess_FixData @DataProcessId,@CreatedBy,@CommunityId
+			FETCH NEXT FROM cur INTO @DataProcessId
+		END
+		CLOSE cur
+		DEALLOCATE cur
+END
+GO
+
+
+
+
+
+CREATE PROCEDURE [dbo].[DataProcess_FixData] 
+@DataProcessId int,
+@CreatedBy int,
+@CommunityId int
+AS
+BEGIN
+	SET XACT_ABORT ON;
+
+	DECLARE @SchoolName VARCHAR(500)
+	DECLARE @SchoolInternalId VARCHAR(100)
+	DECLARE @TeacherFirstName VARCHAR(150)
+	DECLARE @TeacherMiddleName VARCHAR(150)
+	DECLARE @TeacherLastName VARCHAR(150)
+	DECLARE @TeacherInternalId VARCHAR(150)
+	DECLARE @TeacherPhoneNumber VARCHAR(50)
+	DECLARE @TeacherPhoneType TINYINT
+	DECLARE @TeacherPrimaryEmail VARCHAR(150)
+	DECLARE @ClassDayType TINYINT
+	DECLARE @ClassLevel TINYINT
+	DECLARE @StudentFirstName VARCHAR(150)
+	DECLARE @StudentMiddleName VARCHAR(150)
+	DECLARE @StudentLastName VARCHAR(150)
+	DECLARE @StudentInternalId VARCHAR(100)
+	DECLARE @StudentTsdsId VARCHAR(100)
+	DECLARE @StudentGradeLevel TINYINT
+	DECLARE @StudentLanguage TINYINT
+	DECLARE @StudentBirthdate DATETIME
+	DECLARE @StudentGender TINYINT
+	DECLARE @StudentEthnicity TINYINT
+
+
+	DECLARE @BasicSchoolId INT
+	DECLARE @SchoolId INT
+	DECLARE @TeacherId INT
+	DECLARE @TeacherUserId INT
+	DECLARE @ClassroomName VARCHAR(200)
+	DECLARE @ClassroomId INT
+	DECLARE @StudentId INT	
+	DECLARE @NameDuplicate BIT = 0
+
+	BEGIN TRY
+		BEGIN TRANSACTION;		
+
+			SELECT @SchoolName=[SchoolName],@SchoolInternalId=[SchoolInternalId],
+			@TeacherFirstName=[TeacherFirstName],@TeacherMiddleName=[TeacherMiddleName],
+			 @TeacherLastName=[TeacherLastName],@TeacherInternalId=[TeacherInternalId],
+			 @TeacherPhoneNumber=[TeacherPhoneNumber],@TeacherPhoneType=[TeacherPhoneType],
+			 @TeacherPrimaryEmail=[TeacherPrimaryEmail],@ClassDayType=[ClassDayType],@ClassLevel=[ClassLevel],
+			 @StudentFirstName=[StudentFirstName],@StudentMiddleName=[StudentMiddleName],@StudentLastName=[StudentLastName],
+			 @StudentInternalId=[StudentInternalId],@StudentTsdsId=[StudentTsdsId],@StudentGradeLevel=[StudentGradeLevel],
+			 @StudentLanguage=[StudentLanguage],@StudentBirthdate=[StudentBirthdate],
+			 @StudentGender=[StudentGender],@StudentEthnicity=[StudentEthnicity] FROM DataProcesses WHERE ID=@DataProcessId
+
+			
+		SELECT @SchoolId= S.ID FROM Schools S INNER JOIN CommunitySchoolRelations CS 
+		ON S.ID=CS.SchoolId AND SchoolNumber=@SchoolInternalId AND Name=@SchoolName
+			
+			--insert teacher
+			SELECT @TeacherUserId = ID FROM Users WHERE Role=145 AND InternalID=@TeacherInternalId
+			AND FirstName=@TeacherFirstName AND LastName=@TeacherLastName AND PrimaryEmailAddress=@TeacherPrimaryEmail
+	
+			SELECT @TeacherId= ID FROM Teachers WHERE UserId=@TeacherUserId
+					
+			--create relationship (community-school-teacher)
+			IF(NOT EXISTS(SELECT * FROM UserComSchRelations WHERE SchoolId=@SchoolId AND UserId=@TeacherUserId 
+				AND CommunityId = @CommunityId))
+				INSERT INTO UserComSchRelations(UserId,CommunityId,SchoolId,Status,CreatedBy,CreatedOn,UpdatedBy,UpdatedOn)
+				VALUES(@TeacherUserId,@CommunityId,@SchoolId,1,@CreatedBy,GETDATE(),@CreatedBy,GETDATE())
+																	
+			--insert student
+					
+			SELECT @StudentId = s.ID FROM dbo.Students s
+				WHERE s.FirstName=@StudentFirstName
+				AND s.LastName=@StudentLastName AND s.BirthDate=@StudentBirthdate
+				
+
+			DECLARE @AssignedSchoolId INT
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+			SELECT DISTINCT(SchoolId) FROM UserComSchRelations
+			WHERE UserId = @TeacherUserId
+			OPEN cur FETCH NEXT FROM cur INTO @AssignedSchoolId
+			WHILE @@FETCH_STATUS=0
+			BEGIN
+				IF(NOT EXISTS(SELECT * FROM SchoolStudentRelations WHERE SchoolId=@AssignedSchoolId AND StudentId=@StudentId))
+					BEGIN
+						INSERT INTO SchoolStudentRelations([SchoolId],[StudentId],[Status],
+						[CreatedBy],[CreatedOn],[UpdatedOn],[UpdatedBy])
+						VALUES(@AssignedSchoolId,@StudentId,1,@CreatedBy,GETDATE(),GETDATE(),@CreatedBy)
+					END
+				FETCH NEXT FROM cur INTO @AssignedSchoolId
+				END
+			CLOSE cur
+			DEALLOCATE cur
+											
+					
+					
+			DECLARE @CreatedClasses VARCHAR(500)
+			--insert class	and create relationship(student-class)
+			EXECUTE DataProcessClass @TeacherId,@TeacherUserId,@TeacherFirstName,@TeacherLastName,
+			@ClassDayType,@ClassLevel,@StudentId,@CreatedClasses OUTPUT			
+
+			--insert classroom	
+			--If the same Teacher has 2 or more groups of Students at 2 or more Schools:
+			--Create 1 Classroom at each School
+			--The Classrooms on all Schools will have the same name according to the following rules
+				IF(EXISTS(SELECT * FROM Users U INNER JOIN UserComSchRelations UC
+				ON U.ID=UC.UserId AND UC.SchoolId=@SchoolId AND U.LastName=@TeacherLastName
+				AND U.ID != @TeacherUserId))
+				BEGIN
+					IF(EXISTS(SELECT * FROM Users U INNER JOIN UserComSchRelations UC
+					ON U.ID=UC.UserId AND UC.SchoolId=@SchoolId AND U.LastName=@TeacherLastName 
+					AND SUBSTRING(U.FirstName,1,1)=SUBSTRING(@TeacherFirstName,1,1)
+					AND U.ID != @TeacherUserId))
+						SET @ClassroomName=@TeacherFirstName+' '+@TeacherLastName+'''s';
+					ELSE
+						SET @ClassroomName=SUBSTRING(@TeacherFirstName,1,1)+' '+@TeacherLastName+'''s';
+				END
+				ELSE
+				SET @ClassroomName=@TeacherLastName+'''s';
+						 
+			SET @ClassroomName=@ClassroomName+' Classroom';
+
+			DECLARE @classroom_SchoolId INT
+			DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
+				SELECT DISTINCT(c.SchoolId) FROM Classes c
+				INNER JOIN TeacherClassRelations tc
+				ON c.ID=tc.ClassId
+				INNER JOIN StudentClassRelations sc
+				ON sc.ClassId=c.ID
+				INNER JOIN Students s
+				ON s.ID=sc.StudentId
+				WHERE tc.TeacherId=@TeacherId  						 
+			OPEN cur FETCH NEXT FROM cur INTO @classroom_SchoolId
+			WHILE @@FETCH_STATUS=0
+			BEGIN
+				IF NOT EXISTS(SELECT * FROM Classrooms WHERE Name=@ClassroomName AND SchoolId =@classroom_SchoolId)
+				BEGIN
+					INSERT INTO dbo.Classrooms
+					( ClassroomId ,
+						SchoolId ,
+						Name ,
+						Status ,
+						StatusDate ,
+						SchoolYear ,
+						InterventionStatus ,
+						InterventionOther ,
+						FundingId ,
+						KitId ,
+						KitUpdatedOn ,
+						FcNeedKitId ,
+						FcFundingId ,
+						Part1KitId ,
+						Part1KitUpdatedOn ,
+						Part1NeedKitId ,
+						Part1FundingId ,
+						Part2KitId ,
+						Part2KitUpdatedOn ,
+						Part2NeedKitId ,
+						Part2FundingId ,
+						StartupKitId ,
+						StartupKitUpdatedOn ,
+						StartupNeedKitId ,
+						StartupKitFundingId ,
+						CurriculumId ,
+						CurriculumUpdatedOn ,
+						NeedCurriculumId ,
+						NeedCurriculumUpdatedOn ,
+						CurriculumFundingId ,
+						DevelopingTalkersKitId ,
+						DevelopingTalkersKitUpdatedOn ,
+						DevelopingTalkersNeedKitId ,
+						DevelopingTalkerKitFundingId ,
+						FccKitId ,
+						FccKitUpdatedOn ,
+						FccNeedKitId ,
+						FccKitFundingId ,
+						InternetSpeed ,
+						InternetType ,
+						WirelessType ,
+						IsUsingInClassroom ,
+						ComputerNumber ,
+						IsInteractiveWhiteboard ,
+						MaterialsNotes ,
+						TechnologyNotes ,
+						CreatedOn ,
+						UpdatedOn ,
+						TypeOfClassroom ,
+						LCchildrenNumber ,
+						LCchildrenTypeId ,
+						ClassroomInternalID
+					)
+			VALUES  ( '' , -- ClassroomId - varchar(32)
+						@classroom_SchoolId , -- SchoolId - int
+						@ClassroomName , -- Name - varchar(50)
+						1 , -- Status - tinyint
+						GETDATE() , -- StatusDate - datetime
+						dbo.GetSchoolYear() , -- SchoolYear - varchar(5)
+						0 , -- InterventionStatus - tinyint
+						'' , -- InterventionOther - varchar(150)
+						0 , -- FundingId - int
+						0 , -- KitId - int
+						'1753/1/1' , -- KitUpdatedOn - datetime
+						0 , -- FcNeedKitId - int
+						0 , -- FcFundingId - int
+						0 , -- Part1KitId - int
+						'1753/1/1' , -- Part1KitUpdatedOn - datetime
+						0 , -- Part1NeedKitId - int
+						0 , -- Part1FundingId - int
+						0 , -- Part2KitId - int
+						'1753/1/1' , -- Part2KitUpdatedOn - datetime
+						0 , -- Part2NeedKitId - int
+						0 , -- Part2FundingId - int
+						0 , -- StartupKitId - int
+						'1753/1/1' , -- StartupKitUpdatedOn - datetime
+						0 , -- StartupNeedKitId - int
+						0 , -- StartupKitFundingId - int
+						0 , -- CurriculumId - int
+						'1753/1/1' , -- CurriculumUpdatedOn - datetime
+						0 , -- NeedCurriculumId - int
+						'1753/1/1' , -- NeedCurriculumUpdatedOn - datetime
+						0 , -- CurriculumFundingId - int
+						0 , -- DevelopingTalkersKitId - int
+						'1753/1/1' , -- DevelopingTalkersKitUpdatedOn - datetime
+						0 , -- DevelopingTalkersNeedKitId - int
+						0 , -- DevelopingTalkerKitFundingId - int
+						0 , -- FccKitId - int
+						'1753/1/1' , -- FccKitUpdatedOn - datetime
+						0 , -- FccNeedKitId - int
+						0 , -- FccKitFundingId - int
+						0 , -- InternetSpeed - tinyint
+						0 , -- InternetType - tinyint
+						0 , -- WirelessType - tinyint
+						0 , -- IsUsingInClassroom - bit
+						0 , -- ComputerNumber - int
+						0 , -- IsInteractiveWhiteboard - bit
+						'' , -- MaterialsNotes - varchar(600)
+						'' , -- TechnologyNotes - varchar(600)
+						GETDATE() , -- CreatedOn - datetime
+						GETDATE() , -- UpdatedOn - datetime
+						0 , -- TypeOfClassroom - tinyint
+						0 , -- LCchildrenNumber - int
+						0 , -- LCchildrenTypeId - int
+						''  -- ClassroomInternalID - varchar(32)
+					)						
+
+					SELECT @ClassroomId = SCOPE_IDENTITY()
+
+					--create relationship (class-classroom)
+					INSERT INTO ClassroomClassRelations
+					SELECT @ClassroomId,c.ID,1,@CreatedBy,GETDATE(),GETDATE(),@CreatedBy  
+					FROM TeacherClassRelations tc
+					INNER JOIN Classes c
+					ON tc.ClassId=c.ID 
+					WHERE c.SchoolId=@classroom_SchoolId and TeacherId=@TeacherId
+					AND CHARINDEX(',' + CONVERT(varchar(20),c.ID) + ',',@CreatedClasses)>0
+					GROUP BY c.ID
+				END
+
+				FETCH NEXT FROM cur INTO @classroom_SchoolId
+			END
+			CLOSE cur
+			DEALLOCATE cur
+			
+		COMMIT TRANSACTION ;
+	END TRY
+
+
+	BEGIN CATCH
+
+	 PRINT ERROR_MESSAGE()
+
+	END CATCH 
+
+END
+
+
+
+
+
+--EXEC DataProcessGroup_FixData 1095

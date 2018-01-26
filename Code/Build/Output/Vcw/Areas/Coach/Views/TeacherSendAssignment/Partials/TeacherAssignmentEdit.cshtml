@@ -1,0 +1,242 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentModel
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase.Models;
+@using System.Web.Optimization;
+@using Sunnet.Cli.Core.Vcw.Entities;
+@using Sunnet.Cli.UIBase;
+@{
+    int TeacherTableId = (int)ViewBag.TeacherTableId;
+}
+
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="Type">Assignment Type</label>
+    <div class="col-sm-3">
+        @Html.DropDownListFor(model => model.Type, ViewBag.AssignmentType as IEnumerable<SelectListItem>, new { @class = "form-control", @disabled = "disabled" })
+    </div>
+
+    @Html.LabelFor(model => model.Session, new { @class = "col-sm-3 control-label" })
+    <div class="col-sm-3">
+        @Html.DropDownListFor(model => model.Session, ViewBag.Sessions as IEnumerable<SelectListItem>, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Session)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.DueDate, new { @class = "col-sm-3 control-label required" })
+    <div class="col-sm-3">
+        @Html.TextBoxFor(model => model.DueDate, new { @class = "form-control date", @Value = Model.DueDate == null ? "" : DateTime.Parse(Model.DueDate.ToString()).FormatDateString() })
+        @Html.ValidationMessageFor(model => model.DueDate)
+    </div>
+    @Html.LabelFor(model => model.CallDate, new { @class = "col-sm-3 control-label" })
+    <div class="col-sm-3">
+        @Html.TextBoxFor(model => model.CallDate, new { @class = "form-control date", @Value = Model.CallDate == null ? "" : DateTime.Parse(Model.CallDate.ToString()).FormatDateString() })
+        @Html.ValidationMessageFor(model => model.CallDate)
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <span class="control-label">Content</span>
+            </div>
+            @foreach (AssignmentContent item in Enum.GetValues(typeof(AssignmentContent)))
+            {
+                bool isChecked = Model.Contents.Contains(item);
+                if (item.ToString() == AssignmentContent.Other.ToString())
+                {
+                <div class="checkbox-con checkbox-con-double">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="Content" id="content-other" onclick="ContentClick(this)"
+                            value="@item.GetValue()" @(isChecked ? "checked" : "") >@item.ToDescription()
+                        &nbsp;&nbsp;
+                    </label>
+                    @if (isChecked)
+                    {
+                        @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control form-control-double" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control form-control-double", @disabled = "disabled" })
+                    }
+                    @Html.LabelFor(model => model.ContentOther, null, new { @class = "control-label hide" })
+                </div>
+                }
+                else
+                {
+                <div class="checkbox-con checkbox-con-double">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="Content" value="@item.GetValue()" @(isChecked ? "checked" : "")>@item.ToDescription()
+                    </label>
+                </div>
+                }
+            }
+        </div>
+
+    </div>
+    <div class="col-sm-3">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">Video Context</div>
+            </div>
+
+            @foreach (ContextEnum item in Enum.GetValues(typeof(ContextEnum)))
+            {
+                if (item != ContextEnum.None)
+                {
+                    bool isChecked = Model.Contexts.Contains(item);
+                    if (item == ContextEnum.Other)
+                    {
+                <div class="checkbox-con">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="context-other" name="Context" onclick="ContextClick(this)"
+                            value="@(item.GetValue())" @(isChecked ? "checked" : "")>@item.ToDescription()
+                    </label>
+                    @if (isChecked)
+                    {
+                        @Html.TextBoxFor(model => model.ContextOther, new { @class = "form-control" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ContextOther, new { @class = "form-control", @disabled = "disabled" })    
+                    }
+                    @Html.LabelFor(model => model.ContextOther, null, new { @class = "control-label hide" })
+                </div>
+                    }
+                    else
+                    {
+                <div class="checkbox-con">
+                    <label class="checkbox-inline">
+                        <input type="checkbox"  name="Context" value="@(item.GetValue())" @(isChecked ? "checked" : "")>@item.ToDescription()
+                    </label>
+                </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">Upload Type</div>
+            </div>
+            @foreach (UploadTypeEnum item in Enum.GetValues(typeof(UploadTypeEnum)))
+            {
+                bool isChecked = Model.UploadTypes.Contains(item);               
+                <div class="checkbox-con">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="UploadType" value="@(item.GetValue())" @(isChecked ? "checked" : "")>@item.ToDescription()
+                    </label>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="content-con" style="min-height: 138px">
+            <div class="content-title3">
+                <div class="control-label">Uploaded Coach Assignment Files</div>
+            </div>
+            <div class="uploader-list" id="div_uploadedfiles">
+                @foreach (AssignmentFileEntity item in Model.AssignmentFiles)
+                {
+                    <div class="item" id="@(item.FilePath)">
+                        <i class="icon-paper-clip"></i>
+                        <a class="form-link4" 
+                            href="@(DownLoadFile.GetDownFilePath(item.FilePath, item.FileName))">@(item.FileName)</a> :
+                        <span class="delete" title="Remove this file">
+                            <a href="javascript:;" onclick="$(this).closest('div').remove()">×</a>
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    Coach Assignment File 
+                    (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                </div>
+            </div>
+            <div class="upload-btn">
+                <div id="picker">1) Select File to Upload</div>
+            </div>
+            <div id="filelists" class="uploader-list"></div>
+            <div class="upload-btn">
+                <a id="ctlBtn">2) Start Upload</a>
+            </div>
+            <input type="hidden" id="filetarget" />
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-4">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Watch)<br />
+                    (<span class="redtext">@ViewTextHelper.Vcw_MulitipleLinks</span>)
+                </div>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(model => model.Watch, new { @class = "form-control", @rows = "5" })
+                @Html.ValidationMessageFor(model => model.Watch)
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="content-con" style="min-height: 194px">
+            <div class="content-title3">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Description)
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                </div>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = "5" })
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="content-con" style="min-height: 194px">
+            <div class="content-title3">
+                <div class="control-label">Assignment STG Report</div>
+            </div>
+            <div class="select-stg-btn">
+                <a href="/STGReport/STGSend/STGReport?teacherId=@(TeacherTableId)" 
+                    data-target="#modalNormal" data-toggle="modal">Select STG Report</a>
+            </div>
+            @foreach (AssignmentReportEntity item in Model.Reports)
+            {
+                string url = Url.Action("Pdf", "STGSend", new { Area = "STGReport", id = item.ReportId, type = "teacher" });
+                string formaturl = "<a class='form-link2' target='_blank' title='Download pdf'  href='" + url + "'>"
+                    + item.ReportCreatedOn.ToString("MM/dd/yyyy HH:mm:ss tt") + "</a>";
+                <div class="stg-list-con">
+                    <input type="hidden" name="stgreports" value="@(item.ReportId.ToString() + "|" + item.ReportCreatedOn.ToString())" />
+                    @Html.Raw(formaturl)
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                </div>                           
+            }
+            <script type="text/html" id="template_stg_select">
+                <%for ( var i = 0; i < this.length ; i++) {%> 
+                <div class="stg-list-con">
+                    <input type="hidden" name="stgreports" value="<% this[i].id %>" /><% this[i].address%>
+                     <button type="button" class="close" data-dismiss="alert" onclick="moveStgList('<% this[i].id %>')">
+                         <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                </div>
+                <%}%>
+            </script>
+            <div id="divStgSelect">
+            </div>
+        </div>
+    </div>
+</div>
+
+

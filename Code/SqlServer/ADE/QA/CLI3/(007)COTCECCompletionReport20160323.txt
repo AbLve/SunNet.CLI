@@ -1,0 +1,51 @@
+﻿GO
+/****** Object:  StoredProcedure [dbo].[COTCECCompletionReport]    Script Date: 2016/3/23 15:00:09 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	BOY & MOY - COT & CEC Assessment Completion Report
+-- =============================================
+ALTER PROCEDURE [dbo].[COTCECCompletionReport]
+@COTAssessmentId int,
+@CECAssessmentId int,
+@SchoolYear varchar(5)
+AS
+BEGIN
+
+with cotList as (
+select cota.TeacherId ,wave  from [dbo].[CotWaves] c
+inner join [COTAssessments] cota on c.CotAssessmentId = cota.id 
+where c.Status = 20 and cota.SchoolYear = @SchoolYear and cota.AssessmentId = @COTAssessmentId
+)
+, CotCompletion as (
+select t.CoachId , count(*) as Total  from cotList c1 
+inner join cotList c2 on c1.TeacherId = c2.TeacherId and c2.Wave = 2
+inner join [Cli_Engage__Teachers] t on c1.TeacherId = t.Id
+inner join [Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1 and tUser.IsDeleted = 0 
+where c1.Wave =1 and t.CoachId > 0
+group by t.CoachId
+)
+,cecCompletion as (
+	select CoachId ,count(*) as Total from [CecHistories] cec 
+inner join [CecHistories] cec2 on cec.TeacherId = cec2.TeacherId and cec2.SchoolYear = @SchoolYear and cec2.Wave=2 and cec.AssessmentId = cec2.AssessmentId
+inner join [Cli_Engage__Teachers] t on cec.TeacherId = t.Id
+inner join [Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1  and tUser.IsDeleted = 0 
+where cec.AssessmentId = @CECAssessmentId and cec.Wave=1
+group by CoachId 
+)
+, Totals as (
+select t.CoachId, coachUser.FirstName ,coachUser.LastName,COUNT(*) as Total   from [dbo].[Cli_Engage__Teachers] t
+inner join [dbo].[Cli_Engage__Users] coachUser on t.CoachId = coachUser.ID and coachUser.Status =1  and coachUser.IsDeleted = 0 
+inner join [dbo].[Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1 and tUser.IsDeleted = 0 
+group by t.CoachId,coachUser.FirstName ,coachUser.LastName ,coachUser.ID
+)
+select t.* ,isnull(c.Total,0) as COTCompletion , isnull(cec.Total,0) as CECCompletion from totals t
+left join CotCompletion c on c.coachid = t.coachid
+left join cecCompletion cec on cec.coachid = t.coachid
+order by t.FirstName
+
+END

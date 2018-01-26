@@ -1,0 +1,94 @@
+﻿--★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★--
+--★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★--
+--★★                                                                      ★★--
+--★★ 执行前请修改数据库连接:Cli_Engage 为主数据库名                       ★★--
+--★★                                                                      ★★--
+--★★ 执行完成后请查看最后一条消息:                                        ★★--
+--★★                                                                      ★★--
+--★★ Updated:		更新的总条数                                            ★★--
+--★★                                                                      ★★--
+--★★ Found:		已找到匹配的BentchMark                                  ★★--
+--★★              (需要和结果视图里面的记录条数相同)                      ★★--
+--★★                                                                      ★★--
+--★★ Not found:	未找到匹配的BentchMark                                  ★★--
+--★★                                                                      ★★--
+--★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★--
+--★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★--
+
+DECLARE @Students TABLE(StudentId int,BirthDate datetime);
+DECLARE @Index int;
+DECLARE @MaxId int;
+
+INSERT INTO @Students
+SELECT StudentId = S.ID,BirthDate 
+FROM Cli_Engage.DBO.Students S WHERE EXISTS (SELECT 1 FROM  StudentAssessments SA WHERE SA.StudentId = S.ID);
+
+SELECT * INTO #HasCutoffScore FROM (
+SELECT SA.ID,SA.CDId,SA.SchoolId,SA.StudentId,SA.AssessmentId,SA.Status,SA.SchoolYear,SA.Wave, 
+STU.BirthDate ,CompareDate =CAST('20'+ SUBSTRING(SA.SchoolYear,1,2)+'-9-1' AS DATETIME),
+SM.MeasureId, SM.Bentchmark ,
+COS.FromYear,COS.FromMonth,COS.ToYear,COS.ToMonth,SWave = COS.Wave,COS.CutOffScore,
+[From] = DATEADD(m, 0-COS.FromMonth, DATEADD(YY,0-COS.FromYear,CAST('20'+ SUBSTRING(SA.SchoolYear,1,2)+'-9-1' AS DATETIME))),
+[To] = DATEADD(m, 0-COS.ToMonth, DATEADD(YY,0-COS.ToYear,CAST('20'+ SUBSTRING(SA.SchoolYear,1,2)+'-9-1' AS DATETIME))),
+Months = DateDiff(m,STU.BirthDate,CAST('20'+ SUBSTRING(SA.SchoolYear,1,2)+'-9-1' AS DATETIME))
+FROM StudentAssessments SA 
+INNER JOIN @Students STU ON SA.StudentId = STU.StudentId
+LEFT JOIN StudentMeasures SM ON SA.ID = SM.SAId
+LEFT JOIN CutOffScores [COS] ON SM.MeasureId = COS.HostId AND COS.HostType='Sunnet.Cli.Core.Ade.Entities.MeasureEntity' AND COS.Wave = SA.Wave
+) HasCutoffScore
+WHERE  [From] >= BirthDate AND BirthDate > [To]
+
+ORDER BY ID, StudentId,MeasureId
+
+SELECT * FROM #HasCutoffScore
+
+SET @Index = 1;
+SET @MaxId = (SELECT TOP 1 ID FROM StudentMeasures ORDER BY ID DESC );
+
+Declare @SAId int; 
+Declare @AssessmentId int;
+Declare @StudentId int;
+Declare @Wave tinyint;
+DECLARE @MeasureId int;
+DECLARE @Score decimal;
+
+DECLARE @FoundCount int;
+Declare @NotFoundCount int;
+SET @FoundCount = 0;
+SET @NotFoundCount = 0;
+
+WHILE(@Index <= @MaxId)
+BEGIN
+	IF(EXISTS(SELECT 1 FROM StudentMeasures WHERE ID = @Index))
+	BEGIN
+		SET @SAId			= (SELECT TOP 1 SAId FROM StudentMeasures WHERE ID=@Index);
+		SET @AssessmentId	= (SELECT TOP 1 SA.AssessmentId FROM StudentMeasures SM LEFT JOIN StudentAssessments SA ON SM.SAId = SA.ID WHERE SM.ID=@Index);
+		SET @StudentId		= (SELECT TOP 1 SA.StudentId FROM StudentMeasures SM LEFT JOIN StudentAssessments SA ON SM.SAId = SA.ID WHERE SM.ID=@Index);
+		SET @Wave			= (SELECT TOP 1 SA.Wave FROM StudentMeasures SM LEFT JOIN StudentAssessments SA ON SM.SAId = SA.ID WHERE SM.ID=@Index);
+		SET @MeasureId		= (SELECT TOP 1 MeasureId FROM StudentMeasures WHERE ID=@Index);
+		
+		SET @Score = -1;
+		IF(EXISTS (SELECT 1 FROM #HasCutoffScore WHERE ID = @SAId AND AssessmentId = @AssessmentId AND StudentId = @StudentId AND Wave = @Wave AND MeasureId = @MeasureId))
+		BEGIN
+			SET @Score = (SELECT TOP 1 CutOffScore FROM #HasCutoffScore WHERE ID = @SAId AND AssessmentId = @AssessmentId AND StudentId = @StudentId AND Wave = @Wave AND MeasureId = @MeasureId);
+			SET @FoundCount = @FoundCount + 1;
+		END
+		ELSE
+		BEGIN
+			SET @NotFoundCount = @NotFoundCount + 1;
+		END
+
+		UPDATE StudentMeasures SET Bentchmark  = @Score WHERE ID = @Index;
+		/*
+		PRINT ('AssessmentId:' +  Cast(@AssessmentId as varchar) + ',StudentId:'+  Cast(@StudentId as varchar) 
+		+ ',Wave:' + Cast(@Wave as varchar) + ',MeasureId:' + Cast(@MeasureId as varchar) +', Score:' +  Cast(@Score as varchar) ); 
+		*/
+	END
+	SET @Index = @Index + 1;
+END
+PRINT ('Updated:' +  Cast(@FoundCount + @NotFoundCount as varchar) + ',Found:'+  Cast(@FoundCount as varchar) 
+		+ ',Not found :' + Cast(@NotFoundCount as varchar) ); 
+
+if object_id('tempdb..#HasCutoffScore') is not null Begin
+    drop table #HasCutoffScore
+End

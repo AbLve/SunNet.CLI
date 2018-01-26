@@ -1,0 +1,316 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentListModel
+@using Sunnet.Cli.UIBase.Models;
+@using Sunnet.Cli.Business.Vcw.Models;
+@using Sunnet.Framework.Extensions;
+
+@{
+    ViewBag.Title = "PM Teachers VIP";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.PM_Teachers)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("PM Teachers", "Index", "TeacherVIP"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    Teacher VIP
+}
+
+<form class="form-horizontal">
+    @Html.Partial("~/Areas/PM/Views/Partials/Tab_Teacher.cshtml", new PageSelected { PageId = 1 })
+    <div class="nav-container-main">
+        <div class="form-group"></div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="CommunityName">Community Name</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(model => model.CommunityName, ViewBag.Communities as IEnumerable<SelectListItem>, new
+           {
+               @class = "form-control",
+               data_bind = "value: searchCriteria.community"
+           })
+            </div>
+            <label class="control-label col-sm-2" for="SchoolName">School Name</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(model => model.SchoolName, ViewBag.Schools as IEnumerable<SelectListItem>, new
+           {
+               @class = "form-control",
+               data_bind = "value: searchCriteria.school"
+           })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="CoachName">Coach Name</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(model => model.CoachName, ViewBag.Coaches as IEnumerable<SelectListItem>, new
+           {
+               @class = "form-control",
+               data_bind = "value: searchCriteria.coach"
+           })
+            </div>
+            <label class="control-label col-sm-2" for="TeacherName">Teacher Name</label>
+            <div class="col-sm-3">
+                @Html.DropDownListFor(model => model.TeacherName, ViewBag.Teachers as IEnumerable<SelectListItem>, new
+           {
+               @class = "form-control",
+               data_bind = "value: searchCriteria.teacher"
+           })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="Status">Status</label>
+            <div class="col-sm-3">
+                @Html.EnumDropDownListFor(model => model.Status, ViewTextHelper.DefaultAllText, "-1", new
+           {
+               @class = "form-control",
+               data_bind = "value: searchCriteria.status"
+           })
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-3">
+                <button class="mainbutton mainright-btn sreach-btn" id="btn_search" type="button" data-bind="event: { click: search }">Search</button>
+            </div>
+            <div class="col-sm-2">
+                <label class="hide" for="selectExportTo">&nbsp;</label>
+                <select class="form-control" id="selectExportTo" onchange="exportTo(this);">
+                    <option selected="selected" value="-1">Export to</option>
+                    <option value="1">Excel</option>
+                    <option value="2">PDF</option>
+                </select>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="content-title">Teacher VIP</div>
+            <div class="content-body-tab">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr data-bind="foreach: { data: headers, as: 'header' }">
+                            <!-- ko if: (header.order === true)-->
+                            <th data-bind="style: { width: width }">
+                                <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                            </th>
+                            <!-- /ko-->
+                            <!-- ko if: (header.order === false) -->
+                            <th data-bind="text: text, style: { width: width }"></th>
+                            <!-- /ko-->
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                        <tr>
+                            <td data-bind="text: item.CommunityName"></td>
+                            <td data-bind="text: item.SchoolName"></td>
+                            <td data-bind="text: item.TeacherName"></td>
+                            <td data-bind="text: item.SendUserName"></td>
+                            <td data-bind="text: item.DueDate == minDate ? '' : item.DueDate"></td>
+                            <td data-bind="text: item.Wave.text == '0' ? '' : item.Wave.text"></td>
+                            <td data-bind="text: item.Context"></td>
+                            <td data-bind="text: item.Content"></td>
+                            <td data-bind="text: item.Status.text"></td>
+                            <td>
+                                <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                            </td>
+                        </tr>
+                    </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+                </table>
+                @Html.Partial("_Partial_Pager")
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_VIP = {};
+
+        $(function () {
+            $("#btn_search").click(function () {
+                $("#CommunityName").data("LastValue", $("#CommunityName").val());
+                $("#SchoolName").data("LastValue", $("#SchoolName").val());
+                $("#CoachName").data("LastValue", $("#CoachName").val());
+                $("#TeacherName").data("LastValue", $("#TeacherName").val());
+                $("#Status").data("LastValue", $("#Status").val());
+            })
+
+            list_VIP = new ViewModel(
+                {
+                    instanceName: "list_VIP",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchAssignment")))',
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: "Redirect",
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("Community")",
+                            field: "@Html.NameFor(model => model.CommunityId)",
+                            order: true,
+                            width: "14%"
+                        },
+                        {
+                            text: "@Html.DisplayName("School")",
+                            field: "@Html.NameFor(model => model.SchoolId)",
+                            order: true,
+                            width: "11%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Teacher")',
+                            field: "@Html.NameFor(model => model.TeacherId)",
+                            order: true,
+                            width: "12%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Sender")',
+                            field: "@Html.NameFor(model => model.SendUserName)",
+                            width: '12%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Due Date")',
+                            field: "@Html.NameFor(model => model.DueDate)",
+                            order: true,
+                            width: "12%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Wave")',
+                            field: "@Html.NameFor(model => model.Wave)",
+                            order: true,
+                            width: "8%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Context")',
+                            field: "@Html.NameFor(model => model.Context)",
+                            width: "15%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Content")',
+                            field: "@Html.NameFor(model => model.Content)",
+                            width: "15%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Status")',
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: "10%"
+                        },
+                        {
+                            text: "Action",
+                            width: "2%"
+                        }
+                    ],
+                    searchCriteria: {
+                        community: ko.observable(window.queryString("community", -1)),
+                        school: ko.observable(window.queryString("school", -1)),
+                        teacher: ko.observable(window.queryString("teacher", -1)),
+                        coach: ko.observable(window.queryString("coach", -1)),
+                        status: ko.observable(window.queryString("status", -1))
+                    }
+                }
+            );
+
+            list_VIP.search();
+            ko.applyBindings(list_VIP);
+        });
+
+            function exportTo(o) {
+                o = $(o);
+                if (o.val() > 0) {
+                    var message_excel = window.getErrorMessage("VCW_ExportToExcelConfirm");
+                    var message_pdf = window.getErrorMessage("VCW_ExportToPdfConfirm");
+                    if (o.val() == "1") {
+                        jQuery.when(waitingConfirm("<p style='text-align:center'> " + message_excel + " </p>", " Yes ", " No ")).done(function () {
+                            Export("/PM/TeacherVIP/ExportExcel");
+                        }).fail(function () {
+
+                        });
+                    }
+                    if (o.val() == "2") {
+                        jQuery.when(waitingConfirm("<p style='text-align:center'> " + message_pdf + " </p>", " Yes ", " No ")).done(function () {
+                            Export("/PM/TeacherVIP/ExportPDF");
+                        }).fail(function () {
+
+                        });
+                    }
+                }
+            }
+
+
+            function Export(method) {
+                var form = $("<form>");
+                form.attr("style", "display:none");
+                form.attr("target", "");
+                form.attr("method", "post");
+                form.attr("action", method);
+                var input_community = $("<input>");
+                input_community.attr("type", "hidden");
+                input_community.attr("name", "community");
+                if ($("#CommunityName").data("LastValue") == undefined) {
+                    input_community.attr("value", $("#CommunityName").children("option:first").val());
+                }
+                else {
+                    input_community.attr("value", $("#CommunityName").data("LastValue"));
+                }
+                form.append(input_community);
+
+                var input_school = $("<input>");
+                input_school.attr("type", "hidden");
+                input_school.attr("name", "school");
+                if ($("#SchoolName").data("LastValue") == undefined) {
+                    input_school.attr("value", $("#SchoolName").children("option:first").val());
+                }
+                else {
+                    input_school.attr("value", $("#SchoolName").data("LastValue"));
+                }
+                form.append(input_school);
+
+                var input_coach = $("<input>");
+                input_coach.attr("type", "hidden");
+                input_coach.attr("name", "coach");
+                if ($("#CoachName").data("LastValue") == undefined) {
+                    input_coach.attr("value", $("#CoachName").children("option:first").val());
+                }
+                else {
+                    input_coach.attr("value", $("#CoachName").data("LastValue"));
+                }
+                form.append(input_coach);
+
+                var input_teacher = $("<input>");
+                input_teacher.attr("type", "hidden");
+                input_teacher.attr("name", "teacher");
+                if ($("#TeacherName").data("LastValue") == undefined) {
+                    input_teacher.attr("value", $("#TeacherName").children("option:first").val());
+                }
+                else {
+                    input_teacher.attr("value", $("#TeacherName").data("LastValue"));
+                }
+                form.append(input_teacher);
+
+                var input_status = $("<input>");
+                input_status.attr("type", "hidden");
+                input_status.attr("name", "status");
+                if ($("#Status").data("LastValue") == undefined) {
+                    input_status.attr("value", $("#Status").children("option:first").val());
+                }
+                else {
+                    input_status.attr("value", $("#Status").data("LastValue"));
+                }
+                form.append(input_status);
+
+                $("body").append(form);
+                form.submit().remove();
+                setTimeout(function () { window.loading(false) }, 2000);
+            }
+
+    </script>
+}

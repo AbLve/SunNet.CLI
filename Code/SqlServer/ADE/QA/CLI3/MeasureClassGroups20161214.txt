@@ -1,0 +1,11 @@
+﻿create table MeasureClassGroups
+(
+	ID int primary key identity(1,1),
+	MeasureId int not null,
+	ClassId int not null,
+	Note varchar(300) not null,
+	CreatedBy int not null,
+	UpdatedBy int not null,
+	CreatedOn datetime not null,
+	UpdatedOn datetime not null
+)

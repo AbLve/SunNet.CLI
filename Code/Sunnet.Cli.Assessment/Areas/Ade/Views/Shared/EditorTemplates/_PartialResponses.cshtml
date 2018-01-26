@@ -1,0 +1,157 @@
+﻿@{
+    Layout = null;
+}
+
+<!--ko if:step() == 4-->
+<!--ko foreach: { data: Responses, as: 'responseModel' }-->
+
+<div class="main-content" data-bind="visible: !IsDeleted() ">
+    <div class="content-body">
+        <div class="form-group">
+            <div class="col-sm-6">
+                <!--ko if:Index == 1 -->
+                <h4>Scored Response</h4>
+                <!--/ko-->
+                <!--ko if:Index > 1 -->
+                <h4 data-bind="text: 'Response ' + Index "></h4>
+                <!--/ko-->
+            </div>
+            <!--ko if:Index > 1 -->
+            <div class="col-sm-6" style="float: right; padding-right: 50px;">
+                <button type="button" class="close" data-dismiss="modal" data-bind="click: $root.deleteResponse"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <!--/ko-->
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3 required" data-bind="attr: { for: 'Responsetxt' + Index }">Response Text</label>
+            <div class="col-sm-8">
+                <input type="hidden" name="Id" data-bind="value: responseModel.ID" title=" "/>
+                <textarea class="form-control" cols="20" role="2" data-bind="value: responseModel.Text, attr: { id: 'Responsetxt' + Index, name: 'Responsetxt' + Index }, required: true"></textarea>
+                <div class="field-validation-valid" data-valmsg-replace="true" data-bind="attr: { 'data-valmsg-for': 'Responsetxt' + Index }">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Mandatory", new { @class = "control-label col-sm-3 required" })
+
+            <div class="col-sm-8">
+
+                <div class="checkbox">
+
+                    <input data-bind="checked: responseModel.Mandatory, checkedValue: true, attr: { id: uuid + '_ResponseMandatoryYes_' + Index, name: uuid + '_ResponseMandatory' }" type="radio" title=" ">
+
+                    <label data-bind="attr: { for: uuid + '_ResponseMandatoryYes_' + Index }">Yes</label>
+                    @ViewTextHelper.HtmlEmptySeparator @ViewTextHelper.HtmlEmptySeparator @ViewTextHelper.HtmlEmptySeparator
+
+                    <input data-bind="checked: responseModel.Mandatory, checkedValue: false, attr: { id: uuid + '_ResponseMandatoryNo_' + Index, name: uuid + '_ResponseMandatory' }" type="radio" title=" ">
+
+                    <label data-bind="attr: { for: uuid + '_ResponseMandatoryNo_' + Index }">No</label>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Response type", new { @class = "control-label col-sm-3 required" })
+
+            <div class="col-sm-8">
+                <div class="checkbox">
+                    <input data-bind="checked: responseModel.Type, checkedValue: 3, attr: { id: uuid + '_ResponseType3_' + Index, name: uuid + '_ResponseType' }" type="radio" title=" ">
+                    <label data-bind="attr: { for: uuid + '_ResponseType3_' + Index }">Radio button</label>
+                    @ViewTextHelper.HtmlEmptySeparator @ViewTextHelper.HtmlEmptySeparator @ViewTextHelper.HtmlEmptySeparator
+
+                    <input data-bind="checked: responseModel.Type, checkedValue: 4, attr: { id: uuid + '_ResponseType4_' + Index, name: uuid + '_ResponseType' }" type="radio" title=" ">
+                    <label data-bind="attr: { for: uuid + '_ResponseType4_' + Index }">Check box</label>
+                    @ViewTextHelper.HtmlEmptySeparator @ViewTextHelper.HtmlEmptySeparator @ViewTextHelper.HtmlEmptySeparator
+
+                    <input data-bind="checked: responseModel.Type, checkedValue: 1, attr: { id: uuid + '_ResponseType1_' + Index, name: uuid + '_ResponseType' }" type="radio" title=" ">
+                    <label data-bind="attr: { for: uuid + '_ResponseType1_' + Index }">Text box</label>
+                </div>
+            </div>
+        </div>
+
+        <!--ko if:Type() !=1 -->
+        <div class="form-group">
+            <!--ko if:Type() == 3-->
+            <label class="control-label col-sm-3 required" data-bind="attr: { for: 'radioBtnNo' + Index }">Number of Radio buttons</label>
+            <!--/ko-->
+            <!--ko if:Type() == 4-->
+            <label class="control-label col-sm-3 required" data-bind="attr: { for: 'radioBtnNo' + Index }">Number of Check boxes</label>
+            <!--/ko-->
+
+            <div class="col-sm-8">
+                <select data-bind="value: responseModel.Buttons, attr: { id: 'radioBtnNo' + Index }">
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Response text", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-8">
+                <table class="table table-hover table-striped">
+                    <tbody>
+                        <!--ko if:responseModel.Index == 1-->
+                        <tr>
+                            <td style="text-align: left;">
+                                <label style="margin-left: 315px;"><strong>Score Value</strong></label>
+                            </td>
+                        </tr>
+                        <!--/ko-->
+                        <!--ko foreach: { data: Options, as: 'optionModel' }-->
+                        <!--ko if:IsDeleted() == false-->
+                        <tr>
+                            <td style="text-align: left;">
+                                <!--ko if:responseModel.Type() == 3-->
+                                <label style="display:none" data-bind="attr: { for: 'Radio' + responseModel.Index + '_' + $index() }">IsCorrect</label>
+                                <input type="radio" data-bind="checked: IsCorrect, checkedValue: true, click: changeRadio.bind($data, $parent), attr: { id: 'Radio' + responseModel.Index + '_' + $index() }" disabled="disabled" title=" " />&nbsp;&nbsp;&nbsp;
+                                <!--/ko-->
+                                <!--ko if:responseModel.Type() == 4-->
+                                <label style="display:none" data-bind="attr: { for: 'chk' + responseModel.Index + '_' + $index() }">IsCorrect</label>
+                                <input type="checkbox" data-bind="checked: IsCorrect, checkedValue: true, attr: { id: 'chk' + responseModel.Index + '_' + $index() } " disabled="disabled" title=" " />&nbsp;&nbsp;&nbsp;
+                                <!--/ko-->
+                                <label style="display:none" data-bind="attr: { for: 'Option_' + responseModel.Index + '_' + $index() }">IsCorrect</label>
+                                <input type="text" style="width: 260px; height: 25px; border: 1px solid #dddddd; background-color: #ffffff;" 
+                                       data-bind="value: Lable, attr: { id: 'Option_' + responseModel.Index + '_' + $index(), name: 'Option_' + responseModel.Index + '_' + $index() }, required: true" title="This field is required." />
+                                &nbsp;
+                                &nbsp;&nbsp;
+                                <!--ko if:responseModel.Index == 1-->
+                                <label style="display:none" data-bind="attr: { for: 'txt' + responseModel.Index + '_' + $index() }">IsCorrect</label>
+                                <input type="text" data-bind="value: Score, attr: { id: 'txt' + responseModel.Index + '_' + $index() }" placeholder="Score Value" class="form-control input-sm _number " int="2" float="2" maxlength="5" style="width: 80px; display: inline-block;" title=" "/>
+                                &nbsp;&nbsp;
+                                <!--/ko-->
+                                <input type="checkbox" data-bind="checked: AddTextbox, attr: { id: 'chk' + uuid }" title=" "/>&nbsp;<label data-bind="    attr: { for: 'chk' + uuid }">Add text box</label>
+                                <div class="field-validation-valid" data-valmsg-replace="true" data-bind="attr: { 'data-valmsg-for': 'Option_' + responseModel.Index + '_' + $index() }">
+                                </div>
+                            </td>
+                        </tr>
+                        <!--/ko-->
+                        <!--/ko-->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <!--/ko-->
+    </div>
+
+</div>
+
+<!--/ko-->
+
+
+<div class="main-content" data-bind="visible: itemModel.Responses() && itemModel.ResponseCount() < 5 ">
+    <div class="content-body">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <h4 data-bind="click: addResponse"><a class="table-btn icon-plus plus-btn"></a>Add Response</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--/ko-->

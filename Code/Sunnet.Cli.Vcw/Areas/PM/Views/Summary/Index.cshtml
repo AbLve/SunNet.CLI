@@ -1,0 +1,306 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.FileListModel
+@using Sunnet.Cli.Core.Vcw.Enums
+@{
+    ViewBag.Title = "PM Summary";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.PM_Summary)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Summary", "Index", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+    Coach Files
+}
+
+@Html.Partial("~/Areas/PM/Views/Partials/SummaryTab.cshtml", new Sunnet.Cli.Business.Vcw.Models.PageSelected { PageId = 1 })
+<div class="nav-container-main">
+    <form class="form-horizontal">
+        <div class="form-group"></div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="CommunityName">Community Name</label>
+            <div class="col-sm-3">
+                @Html.DropDownList("CommunityName", ViewBag.Communities as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.community" })
+            </div>
+            <label class="control-label col-sm-2" for="Coach">Coach</label>
+            <div class="col-sm-3">
+                @Html.DropDownList("Coach", ViewBag.Coaches as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.coach" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="UploadedBy">Uploaded By</label>
+            <div class="col-sm-3">
+                @Html.DropDownList("UploadedBy", ViewBag.UploadedBy as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.uploadby" })
+            </div>
+            <label class="control-label col-sm-2" for="VideoType">Video Type</label>
+            <div class="col-sm-3">
+                @Html.DropDownList("VideoType", ViewBag.VideoTypeOptions as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.videotype" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="Number">ID</label>
+            <div class="col-sm-3">
+                @Html.TextBoxFor(model => model.Number, new { @class = "form-control", data_bind = "value: searchCriteria.number" })
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-3">
+                <button class="mainbutton mainright-btn sreach-btn" type="button" id="btn_search" data-bind="event: { click: search }">Search</button>
+            </div>
+            <div class="col-sm-2">
+                <label for="selectExportTo" class="hide">&nbsp;</label>
+                <select class="form-control" id="selectExportTo" onchange="exportTo(this);">
+                    <option selected="selected" value="-1">Export to</option>
+                    <option value="1">Excel</option>
+                    <option value="2">PDF</option>
+                </select>
+            </div>
+        </div>
+    </form>
+    <div class="main-content">
+        <div class="content-title">File</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr>
+                        <td data-bind="text: item.CoachName"></td>
+                        <td data-bind="text: item.IdentifyFileName"></td>
+                        <td data-bind="text: item.Number"></td>
+                        <td data-bind="text: item.UploadDate"></td>
+                        <td data-bind="text: item.DateRecorded == minDate ? '' : item.DateRecorded"></td>
+                        <td data-bind="text: item.Strategy"></td>
+                        <td data-bind="text: item.Context"></td>
+                        <td data-bind="text: item.Content"></td>
+                        <td data-bind="text: item.FileExtension"></td>
+                        <td data-bind="text: item.Status.text"></td>
+                        <td>
+                            <!-- ko if: (item.VideoType.value == 5) -->
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewDataAssignment }" href="#" title="View"></a>
+                            <!-- /ko-->
+                            <!-- ko if: (item.VideoType.value == 4) -->
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewDataGeneral }" href="#" title="View"></a>
+                            <!-- /ko-->
+                        </td>
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 100 })
+            </table>
+            @Html.Partial("_Partial_Pager")
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Package = {};
+
+        $(function () {
+            $("#btn_search").click(function () {
+                $("#CommunityName").data("LastValue", $("#CommunityName").val());
+                $("#Coach").data("LastValue", $("#Coach").val());
+                $("#UploadedBy").data("LastValue", $("#UploadedBy").val());
+                $("#VideoType").data("LastValue", $("#VideoType").val());
+                $("#Number").data("LastValue", $("#Number").val());
+            })
+
+            list_Package = new ViewModel(
+                {
+                    instanceName: "list_Package",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("Coach")",
+                            field: "@Html.NameFor(model => model.CoachId)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayName("File Name")",
+                            field: "@Html.NameFor(model => model.IdentifyFileName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayName("ID")",
+                            field: "@Html.NameFor(model => model.ID)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Uploaded")',
+                            field: "@Html.NameFor(model => model.UploadDate)",
+                            order: true,
+                            width: '11%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Recorded")',
+                            field: "@Html.NameFor(model => model.DateRecorded)",
+                            order: true,
+                            width: '13%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Strategies")',
+                            width: '13%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Context")',
+                            field: "@Html.NameFor(model => model.ContextId)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Content")',
+                            field: "@Html.NameFor(model => model.Content)",
+                            width: '10%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Type")',
+                            field: "@Html.NameFor(model => model.FileExtension)",
+                            width: '10%'
+                        },
+                       {
+                           text: '@Html.DisplayName("Status")',
+                           field: "@Html.NameFor(model => model.Status)",
+                           order: true,
+                           width: '5%'
+                       },
+                        { text: "Action", width: '*' }
+                    ],
+                    searchCriteria: {
+                        community: ko.observable(window.queryString("community", -1)),
+                        coach: ko.observable(window.queryString("coach", -1)),
+                        uploadby: ko.observable(window.queryString("uploadby", -1)),
+                        videotype: ko.observable(window.queryString("videotype", -1)),
+                        number: ko.observable(window.queryString("number"))
+                    }
+                },
+                {
+                    viewDataGeneral: function (data) {
+                        location.href = "@Html.Raw(Url.Action("View", "CoachGeneral"))" + "?id=" + data.ID + "&redirect=Summary&returnurl=" + list_Package.getLocation();
+                    },
+                    viewDataAssignment: function (data) {
+                        location.href = "@Html.Raw(Url.Action("ViewFile", "CoachAssignment"))" + "?id=" + data.ID + "&redirect=Summary&returnurl=" + list_Package.getLocation();
+                    }
+                }
+            );
+
+            list_Package.search();
+            ko.applyBindings(list_Package);
+        });
+
+
+                function exportTo(o) {
+                    o = $(o);
+                    if (o.val() > 0) {
+                        var message_excel = window.getErrorMessage("VCW_ExportToExcelConfirm");
+                        var message_pdf = window.getErrorMessage("VCW_ExportToPdfConfirm");
+                        if (o.val() == "1") {
+                            jQuery.when(waitingConfirm("<p style='text-align:center'> " + message_excel + " </p>", " Yes ", " No ")).done(function () {
+                                Export("/PM/Summary/ExportExcel_CoachFiles");
+                            }).fail(function () {
+
+                            });
+                        }
+                        if (o.val() == "2") {
+                            jQuery.when(waitingConfirm("<p style='text-align:center'> " + message_pdf + " </p>", " Yes ", " No ")).done(function () {
+                                Export("/PM/Summary/ExportPdf_CoachFiles");
+                            }).fail(function () {
+
+                            });
+                        }
+                    }
+                }
+
+
+                function Export(method) {
+                    var form = $("<form>");
+                    form.attr("style", "display:none");
+                    form.attr("target", "");
+                    form.attr("method", "post");
+                    form.attr("action", method);
+
+                    var input_community = $("<input>");
+                    input_community.attr("type", "hidden");
+                    input_community.attr("name", "community");
+                    if ($("#CommunityName").data("LastValue") == undefined) {
+                        input_community.attr("value", $("#CommunityName").children("option:first").val());
+                    }
+                    else {
+                        input_community.attr("value", $("#CommunityName").data("LastValue"));
+                    }
+                    form.append(input_community);
+
+                    var input_coach = $("<input>");
+                    input_coach.attr("type", "hidden");
+                    input_coach.attr("name", "coach");
+                    if ($("#Coach").data("LastValue") == undefined) {
+                        input_coach.attr("value", $("#Coach").children("option:first").val());
+                    }
+                    else {
+                        input_coach.attr("value", $("#Coach").data("LastValue"));
+                    }
+                    form.append(input_coach);
+
+                    var input_uploadby = $("<input>");
+                    input_uploadby.attr("type", "hidden");
+                    input_uploadby.attr("name", "uploadby");
+                    if ($("#UploadedBy").data("LastValue") == undefined) {
+                        input_uploadby.attr("value", $("#UploadedBy").children("option:first").val());
+                    }
+                    else {
+                        input_uploadby.attr("value", $("#UploadedBy").data("LastValue"));
+                    }
+                    form.append(input_uploadby);
+
+                    var input_videotype = $("<input>");
+                    input_videotype.attr("type", "hidden");
+                    input_videotype.attr("name", "videotype");
+                    if ($("#VideoType").data("LastValue") == undefined) {
+                        input_videotype.attr("value", $("#VideoType").children("option:first").val());
+                    }
+                    else {
+                        input_videotype.attr("value", $("#VideoType").data("LastValue"));
+                    }
+                    form.append(input_videotype);
+
+                    var input_number = $("<input>");
+                    input_number.attr("type", "hidden");
+                    input_number.attr("name", "number");
+                    if ($("#Number").data("LastValue") == undefined) {
+                        input_number.attr("value", "");
+                    }
+                    else {
+                        input_number.attr("value", $("#Number").data("LastValue"));
+                    }
+                    form.append(input_number);
+
+                    $("body").append(form);
+                    form.submit().remove();
+                    setTimeout(function () { window.loading(false) }, 2000);
+                }
+
+    </script>
+}
+

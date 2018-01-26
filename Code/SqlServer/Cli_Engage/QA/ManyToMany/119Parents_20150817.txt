@@ -1,0 +1,30 @@
+﻿
+select * into Parents_20150817 from Parents
+go
+
+
+
+CREATE SEQUENCE [dbo].[SeqParentCode] 
+ AS [bigint]
+ START WITH 1
+ INCREMENT BY 1
+ MINVALUE 1
+ MAXVALUE 9999999
+ CYCLE 
+ CACHE 
+GO
+
+CREATE TRIGGER [UpdateSeqParentCode] ON [dbo].[Parents] 
+FOR INSERT
+AS
+  declare @ID int
+  select @ID = ID from Inserted
+  if(@ID is not null) begin
+  update Parents set ParentId = 'PAT'+ left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqParentCode ),'7') 
+  where id = @ID
+  end
+go
+
+
+update Parents set ParentId = 'PAT'+ left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqParentCode ),'7')
+go

@@ -1,0 +1,8 @@
+﻿IF NOT EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('TRSAssessments') AND name = 'RecertificatedBy' )
+BEGIN
+ALTER TABLE [dbo].[TRSAssessments] ADD RecertificatedBy DATETIME NULL 
+END
+GO
+UPDATE [TRSAssessments] SET RecertificatedBy = '1753-1-1'
+GO 
+ALTER TABLE [TRSAssessments] ALTER COLUMN RecertificatedBy DATETIME NOT NULL

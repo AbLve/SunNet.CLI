@@ -1,0 +1,21 @@
+﻿IF NOT EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[CpallsStudentGroups]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+CREATE TABLE [dbo].[CpallsStudentGroups](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[SchoolId] [int] NOT NULL,
+	[ClassId] [int] NOT NULL,
+	[StudentIds] [nvarchar](max) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[SchoolYear] [varchar](5) NOT NULL,
+	[Wave] [tinyint] NOT NULL,
+	[Language] [tinyint] NOT NULL,
+ CONSTRAINT [PK_CpallsStudentGroups] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO

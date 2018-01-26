@@ -1,0 +1,25 @@
+﻿GO
+
+/****** Object:  Table [dbo].[ChChildrenResult]    Script Date: 2015/1/9 15:51:26 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ChChildrenResult](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ClassroomId] [int] NOT NULL,
+	[CHChildrenId] [int] NOT NULL,
+	[ChildrenNumber] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_ChChildrenResult] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+

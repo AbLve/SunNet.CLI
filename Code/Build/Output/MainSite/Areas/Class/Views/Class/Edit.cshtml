@@ -1,0 +1,397 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.Business.Classes.Models
+@using Sunnet.Cli.Business.Permission
+@using Sunnet.Cli.Core.Classes.Enums
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Core.Classes.Entites.ClassEntity
+@{
+    ViewBag.Title = "Edit Class";
+    var formClass = new { @class = "form-control" };
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Class", "Index", "Class"))
+    <i class="icon-angle-right"></i>Edit
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Class)
+}
+@section Scripts{
+    @Scripts.Render("~/scripts/module_class");
+    <script type="text/javascript">
+        var baseModel = @Html.Raw(ViewBag.Role);
+        var trsObject = @Html.Raw(ViewBag.TrsObject);
+        baseModel.trsObject = classTrsObjectEdit(trsObject);
+        jQuery(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    if (window.AllQueryString.close === true) {
+                        window.close();
+                    } else {
+                        redirectBack("Index");
+                    }
+                }
+            });
+            //hide
+            $("#MonitoringToolOther").hide();
+            $("#divEquipment").hide();
+
+
+            //#regionInitial Language and Monitoring Tool
+
+            assignLanguage();
+
+
+            //Monitoring show hide
+            $("#MonitoringToolId").change(function() {
+                changeStatusByMonitoringTool();
+            });
+
+            //Validate used Equipment
+            fnUsedEquipment();
+
+
+            addMinMaxValidate("#AtRiskPercent");
+
+            $("#IsSameAsSchool").click(function() {
+                if ($(this).prop("checked") == true) {
+                    $("#AtRiskPercent").val("");
+                    //get data
+                    var schoolId = $("#SchoolId").val();
+                    if (schoolId != null && schoolId != "") {
+                        $.post("/School/School/GetAtRiskPercent", { schoolId: schoolId }, function(result) {
+                            if (result != null) {
+                                $("#AtRiskPercent").val(result);
+                            }
+                        });
+                    }
+                    $("#AtRiskPercent").prop("readonly", "true");
+                } else {
+                    $("#AtRiskPercent").val("0");
+                    $("#AtRiskPercent").removeAttr("readonly");
+                }
+            });
+            if ($("#IsSameAsSchool").prop("checked")) {
+                $("#AtRiskPercent").prop("readonly", "true");
+            }
+            GetSchoolType();
+
+            InitControlsByRole();
+
+            changeStatusByMonitoringTool();
+
+            showOther();
+
+            $("#TypeOfClass").on("change", function(event) {
+                // Mac
+                if ($("#TypeOfClass").val() == "1") {
+                    baseModel.trsObject.type("NMAC");
+                } else { // NMac
+                    baseModel.trsObject.type("MAC");
+                }
+            });
+
+            $("[name='childNumberList']").each
+            (
+                function(index, domEle) {
+                    GenerateNumber(domEle);
+                }
+            );
+
+            ko.applyBindings(baseModel);
+        });
+
+        var facilityType = "";
+
+        function beforeSubmit(sender) {
+            if ($("form").valid()) {
+                if (facilityType == "LCCH" || facilityType == "RCCH") {
+                    var hasChild = false;
+                    $("input[name='hiddenChild']").each(function() {
+                        if ($(this).val() != "") {
+                            hasChild = true;
+                            return true;
+                        }
+                    });
+                    if (hasChild) {
+                        return true;
+                    } else {
+                        showMessage("hint", "Please select Age of Children");
+                        return false;
+                    }
+
+                }
+                else if($("#TrsAssessorId").val()&&$("#TrsAssessorId").val()==$("#TrsMentorId").val()){
+                    showMessage("hint", "trs_ClassSameAssessorAndMentor");
+                    return false;
+                }
+                else
+                    return true;
+            }
+        };
+
+        function assignLanguage() {
+            var tmp = @Html.Raw(ViewBag.language);
+            $("#languageSelectList").val(tmp);
+        }
+
+    </script>
+}
+@using (Ajax.BeginForm("Edit", "Class", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    HttpMethod = "Post",
+    role = "form",
+    id = formId,
+    @class = "form-horizontal"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to Class list</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(model => model.ID)
+            @Html.HiddenFor(model => model.SchoolId)
+            @Html.HiddenFor(model=>model.ClassInternalID)
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="PrincipalId">Community/District</label>
+                <div class="col-sm-4">
+                    <input type="text" id="CommunityId" class="form-control" readonly="readonly" value="@ViewBag.communityName" />
+                </div>
+                @Html.LabelFor(model => model.SchoolId, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    <input type="text" id="SchoolId" class="form-control" readonly="readonly" value="@Html.Raw(ViewBag.schoolName)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="PrincipalId">Classroom Name</label>
+                <div class="col-sm-4">
+                    <input type="text" id="ClassroomId" class="form-control" readonly="readonly" value="@ViewBag.classroomName" />
+                </div>
+                @Html.LabelFor(model => model.SchoolYear, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", Readonly = "true" })
+                    @Html.ValidationMessageFor(model => model.SchoolYear)
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Name" class="control-label col-sm-2 required">
+                    Class Name
+                    <i class="icon-question-sign question-tip" id="tooltip1" data-toggle="tooltip" data-placement="top"
+                        title="Name the class after the lead teacher’s last name, First Name, Middle Name, Class
+                        Day Type followed by 's Class, e.g. LastName's Class, LastName's AM Class, etc"></i>
+                </label>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+                @Html.LabelFor(model => model.ClassId, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.ClassId, new { @class = "form-control", Readonly = "true" })
+                    @Html.ValidationMessageFor(model => model.ClassId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.StatusOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+                @Html.LabelFor(model => model.StatusDate, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.StatusDate, new { @class = "form-control", Readonly = "true", @Value = Model.StatusDate.FormatDateString() })
+                    @Html.ValidationMessageFor(model => model.StatusDate)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.DayType, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.DayType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.DayType)
+                </div>
+                @Html.LabelFor(model => model.ClassType, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.ClassType, ViewTextHelper.DefaultPleaseSelectText, "", formClass)
+                    @Html.ValidationMessageFor(model => model.ClassType)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Classlevel, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.Classlevel, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                </div>
+                @Html.LabelFor(model => model.LeadTeacherId, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.LeadTeacherId, (IEnumerable<SelectListItem>)ViewBag.TeacherOptions, new { @class = "form-control" })
+                </div>
+            </div>
+            <!--ko if:trsObject.visible()-->
+            <div class="form-group">
+                @Html.LabelFor(model => model.TrsAssessorId, null, new { @class = "col-sm-2 control-label required", })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.TrsAssessorId, (IEnumerable<SelectListItem>)ViewBag.CoachOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.TrsAssessorId)
+                </div>
+                @Html.LabelFor(model => model.TrsMentorId, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.TrsMentorId, (IEnumerable<SelectListItem>)ViewBag.CoachOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.TrsMentorId)
+                </div>
+            </div>
+            <!--/ko-->
+            <div class="form-group">
+                <label class="control-label col-sm-4 required" for="languageSelectList">Language of Instruction</label>
+                <div class="col-sm-4">
+                    @if (ViewBag.LanguageOptions != null)
+                    {
+                        @Html.DropDownList("languageSelectList", (IEnumerable<SelectListItem>)ViewBag.LanguageOptions, new { @class = "form-control required", multiple = "multiple" })
+                        ;
+                        @Html.ValidationMessage("languageSelectList")
+                        ;
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CurriculumId, new { @class = "control-label col-sm-4 required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.CurriculumId, (IEnumerable<SelectListItem>)ViewBag.CurriculumOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CurriculumId)
+                    <label for="CurriculumOther" class="hide">CurriculumOther</label>
+                    @Html.TextBoxFor(model => model.CurriculumOther, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CurriculumOther)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SupplementalCurriculumId, new { @class = "control-label col-sm-4 required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.SupplementalCurriculumId, (IEnumerable<SelectListItem>)ViewBag.CurriculumOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SupplementalCurriculumId)
+                    <label for="SupplementalCurriculumOther" class="hide">SupplementalCurriculumOther</label>
+                    @Html.TextBoxFor(model => model.SupplementalCurriculumOther, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SupplementalCurriculumOther)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.AtRiskPercent, new { @class = "control-label col-sm-4 required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.AtRiskPercent, formClass)
+                    @Html.ValidationMessageFor(model => model.AtRiskPercent)
+                </div>
+                <div class="col-sm-4">
+                    @Html.CheckBoxFor(model => model.IsSameAsSchool)
+                    @Html.LabelFor(model => model.IsSameAsSchool)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.MonitoringToolId, new { @class = "control-label col-sm-4 required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.MonitoringToolId, (IEnumerable<SelectListItem>)ViewBag.MonitoringToolOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MonitoringToolId)
+                    <label for="MonitoringToolOther" class="hide">MonitoringToolOther</label>
+                    @Html.TextBoxFor(model => model.MonitoringToolOther, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MonitoringToolOther)
+                </div>
+            </div>
+            <div class="form-group" id="divEquipment">
+                @Html.LabelFor(model => model.UsedEquipment, new { @class = "control-label col-sm-4 required" })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.UsedEquipment, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UsedEquipment)
+                </div>
+                @Html.LabelFor(model => model.EquipmentNumber, "Please Specify", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.EquipmentNumber, new { @class = "form-control", Readonly = "true" })
+                    @Html.ValidationMessage("EquipmentNumber")
+                </div>
+            </div>
+            <div class="form-group">
+                <span class="control-label col-sm-3">Partnership Reference Data</span>
+                <div class="col-sm-8">
+                    @if (ViewBag.TeacherList != null)
+                    {
+                        <p class="form-control-static">
+                            Teacher Employed By @(string.Join(", ", ((List<string>)ViewBag.TeacherList)))
+                        </p>
+                    }
+                    <div>
+                        School Type is <span id="txtSchoolType"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Notes, new { @class = "control-label col-sm-3" })
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(model => model.Notes, 5, 3, new
+                    {
+                        @class = "form-control",
+                        PlaceHolder = "Limit to 600 characters."
+                    })
+                    @Html.ValidationMessageFor(model => model.Notes)
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content" id="divAgeChildren" style="display: none" data-bind="visible:trsObject.visible()">
+            <div class="content-body">
+                @Html.ValidationMessage("hiddenChild", "The field Age of Children is required.", "div")
+                <div class="form-group">
+                    @if (ViewBag.TRSAccess != Permission.Invisible)
+                    {
+                        <label class="col-sm-3 control-label" for="TypeOfClass" data-bind="visible:trsObject.show()">
+                            <strong>Type of Classroom
+                            </strong>
+                        </label>
+                        <div class="col-sm-5" data-bind="visible:trsObject.show()">
+                            @Html.HiddenFor(x => x.TypeOfClass, new { data_bind = "value:trsObject.typeOfClass" })
+                            @Html.DropDownListFor(model => model.TypeOfClass, (IEnumerable<SelectListItem>)ViewBag.ClassroomTypeOptions,
+                                new
+                                {
+                                    @class = "form-control",
+                                    data_bind = "enable: trsObject.multiple() && !trsObject.readOnly,value:trsObject.typeOfClass"
+                                })
+                        </div>
+                    }
+                    <div class="col-sm-12">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width: 300px;">Age of Children</th>
+                                    <th style="width: 150px;"># of Children</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach:{data:trsObject.childrenTypes,as:'childrenAgeType'}">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="hidden" name="hiddenChild" data-bind="value:ID,checked:$root.trsObject.readOnly && checked()">
+                                        <label>
+                                            <input type="checkbox" name="hiddenChild" data-bind="value:ID,checked:checked,enable: !$root.trsObject.readOnly,required:true">
+                                            <span data-bind="text:Name"></span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" class="hidden" name="dpChildrenNumber" data-bind="value:childrenAgeType.Count,checked: $root.trsObject.readOnly && checked()">
+                                        <select name='dpChildrenNumber' class="form-control" data-bind="enable: !$root.trsObject.readOnly && checked(),visible:checked(), options:$root.trsObject.numbers, optionsText: 'Text',optionsValue: 'Value',value:childrenAgeType.Count"></select>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="button-content">
+            <button class="mainbutton modal-btn update-btn" type="submit" onclick=" return beforeSubmit(this); ">Submit</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" onclick=' redirectBack("index") '>Cancel</button>
+        </div>
+    </div>
+}

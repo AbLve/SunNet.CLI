@@ -1,0 +1,167 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherAssignmentFileModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Vcw.Enums
+@using System.Web.Optimization
+@using Sunnet.Framework.Extensions
+@using Sunnet.Framework
+
+@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    List<SelectItemModel> Languages = ViewBag.Languages as List<SelectItemModel>;
+    List<SelectItemModel> Contexts = ViewBag.Contexts as List<SelectItemModel>;
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/vcw_upload")
+    @Scripts.Render("~/scripts/vcwcommon")
+    <script type="text/javascript">
+        +(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var parentListObj = @Request.QueryString["listObj"];
+                    parentListObj.onDataAdded(response);
+                    closeModal($("#@(formId)"));
+                }
+            });            
+        })();
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+    </script>
+}
+@using (Ajax.BeginForm("UploadVideo", "TeacherAssignment", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.AssignmentID)
+    @Html.HiddenFor(model => model.OwnerId)
+    <div class="form-group">
+        <div class="col-sm-6">
+            <div class="content-con">
+                <div class="content-title3">
+                    @Html.LabelFor(m => m.IdentifyFileName, new { @class = "control-label required" })
+                </div>
+                <div class="inputtext-con">
+                    @Html.TextBoxFor(m => m.IdentifyFileName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.IdentifyFileName)
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="content-con">
+                <div class="content-title3">
+                    <div class="control-label required">
+                        Upload File 
+                        (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                        <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                    </div>
+                </div>
+                <div class="upload-btn">
+                    <div id="picker">1) Select File</div>
+                </div>
+                <div id="filelists" class="uploader-list"></div>
+                <div class="upload-btn">
+                    <a id="ctlBtn">2) Start Upload</a>
+                </div>
+                <input type="hidden" id="filetarget" />
+                <label for="filetarget">&nbsp;</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4">
+            <div class="content-con">
+                <div class="content-title3">
+                    <label class="control-label" for="DateRecorded">Date Video Recorded</label>
+                </div>
+                <div class="inputtext-con">
+                    @Html.TextBoxFor(m => m.DateRecorded, new { @class = "form-control date", @Value = "" })
+                    @Html.ValidationMessageFor(m => m.DateRecorded)
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="content-con">
+                <div class="content-title3">
+                    <span class="control-label">Video language</span>
+                </div>
+                @if (Languages != null)
+                {
+                    foreach (SelectItemModel item in Languages)
+                    {
+                    <div class="checkbox-con">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="language" value="@item.ID">@item.Name
+                        </label>
+                    </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <div class="content-con">
+                <div class="content-title3">
+                    <span class="control-label">Video Context</span>
+                </div>
+                @if (Contexts != null)
+                {
+                    foreach (SelectItemModel item in Contexts)
+                    {
+                        if (item.Name.Trim().ToLower() == SFConfig.ContextOther)
+                        {
+                    <div class="checkbox-con">
+                        <label class="checkbox-inline checkbox-other">
+                            <input type="checkbox" name="Context"  value="@(item.ID)" isOther="true"/>@item.Name
+                        </label>
+                        <label class="textbox-other">
+                            @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control", disabled = "disabled" })
+                        </label>
+                        @Html.ValidationMessageFor(model => model.ContextOther)
+                    </div>
+                        }
+                        else
+                        {
+                    <div class="checkbox-con">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="Context" value="@(item.ID)" />@item.Name
+                        </label>
+                    </div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>   
+    
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="content-con">
+                <div class="content-title3">
+                    <div class="control-label">
+                        Teacher Comments
+                        <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                    </div>
+                </div>
+                <div class="textarea-con">
+                    <label for="Description" class="hide">&nbsp;</label>
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", row = "3" })
+                    @Html.ValidationMessageFor(m => m.Description)
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="uploadfiles" id="uploadfiles" />
+    <div class="modal-footer">
+        <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit_new(this);">
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

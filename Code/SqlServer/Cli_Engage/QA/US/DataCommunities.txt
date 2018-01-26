@@ -1,0 +1,46 @@
+﻿/****** Object:  Table [dbo].[DataCommunities]    Script Date: 2014/10/9 16:06:29 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[DataCommunities](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[GroupId] [int] NOT NULL,
+	[CommunityId] [int] NOT NULL,
+	[District_TEA_ID] [varchar](100) NOT NULL,
+	[District_Physical_Address1] [varchar](100) NOT NULL,
+	[District_Physical_Address2] [varchar](100) NULL,
+	[District_City] [varchar](100) NOT NULL,
+	[District_ZIP] [varchar](100) NOT NULL,
+	[District_Phone_Number] [varchar](100) NOT NULL,
+	[District_Phone_Number_Type] [tinyint] NOT NULL,
+	[District_Primary_Contact_Salutation] [varchar](100) NULL,
+	[District_Primary_Contact_Name] [int] NULL,
+	[District_Primary_Contact_Title] [int] NOT NULL,
+	[District_Primary_Contact_Phone_Number] [varchar](100) NOT NULL,
+	[District_Primary_Contact_Phone_Number_Type] [tinyint] NOT NULL,
+	[District_Primary_Contact_Email_Address] [varchar](100) NOT NULL,
+	[District_Secondary_Contact_Salutation] [int] NULL,
+	[District_Secondary_Contact_Name] [varchar](100) NULL,
+	[District_Secondary_Contact_Title] [varchar](100) NULL,
+	[District_Secondary_Contact_Phone_Number] [varchar](100) NULL,
+	[District_Secondary_Contact_Phone_Number_Type] [tinyint] NULL,
+	[District_Secondary_Contact_Email_Address] [varchar](100) NULL,
+	[District_Web_Address] [varchar](100) NULL,
+ CONSTRAINT [PK_CommunityDatas] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

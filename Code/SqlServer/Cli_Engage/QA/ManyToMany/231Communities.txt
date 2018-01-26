@@ -1,0 +1,13 @@
+alter table Communities add [Automation] bit
+go
+update Communities set [Automation] = 0
+go
+alter table Communities alter column [Automation] bit not null
+go 
+
+
+alter table CommunityRoles add [Automation] varchar(2)
+go
+update CommunityRoles set [Automation] = WebAddress
+go
+alter table CommunityRoles alter column [Automation]  varchar(2) not null

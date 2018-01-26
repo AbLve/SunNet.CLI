@@ -1,0 +1,46 @@
+﻿/****** Object:  StoredProcedure [dbo].[ImportDataBatch]    Script Date: 2014/10/17 16:19:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[ImportDataBatch]
+	@ID int
+AS
+BEGIN
+--Pending = 1,        
+--Processing  =2,
+--Processed =3,
+--Error = 4
+
+UPDATE DataGroups SET  [Status] = 2
+WHERE ID = @ID and [Status] = 1
+
+
+DECLARE @InvitationEmail BIT
+DECLARE @CreatedBy INT 
+SELECT @InvitationEmail = SendInvitation , @CreatedBy =CreatedBy  FROM DataGroups WHERE ID = @ID
+
+DECLARE @District_TEA_ID VARCHAR(100)
+SELECT TOP 1 @District_TEA_ID = District_TEA_ID  FROM DataCommunities WHERE GroupId = @ID
+
+    DECLARE @SchoolId INT
+
+	DECLARE cur CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT ID FROM dbo.DataSchools 
+        WHERE GroupId = @ID AND [Status] = 1
+		
+	OPEN cur FETCH NEXT FROM cur INTO @SchoolId
+	
+	WHILE @@FETCH_STATUS=0
+	BEGIN
+		EXEC ImportData @SchoolId ,@District_TEA_ID,@ID,@InvitationEmail ,@CreatedBy
+	FETCH NEXT FROM cur INTO @SchoolId
+	END
+	CLOSE cur
+	DEALLOCATE cur
+END

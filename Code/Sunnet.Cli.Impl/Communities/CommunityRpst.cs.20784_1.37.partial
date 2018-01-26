@@ -1,0 +1,216 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
+/**************************************************************************
+ * Developer: 		Leason
+ * Computer:		Leason-PC
+ * Domain:			Leason-pc
+ * CreatedOn:		2014/8/18 16:27:20
+ * Description:		Create CommunitiesRspt
+ * Version History:	Created,2014/8/18 16:27:20
+ * 
+ * 
+ **************************************************************************/
+using Sunnet.Cli.Core;
+using Sunnet.Cli.Core.Common.Enums;
+using Sunnet.Cli.Core.Communities.Entities;
+using Sunnet.Cli.Core.Communities.Interfaces;
+using Sunnet.Framework.Core.Base;
+using Sunnet.Cli.Core.Vcw.Entities;
+using Sunnet.Framework.Core.Extensions;
+
+namespace Sunnet.Cli.Impl.Communities
+{
+    public class CommunityRpst : EFRepositoryBase<CommunityEntity, Int32>, ICommunityRpst
+    {
+        public CommunityRpst(IUnitOfWork unit)
+        {
+            UnitOfWork = unit;
+        }
+        public bool InactiveEntities(ModelName model, int entityId, EntityStatus status, string fundingYear)
+        {
+            string sqlStr = "";
+            switch (model)
+            {
+                case ModelName.Community:
+                    sqlStr = string.Format(@"
+                            update Users         set Status='{1}'  where id in (select userid from teachers where schoolid in (Select ID  from Schools  where CommunityId={0}) and SchoolYear='{2}')  
+                            update students      set Status='{1}'  where ID in (Select studentId  from studentclassRelations  where classID   in (Select ID from classes where classroomID in (Select ID  from classrooms  where SchoolID in (Select ID from Schools where CommunityID={0}))))
+                            update classes       set Status='{1}'  where classroomID  in (Select ID  from classrooms where SchoolID  in (Select ID from Schools where CommunityID={0}))  and SchoolYear='{2}'
+                            update classrooms    set Status='{1}'  where SchoolID     in (Select ID from Schools where CommunityID={0})  and SchoolYear='{2}'
+                            update Communities   set Status='{1}'  where ID={0} 
+                            update schools       set Status='{1}'  where CommunityID={0}  and SchoolYear='{2}'",
+                        entityId, (int)status, fundingYear);
+                    if (status == EntityStatus.Inactive)
+                    {
+                        string deleteStr = String.Format(@"DELETE FROM TeacherClassRelations WHERE classId in
+                                             (SELECT [ID] FROM [Classes] WHERE CommunityId ={0})", entityId);
+                        sqlStr = sqlStr + deleteStr;
+                    }
+                    break;
+                case ModelName.School:
+                    sqlStr = string.Format(@"
+                            update users         set Status='{1}'  where id in (select userid from teachers where SchoolID ={0}  and SchoolYear='{2}')
+                            update students      set Status='{1}'  where ID in (Select studentId  from studentclassRelations  where classID   in (Select ID from classes where classroomID in (Select ID  from classrooms  where SchoolID ={0})))
+                            update classes       set Status='{1}'  where classroomID  in (Select ID  from classrooms where SchoolID  ={0})  and SchoolYear='{2}'
+                            update classrooms    set Status='{1}'  where SchoolID ={0} and SchoolYear='{2}'
+                            update schools       set Status='{1}'  where ID={0}  and SchoolYear='{2}'
+                        ",
+                        entityId, (int)status, fundingYear);
+                    if (status == EntityStatus.Inactive)
+                    {
+                        string deleteStr = String.Format(@"DELETE FROM TeacherClassRelations WHERE classId in
+                                             (SELECT [ID] FROM [Classes] WHERE SchoolId ={0})", entityId);
+                        sqlStr = sqlStr + deleteStr;
+                    }
+                    break;
+                case ModelName.Classroom:
+                    sqlStr = string.Format(@"
+                            update students      set Status='{1}'  where ID in (Select studentId  from studentclassRelations  where classID in (Select ID from classes where classroomID ={0}))
+                            update classes       set Status='{1}'  where classroomID  ={0}  and SchoolYear='{2}'
+                            update classrooms    set Status='{1}'  where ID ={0} and SchoolYear='{2}'
+                        ",
+                        entityId, (int)status, fundingYear);
+                    break;
+                case ModelName.Class:
+                    sqlStr = string.Format(@"
+                            update students      set Status='{1}'  where ID in (Select studentId  from studentclassRelations  where classID = {0})
+                            update classes       set Status='{1}'  where ID  ={0}  and SchoolYear='{2}'
+                        ",
+                        entityId, (int)status, fundingYear);
+                    break;
+                case ModelName.Teacher:
+                    if (status == EntityStatus.Inactive)
+                    {
+                        string deleteStr = String.Format(@"DELETE FROM TeacherClassRelations WHERE [TeacherId] ={0}", entityId);
+                        sqlStr = sqlStr + deleteStr;
+                    }
+                    break;
+            }
+            EFUnitOfWorkContext context = this.UnitOfWork as EFUnitOfWorkContext;
+            //不能在此Dispose掉context，因为执行过此方法后，还会用到context
+            return context.DbContext.Database.ExecuteSqlCommand(sqlStr) > 0;
+        }
+
+        /// <summary>
+        /// PM查找所对应的Coach
+        /// </summary>
+        /// <param name="pmid"></param>
+        /// <param name="sort"></param>
+        /// <param name="order"></param>
+        /// <param name="first"></param>
+        /// <param name="count"></param>
+        /// <param name="total"></param>
+        /// <param name="community"></param>
+        /// <param name="coach"></param>
+        /// <returns></returns>
+        public List<CoachesListModel> GetCoachesByPM(int pmid, string sort, string order, int first, int count, out int total, int community = -1, int coach = -1, bool isAdmin = false)
+        {
+            StringBuilder sb_count = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
+
+            if (isAdmin)//是否为管理员查看
+            {
+                sb_count.AppendFormat(@"select count(1) from(");
+                sb_count.Append("select distinct(Project.CoachUserId),Project.CoachName,Project.CommunityIds from (");
+                sb_count.Append("select ISNULL(c.UserId,0) as 'CoachUserId',u.FirstName+' '+u.LastName as 'CoachName',");
+                sb_count.Append("(select convert(varchar,ur.CommunityId)+',' from Communities com ");
+                sb_count.Append("inner join BasicCommunities bc ");
+                sb_count.Append("on com.BasicCommunityId = bc.id ");
+                sb_count.Append("inner join UserCommunityRelations ur ");
+                sb_count.Append("on ur.CommunityId = com.id  ");
+                sb_count.Append("where com.Status = 1 and ur.userid = c.userid for xml path(''))  as 'CommunityIds' ");
+                sb_count.Append("from CoordCoachs as c inner join Users as u ");
+                sb_count.Append("on c.UserId=u.ID ");
+                sb_count.Append("where u.Status=1 and c.PMAssignmentId>0");
+                sb_count.Append(") as Project) as List where 1=1");
+
+
+                sb.AppendFormat(@"select top {0} List.CoachUserId,List.CoachName,left(List.CommunityName,len(List.CommunityName)-1) as CommunityName,
+                List.CommunityIds from (
+                select Project.CoachUserId,Project.CoachName,Project.CommunityName,Project.CommunityIds,
+                row_number() OVER (ORDER BY Project.{1} {2}) AS [rows]
+                from
+                (
+                select coach.UserId as 'CoachUserId' ,u.FirstName+' '+u.LastName as 'CoachName',
+
+                (select name + '; ' from Communities c
+                inner join BasicCommunities bc on c.BasicCommunityId = bc.id
+                inner join UserCommunityRelations r on r.CommunityId = c.id 
+                where c.Status = 1 and r.userid = coach.userid for xml path(''))  as 'CommunityName',
+
+                (select convert(varchar,r.CommunityId)+',' from Communities c
+                inner join BasicCommunities bc on c.BasicCommunityId = bc.id
+                inner join UserCommunityRelations r on r.CommunityId = c.id 
+                where c.Status = 1 and r.userid = coach.userid for xml path(''))  as 'CommunityIds'
+
+                from CoordCoachs coach 
+                inner join Users as u 
+                on coach.UserId=u.ID 
+                 where u.Status=1 and coach.PMAssignmentId>0 
+                ) as Project) as List 
+                where List.rows>{3}", count, sort, order, first);
+            }
+
+            else
+            {
+                sb_count.AppendFormat(@"select count(1) from(
+                select distinct(Project.CoachUserId),Project.CoachName, Project.CommunityIds from (
+                select ISNULL(c.UserId,0) as 'CoachUserId',u.FirstName+' '+u.LastName as 'CoachName',
+                (select convert(varchar,ur.CommunityId)+',' from Communities com 
+                inner join BasicCommunities bc 
+                on com.BasicCommunityId = bc.id 
+                inner join UserCommunityRelations ur
+                on ur.CommunityId = com.id  
+                where com.Status = 1 and ur.userid = c.userid for xml path(''))  as 'CommunityIds' 
+                from CoordCoachs as c inner join Users as u
+                on c.UserId=u.ID
+                where u.Status=1 and c.PMAssignmentId={0}
+                ) as Project) as List where 1=1", pmid);
+
+                sb.AppendFormat(@"select top {0} List.CoachUserId,List.CoachName,left(List.CommunityName,len(List.CommunityName)-1) as CommunityName ,
+                List.CommunityIds from (  
+			    select Project.CoachUserId,Project.CoachName,Project.CommunityName,Project.CommunityIds,
+			    row_number() OVER (ORDER BY Project.{1} {2}) AS [rows]
+			    from 
+                (
+                    select coach.UserId as 'CoachUserId' ,u.FirstName+' '+u.LastName as 'CoachName',
+
+                    (select name + '; ' from Communities c 
+                    inner join BasicCommunities bc on c.BasicCommunityId = bc.id 
+                    inner join UserCommunityRelations r on r.CommunityId = c.id
+                    where c.Status = 1 and r.userid = coach.userid for xml path(''))  as 'CommunityName' ,
+
+                    (select convert(varchar,r.CommunityId)+',' from Communities c
+                    inner join BasicCommunities bc on c.BasicCommunityId = bc.id
+                    inner join UserCommunityRelations r on r.CommunityId = c.id 
+                    where c.Status = 1 and r.userid = coach.userid for xml path(''))  as 'CommunityIds'
+
+                    from CoordCoachs coach
+                    inner join Users as u
+                    on coach.UserId=u.ID
+                    where u.Status=1 and coach.PMAssignmentId={3}
+                ) as Project) as List
+                 where List.rows>{4}", count, sort, order, pmid, first);
+            }
+
+            sb.AppendFormat(" order by List.{0} {1}", sort, order);
+
+            EFUnitOfWorkContext context = this.UnitOfWork as EFUnitOfWorkContext;
+            total = context.DbContext.Database.SqlQuery<int>(sb_count.ToString(), pmid).ToList().FirstOrDefault();
+            var list = context.DbContext.Database.SqlQuery<CoachesListModel>(sb.ToString()).ToList();
+
+            return list;
+        }
+
+
+        public int GetCommunityCode()
+        {
+              EFUnitOfWorkContext context = this.UnitOfWork as EFUnitOfWorkContext;
+              return context.DbContext.Database.SqlQuery<int>("select next value for SeqCommunityCode;").ToList().FirstOrDefault();
+        }
+    }
+}

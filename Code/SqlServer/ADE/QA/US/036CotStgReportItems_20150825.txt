@@ -1,0 +1,6 @@
+﻿if not exists(select * from syscolumns where id=object_id('[CotStgReportItems]') and name='GoalMetDate')
+alter table [dbo].[CotStgReportItems] add GoalMetDate datetime
+go
+update [CotStgReportItems] set GoalMetDate = '1753-1-1' where GoalMetDate is null
+go
+alter table [dbo].[CotStgReportItems] alter column GoalMetDate datetime not null

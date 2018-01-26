@@ -1,0 +1,163 @@
+﻿@using Sunnet.Cli.Business.Trs.Models
+@using Sunnet.Cli.Core.Trs
+@{
+    ViewBag.Title = "Retain Star";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var recentModel = ViewBag.model as TrsRecentStarModel;
+    var assessmentId = ViewBag.assessmentId;
+    var schoolId = ViewBag.schoolId;
+    var recentVerifiedStar = ViewBag.verifiedStar;
+}
+
+@using (Ajax.BeginForm("RetainStar", "Index", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    <input name="assessmentId" class="hidden" type="text" value="@assessmentId" title=" "/>
+    <input name="verifiedStar" class="hidden" type="text" value="@recentVerifiedStar" title=" "/>
+    <div class="main-content main-content">
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;"><span style="display:none;">1</span></th>
+                        <th style="width: 15%">Category 1</th>
+                        <th style="width: 15%">Category 2</th>
+                        <th style="width: 15%">Category 3</th>
+                        <th style="width: 15%">Category 4</th>
+                        <th style="width: 15%">Category 5</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Previous Star Rating</td>
+                        <td>
+                            <span id="txtPreStar1">@recentModel.RecentStars[TRSCategoryEnum.Category1].ToDescription()</span>
+                        </td>
+                        <td>
+                            <span id="txtPreStar2">@recentModel.RecentStars[TRSCategoryEnum.Category2].ToDescription()</span>
+                        </td>
+                        <td>
+                            <span id="txtPreStar3">@recentModel.RecentStars[TRSCategoryEnum.Category3].ToDescription()</span>
+                        </td>
+                        <td>
+                            <span id="txtPreStar4">@recentModel.RecentStars[TRSCategoryEnum.Category4].ToDescription()</span>
+                        </td>
+                        <td>
+                            <span id="txtPreStar5">@recentModel.RecentStars[TRSCategoryEnum.Category5].ToDescription()</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Current Star Rating</td>
+                        <td>
+                            <span id="txtStar1">@recentModel.CurrentStars[TRSCategoryEnum.Category1].ToDescription()</span>
+                        </td>
+                        <td>
+                            <span id="txtStar2">@recentModel.CurrentStars[TRSCategoryEnum.Category2].ToDescription()</span>
+                        </td>
+                        <td>
+                            <span id="txtStar3">@recentModel.CurrentStars[TRSCategoryEnum.Category3].ToDescription()</span>
+                        </td>
+                        <td>
+                            <span id="txtStar4">@recentModel.CurrentStars[TRSCategoryEnum.Category4].ToDescription()</span>
+                        </td>
+                        <td>
+                            <span id="txtStar5">@recentModel.CurrentStars[TRSCategoryEnum.Category5].ToDescription()</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Retain Previous Rating
+                            <input id="category1" name="category1" class="hidden" value="@recentModel.CurrentStars[TRSCategoryEnum.Category1].GetValue()" title=" "/>
+                            <input id="category2" name="category2" class="hidden" value="@recentModel.CurrentStars[TRSCategoryEnum.Category2].GetValue()" title=" " />
+                            <input id="category3" name="category3" class="hidden" value="@recentModel.CurrentStars[TRSCategoryEnum.Category3].GetValue()" title=" " />
+                            <input id="category4" name="category4" class="hidden" value="@recentModel.CurrentStars[TRSCategoryEnum.Category4].GetValue()" title=" " />
+                            <input id="category5" name="category5" class="hidden" value="@recentModel.CurrentStars[TRSCategoryEnum.Category5].GetValue()" title=" " />
+                        </td>
+
+                        @if (recentModel.HasRecentStar)
+                        {
+                            <td>
+                                <input type="checkbox" name="chk" id="chk1" onchange="chkChange(this.id)" value="1" title=" "/>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="chk" id="chk2" onchange="chkChange(this.id)" value="2" title=" "/>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="chk" id="chk3" onchange="chkChange(this.id)" value="3" title=" "/>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="chk" id="chk4" onchange="chkChange(this.id)" value="4" title=" "/>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="chk" id="chk5" onchange="chkChange(this.id)" value="5" title=" "/>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <input type="checkbox" name="chk" disabled="disabled" title=" " /></td>
+                            <td>
+                                <input type="checkbox" name="chk" disabled="disabled" title=" " /></td>
+                            <td>
+                                <input type="checkbox" name="chk" disabled="disabled" title=" " /></td>
+                            <td>
+                                <input type="checkbox" name="chk" disabled="disabled" title=" "/></td>
+                            <td>
+                                <input type="checkbox" name="chk" disabled="disabled" title=" " /></td>
+                        }
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton mainright-btn submit-btn" type="submit">Combine Calculation</button>
+    </div>
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        console.log(1);
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response) {
+                    if (response.success) {
+                        //Parent page defined
+                        retainStarSetted = true;
+                        model.hasRetainedStar('@recentModel.HasRecentStar' == 'True');
+                        closeModal($("#@(formId)"));
+                    }
+                }
+            });
+        })();
+
+        function chkChange(id) {
+            var val = $("#" + id).val();
+            var checked = $("#" + id).prop('checked');
+            switch (val) {
+                case '1':
+                    checked ? $("#category1").val(@recentModel.RecentStars[TRSCategoryEnum.Category1].GetValue()) : $("#category1").val(@recentModel.CurrentStars[TRSCategoryEnum.Category1].GetValue());
+                    break;
+                case '2':
+                    checked ? $("#category2").val(@recentModel.RecentStars[TRSCategoryEnum.Category2].GetValue()) : $("#category2").val(@recentModel.CurrentStars[TRSCategoryEnum.Category2].GetValue());
+                    break;
+                case '3':
+                    checked ? $("#category3").val(@recentModel.RecentStars[TRSCategoryEnum.Category3].GetValue()) : $("#category3").val(@recentModel.CurrentStars[TRSCategoryEnum.Category3].GetValue());
+                    break;
+                case '4':
+                    checked ? $("#category4").val(@recentModel.RecentStars[TRSCategoryEnum.Category4].GetValue()) : $("#category4").val(@recentModel.CurrentStars[TRSCategoryEnum.Category4].GetValue());
+                    break;
+                case '5':
+                    checked ? $("#category5").val(@recentModel.RecentStars[TRSCategoryEnum.Category5].GetValue()) : $("#category5").val(@recentModel.CurrentStars[TRSCategoryEnum.Category5].GetValue());
+                    break;
+            }
+        }
+    </script>
+}
+

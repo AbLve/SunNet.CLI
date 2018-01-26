@@ -1,0 +1,43 @@
+﻿--Media Consent Percent
+CREATE procedure MediaConsentPercent
+AS
+begin
+select BC.Name as CommunityName,BS.Name as SchoolName,S.SchoolId as SchoolCode,(U.FirstName+' '+U.LastName) as TeacherName,T.TeacherId as TeacherCode,
+(Coachs.FirstName+' '+Coachs.LastName) as CoachName,T.MediaRelease as TeacherMediaRelease,Cl.Name as ClassName,Cl.ClassId as ClassCode,Cl.ID as ClassId,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID) and IsMediaRelease=1) as MediaReleaseYes,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID) and (IsMediaRelease=2 or IsMediaRelease=0)) as MediaReleaseNo,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID) and IsMediaRelease=3) as MediaReleaseRefused,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID)) as TotalStudentsinClass
+from Teachers T inner join Users U on U.ID=T.UserId left join (select * from Users where Role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+left join TeacherClassRelations TCL on T.id=TCL.TeacherId inner join Classes CL on CL.ID=TCL.ClassId
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId order by BC.Name
+end
+go
+
+--Media Consent Detail
+CREATE procedure MediaConsentDetail
+AS
+begin
+select Cl.ID into #Class
+from Teachers T inner join Users U on U.ID=T.UserId 
+left join (select * from Users where Role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+left join TeacherClassRelations TCL on T.id=TCL.TeacherId inner join Classes CL on CL.ID=TCL.ClassId
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId order by BC.Name
+
+select BC.Name as CommunityName,BS.Name as SchoolName,S.SchoolId as SchoolCode,
+(U.FirstName+' '+U.LastName) as TeacherName,T.TeacherId as TeacherCode,
+(Coachs.FirstName+' '+Coachs.LastName) as CoachName,
+ST.FirstName+' '+ST.LastName as StudentName,ST.StudentId as StudentCode,ST.Status as StudentStatus,ST.IsMediaRelease as StudentMediaRelease
+ from Students St
+left join StudentClassRelations SC on St.ID=SC.StudentId inner join Classes CL on CL.ID=SC.ClassId
+left join TeacherClassRelations TCL on CL.ID=TCL.ClassId inner join Teachers T on T.ID=TCL.TeacherId
+inner join Users U on U.ID=T.UserId left join (select * from Users where Role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+inner join Schools S on St.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join Communities C on St.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId
+where St.ID in (select StudentId from StudentClassRelations where ClassId in (select ID from #Class))
+order by BC.Name
+drop table #Class
+end
+GO

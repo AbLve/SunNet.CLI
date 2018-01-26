@@ -1,0 +1,28 @@
+﻿@using Sunnet.Cli.UIBase.Models;
+@{
+    ViewBag.Title = "LogOut";
+    Layout = "~/Views/Shared/_Layout_LogOut.cshtml";
+}
+
+<div class="logout-main">
+    <div class="logout-main-header">
+        <a href="#">
+            <img src="/images/cli_logo.png" alt="cli_logo">
+        </a>
+    </div>
+    <div class="logout-main-body">
+        <h4>You have been logged out of CLI Engage</h4>
+        <p>Choose from the following three options.</p>
+        <p class="text-red">Please close all browser windows to complete the log out process.</p>
+    </div>
+    <div class="logout-main-footer">
+        <a class="mainbutton logout-main-btn pass-btn" href="@(DomainHelper.MainSiteDomain)">Return to the home page</a>
+        <a class="mainbutton logout-main-btn close-btn" href="@(DomainHelper.SsoSiteDomain)home/Index?@(ViewBag.LoginUrl_Google)">Sign In with your Google Account</a>
+        <a class="mainbutton logout-main-btn backhome-btn" href="@(DomainHelper.SsoSiteDomain)home/Index?@(ViewBag.LoginUrl_UT)">UTHealth Login</a>
+    </div>
+    <iframe src="@(DomainHelper.MainSiteDomain)home/LogOut" style="display:none;"></iframe>
+    <iframe src="@(DomainHelper.AssessmentDomain)AssessmentHome/LogOut" style="display:none;"></iframe>
+    <iframe src="https://mail.google.com/mail/u/0/?logout" style="display: none;"></iframe>
+
+</div>
+

@@ -1,0 +1,116 @@
+﻿@using Sunnet.Cli.Business.Cot.Models
+@{
+    ViewBag.Title = "STGReport";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+}
+<form class="form-horizontal" role="form" id="formStgReport">
+    <div class="main-content main-content">
+        <div class="content-title">STG Reports</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }" id="tbReports">
+                    <tr>
+                        <td>
+                            <input type="checkbox" data-bind="value: item.SpentTime" />
+                        </td>
+                        <td data-bind="html: item.AdditionalComments"></td>
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 100 })
+            </table>
+            @Html.Partial("_Partial_Pager")
+            <div class="modal-footer">
+                <input type="button" class="mainbutton mainright-btn submit-btn" value="Save" onclick="selectStgToGeneral()">
+                <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+
+        function selectStgToGeneral() {
+            var arr = new Array();
+            if (typeof (arrStgList) != "undefined") {
+                arr = arrStgList;
+            }
+
+            $("#tbReports").find("input:checkbox:checked").each(function () {
+                var tmpId = $(this).val();
+                var tmpReport = $(this).closest("td").next().html();
+                if ($("input[name='stgreports'][value='" + tmpId + "']").length == 0) {
+                    if (typeof (arrStgList) == "undefined")
+                        arr.push({ id: tmpId, address: tmpReport });
+                    else {
+                        var sameSTG = false;
+                        for (var i = 0 ; i < arrStgList.length; i++) {
+                            if (arrStgList[i].id == tmpId) {
+                                sameSTG = true;
+                                break;
+                            }
+                        }
+                        if (sameSTG == false) {
+                            arr.push({ id: tmpId, address: tmpReport });
+                        }
+                    }
+                }
+            });
+            receiveStgList(arr);
+            closeModal($("#formStgReport"));
+        }
+
+        var list_STGReportList = {};
+        jQuery(function () {
+
+            list_STGReportList = new ViewModel(
+            {
+                instanceName: "list_STGReportList",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("GetReports", "STGSend", new
+                        {
+                            Area = "STGReport",
+                            teacherId = string.IsNullOrEmpty(Request.QueryString["teacherId"]) ? 0 : int.Parse(Request.QueryString["teacherId"])
+                        })))',
+                orderBy: "ID",
+                orderDirection: "DESC",
+                pageSize: 10,
+                miniPager: true,
+                headers: [
+                    {
+                        text: "Select",
+                        width: '20%'
+                    },
+                    {
+                        text: "teacher PDF report",
+                        field: "CreatedOn",
+                        order: true,
+                        width: '40%'
+                    }
+                ]
+            });
+
+            list_STGReportList.search();
+            ko.applyBindings(list_STGReportList, document.getElementById("formStgReport"));
+        });
+    </script>
+}

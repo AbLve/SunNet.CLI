@@ -1,0 +1,534 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Trs
+@using Sunnet.Cli.Business.Common
+@using Sunnet.Framework
+@using Sunnet.Cli.Business.Trs.Models
+@{
+    ViewBag.Title = "Report - Assessment Results";
+    Layout = "~/Areas/Trs/Views/Shared/_Trs_Report_Layout.cshtml";
+    TrsResultReportModel reportModel = ViewBag.Model;
+}
+<table cellpadding="0" cellspacing="0" border="0" style="page-break-after: always;" class="">
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-header">
+                <tr>
+                    <th>
+                        @ViewBag.AssessmentType Assessment Report
+                        <p class="redtext" style="margin-top: -30px">(Official)</p>
+                    </th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-table-m">
+                <tr>
+                    <td>Date of Report:&nbsp;@Html.Label("", reportModel.UpdatedOn == CommonAgent.MinDate ? "" : reportModel.UpdatedOn.ToString("MM/dd/yyyy"))</td>
+                    <td>
+                        <img class="logo" src="@(SFConfig.AssessmentDomain)/images/trs_logo.jpg" alt="trs_logo">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Label("", reportModel.School.SchoolName)
+                    </td>
+                </tr>
+                <tr>
+                    <td>LWDB:&nbsp;@Html.Label("", reportModel.School.CommunityNames)</td>
+                </tr>
+                <tr>
+                    <td>@Html.Label("", reportModel.School.Address)</td>
+                </tr>
+                <tr>
+                    <td>@Html.Label("", reportModel.School.City),@Html.Label("", reportModel.School.State) @Html.Label("", reportModel.School.Zip)</td>
+                </tr>
+                <tr>
+                    <td>@Html.Label("", reportModel.School.FacilityTelephone)</td>
+                </tr>
+                <tr>
+                    <td>@Html.Label("", reportModel.School.SecondaryTelephone)</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-table-m">
+                <tr>
+                    <td>Owner:&nbsp;@Html.Label("", reportModel.School.Owner)</td>
+                </tr>
+                <tr>
+                    <td>Director:&nbsp;@Html.Label("", reportModel.School.Directors)</td>
+                </tr>
+                <tr>
+                    <td>Regulating Entity:&nbsp;@Html.Label("", reportModel.School.RegulatingEntity.ToDescription() == "0" ? "" : reportModel.School.RegulatingEntity.ToDescription())</td>
+                </tr>
+                <tr>
+                    <td>Type of Facility:&nbsp;@Html.Label("", reportModel.School.FacilityType.ToDescription() == "0" ? "" : reportModel.School.FacilityType.ToDescription())</td>
+                </tr>
+                <tr>
+                    <td>Type of National Accreditation:&nbsp;@Html.Label("", reportModel.School.NationalAccreditation)</td>
+                </tr>
+                <tr>
+                    <td>DFPS License Number/Operator #:&nbsp;@Html.Label("", reportModel.School.DFPS)</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-table-m">
+                <tr>
+                    <td>Agreement Effective Date:&nbsp;@Html.Label("", reportModel.EffectiveDate.FormatDateString())</td>
+                </tr>
+                <tr>
+                    <td>Agreement Termination Date:&nbsp;@Html.Label("", reportModel.TerminationDate.FormatDateString())</td>
+                </tr>
+                @*                    <tr>
+                        <td>Age Range(s) Served:</td>
+                    </tr>*@
+                <tr>
+                    <td>
+                        Age Range(s) Served:<b>From:</b>
+                        @Html.TextBox("MinAgeGroup", reportModel.MinAgeGroup, new
+                   {
+                       onfocus = "this.blur()",
+                       style = "background: none"
+                   })
+                        <b>Through:</b>@Html.TextBox("MaxAgeGroup", reportModel.MaxAgeGroup, new { onfocus = "this.blur()" })
+                    </td>
+
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-result trs-table-m" style="margin: 10px 0px">
+                <tr>
+                    <th colspan="2">@ViewBag.AssessmentType ASSESSMENT RESULTS</th>
+                </tr>
+                <tr>
+                    <td colspan="2">Based on the results of this assessment the following action was taken:</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        The facility received final approval on 111&nbsp;@Html.Label("", reportModel.ApprovalOnDate.FormatDateString()),
+                        @*@Html.TextBox("ApprovalOnDate"
+                                             , reportModel.ApprovalOnDate.FormatDateString()
+                            , new { onfocus = "this.blur()" }),*@
+                        to expire on @Html.TextBox("ExpireOnDate"
+                                , reportModel.ExpireOnDate.FormatDateString()
+                            , new { onfocus = "this.blur()" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="trs-report-result-star trs-report-result-star-t">Star-Rating Result:</td>
+                </tr>
+                <tr>
+                    <td class="trs-report-result-star trs-report-result-star-t">Calculated Star Designation:</td>
+                    <td class="trs-report-result-star trs-report-result-star-t">Verified Star Designation:</td>
+                </tr>
+                @if (reportModel.Status == TRSStatusEnum.Completed || ViewBag.AllFilled)
+            {
+                    <tr>
+                        @if (reportModel.Star == TRSStarEnum.Two)
+                        {
+                            <td class="trs-report-result-star">√<span>&nbsp;&nbsp;★★</span>Certification</td>
+                        }
+                        else
+                        {
+                            <td class="trs-report-result-star">□<span>&nbsp;&nbsp;★★</span>Certification</td>
+                        }
+                        @if (reportModel.VerifiedStar == TRSStarEnum.Two)
+                        {
+                            <td class="trs-report-result-star">√<span>&nbsp;&nbsp;★★</span>Certification</td>
+                        }
+                        else
+                        {
+                            <td class="trs-report-result-star">□<span>&nbsp;&nbsp;★★</span>Certification</td>
+                        }
+                    </tr>
+                    <tr>
+                        @if (reportModel.Star == TRSStarEnum.Three)
+                        {
+                            <td class="trs-report-result-star">√<span>&nbsp;★★★</span>Certification</td>
+                        }
+                        else
+                        {
+                            <td class="trs-report-result-star">□<span>&nbsp;★★★</span>Certification</td>
+                        }
+                        @if (reportModel.VerifiedStar == TRSStarEnum.Three)
+                        {
+                            <td class="trs-report-result-star">√<span>&nbsp;★★★</span>Certification</td>
+                        }
+                        else
+                        {
+                            <td class="trs-report-result-star">□<span>&nbsp;★★★</span>Certification</td>
+                        }
+                    </tr>
+                    <tr>
+                        @if (reportModel.Star == TRSStarEnum.Four)
+                        {
+                            <td class="trs-report-result-star">√<span>★★★★</span>Certification</td>
+                        }
+                        else
+                        {
+                            <td class="trs-report-result-star">□<span>★★★★</span>Certification</td>
+                        }
+                        @if (reportModel.VerifiedStar == TRSStarEnum.Four)
+                        {
+                            <td class="trs-report-result-star">√<span>★★★★</span>Certification</td>
+                        }
+                        else
+                        {
+                            <td class="trs-report-result-star">□<span>★★★★</span>Certification</td>
+                        }
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2">
+                            @(ViewBag.StarNotAvailable)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-table-m">
+                <tr>
+                    <td>Assessed by:@Html.TextBoxFor(model => reportModel.School.Assessor, new { onfocus = "this.blur()" })</td>
+                </tr>
+                <tr>
+                    <td>
+                        Assessment Visit Completed:@Html.TextBox("VisiteDate"
+                                , reportModel.VisitDate == CommonAgent.MinDate ? "" : reportModel.VisitDate.ToString("MM/dd/yyyy")
+                        , new { onfocus = "this.blur()" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Date discussed with Provider:@Html.TextBox("DiscussDate"
+                                , reportModel.DiscussDate == CommonAgent.MinDate ? "" : reportModel.DiscussDate.ToString("MM/dd/yyyy")
+                        , new { onfocus = "this.blur()", title = " " })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Provider Name and Signature:<input type="text" onfocus="this.blur()" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span style="width: 188px; display: inline-block"></span>
+                        <input type="text" onfocus="this.blur()" />
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<table cellpadding="0" cellspacing="0" border="0" style="page-break-before: always;">
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-header">
+                <tr>
+                    <th>TRS PROVIDER CERTIFICATION SCORES</th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>@Html.Label("", reportModel.School.SchoolName)</td>
+                </tr>
+                <tr>
+                    <td>@Html.Label("", reportModel.School.CommunityNames)</td>
+                </tr>
+                <tr>
+                    <td>@Html.Label("", reportModel.School.DFPS)</td>
+                </tr>
+                <tr>
+                    <td class="trs-table-tittle" colspan="3">STRUCTURAL REQUIREMENTS</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+@foreach (var category in reportModel.StructuralCategories)
+{
+    bool isNotMet = false;
+    string retain = "";
+    int classCount = 0;
+    if (reportModel.Classes != null)
+    {
+        classCount = reportModel.Classes.Count;
+    }
+    if (reportModel.CategoryStars != null)
+    {
+        if (reportModel.CategoryStars.Any())
+        {
+            TrsCategoryStarModel model = reportModel.CategoryStars.FirstOrDefault(a => a.Category == category.Key);
+            if (model != null)
+            {
+                retain = model.Retain ? "[Retained]" : "";
+            }
+        }
+    }
+    <table cellpadding="0" cellspacing="0" border="0" class="trs-table-t-con">
+        <thead>
+            <tr style="page-break-inside: avoid;">
+                <td class="trs-table-tittle-t" colspan="10">
+                    @(category.Key.ToDescription())
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (category.Key == TRSCategoryEnum.Category1 || category.Key == TRSCategoryEnum.Category5)
+            {
+                foreach (var subCategory in category.Value)
+                {
+                    <tr style="page-break-inside: avoid;">
+                        <td colspan="3" style="border-top: 1px solid #333">@(reportModel.SubCategory[subCategory.Key].Name)</td>
+                    </tr>
+                    foreach (var itemModel in subCategory.Value)
+                    {
+                        if (itemModel.Score == 0)
+                        {
+                            isNotMet = true;
+                        }
+                        <tr style="page-break-inside: avoid;">
+                            <td style="width: 100px">@(itemModel.Item)</td>
+                            <td>@Html.Raw(itemModel.Description)</td>
+                            <td style="width: 100px">@(itemModel.AnswerText)</td>
+                        </tr>
+                    }
+                }
+            }
+            else
+            {
+                foreach (var subCategory in category.Value)
+                {
+                    <tr style="page-break-inside: avoid;">
+                        <td colspan="2" style="border-top: 1px solid #333">@(reportModel.SubCategory[subCategory.Key].Name)</td>
+                        @if (classCount <= 3)
+                        {
+                            foreach (var itemClass in reportModel.ClassDic)
+                            {
+                                <td style="border-top: 1px solid #333">@(itemClass.Value.Name)</td>
+                            }
+                        }
+                        else
+                        {
+                            <td style="border-top: 1px solid #333"></td>
+                        }
+                    </tr>
+                    foreach (var itemModel in subCategory.Value)
+                    {
+                        <tr style="page-break-inside: avoid;">
+                            <td style="width: 100px">@(itemModel.Item)</td>
+                            <td>@Html.Raw(itemModel.Description_Format)</td>
+                            @if (classCount <= 3)
+                            {
+                                foreach (var itemClassItems in itemModel.ClassItems)
+                                {
+                                    if (itemModel.Score == 0)
+                                    {
+                                        isNotMet = true;
+                                    }
+                                    <td style="width: 100px">@(itemClassItems.AnswerId == 0 ? "N/A" : itemClassItems.AnswerText)</td>
+                                }
+                            }
+                            else
+                            {
+                                <td style="width: 150px">
+                                    @foreach (var itemClassItems in itemModel.ClassItems)
+                                    {
+                                        if (itemModel.Score == 0)
+                                        {
+                                            isNotMet = true;
+                                        }
+                                        if (itemClassItems.AnswerId > 0)
+                                        {
+                                            @(itemClassItems.ClassName + " : ") @(itemClassItems.AnswerText)<br />
+                                        }
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+
+                }
+
+            }
+            <tr style="page-break-inside: avoid;">
+                <td class="trs-table-tittle-t" colspan="10">
+                    Structural Requirement Measure Rating for @(category.Key.GetDisplayName()): @(isNotMet == true ? "NOT MET" : "MET") &nbsp;&nbsp;@retain
+            </tr>
+        </tbody>
+    </table>
+    <div style="height: 20px;">
+    </div>
+}
+
+
+<table cellpadding="0" cellspacing="0" border="0" style="page-break-before: always;">
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-header">
+                <tr>
+                    <th>TRS PROVIDER CERTIFICATION SCORES</th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>@Html.Label("", reportModel.School.SchoolName)</td>
+                </tr>
+                <tr>
+                    <td>@Html.Label("", reportModel.School.CommunityNames)</td>
+                </tr>
+                <tr>
+                    <td>@Html.Label("", reportModel.School.DFPS)</td>
+                </tr>
+                <tr>
+                    <td class="trs-table-tittle" colspan="3">PROCESS MEASURES</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+@foreach (var category in reportModel.ProcessCategories)
+{
+    int classCount = 0;
+    if (reportModel.Classes != null)
+    {
+        classCount = reportModel.Classes.Count;
+    }
+    string star = "";
+    string retain = "";
+    if (reportModel.CategoryStars != null)
+    {
+        if (reportModel.CategoryStars.Any())
+        {
+            TrsCategoryStarModel model = reportModel.CategoryStars.FirstOrDefault(a => a.Category == category.Key);
+            if (model != null)
+            {
+
+                if (model.AutoAssign)
+                {
+                    star = "Auto Assign";
+                }
+                //if (model.Star == 0 && category.Value.Values.Count(x => x.Exists(o => o.Score >= 0)) == 0)
+                else if (model.Star == 0 && reportModel.Items.Count(o => o.Category == category.Key && o.Score >= 0) == 0)
+                {
+                    star = "N/A";
+                }
+
+                else
+                {
+                    star = model.Star.ToDescription();
+                }
+                retain = model.Retain ? "[Retained]" : "";
+            }
+        }
+    }
+    <table cellpadding="0" cellspacing="0" border="0" class="trs-table-t-con">
+        <thead>
+            <tr style="page-break-inside: avoid;">
+                <td class="trs-table-tittle-t" colspan="10">
+                    @(category.Key.ToDescription())
+                </td>
+            </tr>
+        </thead>
+        <tbody style="border-top: 1px solid #333">
+            @foreach (var subCategory in category.Value)
+            {
+                if (category.Key == TRSCategoryEnum.Category1 || category.Key == TRSCategoryEnum.Category5)
+                {
+
+                    <tr style="page-break-inside: avoid;">
+                        <td colspan="3" style="border-top: 1px solid #333">@(reportModel.SubCategory[subCategory.Key].Name)</td>
+                    </tr>
+                    foreach (var itemModel in subCategory.Value)
+                    {
+                        <tr style="page-break-inside: avoid;">
+                            <td style="width: 100px">@(itemModel.Item)</td>
+                            <td>@Html.Raw(itemModel.Description)</td>
+                            <td style="width: 100px">@(itemModel.Score < 0 ? "N/A" : itemModel.Score.ToString())</td>
+                        </tr>
+                    }
+
+                }
+                else
+                {
+                    <tr style="page-break-inside: avoid;">
+                        <td colspan="2" style="border-top: 1px solid #333">@(reportModel.SubCategory[subCategory.Key].Name)</td>
+
+                        @if (classCount <= 3)
+                        {
+                            foreach (var itemClass in reportModel.ClassDic)
+                            {
+                                <td style="border-top: 1px solid #333">@(itemClass.Value.Name)</td>
+                            }
+                        }
+                        else
+                        {
+                            <td style="border-top: 1px solid #333"></td>
+                        }
+                    </tr>
+                    foreach (var itemModel in subCategory.Value)
+                    {
+                        <tr style="page-break-inside: avoid;">
+                            <td style="width: 100px">@(itemModel.Item)</td>
+                            <td>@Html.Raw(itemModel.Description)</td>
+
+                            @if (classCount <= 3)
+                            {
+                                foreach (var itemClassItems in itemModel.ClassItems)
+                                {
+                                    <td style="width: 100px">@(itemClassItems.Score < 0 ? "N/A" : itemClassItems.Score.ToString())</td>
+                                }
+                            }
+                            else
+                            {
+                                <td style="width: 150px">
+                                    @foreach (var itemClassItems in itemModel.ClassItems)
+                                    {
+                                        if (itemClassItems.Score >= 0)
+                                        {
+                                            @(itemClassItems.ClassName + " : ")  @(itemClassItems.Score.ToString())<br />
+                                        }
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+
+            }
+            <tr style="page-break-inside: avoid;">
+                <td class="trs-table-tittle-t" colspan="10">
+                    Process Measure Rating for @(category.Key.GetDisplayName()) : @(star) &nbsp;&nbsp;@retain
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="height: 20px;">
+    </div>
+}

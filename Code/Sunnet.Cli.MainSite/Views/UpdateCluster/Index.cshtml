@@ -1,0 +1,476 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Framework
+@model Sunnet.Cli.Business.UpdateCluster.Models.UpdateClusterModel
+@{
+    ViewBag.Title = "Update Cluster Front End";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+<style type="text/css">
+    .table-btn {
+        height: 22px;
+        width: 22px;
+        line-height: 22px;
+        border-radius: 22px !important;
+        margin: 0 2px;
+        display: inline-table;
+        color: #ffffff;
+        text-align: center;
+    }
+
+    .webuploader-pick {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        background: #247432;
+        padding: 1px 10px;
+        color: #ffffff;
+        text-align: center;
+        border-radius: 3px;
+        overflow: hidden;
+        height: 34px;
+        font-size: 14px;
+        line-height:34px;
+    }
+
+    .webuploader-element-invisible {
+        position: absolute !important;
+        clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+        clip: rect(1px,1px,1px,1px);
+    }
+</style>
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/javascript">
+        CKEDITOR.replace('Description',
+        {
+            toolbar: 'Community',
+            height: '70px'
+        });
+        CKEDITOR.replace('Description2',
+        {
+            toolbar: 'Community',
+            height: '70px'
+        });
+        CKEDITOR.replace('Description3',
+        {
+            toolbar: 'Community',
+            height: '70px'
+        });
+        var list_SystemUpdate = {};
+        var list_MessageCenter = {};
+        var list_NewFeatured = {};
+        var uploadThumbnail = null;
+
+        jQuery(function () {
+            var staticDomain = window._staticDomain_;
+            staticDomain = staticDomain.substring(0, staticDomain.length - 1);
+            var strs = staticDomain.split('.');
+            document.domain = strs[strs.length - 2] + "." + strs[strs.length - 1];
+            registerFormCallbacks("form1", {
+                onPosted: function (response) {
+                    if (response.success) {
+                        list_SystemUpdate.search();
+                        document.getElementById("form1").reset();
+                        $("#form1 #ID").val(0);
+                        CKEDITOR.instances.Description.setData();
+                        $("#form1").data('_source', $("#form1").serialize());
+                    }
+                }
+            });
+            registerFormCallbacks("form2", {
+                onPosted: function (response) {
+                    if (response.success) {
+                        list_MessageCenter.search();
+                        document.getElementById("form2").reset();
+                        $("#form2 #ID").val(0);
+                        CKEDITOR.instances.Description2.setData();
+                        $("#form2").data('_source', $("#form2").serialize());
+                    }
+                }
+            });
+            registerFormCallbacks("form3", {
+                onPosted: function (response) {
+                    if (response.success) {
+                        list_NewFeatured.search();
+                        document.getElementById("form3").reset();
+                        $("#form3 #ID").val(0);
+                        CKEDITOR.instances.Description3.setData();
+                        $("#dvThumbnail").html('');
+                        $("#fileThumbnailDiv").hide();
+                        $("#ThumbnailPath").val("");
+                        $("#ThumbnailName").val("");
+                        $("#form3").data('_source', $("#form3").serialize());
+                    }
+                }
+            });
+            BindSystemUpdate();
+            BindMessageCenter();
+            BindNewFeatured();
+        });
+
+        function Switch(object, formObject) {
+            if (formObject == "form3") {
+                if ($("div[class='webuploader-pick']").length == 0) {
+                    uploadThumbnail = SunnetWebUploader.CreateWebUploader({
+                        pick: "#btnThumbnail",
+                        container: "#dvThumbnail",
+                        submitbutton: "#btnSubmitform3",
+                        targetField: "#ThumbnailPath",
+                        accept: {
+                            extensions: "jpg,jpeg,gif,png,bmp",
+                            mimeTypes: "image/jpg,image/jpeg,image/gif,image/png,image/bmp"
+                        }
+                    });
+                }
+            }
+            $("li[role='presentation']").removeClass();
+            $(object).attr("class", "active");
+            $("#form1,#form2,#form3").hide();
+            $("#" + formObject).show();
+        }
+
+        $("#btnSubmitform1").click(function () {
+            $("#form1 #Description").val(CKEDITOR.instances.Description.getData());
+            if ($("#form1").valid()) {
+                $("#form1").submit();
+            }
+        });
+        $("#btnSubmitform2").click(function () {
+            $("#form2 #Description2").val(CKEDITOR.instances.Description2.getData());
+            if ($("#form2").valid()) {
+                $("#form2").submit();
+            }
+        });
+        $("#btnSubmitform3").click(function () {
+            $("#form3 #Description3").val(CKEDITOR.instances.Description3.getData());
+            if (uploadThumbnail.getStats().queueNum > 0) {
+                var queueFiles = uploadThumbnail.getFiles("queued");
+                $("#ThumbnailName").val(queueFiles[0].name + "(" + WebUploader.formatSize(queueFiles[0].size) + ")");
+                $("#ThumbnailPath").val(queueFiles[0].name + "(" + WebUploader.formatSize(queueFiles[0].size) + ")");
+                $(this).data("clicked", true);
+                if (uploadThumbnail.state == "ready") {
+                    uploadThumbnail.upload();
+                }
+                return false;
+            }
+            if ($("#btnSubmitform3").valid()) {
+                $("#btnSubmitform3").submit();
+            }
+        });
+
+        function BindSystemUpdate() {
+            list_SystemUpdate = new ViewModel(
+            {
+                instanceName: "list_SystemUpdate",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchSystemUpdates")))',
+                orderBy: "UpdatedOn", orderDirection: "DESC", pageSize: 4
+            },
+            {
+                EditData: function (item) {
+                    $("#form1 #ID").val(item.ID);
+                    $("#form1 #Date").val(item.EditDate);
+                    $("#form1 #Description").val(item.Description);
+                    CKEDITOR.instances.Description.setData(item.Description);
+                },
+                DeleteData: function (item) {
+                    $.when(window.waitingConfirm("Do you want to delete this record?", 'Yes', 'No')).done(function () {
+                        $.post('@Url.Action("DeleteSystemUpdate")', { id: item.ID }, function (response) {
+                            if (response.success) {
+                                showMessage("success");
+                                list_SystemUpdate.search();
+                            }
+                            else
+                                showMessage("fail", response.msg);
+                        }, 'json');
+                    });
+                }
+            });
+            list_SystemUpdate.search();
+            ko.applyBindings(list_SystemUpdate, document.getElementById("SystemUpdate"));
+        }
+
+        function BindMessageCenter() {
+            list_MessageCenter = new ViewModel(
+            {
+                instanceName: "list_MessageCenter",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchMessageCenters")))',
+                orderBy: "UpdatedOn", orderDirection: "DESC", pageSize: 4
+            },
+            {
+                EditData: function (item) {
+                    $("#form2 #ID").val(item.ID);
+                    $("#form2 #Date2").val(item.EditDate);
+                    $("#form2 #HyperLink2").val(item.HyperLink);
+                    $("#form2 #Description2").val(item.Description);
+                    CKEDITOR.instances.Description2.setData(item.Description);
+                },
+                DeleteData: function (item) {
+                    $.when(window.waitingConfirm("Do you want to delete this record?", 'Yes', 'No')).done(function () {
+                        $.post('@Url.Action("DeleteMessageCenter")', { id: item.ID }, function (response) {
+                            if (response.success) {
+                                showMessage("success");
+                                list_MessageCenter.search();
+                            }
+                            else
+                                showMessage("fail", response.msg);
+                        }, 'json');
+                    });
+                }
+            });
+            list_MessageCenter.search();
+            ko.applyBindings(list_MessageCenter, document.getElementById("MessageCenter"));
+        }
+
+        function BindNewFeatured() {
+            list_NewFeatured = new ViewModel(
+            {
+                instanceName: "list_NewFeatured",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchNewFeatureds")))',
+                orderBy: "UpdatedOn", orderDirection: "DESC", pageSize: 4
+            },
+            {
+                EditData: function (item) {
+                    $("#form3 #ID").val(item.ID);
+                    $("#form3 #Title").val(item.Title);
+                    $("#form3 #HyperLink3").val(item.HyperLink);
+                    $("#form3 #Description3").val(item.Description);
+                    CKEDITOR.instances.Description3.setData(item.Description);
+
+                    $("#form3 #ID").val(item.ID);
+                    $("#form3 .delete").click();
+                    $("#fileThumbnailDiv").show();
+                    $("#fileThumbnailName").attr("href", '@(SFConfig.StaticDomain)' + "upload/" + item.ThumbnailPath);
+                    $("#fileThumbnailName").html(item.ThumbnailName);
+                    $("#ThumbnailPath").val(item.ThumbnailPath);
+                    $("#ThumbnailName").val(item.ThumbnailName);
+                },
+                DeleteData: function (item) {
+                    $.when(window.waitingConfirm("Do you want to delete this record?", 'Yes', 'No')).done(function () {
+                        $.post('@Url.Action("DeleteNewFeatured")', { id: item.ID }, function (response) {
+                            if (response.success) {
+                                showMessage("success");
+                                list_NewFeatured.search();
+                            }
+                            else
+                                showMessage("fail", response.msg);
+                        }, 'json');
+                    });
+                }
+            });
+            list_NewFeatured.search();
+            ko.applyBindings(list_NewFeatured, document.getElementById("NewFeatured"));
+        }
+
+        function DeleteThumbnail() {
+            $("#fileThumbnailDiv").hide();
+            $("#ThumbnailPath").val("");
+            $("#ThumbnailName").val("");
+        }
+    </script>
+}
+<ul class="nav nav-tabs">
+    <li role="presentation" class="active" onclick="Switch(this,'form1')"><a href="javascript:void(0)">System Update</a></li>
+    <li role="presentation" onclick="Switch(this,'form2')"><a href="javascript:void(0)">Message Center</a></li>
+    <li role="presentation" onclick="Switch(this,'form3')"><a href="javascript:void(0)">New and Featured</a></li>
+</ul>
+@using (Ajax.BeginForm("SaveSystemUpdate", "UpdateCluster", null, PostFormHelper.DefaultAjaxOptions,
+                                                                                        new
+                                                                                        {
+                                                                                            @class = "form-horizontal",
+                                                                                            id = "form1",
+                                                                                            novalidate= "novalidate",
+                                                                                            style = "border:1px solid #ccc;padding:15px;border-top:0;background: #fff;"
+                                                                                        }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    <div class="form-group">
+        <div class="col-sm-12" style="margin-bottom:10px;">
+            <div class="col-sm-2" style="padding-left: 0; font-size: 16px;">
+                <label class="control-label required" for="Date">Date / Time</label>
+            </div>
+            <div class="col-sm-10" style="padding:0;">
+                <div class="uploader-list pt-5"></div>
+                @Html.TextBoxFor(model => model.Date, new { @class = "form-control date timehm" })
+                @Html.ValidationMessageFor(model => model.Date)
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="col-sm-2" style="padding-left: 0; font-size: 16px;">
+                <label class="control-label required" for="Description">Body</label></div>
+            <div class="col-sm-10" style="padding:0;">
+                <textarea class="form-control validate" cols="20" data-val="true" data-val-required="The Description field is required."
+                          data-val-length="You are over the maximum 1500 character limit for the message box."
+                          data-val-length-max="1500" id="Description" name="Description" rows="15" style="visibility: hidden; display: none;" placeholder=""></textarea>
+                <span data-valmsg-replace="true" data-valmsg-for="Description" class="field-validation-valid"></span>
+            </div>
+        </div>
+        <div class="col-sm-12" style="text-align: right; margin-top: 10px;">
+            <button class="mainbutton mainright-btn submit-btn" id="btnSubmitform1" name="btnSubmit" type="button">Submit</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+    <div class="content-body-tab" id="SystemUpdate" style="margin-left:-15px;margin-right:-15px;width:auto;">
+        <table class="table table-striped table-hover" style="margin-bottom:0;">
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="html: item.ShowDate+' / '+item.ShowTime+' / '+item.Description" style="text-align:left;vertical-align:middle; width: 90%;"></td>
+                    <td style="text-align:right;vertical-align:middle; width: 10%;">
+                        <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.EditData }" href="#" title="Edit"></a>
+                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.DeleteData }" href="#" title="Delete"></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 7 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+}
+
+@using (Ajax.BeginForm("SaveMessageCenter", "UpdateCluster", null, PostFormHelper.DefaultAjaxOptions,
+                                                                                    new
+                                                                                    {
+                                                                                        @class = "form-horizontal",
+                                                                                        id = "form2",
+                                                                                        
+                                                                                        style = "display: none;border:1px solid #ccc;padding:15px;border-top:0;background: #fff;"
+                                                                                    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    <div class="form-group">
+        <div class="col-sm-12" style="margin-bottom:10px;">
+            <div class="col-sm-2" style="padding-left: 0; font-size: 16px;">
+                <label class="control-label required" for="Date2">Date</label>
+            </div>
+            <div class="col-sm-10" style="padding:0;">
+                <div class="uploader-list pt-5"></div>
+                @Html.TextBoxFor(model => model.Date, new { @class = "form-control date timehm", id = "Date2" })
+                @Html.ValidationMessageFor(model => model.Date)
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-bottom:10px;">
+            <div class="col-sm-2" style="padding-left: 0; font-size: 16px;">
+                <label class="control-label required" for="Description2">Body</label>
+            </div>
+            <div class="col-sm-10" style="padding:0;">
+                <textarea class="form-control validate" cols="20" data-val="true" data-val-required="The Description field is required."
+                          data-val-length="You are over the maximum 1500 character limit for the message box."
+                          data-val-length-max="1500" id="Description2" name="Description" rows="15" style="visibility: hidden; display: none;" placeholder=""></textarea>
+                <span data-valmsg-replace="true" data-valmsg-for="Description" class="field-validation-valid"></span>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="col-sm-2" style="padding-left: 0; font-size: 16px;">
+                <label class="control-label" for="HyperLink2">Hyper Link</label>
+            </div>
+            <div class="col-sm-10" style="padding-left: 0; padding-right: 0;">
+                @Html.TextBoxFor(model => model.HyperLink, new { @class = "form-control url", id = "HyperLink2" })
+                @Html.ValidationMessageFor(model => model.HyperLink)
+            </div>
+        </div>
+
+        <div class="col-sm-12" style="text-align: right; margin-top: 10px;">
+            <button class="mainbutton modal-btn submit-btn" id="btnSubmitform2" name="btnSubmit" type="button">Submit</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+    <div class="content-body-tab" id="MessageCenter" style="margin-left:-15px;margin-right:-15px;width:auto;">
+        <table class="table table-striped table-hover" style="margin-bottom:0;">
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="html: item.ShowDate+' / '+item.Description+(item.HyperLink==''?'':'/'+item.HyperLink)" style="text-align:left;vertical-align:middle; width: 90%;"></td>
+                    <td style="text-align:right;vertical-align:middle; width: 10%;">
+                        <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.EditData }" href="#" title="Edit"></a>
+                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.DeleteData }" href="#" title="Delete"></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 7 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+}
+
+@using (Ajax.BeginForm("SaveNewFeatured", "UpdateCluster", null, PostFormHelper.DefaultAjaxOptions,
+                                                                        new
+                                                                        {
+                                                                            @class = "form-horizontal",
+                                                                            id = "form3",
+                                                                            style = "display: none;border:1px solid #ccc; padding:15px;border-top:0;background: #fff;"
+                                                                        }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    <div class="form-group">
+        <div class="col-sm-12" style="margin-bottom:10px;">
+            <div class="col-sm-2" style="padding-left: 0; font-size: 16px;">
+                <label class="control-label required" for="Title">Title</label>
+            </div>
+            <div class="col-sm-10" style="padding:0;">
+                <div class="uploader-list pt-5"></div>
+                @Html.TextBoxFor(model => model.Title, new { @class = "form-control required" })
+                @Html.ValidationMessageFor(model => model.Title)
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-bottom:10px;">
+            <div class="col-sm-2" style="padding-left: 0; font-size: 16px;">
+                <label class="control-label required" for="Description3">Body</label>
+            </div>
+            <div class="col-sm-10" style="padding: 0;">
+                <textarea class="form-control validate" cols="20" data-val="true" data-val-required="The Description field is required."
+                          data-val-length="You are over the maximum 1500 character limit for the message box."
+                          data-val-length-max="1500" id="Description3" name="Description" rows="15" style="visibility: hidden; display: none;" placeholder=""></textarea>
+                <span data-valmsg-replace="true" data-valmsg-for="Description" class="field-validation-valid"></span>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="col-sm-2" style="padding-left: 0; font-size: 16px;">
+                <label class="control-label required" for="HyperLink3">Hyper Link</label>
+            </div>
+            <div class="col-sm-10" style="padding:0;">
+                <div class="uploader-list pt-5"></div>
+                @Html.TextBoxFor(model => model.HyperLink, new { @class = "form-control required url", id = "HyperLink3" })
+                @Html.ValidationMessageFor(model => model.HyperLink)
+            </div>
+        </div>
+        <div class="col-sm-12" style="padding: 0; margin-top: 10px;">
+            <div class="col-sm-2">
+                <label class="control-label required" for="ThumbnailPath">Thumbnail</label>
+            </div>
+            <div class="col-sm-10" style="padding-left: 9px;">
+                <div id="dvThumbnail" class="uploader-list pt-5"></div>
+                <div class="btns">
+                    <div id="btnThumbnail" for="ThumbnailPath">Attach thumbnail image</div>
+                    <label for="ThumbnailName" style="display: none;">ColorFileName</label>
+                    @Html.TextBoxFor(model => model.ThumbnailPath, new { @style = "display:none", @class = "form-control validate" })
+                    @Html.TextBoxFor(model => model.ThumbnailName, new { @style = "display:none", @class = "form-control" })
+                </div>
+                <div id="fileThumbnailDiv" style="display: none;">
+                    <a id="fileThumbnailName" href="#" class="form-link4" target="_blank">
+                    </a>
+                    <span title="Remove this file"><a href="javascript:;" onclick="DeleteThumbnail()"><i class="icon-trash icon-large"><span style="display: none;">delete thumbnail</span></i></a></span>
+                </div>
+                @Html.ValidationMessageFor(model => model.ThumbnailPath)
+            </div>
+        </div>
+        <div class="col-sm-12" style="text-align: right; margin-top: 10px;">
+            <button class="mainbutton modal-btn submit-btn" id="btnSubmitform3" name="btnSubmit" type="button">Submit</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+    <div class="content-body-tab" id="NewFeatured" style="margin-left:-15px; margin-right:-15px;width:auto;">
+        <table class="table table-striped table-hover" style="margin-bottom:0;">
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="html: item.Title+' / '+item.Description" style="text-align:left;vertical-align:middle; width: 90%;"></td>
+                    <td style="text-align:right;vertical-align:middle; width: 10%;">
+                        <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.EditData }" href="#" title="Edit"></a>
+                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.DeleteData }" href="#" title="Delete"></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 7 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+}

@@ -1,0 +1,14 @@
+﻿IF NOT EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TRSAssessmentClasses]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
+begin
+CREATE TABLE [dbo].[TRSAssessmentClasses](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[ClassId] [int] NOT NULL,
+	[ObservationLength] [decimal](18, 2) NOT NULL,
+ CONSTRAINT [PK_TRSAssessmentClasses] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+end
+GO

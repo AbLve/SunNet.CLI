@@ -1,0 +1,48 @@
+﻿@model Sunnet.Cli.MainSite.Models.ContactUsModel
+@{
+    ViewBag.Title = "Contact Us";
+    ViewBag.CurrentMenu = Cli_Menus.ContactUs;
+}
+@section Banner
+{
+    <div class="container">
+        <div class="banner-pages">
+            <h1>@ViewBag.Title</h1>
+        </div>
+    </div>
+}
+<div class="contact-con left-container">
+    <div class="contact-con-top">
+        <h4>Do you have questions about CLI Engage?</h4>
+        <p>@*Visit our <a class="main-a" href="/faq">Frequently Asked Questions</a>*@Visit our Frequently Asked Questions, or contact us with your comments and questions using the Contact Us form. We're here to answer your questions.  If you are currently enrolled in CLI Engage and need help, <a href="http://www.texasschoolready.org/help/MainTicketForm.aspx?Section8" target="_blank">please submit a Help Ticket</a>.</p>
+    </div>
+    <div class="contact-con-bottom">
+        <h4>Children's Learning Institute at UTHealth</h4>
+        <h4>7000 Fannin Street, Suite 1920</h4>
+        <h4>Houston, Texas 77030</h4>
+        <h4>cliengage@uth.tmc.edu</h4>
+    </div>
+</div>
+@using (Html.BeginForm("ContactUs", "Home",FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="left-container">
+        <h3>Contact Us</h3>
+        <div class="contact-input">
+           <label for="Name" style="position:absolute;clip:rect(1px 1px 1px 1px);clip:rect(1px,1px,1px,1px);">Name</label>
+            @Html.TextBoxFor(x => x.Name, new { @class = "input-con", required = "required", placeholder = Html.DisplayNameFor(y => y.Name) })
+           <label for="District" style="position:absolute;clip:rect(1px 1px 1px 1px);clip:rect(1px,1px,1px,1px);">District</label>
+            @Html.TextBoxFor(x => x.District, new { @class = "input-con", required = "required", placeholder = Html.DisplayNameFor(y => y.District) })
+           <label for="Email" style="position:absolute;clip:rect(1px 1px 1px 1px);clip:rect(1px,1px,1px,1px);">Email</label>             
+            @Html.TextBoxFor(x => x.Email, new { @class = "input-con", required = "required", placeholder = Html.DisplayNameFor(y => y.Email) })
+           <label for="Phone" style="position:absolute;clip:rect(1px 1px 1px 1px);clip:rect(1px,1px,1px,1px);">Phone</label>
+            @Html.TextBoxFor(x => x.Phone, new { @class = "input-con",  placeholder = Html.DisplayNameFor(y => y.Phone) })
+           <label for="Subject" style="position:absolute;clip:rect(1px 1px 1px 1px);clip:rect(1px,1px,1px,1px);">Subjec</label>
+            @Html.TextBoxFor(x => x.Subject, new { @class = "input-con", required = "required", placeholder = Html.DisplayNameFor(y => y.Subject) })
+           <label for="Content" style="position:absolute;clip:rect(1px 1px 1px 1px);clip:rect(1px,1px,1px,1px);">Content</label>
+            @Html.TextAreaFor(x => x.Content, new { @class = "textarea-con", required = "required", placeholder = Html.DisplayNameFor(y => y.Content), rows = 5 })
+            
+            <input type="submit" value="Submit" class="redbtn contact-sumbit">
+        </div>
+    </div>
+}

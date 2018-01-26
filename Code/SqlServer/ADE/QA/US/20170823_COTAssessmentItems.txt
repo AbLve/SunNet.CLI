@@ -1,0 +1,61 @@
+
+
+BEGIN
+    DECLARE @COTAssessmentItemId INT;
+    DECLARE @BoyDate DATETIME;
+    DECLARE @MoyDate DATETIME;
+    DECLARE @CotUpdate DATETIME;
+    DECLARE @recentDate DATETIME;
+    DECLARE cot_cur CURSOR
+    FOR
+        ( SELECT    CAI.ID ,
+                    CAI.BoyObsDate ,
+                    CAI.MoyObsDate ,
+                    CAI.CotUpdatedOn
+          FROM      dbo.COTAssessmentItems AS CAI
+                    LEFT JOIN dbo.COTAssessments AS CA ON CA.ID = CAI.CotAssessmentId
+          WHERE     CA.SchoolYear = '16-17'
+                    AND ( CAI.BoyObsDate > '1753-01-01 00:00:00.000'
+                          OR CAI.MoyObsDate > '1753-01-01 00:00:00.000'
+                        )
+        );
+    OPEN cot_cur;
+    FETCH NEXT FROM cot_cur INTO @COTAssessmentItemId, @BoyDate, @MoyDate,
+        @CotUpdate;
+    WHILE @@FETCH_STATUS = 0
+        BEGIN
+            IF @BoyDate = '1753-01-01 00:00:00.000'
+                BEGIN
+                    SET @recentDate = @MoyDate;
+                END;
+            ELSE
+                IF @MoyDate = '1753-01-01 00:00:00.000'
+                    BEGIN
+                        SET @recentDate = @BoyDate;
+                    END;
+                ELSE
+                    BEGIN
+                        SET @recentDate = @BoyDate;
+                        IF @BoyDate < @MoyDate
+                            BEGIN
+                                SET @recentDate = @MoyDate;
+                            END;
+                    END;
+            IF @recentDate > @CotUpdate
+                BEGIN
+                    UPDATE  dbo.COTAssessmentItems
+                    SET     CotUpdatedOn = @recentDate
+                    WHERE   ID = @COTAssessmentItemId;
+                END;
+
+            UPDATE  dbo.COTAssessmentItems
+            SET     BoyObsDate = '1753-01-01 00:00:00.000' ,
+                    MoyObsDate = '1753-01-01 00:00:00.000'
+            WHERE   ID = @COTAssessmentItemId;
+
+            FETCH NEXT FROM cot_cur INTO @COTAssessmentItemId, @BoyDate,
+                @MoyDate, @CotUpdate;
+        END;
+    CLOSE cot_cur;
+    DEALLOCATE cot_cur;
+END;

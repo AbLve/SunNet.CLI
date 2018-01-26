@@ -1,0 +1,202 @@
+﻿@using Sunnet.Cli.Assessment.Areas.Report.Controllers
+@using Sunnet.Cli.Business.Ade.Models
+@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    List<CustomScoreReportModel> customScoreReports = ViewBag.CustomScoreReports;
+    CustomScoreReportModel customScoreReport = customScoreReports.FirstOrDefault();
+    List<ScoreInitModel> customScoreInits = ViewBag.CustomScoreInits;
+}
+<style>
+    body {
+        font-family: arial;
+        font-size: 15px;
+        color: #333;
+    }
+
+    .container {
+        width: 100% !important;
+        margin: 0;
+        padding: 0;
+    }
+
+    .top-img {
+        position: absolute;
+        top: 0;
+        right: 1%;
+    }
+
+    .top-title {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 auto;
+    }
+
+    .top-left p {
+        text-align: left;
+        margin-bottom: 3px;
+    }
+
+    .top-right p {
+        text-align: right;
+        margin-bottom: 3px;
+    }
+
+    .top-logo {
+        text-align: center;
+    }
+</style>
+<script>
+    function myFunction() { }
+</script>
+
+<table style="width: 100%" class="">
+    <thead>
+        <tr>
+            <td>
+                <table cellpadding="0" cellspacing="0" class="noborder header">
+                    <tr>
+                        <td colspan="2" class="top-logo">
+                            <div class="top-title">
+                                @(ViewBag.AssessmentName)<br />
+                                Community Custom Score Report
+                            </div>
+                            <div class="" style="float: right;">
+                                <img src="@(DomainHelper.AssessmentDomain)images/cli_logo.png" style="width: 150px; height: 60px; vertical-align: middle;" alt="cli_logo" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="top-left">
+                            <p>Community:&nbsp;@(customScoreReport.Community)</p>
+                            <p>School:&nbsp;ALL</p>
+                            <p>School year:&nbsp;@customScoreReport.SchoolYear<br />Wave @customScoreReport.Wave.ToDescription()</p>
+                        </td>
+                        <td class="top-right">
+                            <p>Assessment Language:&nbsp;@customScoreReport.Language</p>
+                            <p>Class:&nbsp;ALL</p>
+                            <p>Teacher:&nbsp;ALL</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <table cellpadding="0" cellspacing="0" class='report-data table_border'>
+                    <thead style="page-break-inside: avoid">
+                        <tr class='fixed-columns-rotate' style="page-break-inside: avoid">
+                            <th rowspan="1" colspan="2" class="border-l border-b">
+                                <div style="width: 200px;">
+                                    <span>
+                                        School
+                                    </span>
+                                </div>
+                            </th>
+                            @foreach (var customScoreInit in customScoreInits)
+                            {
+                                <th class='fixed-columns-rotate'>
+                                    <div>
+                                        <span>@(customScoreInit.ScoreDomain)</span>
+                                    </div>
+                                </th>
+                            }
+                            <th class="noborder "></th>
+                            <th class="noborder "></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="page-break-inside: avoid">
+                            <td></td>
+                            <td><b>Maximum Score</b></td>
+                            @foreach (var customScoreInit in customScoreInits)
+                            {
+                                <td>
+                                    <span>
+                                        @(customScoreInit.FinalScore.Value.ToString("f" + customScoreInit.TargetRound))
+                                    </span>
+                                </td>
+                            }
+                            <td class="noborder border-l"></td>
+                            <td class="noborder"></td>
+                        </tr>
+                        @{
+                            var schools = customScoreReports.GroupBy(e => e.SchoolId).ToList();
+                            List<ScoreReportModel> lastCellAverage = new List<ScoreReportModel>();
+                        }
+                        @for (var i = 0; i < schools.Count(); i++)
+                        {
+                            int schoolId = Convert.ToInt32(schools[i].Key);
+                            var currentClassCustomScoreReports = customScoreReports.Where(e => e.SchoolId == schoolId).FirstOrDefault();
+                            <tr style="page-break-inside: avoid">
+                                <td><b>@(i + 1)</b></td>
+                                <td><b>@(currentClassCustomScoreReports.School)</b></td>
+                                @foreach (var customScoreInit in customScoreInits)
+                                {
+                                    var scoreDomain = customScoreInit.ScoreDomain;
+                                    var currentScores = currentClassCustomScoreReports.ScoreReports.Where(e => e.ScoreDomain == scoreDomain && e.FinalScore != null);
+                                    var studentCount = currentScores.GroupBy(e => e.StudentId).Count();
+
+                                    var averageFinalScore = studentCount == 0 ? -1 : currentScores.Sum(e => e.FinalScore.Value) / studentCount;
+                                    if (averageFinalScore > -1)
+                                    {
+                                        lastCellAverage.Add(new ScoreReportModel() { ScoreDomain = scoreDomain, FinalScore = averageFinalScore });
+                                    }
+                                    <td>
+                                        <span>
+                                            @((averageFinalScore == -1) ? "*" : averageFinalScore.ToString("f" + customScoreInit.TargetRound))
+                                        </span>
+                                    </td>
+                                }
+                                <td class="noborder border-l"></td>
+                                <td class="noborder"></td>
+                            </tr>
+                        }
+                        @{
+                            <tr style="page-break-inside: avoid">
+                                <td><b>@(schools.Count() + 1)</b></td>
+                                <td><b>Average</b></td>
+                               @foreach (var customScoreInit in customScoreInits)
+                               {
+                                   var scoreDomain = customScoreInit.ScoreDomain;
+                                   var currentScoreList = lastCellAverage.Where(e => e.ScoreDomain == scoreDomain);
+
+                                   var averageFinalScore = currentScoreList.Count() == 0 ? -1 : currentScoreList.Sum(e => e.FinalScore.Value) / currentScoreList.Count();
+                                    <td>
+                                        <span>
+                                            @((averageFinalScore == -1) ? "*" : averageFinalScore.ToString("f" + customScoreInit.TargetRound))
+                                        </span>
+                                    </td>
+                                }
+                                <td class="noborder border-l"></td>
+                                <td class="noborder"></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<table class="noborder" cellpadding="0" cellspacing="0" style="margin-bottom: 0px; margin-top: 5px;">
+    <tr style="page-break-inside: avoid">
+        <td align="left"><span>*   Score cannot be calculated due to insufficient data.</span></td>
+    </tr>
+    @foreach (var customScoreInit in customScoreInits)
+    {
+        <tr style="page-break-inside: avoid">
+            <td align="left">
+                <span>
+                    @(customScoreInit.ScoreDomain) requires the following measures:
+                </span>
+                <span>@(string.Join("; ", customScoreInit.ScoreMeasures.Select(e => e.MeasureName).ToList()))</span>
+            </td>
+        </tr>
+    }
+</table>

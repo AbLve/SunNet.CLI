@@ -1,0 +1,8 @@
+SET IDENTITY_INSERT Permission_Pages ON
+
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(2500,'TSDS',0,0,'',10,1,'TSDS',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+GO
+ 

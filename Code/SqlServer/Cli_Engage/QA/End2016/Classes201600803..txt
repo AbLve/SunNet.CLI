@@ -1,0 +1,10 @@
+﻿update ClassRoles set MonitoringToolId = 'X'
+
+go
+
+ alter table ClassRoles add [ClassInternalID] varchar(2)
+ go
+ update ClassRoles set [ClassInternalID] = 'R'
+ GO
+ update ClassRoles set [ClassInternalID] = 'R' WHERE RoleId in( 1,110,115)
+ 

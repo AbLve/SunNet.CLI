@@ -1,0 +1,95 @@
+﻿@using Sunnet.Cli.Business.Trs.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Report - Facility Item (TA)";
+    Layout = "~/Areas/Trs/Views/Shared/_Trs_Report_Layout.cshtml";
+    var assessment = ViewBag.Model as TrsAssessmentReportModel;
+}
+
+<table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-header">
+                <tr>
+                    <th>Facility Measures Report
+                        <p class="redtext" style="margin-top: -30px">(Official)</p>
+                    </th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td colspan="3"></td>
+                    <td rowspan="4">
+                        <img class="logo" src="@(SFConfig.AssessmentDomain)images/trs_logo.jpg" alt="Trs logo"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">@(assessment.School.Name)</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="2">@(assessment.School.CommunityNames)</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: left;">@(Html.DisplayNameFor(x => assessment.School.DfpsNumber)): @(assessment.School.DfpsNumber)</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-table-f">
+                <thead>
+                    <tr>
+                        <th width="80">Measure #</th>
+                        <th width="*" colspan="2">Measure</th>
+                        <th width="200">Linking Video or Document</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in assessment.Categories)
+                    {
+                        if (category.Value.Any(cate => cate.Value.Any(sub => sub.Score < 3)))
+                        {
+                        <tr style="page-break-inside: avoid;">
+                            <th colspan="4">
+                                @(category.Key.GetDisplayName()): @(category.Key.ToDescription())
+                            </th>
+                        </tr>
+                        }
+                        foreach (var subCategory in category.Value)
+                        {
+                            if (subCategory.Value.Any(x => x.Score < 3))
+                            {
+                        <tr style="page-break-inside: avoid;">
+                            <th colspan="4">
+                                @ViewTextHelper.HtmlEmptySeparator
+                                @(assessment.SubCategory[subCategory.Key].Name)
+                            </th>
+                        </tr>
+                                foreach (var itemModel in subCategory.Value)
+                                {
+                                    if (itemModel.Score < 3)
+                                    {
+                        <tr style="page-break-inside: avoid;">
+                            <td>@(itemModel.Item)</td>
+                            <td width="100">Score:&nbsp;@(Html.Raw((itemModel.AnswerText == "Met" || itemModel.AnswerText == "Not Met" || itemModel.AnswerText == "N/A") ? itemModel.AnswerText : itemModel.Score.ToString()))</td>
+                            <td>@(Html.Raw(itemModel.Comments))</td>
+                            <td>@(Html.Raw(itemModel.LinkingDocument))</td>
+                        </tr>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,3 @@
+﻿IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TRSItems]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+update TRSItems set TAPlanItem='TBD',TAPlanItemType='TBD',TAItemInstructions='TBD',LinkingDocument='TBD'
+GO

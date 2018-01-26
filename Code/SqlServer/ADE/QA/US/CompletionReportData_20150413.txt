@@ -1,0 +1,2 @@
+﻿IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[CompletionReportData]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+	drop table CompletionReportData

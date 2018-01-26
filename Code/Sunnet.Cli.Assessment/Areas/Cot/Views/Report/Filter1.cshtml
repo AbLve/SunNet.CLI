@@ -1,0 +1,142 @@
+﻿@using Sunnet.Cli.Business.Cot.Cumulative
+@using Sunnet.Cli.Core.Users.Enums
+@model Sunnet.Cli.Business.Cot.Cumulative.CumulativeReportModel
+@{
+    ViewBag.Title = "Filters Selections";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@using (Html.BeginForm("Cumulative2Pdf", "Report", FormMethod.Post, new { target = "_blank", id = formId, @class = "form-horizontal" }))
+{
+    @Html.Hidden("teacherId")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @InputExtensions.RadioButton(Html, "type", ViewBag.Type, new { @class = "hidden" })
+    @Html.Hidden("SchoolId")
+    @Html.Hidden("CommunityId")
+    @Html.Hidden("measures")
+    @Html.Hidden("yearsInProject")
+    <div class="btn-group hidden" id="schoolTypes" data-toggle="buttons" style="left:200px; position: absolute; top: -47px;">
+        <label class="btn btn-default" style="border-radius: 0px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 200px;">
+            <input autocomplete="off" name="type" type="radio" value="@(CumulativeReportType.SchoolCumulative)">
+            For @(ViewBag.SchoolName) Only
+        </label>
+        <label class="btn  btn-default" style="border-radius: 0px;margin-left: 5px; ">
+            <input autocomplete="off" name="type" type="radio" value="@(CumulativeReportType.AllAssignedSchoolCumulative)">
+            All Assigned Schools
+        </label>
+    </div>
+    <div class="tab-content term-content-con" style="margin-bottom: 10px;">
+        <div class="term-main-con1">
+            <div class="term-content">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <a class="term-group-t">
+                            <p>
+                                <span>@Html.DisplayNameFor(x => x.YearsInProject)</span>
+                                <span class="select" data-bind="click:yearsInProject.switchSelectAll">
+                                    <i class="" data-bind="css:{'icon-check':yearsInProject.selected,'icon-check-empty':yearsInProject.selected()==false}"></i>
+                                    Select All
+                                </span>
+                            </p>
+                        </a>
+                    </div>
+                </div>
+                <div class="form-group" data-bind="foreach:{data:yearsInProject.data,as:'item'}">
+                    <div class="" data-bind="css:{'col-sm-5':$index()==3,'col-sm-2':$index()!=3},attr:{title:text}">
+                        <a class="term-contents" data-bind="css:{'term-1':selected},click:$root.switchItem">
+                            <span data-bind="text:text"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="term-content">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <a class="term-group-t">
+                            <p>
+                                <span>@Html.DisplayNameFor(x => x.CoachModels)</span>
+                                <span class="select" data-bind="click:coachingModels.switchSelectAll">
+                                    <i class="" data-bind="css:{'icon-check':coachingModels.selected,'icon-check-empty':coachingModels.selected()==false}"></i>
+                                    Select All
+                                </span>
+                            </p>
+                        </a>
+                    </div>
+                </div>
+                <div class="form-group" data-bind="foreach:{data:coachingModels.data,as:'item'}">
+                    <div class="col-sm-3">
+                        <input type="checkbox" class="hidden" name="coachModels" data-bind="value:value,checked:selected" title=" "/>
+                        <a class="term-contents" data-bind="css:{'term-1':selected},click:$root.switchItem">
+                            <span data-bind="text:text"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="term-content">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <a class="term-group-t">
+                            <p>
+                                <span>@Html.DisplayNameFor(x => x.ECircles)</span>
+                                <span class="select" data-bind="click:eCircles.switchSelectAll">
+                                    <i class="" data-bind="css:{'icon-check':eCircles.selected,'icon-check-empty':eCircles.selected()==false}"></i>
+                                    Select All
+                                </span>
+                            </p>
+                        </a>
+                    </div>
+                </div>
+                <div class="form-group" data-bind="foreach:{data:eCircles.data,as:'item'}">
+                    <div class="col-sm-3">
+                        <input type="checkbox" class="hidden" name="eCircles" data-bind="value:value,checked:selected" title=" "/>
+                        <a class="term-contents" data-bind="css:{'term-1':selected},click:$root.switchItem">
+                            <span data-bind="text:text"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" data-bind="click:submit">Apply</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var filterViewModel;
+        +(function() {
+            var yearsInProject = @Html.Raw(ViewBag.YearsInProject);
+            var assignmentTypes = [
+                { text: "@(AssignmentType.Face_to_Face.ToDescription())", value: "@(AssignmentType.Face_to_Face)" },
+                { text: "@(AssignmentType.Remote.ToDescription())", value: "@(AssignmentType.Remote)" },
+                { text: "@(AssignmentType.Other.ToDescription())", value: "@(AssignmentType.Other)" }
+            ];
+            filterViewModel = new filterModel(yearsInProject, assignmentTypes, assignmentTypes);
+            filterViewModel.submit = function() {
+                var selectedYears = {};
+                for (var i = 0; i < filterViewModel.yearsInProject.data.length; i++) {
+                    var y = filterViewModel.yearsInProject.data[i];
+                    if (y.selected()) {
+                        selectedYears[y.value] = y.text;
+                    }
+                }
+                var $form = $("#@(formId)");
+                $form.find("#yearsInProject").val(JSON.stringify(selectedYears));
+                $form.submit();
+            };
+
+            ko.applyBindings(filterViewModel, document.getElementById("@(formId)"));
+
+            if ("@(ViewBag.Type)" == "@(CumulativeReportType.SchoolCumulative)") {
+                var $schoolTypes = $("#schoolTypes");
+                $schoolTypes.removeClass("hidden");
+                $schoolTypes.find("label:first").addClass("active");
+                $schoolTypes.find("label:first").find("input").prop("checked", true);
+            }
+
+        })();
+    </script>
+}

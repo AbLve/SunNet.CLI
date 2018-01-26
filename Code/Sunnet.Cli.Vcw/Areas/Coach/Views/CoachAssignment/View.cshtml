@@ -1,0 +1,111 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.UIBase
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Vcw.Entities
+@using System.Web.Optimization
+@using Sunnet.Cli.Business.Vcw.Models
+@{
+    ViewBag.Title = "View Assignment";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Assignment)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("My Assignments", "Index", "CoachAssignment"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    Assignment Information
+}
+
+<form class="form-horizontal">
+    <div class="right-content-top">
+        <a class="mainbutton nav-btn" 
+        href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "CoachAssignment"))" >Back to Assignment List</a>
+    </div>
+    <div class="form-group"></div>
+    <div class="form-group">
+        <div class="nav-tab">
+            <ul id="myTab" class="nav-container" role="tablist">
+                <li><a href="@(Url.Action("ViewAssignmentFiles", "CoachAssignment"
+                , new { id = Model.ID, returnurl = Request.QueryString["returnurl"] }))">Submitted Assignment Files</a></li>
+                <li class="active"><a href="@(Url.Action("View", "CoachAssignment"
+                , new { id = Model.ID, returnurl = Request.QueryString["returnurl"] }))">Assignment Information</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav-container-main">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Coach Assignment</div>
+                    </div>
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-2">Due Date</span>
+                        <span class="col-sm-2">@(Model.DueDate.FormatDateString())</span>
+                        <span class="control-label col-sm-2">Session</span>
+                        <span class="col-sm-2">@(Model.SessionText)</span>
+                        <span class="control-label col-sm-2">File Type</span>
+                        <span class="col-sm-2">@(Model.UploadType)</span>
+                    </div>
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-2">Status</span>
+                        <span class="col-sm-2">@(Model.Status <= 0 ? "" : Model.Status.ToDescription())</span>
+                        <span class="control-label col-sm-2">Strategies</span>
+                        <span class="col-sm-6">@(Model.Strategy)</span>
+                    </div>
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-2">Description</span>
+                        <span class="col-sm-10">@(Model.Description)</span>
+                    </div>
+                    <div class="inputtext-con" style="overflow: hidden; padding: 10px 20px 0px;">
+                        <span class="control-label col-sm-2">Resources</span>
+                        <span class="col-sm-10">@Html.Raw(Model.WatchHyperLinked)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Project Manager Assignment File</div>
+                    </div>
+                    <div class="uploader-list">
+                        @foreach (AssignmentFileEntity item in Model.AssignmentFiles)
+                        {
+                            <div class="item">
+                                <i class="icon-paper-clip"></i>
+                                <a class="form-link4"  
+                                    href="@(DownLoadFile.GetDownFilePath(item.FilePath, item.FileName))">@(item.FileName)</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">PM Feedback</div>
+                    </div>
+                    <div class="uploader-list">
+                        @if (!string.IsNullOrEmpty(Model.FeedbackFileName))
+                        {
+                            <div class="item">
+                                <i class="icon-paper-clip"></i>
+                                <a class="form-link4" href="@(DownLoadFile.GetDownFilePath(Model.FeedbackFilePath, Model.FeedbackFileName))">@(Model.FeedbackFileName)</a>
+                            </div>
+                        }
+                        <p>
+                            @Model.FeedbackText
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

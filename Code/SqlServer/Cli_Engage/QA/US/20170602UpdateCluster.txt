@@ -1,0 +1,36 @@
+﻿Create table SystemUpdates
+(
+ID int not null primary key identity(1,1),
+Date datetime not null,
+Description varchar(500) not null,
+CreatedOn datetime not null,
+UpdatedOn datetime not null,
+CreatedBy int not null,
+UpdatedBy int not null
+)
+go
+Create table MessageCenters
+(
+ID int not null primary key identity(1,1),
+Date datetime not null,
+Description varchar(500) not null,
+HyperLink varchar(500) not null,
+CreatedOn datetime not null,
+UpdatedOn datetime not null,
+CreatedBy int not null,
+UpdatedBy int not null
+)
+go
+Create table NewFeatureds
+(
+ID int not null primary key identity(1,1),
+Title varchar(200) not null,
+Description varchar(500) not null,
+HyperLink varchar(500) not null,
+ThumbnailPath varchar(200) not null,
+ThumbnailName varchar(200) not null,
+CreatedOn datetime not null,
+UpdatedOn datetime not null,
+CreatedBy int not null,
+UpdatedBy int not null
+)

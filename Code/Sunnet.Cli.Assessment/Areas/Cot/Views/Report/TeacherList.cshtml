@@ -1,0 +1,153 @@
+﻿@using Sunnet.Cli.Business.Cot.Enum
+@{
+    ViewBag.Title = "Teacher List";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@using (Html.BeginForm("CotPdf", "Report", FormMethod.Post, new { target = "_blank", id = formId, @class = "form-horizontal" }))
+{
+    @Html.Hidden("teacherId")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @InputExtensions.RadioButton(Html, "type", ViewBag.Type, new { @class = "hidden" })
+    @Html.Hidden("schoolId")
+    @Html.Hidden("communityId")
+    @Html.Hidden("measures")
+    @Html.Hidden("selectedTeachers")
+    @InputExtensions.RadioButton(Html, "cotReportType", ViewBag.cotReportType, new { @class = "hidden" })
+    <div class="">
+        <button type="button" class="mainbutton mainright-btn create-btn" data-bind="click:submit">Create Reports</button>
+    </div>
+    <div class="modal-l-b"></div>
+    <div class="main-content main-content" id="selectTeachers">
+        <div class="content-title" style="padding-left:0">Select All</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="chkAllTeacher" data-bind="event:{change:selectAll}" /></th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <!-- ko if:multiColumn() -->
+                        <th></th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <!-- /ko -->
+                    </tr>
+                </thead>
+                <tbody data-bind="template: {name:multiColumn()?'multiColumnTemp':'singleColumnTemp', foreach: teacherList, as: 'item' }"></tbody>
+            </table>
+        </div>
+    </div>
+}
+<script type="text/html" id="multiColumnTemp">
+    <!-- ko if:$index()%2==0 -->
+    <tr>
+        <td><input type="checkbox" name="chkTeacher" data-bind="value:item.Id,event:{change:$root.selectOne}" /></td>
+        <td data-bind="text: item.FirstName"></td>
+        <td data-bind="text: item.LastName"></td>
+        <!-- ko if:$index()<$root.indexTotal() -->
+        <td><input type="checkbox" name="chkTeacher" data-bind="value:$root.teacherList()[$index()+1].Id,event:{change:$root.selectOne}" /></td>
+        <td data-bind="text: $root.teacherList()[$index()+1].FirstName"></td>
+        <td data-bind="text: $root.teacherList()[$index()+1].LastName"></td>
+        <!-- /ko -->
+        <!-- ko ifnot:$index()<$root.indexTotal() -->
+        <td></td>
+        <td></td>
+        <td></td>
+        <!-- /ko -->
+    </tr>
+    <!-- /ko -->
+</script>
+<script type="text/html" id="singleColumnTemp">
+    <tr>
+        <td><input type="checkbox" name="chkTeacher" data-bind="value:item.Id,event:{change:$root.selectOne}" /></td>
+        <td data-bind="text: item.FirstName"></td>
+        <td data-bind="text: item.LastName"></td>
+    </tr>
+</script>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        console.log(window.queryString("teacherId"));
+        var $form = $("#@(formId)");
+        var teacherViewModel;
+        function TeacherViewModel() {
+            var self = this;
+            this.teacherList = ko.observableArray();
+            this.multiColumn = ko.observable(false);
+            this.rowNum = ko.observable(10);
+            this.indexTotal = ko.observable(0);
+            this.getTeachers = function () {
+                $.getJSON('@Html.Raw(Server.UrlDecode(Url.Action("GetAllAssignedTeachers")))',
+                    {
+                        teacherId: $("#teacherId").val(),
+                        schoolId: $("#schoolId").val(),
+                        communityId: $("#communityId").val(),
+                        type: $("#type").val(),
+                        cotReportType: $("#cotReportType").val()
+                    }, function (data) {
+                        //data = data.slice(0, 10);
+                        self.teacherList.removeAll();
+                        if (data.length > self.rowNum()) {
+                            self.multiColumn(true);
+                            self.rowNum(Math.ceil(data.length / 2));
+                        }
+                        $.each(data, function (i, v) {
+                            self.teacherList.push(v);
+                        });
+                        self.indexTotal(self.teacherList().length-1);
+                    });
+            };
+            this.selectAll = function (vm,event) {
+                var checked = $(event.target).prop('checked')
+                $("input[name='chkTeacher']").prop('checked', checked);
+            };
+            this.selectOne = function (vm, event) {
+                if ($(event.target).prop('checked')) {
+                    var unCheckedBoxs = $("input[name='chkTeacher']").not("input:checked");
+                    if (unCheckedBoxs.length == 0) {
+                        $("#chkAllTeacher").prop('checked', true);
+                    }
+                }
+                else {
+                    $("#chkAllTeacher").prop('checked', false);
+                }
+            };
+            this.submit = function () {
+                var cotReportType = $form.find("#cotReportType").val();
+                if (cotReportType == '@CotReportType.Observed') {
+                    $form.attr("action", "/Cot/Report/CotPdf");
+                }
+                else if (cotReportType == '@CotReportType.Cumulative') {
+                    $form.attr("action", "/Cot/Report/CumulativePdf");
+                }
+                else if (cotReportType == '@CotReportType.Grouth') {
+                    $form.attr("action", "/Cot/Report/Growth");
+                }
+                else if (cotReportType == '@CotReportType.Summary') {
+                    $form.attr("action", "/Cot/Report/Summary");
+                }
+
+                if ($("input[name='chkTeacher']:checked").length == 0) {
+                    window.showMessage("hint", "Cot_Report_Need_Teacher");
+                    return false;
+                }
+                else {
+                    var selectedIds = $("input[name='chkTeacher']:checked").map(function () { return this.value; }).get().join(',');
+                    $("#selectedTeachers").val(selectedIds);
+                    $form.submit();
+                    closeModal($("#@(formId)"));
+                }
+            };
+        }
+        +(function () {
+            teacherViewModel = new TeacherViewModel();
+            teacherViewModel.getTeachers();
+            ko.applyBindings(teacherViewModel, document.getElementById("@(formId)"));
+        })();
+    </script>
+}
+

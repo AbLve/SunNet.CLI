@@ -1,0 +1,8 @@
+GO 
+UPDATE  dbo.TRSItems
+SET     IsDeleted = 1
+WHERE   Item = 'S-GSNMAC-01';
+GO
+UPDATE  dbo.TRSSubcategories
+SET     Name = 'Staff Ratios and Group Size'
+WHERE   Name = 'Staff Ratios';

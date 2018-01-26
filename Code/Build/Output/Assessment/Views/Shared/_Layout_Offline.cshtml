@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+@{
+    const string siteName = "Cli Engage";
+    string relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    var lastModified = FileHelper.GetFileLastModified(Server.MapPath(relativePath));
+    string moduleTitle = relativePath.IndexOf("Areas/Ade", StringComparison.CurrentCultureIgnoreCase) >= 0 ? "Ade" : "";
+    moduleTitle = relativePath.IndexOf("Areas/Ade", StringComparison.CurrentCultureIgnoreCase) < 0 ? "Assessment" : moduleTitle;
+
+    var manifest = Html.Raw(ViewBag.Manifest).ToString();
+    if (!string.IsNullOrEmpty(manifest))
+    {
+        manifest = string.Format("manifest=\"{0}\"", manifest);
+    }
+}
+
+<html lang="en" @Html.Raw(manifest)>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword"
+          content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>@ViewBag.Title - @siteName</title>
+    @Styles.Render("~/css/basic/offline")
+    
+    @RenderSection("Styles", false)
+    @Scripts.Render("~/scripts/modernizr/offline")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/scripts/ie68/offline")
+    <![endif]-->
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+                window._DEBUG = true;
+        </script>
+    }
+    <style type="text/css" >
+        
+.modal-backdrop.in {
+    background: #ffffff;
+    filter: alpha(opacity=100);
+    opacity: 1;
+}
+
+    </style>
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.AssessmentDomain";
+    </script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+</head>
+<body>
+    <div class="warp">
+        <div class="header">
+            <div class="header-container">
+                <div class="header-logo">
+                    <img src="/images/cli_logo.png" alt="cli_logo">
+                </div>
+                <div class="header-login" data-bind="visible: network.online() && !network.logged()" style="display: none;">
+                    <a class="header-sign-btn" href="#" data-toggle="modal" data-target="#modalLogin">SIGN IN</a>
+
+                </div>
+                <div class="modal fade in" id="modalLogin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog-sm modal-dialog-login">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                <div class="modal-login-header">
+                                    <h3>Welcome to CLI Engage</h3>
+                                    <a class="g-in-btn" href="@(DomainHelper.SsoSiteDomain)home/Index?@(ViewBag.LoginUrl)">Sign In with your Google Account</a>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-main-content">
+                                    <div class="modal-login-body">
+                                        <p>
+                                            You will need a Google or Gmail account to set up a new account or log in to your existing account on CLI Engage.
+                                            If you do not have a Google account, you can create one using your existing email account or create a Gmail account
+                                            by going to the following link: <a class="login-text-link" target="_blank" href="https://accounts.google.com/signup">https://accounts.google.com/signup</a>
+                                        </p>
+                                        <p>
+                                            (To use your current email address, click "I prefer to use my current email address" below the Choose Your Username field.)
+                                        </p>
+
+                                        <p>
+                                            This process will allow you to use your Google account to log into the CLI Engage website. Only basic Google account information
+                                            will be used by UTHealth to set up your CLI Engage account.
+                                        </p>
+                                    </div>
+                                    <div class="modal-login-footer">
+                                        UTHealth employees,
+                                        please click here to log in: <a class="login-text-link" href="@(DomainHelper.SsoSiteDomain)home/Index?@(ViewBag.CLIUserLogin)">UTHealth Login</a>&nbsp;&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="help-btn">
+                    <a href="http://www.texasschoolready.org/help/MainTicketForm.aspx?Section8" target="_blank">&nbsp;</a>
+                </div>
+            </div>
+            <div class="nav">
+                <ul>
+                    <li>
+                        <a href="#" class="active">Offline</a>
+                    </li>
+                    <li>
+                        <a href="#" id="hrefOnline">Online</a>
+                    </li>
+                    <li id="offlineHelper" style="float: right;" title="Read this document for instructions on how to use Engage Offline Assessments." data-toggle="tooltip">
+                        <a href='@(SFConfig.MainSiteDomain+"Help/Assessment/Offline")' target="_blank">
+                            <i class="icon-info-sign"></i>
+                            Engage Offline Assessment Instructions
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="container">
+            @RenderSection("Banner", false)
+        </div>
+    </div>
+    <div class="main-container container">
+        <div class="clearfix" style="height: 5px;"></div>
+        @RenderBody()
+    </div>
+    <div class="footer">
+        <div class="homelink">
+            <ul>
+                <li class="link-ut">
+                    <a href="https://www.uth.edu/" target="_blank">
+                        <img src="/images/UT.png" alt="UT">
+                    </a>
+                </li>
+                <li class="link-cli">
+                    <a href="http://www.childrenslearninginstitute.org/" target="_blank">
+                        <img src="/images/CLI.png" alt="CLI">
+                    </a>
+                </li>
+                <li class="link-tsr">
+                    <a href="http://www.texasschoolready.org/" target="_blank">
+                        <img src="/images/TSR.png" alt="TSR">
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="copyright">
+            <div class="nav-bottom">
+                <ul>
+                    <li><a href="https://www.uth.edu/index/policies.htm" target="_blank">Site Policies</a></li>
+                    <li><a href="https://www.uth.edu/index/file-viewing-information.htm" target="_blank">Web File Viewing</a></li>
+                    <li>
+                        <a target="_blank" href="@(SFConfig.MainSiteDomain)contact">@(Cli_Menus.ContactUs.ToDescription())</a>
+                    </li>
+                </ul>
+            </div>
+            <p>
+                Copyright © 2013 by <a class="main-a" href="https://www.uth.edu/" target="_blank">The University of Texas Health Science Center</a> at Houston (UTHealth)
+                <br />
+                Webmaster: <a href="mailto:cliengage@uth.tmc.edu">cliengage@@uth.tmc.edu</a> | This document was last modified on: @(lastModified.ToString("MM/dd/yyyy HH:mm:ss"))
+            </p>
+
+        </div>
+    </div>
+    <div id="modalSmall" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-sm">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalLarge" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop  in" id="coverLayer"></div>
+    @Scripts.Render("~/scripts/jquery/offline")
+    @Scripts.Render("~/scripts/bootstrap/offline")
+    @Scripts.Render("~/scripts/knockout/offline")
+    @Scripts.Render("~/scripts/cli/offline")
+    @RenderSection("Scripts", false)
+
+    <script type="text/javascript">
+        function addFavorite() {
+            if (document.all) {
+                try {
+                    window.external.addFavorite(window.location.href, document.title);
+                } catch (e) {
+                    window.showMessage("hint", "add_Favorite_Fail");
+                }
+            } else if (window.sidebar) {
+                try {
+                    window.sidebar.addPanel(document.title, window.location.href, "");
+                } catch (e) {
+                    window.showMessage("hint", "add_Favorite_Fail");
+                }
+            } else {
+                window.showMessage("hint", "add_Favorite_Fail");
+            }
+        }
+    </script>
+</body>
+</html>

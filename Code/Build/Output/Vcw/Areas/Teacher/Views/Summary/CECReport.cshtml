@@ -1,0 +1,195 @@
+﻿@using Sunnet.Cli.Core.Cpalls;
+@using Sunnet.Cli.Core.Ade.Entities;
+@using Sunnet.Cli.Business.Cpalls.Group;
+@using Sunnet.Cli.Business.Ade.Models;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.Business.Cpalls.Models
+
+@{    
+    ViewBag.Title = "CEC";
+    Layout = "~/Views/Shared/_Layout_CEC_Report.cshtml";
+}
+
+<style type="text/css">
+    table {
+        border: none;
+        margin: 0;
+        padding: 0;
+        font-family: Calibri;
+        font-size: 12px;
+    }
+
+        table td, table th {
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+
+
+        table td {
+        }
+
+            table td table td {
+                border-bottom: 2px solid #7caab5;
+                padding: 10px 10px;
+                border-right: 1px solid #7caab5;
+            }
+
+            table td table th {
+                border-top: 1px solid #7caab5;
+                border-right: 1px solid #7caab5;
+            }
+</style>
+
+
+<div class="main-content main-content">
+    <div class="content-body-tab">
+
+        @if (ViewBag.NoData)
+        {
+            @:No Data
+        }
+        else
+        {
+            <table class="table table-striped table-hover" width="99%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px;">
+                <thead>
+                    <tr>
+                        <td style="border-bottom: 0px; background-color: #fff;">
+                            <table class="table table-striped table-hover" width="100%">
+                                <tr>
+                                    <td style="width: 180px; border-bottom: 0px; background-color: #fff; border: 0px">&nbsp;</td>
+                                    <td style="font-size: 14px; font-weight: bold; border-bottom: 0px; background-color: #fff; border: 0px">CEC @ViewBag.Wave results for @ViewBag.Teacher at STANTON LC T2
+                                    <br />
+                                        School Year: @ViewBag.SchoolYear
+                                    </td>
+                                    <td style="width: 180px; border-bottom: 0px; background-color: #fff; border: 0px">
+                                        <img src="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)images/cli_logo.png" style="width: 150px; height: 60px; vertical-align: middle;" /></td>
+                                </tr>
+                            </table>
+                            <table class="table table-striped table-hover" width="100%">
+                                <tr>
+                                    <th style="text-align: left; padding-left: 15px; font-weight: normal; border-right: 0; border-top: 0">Communtiy/District: @ViewBag.CommunityName</th>
+                                    <th style="text-align: right; padding-right: 15px; font-weight: normal; border-right: 0; border-top: 0">Teacher: @ViewBag.Teacher</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: left; font-weight: normal; padding-left: 15px; border-right: 0; border-top: 0">School: @ViewBag.SchoolName</th>
+                                    <th style="text-align: right; font-weight: normal; padding-right: 15px; border-right: 0; border-top: 0">Mentor: @ViewBag.Mentor</th>
+
+                                </tr>
+                                <tr>
+                                    <th style="text-align: left; font-weight: normal; padding-left: 15px; border-right: 0; border-top: 0">School Year: @ViewBag.SchoolYear</th>
+                                    <th style="text-align: right; font-weight: normal; padding-right: 15px; border-right: 0; border-top: 0">Date: @ViewBag.Date </th>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border-bottom: 0px; background-color: #fff; border: 0px;">
+                            <table class="table table-striped table-hover" width="100%" cellspacing="0" cellpadding="0" border="0" style="">
+
+                                @foreach (MeasureHeaderModel parent in @ViewBag.ParentMeasure)
+                                {
+                                    <tr style="border-top: 1px solid #7caab5">
+                                        <td colspan="3" style="text-align: left; font-size: 14px; font-weight: bold; border-bottom: 0px; padding-top: 20px; padding-bottom: 10px; background-color: #fff; border: 0px;">@parent.Name</td>
+                                        <td style="border-bottom: 0px; background-color: #fff; border-right: 0px;">
+                                            @foreach (var link in parent.Links)
+                                            {
+                                                <p><a href="@link.Link" target="_blank">@link.DisplayText</a></p>
+                                            }
+                                        </td>
+                                    </tr>
+                                            foreach (MeasureHeaderModel measure in (ViewBag.MeasureList as List<MeasureHeaderModel>).FindAll(r => r.ParentId == parent.MeasureId))
+                                            {
+                                        
+                                    <tr>
+                                        <td colspan="3" style="text-align: left; font-size: 13px; font-weight: bold; padding-left: 20px; padding-top: 10px; padding-bottom: 10px; border: 0px; background-color: #fff;">@measure.Name</td>
+                                        <td style="background-color: #fff; border: 0px;">
+                                            @foreach (var link in measure.Links)
+                                            {
+                                                <p><a href="@link.Link" target="_blank">@link.DisplayText</a></p>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 70px; border-bottom: 1px solid #7caab5; border-left: 1px solid #7caab5;">CEC Value</th>
+                                        <th style="width: 20%; border-bottom: 1px solid #7caab5;">Area</th>
+                                        <th style="border-bottom: 1px solid #7caab5; padding: 10px 0px;">Description</th>
+                                        <th style="border-bottom: 1px solid #7caab5; padding: 10px 0px; width: 10%">Photograph Links</th>
+                                    </tr>
+                                            foreach (CecItemModel item in (ViewBag.List as List<CecItemModel>).FindAll(r => r.MeasureId == measure.MeasureId))
+                                            {
+                                    <tr>
+                                        <td style="border-left: 1px solid #7caab5;">
+                                            @item.Score.ToPrecisionString(2)
+                                        </td>
+                                        <td style="text-align: left; padding-left: 5px;">@item.Area</td>
+                                        <td style="text-align: left;">
+                                            <div>
+                                                @Html.Raw(item.Description)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @foreach (var link in item.Links)
+                                            {
+                                                <p><a href="@link.Link" target="_blank">@link.DisplayText</a></p>
+                                            }
+                                        </td>
+                                    </tr>
+                                            }
+                                            }
+                                            if (parent.Subs == 0)
+                                            {
+                                    <tr>
+                                        <th style="width: 70px; border-bottom: 1px solid #7caab5; border-left: 1px solid #7caab5;">CEC Value</th>
+                                        <th style="width: 20%; border-bottom: 1px solid #7caab5;">Area</th>
+                                        <th style="border-bottom: 1px solid #7caab5; padding: 10px 0px;">Description</th>
+                                        <th style="border-bottom: 1px solid #7caab5; padding: 10px 0px; width: 10%">Photograph Links</th>
+                                    </tr>
+                                            }
+                                            foreach (CecItemModel item in (ViewBag.List as List<CecItemModel>).FindAll(r => r.MeasureId == parent.MeasureId))
+                                            {
+                                    <tr>
+                                        <td style="border-left: 1px solid #7caab5;">
+                                            @item.Score.ToPrecisionString(2)
+                                        </td>
+                                        <td style="text-align: left; padding-left: 5px;">@item.Area</td>
+                                        <td style="text-align: left;">
+                                            <div>
+                                                @Html.Raw(item.Description)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @foreach (var link in item.Links)
+                                            {
+                                                <p><a href="@link.Link" target="_blank">@link.DisplayText</a></p>
+                                            }
+                                        </td>
+                                    </tr>
+                                            }
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+                                if (ViewBag.Pdf == false)
+                                {
+            <a target="_blank" style="padding:5px 10px;background-color:#499b17;display:inline-block;font-size:14px; text-decoration:none;color:white;" 
+               href="@Url.Action("CecReport", "Summary", new
+                {
+                    teacherId = Request.QueryString["teacherId"],
+                    assessmentId = Request.QueryString["assessmentId"],
+                    wave = Request.QueryString["wave"],
+                    export = true,
+                    year = Request.QueryString["year"]
+                })">Generate CEC Report PDF file</a>
+                                }
+        }
+    </div>
+</div>
+

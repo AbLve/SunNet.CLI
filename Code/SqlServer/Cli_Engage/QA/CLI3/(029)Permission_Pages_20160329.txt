@@ -1,0 +1,28 @@
+GO 
+SET IDENTITY_INSERT dbo.Permission_Pages ON; 
+GO 
+INSERT  dbo.Permission_Pages
+        ( ID ,
+          Name ,
+          IsPage ,
+          ParentID ,
+          Url ,
+          Sort ,
+          IsShow ,
+          Descriptions ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 2400 ,
+          'Observables' , -- Name - nvarchar(100)
+          0 , -- IsPage - bit
+          2000 , -- ParentID - int
+          N'' , -- Url - nvarchar(100)
+          1 , -- Sort - int
+          1 , -- IsShow - bit
+          N'' , -- Descriptions - nvarchar(200)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        );
+GO 
+SET IDENTITY_INSERT dbo.Permission_Pages OFF;

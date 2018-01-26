@@ -1,0 +1,9 @@
+﻿insert into IntManaCoordCoachRelations(PMUserId,CoordCoachUserId,CreatedOn,UpdatedOn)
+select PMAssignmentId,UserId,GETDATE(),GETDATE()  from CoordCoachs where PMAssignmentId>0
+go
+
+
+
+alter table [dbo].[CoordCoachs] 
+drop column [PMAssignmentId]
+go

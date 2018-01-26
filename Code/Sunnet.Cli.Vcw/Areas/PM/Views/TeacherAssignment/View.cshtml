@@ -1,0 +1,137 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.UIBase
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Vcw.Entities
+@using System.Web.Optimization
+@using Sunnet.Cli.Business.Vcw.Models
+@{
+    ViewBag.Title = "View Assignment";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.PM_Teachers)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("My Teachers", "Index", "TeacherVIP"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    @(Html.ActionLink("Teacher Assignment", "Index", "TeacherAssignment"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    Assignment Information
+}
+
+<form class="form-horizontal">
+    <div class="right-content-top">
+        <a class="mainbutton nav-btn" 
+        href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "TeacherAssignment"))" >Back to Assignment List</a>
+    </div>
+    @Html.Partial("/Views/TeacherInfo/TeacherInfo.cshtml")
+    <div class="form-group"></div>
+    <div class="form-group">
+        <div class="nav-tab">
+            <ul id="myTab" class="nav-container" role="tablist">
+                <li><a href="@(Url.Action("ViewAssignmentFiles", "TeacherAssignment"
+                , new { id = Model.ID, returnurl = Request.QueryString["returnurl"] }))">Submitted Assignment Files</a></li>
+                <li class="active"><a href="@(Url.Action("View", "TeacherAssignment"
+                , new { id = Model.ID, returnurl = Request.QueryString["returnurl"] }))">Assignment Information</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav-container-main">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Teacher Assignment</div>
+                    </div>
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-3">Due Date</span>
+                        <span class="col-sm-2">@(Model.DueDate.FormatDateString())</span>
+                        <span class="control-label col-sm-2">Feedback Call Date</span>
+                        <span class="col-sm-2">@(Model.CallDate.Value.FormatDateString())</span>
+                        <span class="control-label col-sm-2">Session</span>
+                        <span class="col-sm-1">@(Model.SessionText)</span>
+                    </div>
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-3">File Type(s) Requested</span>
+                        <span class="col-sm-2">@(Model.UploadType)</span>
+                        <span class="control-label col-sm-2">Video Context</span>
+                        <span class="col-sm-2">@(Model.Context)</span>
+                        <span class="control-label col-sm-2">Status</span>
+                        <span class="col-sm-1">@(Model.Status <= 0 ? "" : Model.Status.ToDescription())</span>
+                    </div>
+
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-3">Content</span>
+                        <span class="col-sm-9">@(Model.Content)</span>
+                    </div>
+
+                    <div class="inputtext-con-file">
+                        <span class="control-label col-sm-3">Teacher STG Report</span>
+                        <span class="col-sm-9">
+                            @foreach (AssignmentReportEntity item in Model.Reports)
+                            {
+                                string url = Url.Action("Pdf", "STGSend", new { Area = "STGReport", id = item.ReportId, type = "teacher" });
+                                <a class="form-link2" target="_blank" title="Download pdf" href="@(url)">
+                                    @(item.CreatedOn.ToString("MM/dd/yyyy HH:mm:ss tt"))</a>
+                                <span>&nbsp;</span>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-3">Description</span>
+                        <span class="col-sm-9">@(Model.Description)</span>
+                    </div>
+
+                    <div class="inputtext-con-file">
+                        <span class="control-label col-sm-3">Resources</span>
+                        <span class="col-sm-9">@Html.Raw(Model.WatchHyperLinked)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Uploaded Coach Assignment Files</div>
+                    </div>
+                    <div class="uploader-list">
+                        @foreach (AssignmentFileEntity item in Model.AssignmentFiles)
+                        {
+                            <div class="item">
+                                <i class="icon-paper-clip"></i>
+                                <a class="form-link4" href="@(DownLoadFile.GetDownFilePath(item.FilePath, item.FileName))">@(item.FileName)</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Coach Feedback</div>
+                    </div>
+                    <div class="uploader-list">
+                        @if (!string.IsNullOrEmpty(Model.FeedbackFilePath))
+                        {
+                            <div class="item">
+                                <i class="icon-paper-clip"></i>
+                                <a href="@(DownLoadFile.GetDownFilePath(Model.FeedbackFilePath, Model.FeedbackFileName))"  
+                                    class="form-link4">@(Model.FeedbackFileName)</a>
+                            </div>
+                        }
+                        <p>
+                            @Model.FeedbackText
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+

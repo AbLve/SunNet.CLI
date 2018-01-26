@@ -1,0 +1,292 @@
+﻿GO
+
+/****** Object:  StoredProcedure [dbo].[Clone_Assessment]    Script Date: 7/18/2015 16:58:37 ******/
+IF EXISTS(SELECT 1 FROM sys.objects WHERE object_id = object_id('Clone_Assessment'))
+DROP PROCEDURE [dbo].[Clone_Assessment]
+GO
+
+/****** Object:  StoredProcedure [dbo].[Clone_Assessment]    Script Date: 7/18/2015 16:58:37 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:		Jack
+-- Create date: 2015-07-18
+-- Description:	Clone Assessment, include all measures, all items, all answers, all links, all responses
+-- =============================================
+CREATE PROCEDURE [dbo].[Clone_Assessment]
+	-- Add the parameters for the stored procedure here
+	@AssessmentId INT,
+	@NewName VARCHAR(100),
+	@Prefix VARCHAR(100)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE @AddedAssessmentId INT;
+	
+	DECLARE @OldMeasureId INT;
+	DECLARE @AddedMeasureId INT;
+	DECLARE @Measures INT;
+	DECLARE @MeaIndex INT;
+
+	DECLARE @OldItemId INT;
+	DECLARE @AddedItemId INT;
+	DECLARE @Items INT;
+	DECLARE @ItemIndex INT;
+
+	DECLARE @AddedItemType TINYINT;
+	DECLARE @OldResonseId INT;
+	DECLARE @AddedResponseId INT;
+	DECLARE @Responses INT;
+	DECLARE @ResponseIndex INT;
+
+	SELECT [OldId] = 0,[NewId] = 0 INTO #MeasureMaps;
+	DECLARE @MinMeasureId INT;
+
+	DECLARE @Date DATETIME;
+	SET @Date = GETDATE();
+	
+    -- Insert statements for procedure here
+	INSERT INTO Assessments
+	SELECT [Name] = @NewName
+      ,[Label] = @Prefix + [Label]
+      ,[OrderType],[TotalScored],[Type],[Status],[IsDeleted], [CreatedBy], [UpdatedBy], [CreatedOn] = @Date, [UpdatedOn] = @Date, [Language], [Locked] 
+	  FROM Assessments WHERE ID = @AssessmentId;
+
+	SELECT @AddedAssessmentId = (SELECT TOP 1 ID FROM Assessments ORDER BY ID DESC)
+
+	SELECT [Index] = ROW_NUMBER() OVER(ORDER BY ID ASC), ID INTO #MeasureIds 
+	FROM Measures 
+	WHERE AssessmentId = @AssessmentId AND IsDeleted = 0 ;
+	
+	SELECT [Index] = 1,ID = 0 INTO #ItemIds;
+	SELECT [Index] = 1,ID = 0 INTO #ResponseIds;
+
+	SET @Measures = (SELECT COUNT(1) FROM #MeasureIds) ;
+	
+	SET @MeaIndex = 1;
+	WHILE (@MeaIndex <= @Measures)
+	BEGIN
+		SELECT @OldMeasureId = (SELECT TOP 1 ID FROM #MeasureIds WHERE [Index] = @MeaIndex ); 
+
+		INSERT INTO Measures
+		SELECT [AssessmentId] = @AddedAssessmentId
+      ,[Name]
+      ,[Label] = @Prefix + [Label]
+      ,[OrderType], [ItemType], [Sort], [TotalScored], [InnerTime], [Timeout], [StartPageHtml], [EndPageHtml], [ParentId], [Type], [Status], [IsDeleted], [CreatedBy], [UpdatedBy], [CreatedOn] = @Date, [UpdatedOn] = @Date, [ApplyToWave], [RelatedMeasureId], [TotalScore], [ShortName] 
+	  FROM Measures M
+		WHERE M.ID = @OldMeasureId;
+
+		SELECT @AddedMeasureId = (SELECT TOP 1 ID FROM Measures ORDER BY ID DESC) ;
+
+		INSERT INTO #MeasureMaps VALUES(@OldMeasureId,@AddedMeasureId);
+		IF (@MeaIndex = 1)
+		BEGIN
+			SET @MinMeasureId  = @AddedMeasureId
+		END
+
+		INSERT INTO AdeLinks
+		SELECT [HostType], [HostId] = @AddedMeasureId, [LinkType], [Link], [CreatedOn], [UpdatedOn], [DisplayText] 
+		FROM AdeLinks 
+		WHERE HostType = 'Sunnet.Cli.Core.Ade.Entities.MeasureEntity' AND HostId = @OldMeasureId ;
+
+		DELETE FROM #ItemIds;
+		INSERT INTO #ItemIds
+		SELECT [Index] = ROW_NUMBER() OVER(ORDER BY ID ASC),ID 
+		FROM ItemBases IB 
+		WHERE IB.MeasureId = @OldMeasureId AND IsDeleted = 0 ;
+		SET @Items = (SELECT COUNT(1) FROM #ItemIds) ;
+
+		SET @ItemIndex = 1;
+		WHILE (@ItemIndex <= @Items)
+		BEGIN
+			SELECT @OldItemId = (SELECT TOP 1 ID FROM #ItemIds WHERE [Index] = @ItemIndex);
+			INSERT INTO ItemBases
+			SELECT 
+			[MeasureId] = @AddedMeasureId
+			  ,[Label] = @Prefix + [Label]
+			  ,[Scored], [Score], [Timed], [Sort], [Type], [AnswerType], [Status], [IsDeleted], [CreatedBy], [UpdatedBy], [CreatedOn] = @Date, [UpdatedOn] = @Date, [Description], [RandomAnswer], [IsPractice], [ShowAtTestResume]
+			  FROM ItemBases IB 
+			  WHERE IB.ID = @OldItemId;
+			
+			SELECT @AddedItemId = (SELECT TOP 1 ID FROM ItemBases IB ORDER BY ID DESC)
+
+			INSERT INTO AdeLinks
+			SELECT [HostType], [HostId] = @AddedItemId, [LinkType], [Link], [CreatedOn], [UpdatedOn], [DisplayText] 
+			FROM AdeLinks 
+			WHERE HostType = 'Sunnet.Cli.Core.Ade.Entities.ItemBaseEntity' AND HostId = @OldItemId ;
+
+			INSERT INTO Answers
+			SELECT [ItemId] = @AddedItemId, [Picture], [PictureTime], [Audio], [AudioTime], [Text], [Value], [Maps], [Score], [IsCorrect], [CreatedOn], [UpdatedOn], [TextTime]
+			FROM Answers 
+			WHERE ItemId = @OldItemId;
+			
+			SELECT @AddedItemType = (SELECT TOP 1 [Type] FROM ItemBases IB ORDER BY ID DESC)
+			
+			-- Direction = 9
+			IF @AddedItemType = 9
+			BEGIN
+			INSERT INTO DirectionItems
+			SELECT [ID] = @AddedItemId
+				,[FullDescription]
+			FROM DirectionItems 
+			WHERE ID = @OldItemId
+			END 
+
+			-- Cec = 1
+			IF @AddedItemType = 1
+			BEGIN
+			INSERT INTO [CecItems]
+				SELECT [ID] = @AddedItemId, 
+				[TargetText], [ResponseCount], [IsMultiChoice], [Direction]
+				FROM [CecItems]
+				WHERE ID = @OldItemId
+			END 
+
+			-- Cot = 2
+			IF @AddedItemType = 2
+			BEGIN
+				INSERT INTO [CotItems]
+				SELECT [ID] = @AddedItemId, 
+				[Level], [ShortTargetText], [FullTargetText], [PrekindergartenGuidelines], [CircleManual], [MentoringGuide], [CotItemId]
+				FROM [CotItems]
+				WHERE ID = @OldItemId
+			END 
+
+			-- MultipleChoices  = 3
+			IF @AddedItemType = 3
+			BEGIN
+				INSERT INTO [MultipleChoicesItems]
+				SELECT [ID] = @AddedItemId, 
+				[Timeout], [TargetText], [TargetTextTimeout], [TargetAudio], [TargetAudioTimeout], [Response]
+				FROM [MultipleChoicesItems]
+				WHERE ID = @OldItemId
+			END 
+
+			-- Pa  = 4
+			IF @AddedItemType = 4
+			BEGIN
+				INSERT INTO [PaItems]
+				SELECT [ID] = @AddedItemId, 
+				[TargetText], [TargetTextTimeout], [TargetAudio], [TargetAudioTimeout], [IsMultiChoice]
+				FROM [PaItems]
+				WHERE ID = @OldItemId
+			END 
+
+			-- Quadrant  = 5
+			IF @AddedItemType = 5
+			BEGIN
+				INSERT INTO [QuadrantItems]
+				SELECT [ID] = @AddedItemId, 
+				[Timeout], [TargetText], [TargetTextTimeout], [TargetAudio], [TargetAudioTimeout]
+				FROM [QuadrantItems]
+				WHERE ID = @OldItemId
+			END 
+
+			-- RapidExpressive  = 6
+			IF @AddedItemType = 6
+			BEGIN
+				INSERT INTO [RapidExpressiveItems]
+				SELECT [ID] = @AddedItemId, 
+				[Timeout], [TargetText], [TargetTextTimeout], [TargetAudio], [TargetAudioTimeout]
+				FROM [RapidExpressiveItems]
+				WHERE ID = @OldItemId
+			END 
+
+			-- Receptive  = 7
+			IF @AddedItemType = 7
+			BEGIN
+				INSERT INTO [ReceptiveItems]
+				SELECT [ID] = @AddedItemId, 
+				[TargetText], [TargetTextTimeout], [TargetAudio], [TargetAudioTimeout]
+				FROM [ReceptiveItems]
+				WHERE ID = @OldItemId
+			END 
+
+			-- ReceptivePrompt  = 8
+			IF @AddedItemType = 8
+			BEGIN
+				INSERT INTO [ReceptivePromptItems]
+				SELECT [ID] = @AddedItemId, 
+				[TargetText], [TargetTextTimeout], [TargetAudio], [TargetAudioTimeout], [PromptPicture], [PromptPictureTimeout], [PromptText], [PromptTextTimeout], [PromptAudio], [PromptAudioTimeout]
+				FROM [ReceptivePromptItems]
+				WHERE ID = @OldItemId
+			END 
+
+			-- Checklist  = 10
+			IF @AddedItemType = 10
+			BEGIN
+				INSERT INTO [ChecklistItems]
+				SELECT [ID] = @AddedItemId, 
+				[TargetText], [ResponseCount], [IsMultiChoice], [Direction]
+				FROM [ChecklistItems]
+				WHERE ID = @OldItemId
+			END 
+
+			-- TypedResponse  = 11
+			IF @AddedItemType = 11
+			BEGIN
+			INSERT INTO [TypedResponseItems]
+				SELECT [ID] = @AddedItemId, 
+				[Timeout], [TargetText], [TargetTextTimeout], [TargetAudio], [TargetAudioTimeout]
+				FROM [TypedResponseItems]
+				WHERE ID = @OldItemId 
+				
+				DELETE FROM #ResponseIds;
+				INSERT INTO #ResponseIds
+				SELECT [Index] = ROW_NUMBER() OVER(ORDER BY ID ASC),ID 
+				FROM TypedResonses 
+				WHERE ItemId = @OldItemId AND IsDeleted = 0 ;
+				SET @ResponseIndex = 1;
+				SELECT @Responses = (SELECT COUNT(1) FROM #ResponseIds);
+				WHILE (@ResponseIndex <= @Responses)
+				BEGIN
+					SELECT @OldResonseId = (SELECT TOP 1 ID FROM #ResponseIds WHERE [Index] = @ResponseIndex);
+
+					INSERT INTO  [TypedResonses]
+					SELECT [ItemId] = @AddedItemId, 
+					[Required], [Type], [Length], [Text], [Picture], [TextTimeIn], [PictureTimeIn], [IsDeleted]
+					FROM [TypedResonses]
+					WHERE ID = @OldResonseId and IsDeleted = 0;
+
+					SELECT @AddedResponseId  = (SELECT TOP 1 ID FROM [TypedResonses] ORDER BY ID DESC) ;
+
+					INSERT INTO [TypedResponseOptions]
+					SELECT 
+					[Type], [Keyword], [From], [To], [Score], 
+					[ResponseId] = @AddedResponseId, 
+					[IsDeleted]
+					FROM [TypedResponseOptions]
+					WHERE ResponseId = @OldResonseId AND IsDeleted = 0 ; 
+
+					SET @ResponseIndex = @ResponseIndex + 1;
+				END
+			END 
+
+			SET @ItemIndex = @ItemIndex + 1;
+			 
+		END
+
+		SET @MeaIndex = @MeaIndex + 1;
+	END
+
+	UPDATE Measures SET ParentId = (SELECT TOP 1 [NewId] FROM #MeasureMaps WHERE OldId = ParentId)
+	WHERE ID >= @MinMeasureId AND ParentId > 1
+
+	DROP TABLE #ItemIds;
+	DROP TABLE #MeasureIds;
+	DROP TABLE #ResponseIds;
+	DROP TABLE #MeasureMaps;
+END
+
+
+GO
+
+

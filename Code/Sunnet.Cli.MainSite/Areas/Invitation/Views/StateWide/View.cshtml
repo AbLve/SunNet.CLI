@@ -1,0 +1,159 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.StateWideEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Business.Permission.Models
+@{
+    ViewBag.Title = "Statewide Invite";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.User)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("User Management", "Dashboard", "Public"))
+    <i class="icon-angle-right"></i>
+    @(Html.ActionLink("Statewide", "Index", "StateWide"))
+    <i class="icon-angle-right"></i>@(Model.UserInfo.FirstName + " " + Model.UserInfo.LastName)
+}
+
+@using (Ajax.BeginForm("", "", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()  
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Statewide List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolYear, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolYear)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.Status, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.UserInfo.Status)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PositionId, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.Display("Position")
+                    @if (ViewBag.Position == "Other")
+                    {
+                        @Html.DisplayFor(model => model.PositionOther)
+                    }
+                </div>
+                @Html.LabelFor(model => model.StateWideId, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.StateWideId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.FirstName, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.UserInfo.FirstName)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.MiddleName, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.UserInfo.MiddleName)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.LastName, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.UserInfo.LastName)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.PreviousLastName, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.UserInfo.PreviousLastName)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model=>model.UserInfo.InternalID, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.UserInfo.InternalID)
+                </div>
+            </div>
+        </div>
+
+        <div class="content-title">Contact Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.PrimaryPhoneNumber, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.UserInfo.PrimaryPhoneNumber)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.PrimaryNumberType, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.UserInfo.PrimaryNumberType)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.SecondaryPhoneNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.UserInfo.SecondaryPhoneNumber)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.SecondaryNumberType, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.UserInfo.SecondaryNumberType)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.FaxNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.UserInfo.FaxNumber)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.PrimaryEmailAddress, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.UserInfo.PrimaryEmailAddress)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.SecondaryEmailAddress, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.UserInfo.SecondaryEmailAddress)
+                </div>
+            </div>
+        </div>
+
+        <div class="content-title"></div>
+        <div class="content-body">
+            <div class="form-group">
+                <label for="inputPassword" class="col-sm-3 control-label">Additional Packages</label>
+                <div class="col-sm-9">
+                    @Html.Display("GroupPackageSelected", "List")
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.StateWideNotes, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.DisplayFor(model => model.StateWideNotes)
+                </div>
+            </div>        
+            <div class="form-group">
+                @Html.Label("Email Invitation", null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.DisplayFor(model=>model.UserInfo.InvitationEmail)
+                </div>
+            </div>
+        </div>
+        <div class="button-content">
+            <button class="mainbutton mainright-btn create-btn" type="button" onclick='redirectBack("index")'>Back</button>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,27 @@
+﻿IF NOT EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TxkeaBupTasks]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+CREATE TABLE [dbo].[TxkeaBupTasks](
+	[ID] [INT] IDENTITY(1,1) NOT NULL,
+	[AssessmentId] [INT] NOT NULL,
+	[MeasureId] [INT] NOT NULL,
+	[Type] [TINYINT] NOT NULL,
+	[Status] [TINYINT] NOT NULL,
+	[OriginFileName] [VARCHAR](500) NOT NULL,
+	[FilePath] [VARCHAR](500) NOT NULL,
+	[IsDeleted] [BIT] NOT NULL,
+	[ResourcePath] [VARCHAR](500) NOT NULL,
+	[Remark] [VARCHAR](500) NOT NULL,
+	[NumberOfItems] [INT] NOT NULL,
+	[CreatedBy] [INT] NOT NULL,
+	[UpdatedBy] [INT] NOT NULL,
+	[CreatedOn] [DATETIME] NOT NULL,
+	[UpdatedOn] [DATETIME] NOT NULL,
+ CONSTRAINT [PK_TxkeaBupTasks] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+
+

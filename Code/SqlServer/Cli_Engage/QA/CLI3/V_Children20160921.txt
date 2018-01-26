@@ -1,0 +1,14 @@
+﻿CREATE VIEW [dbo].[V_Children]
+AS
+select 
+CH.ID,
+CH.StudentId,
+CH.PINCode,
+(case when CH.StudentId=0 then CH.FirstName else ST.FirstName end) FirstName,
+(case when CH.StudentId=0 then CH.LastName else ST.LastName end) LastName,
+(case when CH.StudentId=0 then CH.BirthDate else ST.BirthDate end) BirthDate,
+L.Language as PrimaryLanguage,
+(case when L.Language='Other' then ST.PrimaryLanguageOther else '' end) as OtherLanguage
+ from Children CH left join Students ST on ST.ID=CH.StudentId 
+ left join Languages L On L.ID=ST.PrimaryLanguageId
+GO

@@ -1,0 +1,149 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Communities.Enums
+@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.Core.Communities.Entities
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Communities.Models.CommunityFeatureModel
+@{
+    ViewBag.Title = "Community/District Features ";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<CpallsAssessmentModel>  listAssessments = ViewBag.listAssessments;
+    List<CommunityAssessmentRelationsEntity>  assignedList = ViewBag.assignedList;
+    var localAssessments = ViewBag.localAssessments as List<LocalAssessment>;
+   
+}
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+
+        +(function() {
+            registerFormCallbacks("formId", {
+                onPosted: function(response) {
+                    redirectBack("index");
+                }
+            });
+
+            $(".approved :checkbox").css("cursor", "pointer");
+
+         
+           $(".request :input").prop("disabled", "true");
+
+        })();
+        $(function() {
+        
+        });
+
+        function GetAllCheckedItem() {
+            var ids = new Array();
+            $(".approved :checked").each(function(index, obj) {
+                ids.push($(this).val());
+            });
+            return ids;
+        }
+
+        function SubmitFeatures() {
+            var ids = GetAllCheckedItem();
+            if (ids != "") {
+
+                $.post("FeaturesCli", { comId: "@Model.ID", assessmentIds: ids }, function(data) {
+                    var res = JSON.parse(data);
+                    if (res.success == true) {
+                        showMessage("success", "");
+                        closeModal("#@(formId)");
+                    } else {
+                        showMessage("fail", res.msg);
+                    }
+                });
+            }
+        }
+    </script>
+}
+@using (Ajax.BeginForm("FeaturesCli", "Community", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ID" value="@Model.ID"/>
+    @*<div class="form-group">
+        <label class="control-label col-sm-5">Community/District Features: [@Model.Name]</label>
+    </div>*@
+    <div class="form-group approved" >
+        <span class="control-label col-sm-2">Approved Features</span>
+        <div class="col-sm-10" style="border-bottom: 1px dashed #247432;">
+            @for (int i = 0; i < localAssessments.Count; i++)
+            {
+                <div class="col-lg-4 m-b m-l-n">
+                    @if (assignedList.Any(o=>o.AssessmentId ==(int)localAssessments[i] && o.Isrequest == false))
+                    {
+                        @Html.CheckBox("chkAssessment",new{@value=(int)localAssessments[i],id="chk"+(int)localAssessments[i],@checked =true})
+                    }
+                    else
+                    {
+                        @Html.CheckBox("chkAssessment",new{@value=(int)localAssessments[i],id="chk"+(int)localAssessments[i]})
+                    } 
+                    <label for=@("chk"+(int)localAssessments[i])> @localAssessments[i].ToDescription() </label>
+                </div>
+            }
+          
+        </div>
+    </div>
+    <div class="form-group approved">
+        <span class=" col-sm-2"></span>
+        <div class="col-sm-10" >
+           
+            @for (int i = 0; i < listAssessments.Count; i++)
+            {
+                <div class="col-lg-4 m-b m-l-n">
+                    @if (assignedList.Any(o=>o.AssessmentId ==listAssessments[i].ID && o.Isrequest == false))
+                    {
+                        @Html.CheckBox("chkAssessment",new{@value=listAssessments[i].ID,id="chk"+listAssessments[i].ID,@checked =true})
+                    }
+                    else
+                    {
+                        @Html.CheckBox("chkAssessment",new{@value=listAssessments[i].ID,id="chk"+listAssessments[i].ID})
+                    } 
+                    <label for=@("chk"+listAssessments[i].ID)> @listAssessments[i].Name </label>
+                </div>
+            }
+            
+        </div>
+    </div>
+    <div class="form-group request">
+        <span class="control-label col-sm-2">Send Request(s)</span> 
+            @for (int i = 0; i < assignedList.Count; i++)
+            {  
+                if(@assignedList[i].Isrequest)
+                 {
+                     <span class="col-sm-2"></span>
+                     <div class="col-sm-10" id=@("div" + assignedList[i].ID)>
+                         <div class="col-lg-4 m-b m-l-n">
+                             @Html.CheckBox("chkAssessmentRequest", new {@value = assignedList[i].AssessmentId,@checked =true, id = "request" + assignedList[i].AssessmentId})
+                             <label for=@("request" + assignedList[i].AssessmentId)> @assignedList[i].AssessmentName </label>      
+                         </div>
+                         <div class="col-lg-6 m-b m-l-n"> 
+                             @Html.TextBox("txtComments", @assignedList[i].Comment, new
+                             {
+                                 @class = "form-control", placeholder = "Comments", 
+                                 id = "txtComment" + assignedList[i].AssessmentId
+                             })
+                         </div>
+                     </div>
+                 }
+                 
+            }
+ 
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" onclick="SubmitFeatures()">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+        
+    
+}

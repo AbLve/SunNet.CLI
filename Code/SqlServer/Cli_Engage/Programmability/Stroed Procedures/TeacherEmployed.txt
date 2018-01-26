@@ -1,0 +1,10 @@
+﻿
+CREATE PROCEDURE TeacherEmployed
+AS
+BEGIN
+select EmployedBy,Status,COUNT(*) as Total from teachers t 
+inner join Users u on t.userid = u.id 
+where EmployedBy>0
+group by EmployedBy,Status
+END
+GO

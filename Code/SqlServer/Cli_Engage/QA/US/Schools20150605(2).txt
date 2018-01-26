@@ -1,0 +1,6 @@
+﻿update a set a.Name = b.Name  from Schools a , BasicSchools b where a.BasicSchoolId = b.ID ;
+go
+select * into Schools_00605 from Schools;
+go
+alter table Schools drop column CommunityId
+

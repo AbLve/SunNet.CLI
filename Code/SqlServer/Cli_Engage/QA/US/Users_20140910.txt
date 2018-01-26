@@ -1,0 +1,7 @@
+﻿update users set GoogleId=UserName where UserName!=''
+GO
+declare @name varchar(8000)
+select @name=b.name from syscolumns a,sysobjects b where a.id=object_id('Users') and b.id=a.cdefault and a.name='UserName' and b.name like 'DF%'
+exec('alter table Users drop constraint '+@name) 
+
+ALTER TABLE Users DROP COLUMN UserName

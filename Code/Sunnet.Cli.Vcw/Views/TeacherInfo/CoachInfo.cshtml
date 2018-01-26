@@ -1,0 +1,19 @@
+﻿@using Sunnet.Cli.Core.Vcw.Entities
+@using Sunnet.Cli.Business.Vcw.Models
+@{
+    ViewBag.Title = "CoachInfo";
+    CoachesListModel Coach = ViewBag.Coach == null ? new CoachesListModel() : ViewBag.Coach as CoachesListModel;
+}
+<div style="height: 10px">&nbsp;</div>
+<div class="top-form">
+    <span class="control-label" style="font-weight: bold">Community</span>
+    <span class="control-label-text" style="font-weight: bold; word-break: normal">
+        @(Coach.CommunityName)
+    </span>
+    <label style="width: 30px"><span style="display:none;">1</span></label>
+    <span class="control-label" style="font-weight: bold">Coach</span>
+    <span class="control-label-text" style="font-weight: bold; word-break: normal">
+        @(Coach.CoachName)
+    </span>
+</div>
+

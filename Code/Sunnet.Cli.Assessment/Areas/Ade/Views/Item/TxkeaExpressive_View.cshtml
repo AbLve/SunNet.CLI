@@ -1,0 +1,661 @@
+﻿@model TxkeaExpressiveItemModel
+@using Sunnet.Cli.Core.Ade.Enums
+@{
+    Layout = "~/Views/Shared/_Layout_KeaItem.cshtml";
+    ViewBag.Title = "View " + Model.Label;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Detail", "Measure", new { id = Model.MeasureId });
+}
+
+@section Styles
+{
+    @Styles.Render("~/css/cpalls")
+    @Styles.Render("~/css/txkea")
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @Html.Partial("NEV_Item_BreadPath", Model)
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/ckeditor")
+    @Scripts.Render("~/scripts/fabric")
+    @Scripts.Render("~/scripts/TxkeaExpressive")
+    @Scripts.Render("~/scripts/fullscreen")
+
+
+    <script type="text/javascript">
+        var jsonModel;
+
+        var canvas;
+        var itemModel;
+        var jsonModel;
+        var canvasElement = "cav_layout";
+        var preScreenWidth = "@(Model.ScreenWidth)";  //The screen width of last time to save
+        var isHasInstruction = false;
+
+        function getTxkeaExpressiveItemModel(defaultValues, controls) {
+            var self = getItemModel(defaultValues, controls);
+
+            self.step = ko.observable(1);
+            self.stepTwo = ko.observable(false);
+            self.stepFour = ko.observable(false);
+            self.stepThree = ko.observable(false);
+
+            self.signSubmit = ko.observable(true);
+
+            self.ImageList = ko.observableArray([]);
+
+            self.Images = ko.observable(isNull("Images", defaultValues,0));
+
+            self.responseType = isNull("ResponseType", defaultValues,{value:0});
+
+            self.Responses = ko.observableArray([]);
+
+            self.branchingScores = ko.observableArray([]);
+
+            self.pushImageList =function(defaultValues){
+                if(defaultValues){
+                    self.ImageList().length = 0;
+                    for(i = 0; i< defaultValues.length; i++){
+                        self.ImageList.push(getTxkeaExpressiveImageModel(defaultValues[i],i));
+                    }
+                }
+            };
+
+            self.pushResponses= function(defaultValues){
+                if(defaultValues){
+                    self.Responses().length = 0;
+                    for(i = 0; i< defaultValues.length; i++){
+                        self.Responses.push(getTxkeaExpressiveResponsesModel(defaultValues[i],i));
+                    }
+                }
+            };
+
+            self.next = function(viewModel, event){
+                var curStep = viewModel.step();
+                if (curStep <= 4) {
+                    viewModel.step(Number(curStep + 1));
+                }
+            }
+
+            self.previous = function(viewModel, event){
+                var curStep = viewModel.step();
+                if (curStep >= 1) {
+                    viewModel.step(Number(curStep - 1));
+                }
+            }
+
+            self.pushBranchingScore = function(defaultValues){
+                if(defaultValues){
+                    self.branchingScores().length = 0;
+                    for(i =0 ;i< defaultValues.length;i++){
+                        self.branchingScores.push(getBranchingScore(defaultValues[i].ID,defaultValues[i].From,defaultValues[i].To,defaultValues[i].ItemId,defaultValues[i].SkipItemId,i+1));
+                    }
+                }
+            }
+
+            return self;
+        }
+
+        var getTxkeaExpressiveImageModel = function (defaultValues,index) {
+            function TxkeaExpressiveImageModel() { };
+
+            TxkeaExpressiveImageModel.prototype = getUploaderHelper();
+            var self = new TxkeaExpressiveImageModel();
+
+            self.ID = isNull("ID", defaultValues, 0);
+            self.Index = index+1;
+            self.ItemId = isNull("ItemId", defaultValues, 0);
+
+            self.TargetImage =ko.observable(isNull("TargetImage", defaultValues, ""));
+            self.ImageTimeDelay = ko.observable(isNull("ImageTimeDelay", defaultValues,0));
+            self.TargetAudio = ko.observable(isNull("TargetAudio", defaultValues, ""));
+            self.AudioTimeDelay =ko.observable( isNull("AudioTimeDelay", defaultValues, 0));
+            self.SameasImageDelay =  ko.observable(isNull("SameasImageDelay", defaultValues, false));
+            self.IsDeleted =  isNull("IsDeleted", defaultValues, true);
+
+            self.hasError = ko.observable(false);
+            return self;
+        }
+
+        var getTxkeaExpressiveResponsesModel = function(defaultValues,index) {
+            function TxkeaExpressiveResponsesModel() { };
+
+            var self = new TxkeaExpressiveResponsesModel();
+
+            self.uuid = window.guid("Responses");
+            self.Index = index+1;
+            self.ID = isNull("ID", defaultValues, 0);
+            self.ItemId =  isNull("ItemId", defaultValues, 0);
+            self.Text =  ko.observable( isNull("Text", defaultValues, ""));
+            self.Mandatory = ko.observable( isNull("Mandatory", defaultValues, true));
+            self.Type = ko.observable(isNull("Type", defaultValues, {}).value);
+            self.Buttons = ko.observable(isNull("Buttons", defaultValues, 1));
+            self.Options = ko.observableArray([]);
+            self.IsDeleted =  ko.observable(isNull("IsDeleted", defaultValues, false));
+
+            if (defaultValues && defaultValues.Options) {
+                for (var i = 0; i < defaultValues.Options.length; i++) {
+                    self.Options.push(getTxkeaExpressiveOptionModel(defaultValues.Options[i]));
+                }
+            } else {
+                var option = getTxkeaExpressiveOptionModel();
+                self.Options.push(option);
+                self.Options.push(option);
+            }
+            return self;
+        }
+
+        var getTxkeaExpressiveOptionModel = function(defaultValues) {
+            function TxkeaExpressiveOption() { };
+
+            var self = new TxkeaExpressiveOption();
+            self.uuid = window.guid("Option");
+            self.ID = isNull("ID", defaultValues, 0);
+            self.ResponseId = isNull("ResponseId", defaultValues, 0);
+            self.IsCorrect = ko.observable(isNull("IsCorrect", defaultValues, false));
+            self.Lable =ko.observable(isNull("Lable", defaultValues, ""));
+            self.AddTextbox =ko.observable(isNull("AddTextbox", defaultValues, false));
+            self.IsDeleted =  ko.observable( isNull("IsDeleted", defaultValues, false));
+            self.Score = isNull("Score",defaultValues,0);
+            return self;
+        }
+    </script>
+
+    <script type="text/javascript">
+
+        function getUploadUrl()
+        {
+            return  '@(DomainHelper.StaticSiteDomain.AbsoluteUri)';
+        }
+
+        CKEDITOR.replace('InstructionText',{    toolbar: 'Cli'});
+
+
+        var itemModel;
+        var testtt;
+
+        jQuery(function() {
+            jsonModel = @Html.Raw(ViewBag.ModelJson);
+            var formEle = document.getElementById("@formId");
+            itemModel = getTxkeaExpressiveItemModel(jsonModel);
+            itemModel.pushImageList(jsonModel.ImageList);
+            itemModel.pushResponses(jsonModel.Responses);
+            if (jsonModel.BranchingScores && jsonModel.BranchingScores.length > 0) {
+                itemModel.pushBranchingScore(jsonModel.BranchingScores);
+            }
+            else {
+                itemModel.branchingScores=[];
+            }
+
+            ko.applyBindings(itemModel, formEle);
+
+            //resize   process only last one
+            var rtime = new Date();
+            var timeout = false;
+            var delta = 200;
+            $(window).resize(function () {
+                if (typeof (canvas) != "undefined") {
+                    rtime = new Date();
+                    if (timeout === false) {
+                        timeout = true;
+                        setTimeout(resizeend, delta);
+                    }
+                }
+            });
+
+            //resize   process only last one
+            function resizeend() {
+                if (new Date() - rtime < delta) {
+                    setTimeout(resizeend, delta);
+                } else {
+                    timeout = false;
+                    if (canvas) {
+                        if (typeof (itemModel) != "undefined") {
+                            if (itemModel.step && itemModel.step() == 3) {
+                                CanvasResize(JSON.stringify(canvas.toDatalessJSON(new Array("id", "sort", "lockUniScaling", "hasRotatingPoint","selectable"
+                                    , "cornerSize"))), canvas.width, "content-body");
+                            }
+                        }
+                        else {
+                            CanvasResize(JSON.stringify(canvas.toDatalessJSON(new Array("id", "sort", "lockUniScaling", "hasRotatingPoint","selectable"
+                                , "cornerSize"))),
+                                canvas.width, "content-body");
+                        }
+                    }
+                }
+            }
+
+            initChooseLayout();
+            curLayoutScreenWidth = $("#content-body-cav").innerWidth() - 20;
+            canvas = new fabric.Canvas('cav_layout', {
+                width: curLayoutScreenWidth,  //#modal-content.width - padding
+                height: 600
+            });
+
+            preLayoutScreenWidth = "@(Model.ScreenWidth)";
+            layout = jsonModel.ItemLayout ? JSON.parse(jsonModel.ItemLayout) : JSON.parse('{\"objects\":null}');
+
+            if (layout.objects != null)
+            {
+                layout.objects = layout.objects.filter(function (obj)
+                { return obj.type == "image" || obj.type == "text" });// remove lines
+            }
+
+            if (layout.backgroundImage && layout.backgroundImage.width) {
+                layout.backgroundImage.width = curLayoutScreenWidth;
+            }
+
+            if (layout.objects) {
+                layout.objects.sort(function(a, b) {
+                    return a.sort- b.sort;
+                });
+
+                for (var i = 0; i < layout.objects.length; i++) {
+                    var preLayout = layout.objects[i];
+                    if (preLayoutScreenWidth != curLayoutScreenWidth && preLayoutScreenWidth > 0)
+                        //If the screen before and now is not the same as the screen size, recalculate the left margin
+                    {
+                        var width = preLayout.width * preLayout.scaleX;
+                        //If on the left, then calculate the left margin, opposite to calculate the right margin
+                        if (preLayout.left < (preLayoutScreenWidth / 2))
+                            preLayout.left = (preLayout.left / preLayoutScreenWidth) * curLayoutScreenWidth;
+                        else
+                            preLayout.left = curLayoutScreenWidth -
+                            ((preLayoutScreenWidth - preLayout.left - width) / preLayoutScreenWidth) * curLayoutScreenWidth - width;
+                        preLayout.selectable = false;
+                    }
+
+                    if (preLayout.type == "text") {  // ensure InstructionText is the latest
+                        isHasInstruction = true;
+                        preLayout.text = jsonModel.InstructionTextNoHtml;
+                    }
+
+                    preLayout.selectable = false;
+                }
+                canvas.loadFromDatalessJSON(JSON.stringify(layout), function () {
+                    if (!isHasInstruction)
+                        addInstructionText(canvas, true);
+                    InitLines();
+                    canvas.renderAll()
+                });
+            }
+            else {
+                addInstructionText(canvas,true);
+                canvas.renderAll()
+            }
+        });
+    </script>
+}
+@Html.HiddenFor(model => model.LayoutId)
+@Html.HiddenFor(model => model.ResponseBackgroundFill)
+@Html.HiddenFor(model => model.ResponseBackgroundImage)
+<form id="@formId" class="form-horizontal">
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+        <a class="mainbutton mainright-btn nav-btn" target="_blank"
+           data-bind="visible:step()==3,attr:{href:'/Cpalls/Execute/Preview?itemid=@(Model.ID)&measureId=@(Model.MeasureId)'}">Preview</a>
+        <a class="mainbutton mainright-btn nav-btn" href="/Ade/Item/TxkeaExpressResponsePreview"
+           data-toggle="modal" data-target="#modalLayoutPreview" data-bind="visible:step()==4">Preview</a>
+    </div>
+    <div class="main-content" data-bind="visible: step() == 1">
+        <div class="content-body" id="content-body-cav">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Label, new {@class = "control-label col-sm-2 required"})
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.Label, baseClassObj)
+                </div>
+                <div class="col-sm-2">
+                    @Html.LabelFor(model => model.Status, new {@class = "hide"})
+                    @Html.DisplayFor(model => model.Status)
+                </div>
+                @Html.LabelFor(model => model.IsPractice, new {@class = "control-label col-sm-2 "})
+                <div class="col-sm-1">
+                    @Html.DisplayFor(model => model.IsPractice)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 3, disabled = "true" })
+                </div>
+            </div>
+            <div class="form-group ">
+                @Html.Label("Choose background color fill", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.BackgroundFill)
+                </div>
+                @Html.Label("Choose background image", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-4">
+                    @if (Model.BackgroundFillType == BackgroundFillType.Image && !string.IsNullOrEmpty(Model.BackgroundImage))
+                    {
+                        <div class="webuploader-preview" id="divBackgroundFill">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <img src="@Sunnet.Cli.UIBase.FileHelper.GetPreviewPathofUploadFile(Model.BackgroundImage)" width="60" height="60" alt="BackgroundImage" />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.InstructionText, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(model => model.InstructionText, new { @class = "form-control", rows = 3, disabled = "true" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.InstructionAudio, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @if (!string.IsNullOrEmpty(Model.InstructionAudio))
+                    {
+                        <div class="webuploader-preview" id="divInstructionAudio">
+                            <a href="@FileHelper.GetPreviewPathofUploadFile(Model.InstructionAudio)"
+                               class="table-btn icon-zoom-in preview-btn" target="_blank"><span style="display:none;">1</span></a>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.InstructionAudioTimeDelay, new { @class = "control-label col-sm-2", @for = "TargetAudioTimeout" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.InstructionAudioTimeDelay, new { format = "{0} ms" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Images, new { @class = "control-label col-sm-2 required", @for = "Images" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.Images)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Overall Time out", new { @class = "control-label col-sm-2" })
+
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.Timed)
+                </div>
+
+                @Html.Label("Time out value", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.Timeoutvalue, new { format = "{0} ms" })
+                </div>
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(model => model.WaitTime, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.WaitTime, new { format = "{0} ms" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ResponseType, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.ResponseType)
+                </div>
+            </div>
+
+            <div class="modal-l-b"></div>
+            <div class="form-group">
+                <div class="col-sm-1">&nbsp;</div>
+                <div class="col-sm-11">
+                    Branching/Skip Logic:
+                </div>
+            </div>
+            @if (Model.BranchingItems != null && Model.BranchingItems.Count > 0)
+            {
+                <div class="form-group">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-10">
+                        @Html.Display("", "BranchingScore", new { selectItems = Model.BranchingItems })
+                    </div>
+                    <div class="col-sm-1">&nbsp;</div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-10">
+                        <p style="color:red">*In order for branching to be enabled, you must have an <span style="text-decoration:underline">ACTIVE</span> item following this current item.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="main-content" data-bind="visible: step() == 2">
+        <div class="content-body" data-bind="foreach: { data: ImageList, as: 'anser' }">
+            <!--ko if:IsDeleted == false -->
+            <div style="height:5px;background-color:#ffffff"></div>
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr style="background-color:#bfbfbf">
+                        <th width="80px" data-bind="text: 'Image ' + Index "></th>
+                        <th colspan="7"><span style="display:none;">1</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="2">
+                            <div class="webuploader-preview" style="width: 70px; height: 70px; border: 1px;">
+                                <!--ko if:TargetImage() != "" -->
+                                <a class=""
+                                   data-bind="attr: { href: $root.BasePath + TargetImage() }"
+                                   target="_blank">
+                                    <img data-bind="attr: { src: $root.BasePath + TargetImage() }" style="width: 60px; height: 60px;" alt="TargetImage" />
+                                </a>
+                                <!--/ko-->
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            </div>
+                        </td>
+                        <td width="20%">
+                            Target Image
+                        </td>
+                        <td width="15%">Image Time delay (ms)</td>
+                        <td width="*"><span style="display:none;">1</span></td>
+                        <td width="20%">Target Audio</td>
+                        <td width="15%">Audio Time delay (ms)</td>
+                        <td width="15%">Same as Image Delay</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a class="table-btn icon-zoom-in preview-btn"
+                               data-bind="attr:{href:$root.BasePath + TargetImage()},visible:TargetImage()" target="_blank"><span style="display:none;">1</span></a>
+                        </td>
+                        <td>
+                            <label class="hide" data-bind="attr: { for: 'ImageTimeDelay' + $index() }">Picture Timeout</label>
+                            <input type="number" class="form-control input-sm  uint timeout" data-bind="
+    value: ImageTimeDelay,
+    enable: false,
+    attr: { name: 'ImageTimeDelay' + $index(), id: 'ImageTimeDelay' + $index() }"
+                                   style="width: 80px; display: inline-block;" title=" ">
+                        </td>
+                        <td width="*"></td>
+                        <td>
+                            <a class="table-btn icon-zoom-in preview-btn"
+                               data-bind="attr: { href: $root.BasePath + TargetAudio()}, visible: (TargetAudio().length > 4)"
+                               target="_blank"><span style="display:none;">1</span></a>
+                        </td>
+                        <td>
+                            <label class="hide" data-bind="attr: { for: 'AudioTimeDelay' + $index() }">Audio Timeout</label>
+                            <input type="number" class="form-control input-sm  uint timeout" data-bind="
+                        value: AudioTimeDelay,
+                        enable:false,
+                        attr: { name: 'AudioTimeDelay' + $index(), id: 'AudioTimeDelay' + $index() }"
+                                   style="width: 80px; display: inline-block;" title=" ">
+                        </td>
+                        <td>
+                            <label class="hide" data-bind="attr: { for: 'SameasImageDelay' + $index() }">Same as Image Delay</label>
+                            <input type="checkbox" data-bind="checked: SameasImageDelay, enable: false, attr: { id: 'SameasImageDelay' + $index() }" title=" "/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--/ko-->
+
+
+        </div>
+    </div>
+
+    <div class="main-content" data-bind="visible: step() == 3">
+        <div class="content-body" id="content-body">
+            <div class="item-main-header">
+                <div class="col-sm-6" style="padding-top: 15px;">
+                    <div id="divLayoutHead">
+                        Layout:
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="radioLayout" value="1" id="radioLayout1" checked="checked" data-bind="enable:false" title=" "/>
+                        <label for="radioLayout1">Custom</label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="radioLayout" value="2" id="radioLayout2" data-bind="enable:false" title=" "/>
+                        <label for="radioLayout2">Existing</label>
+                        &nbsp;&nbsp;
+                        <div class="nav-btn" id="divExistLayout" style="display: none;">
+                            <a data-bind="attr: { href: '/Ade/Item/ChooseLayout?images=' + (ImageList().length)+'&isView=true' }"
+                               data-target="#modalNormal" data-toggle="modal" class="mainbutton mainright-btn nav-btn"
+                               style="height:24px;padding-top:4px">Choose Template</a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-6 item-fullscreen-head">
+                    <a class="item-fullscreen-btn stop-btn" onclick="switchFullscreen('content-body')">
+                        <i class="icon-resize-full"></i>
+                    </a>
+                </div>
+            </div>
+            <canvas id="cav_layout">(Your browser doesn't support canvas)</canvas>
+        </div>
+    </div>
+
+    <div class="main-content" data-bind="visible: step() ==4">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.Label("Choose background color fill", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.ResponseBackgroundFill)
+                </div>
+                @Html.Label("Choose background image", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-5">
+                    @if (!string.IsNullOrEmpty(Model.ResponseBackgroundImage))
+                    {
+                        <div class="webuploader-preview" id="divResponseBackgroundImage">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <img src="@FileHelper.GetPreviewPathofUploadFile(Model.ResponseBackgroundImage)" width="60" height="60" alt="ResponseBackgroundImage" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--ko if:step() == 4-->
+    <!--ko foreach: { data: Responses, as: 'responseModel' }-->
+    <div class="main-content" data-bind="visible: !IsDeleted() ">
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <!--ko if:Index == 1 -->
+                    <h4>Scored Response</h4>
+                    <!--/ko-->
+                    <!--ko if:Index > 1 -->
+                    <h4 data-bind="text: 'Response ' + Index "></h4>
+                    <!--/ko-->
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Response Text", new { @class = "control-label col-sm-3 required" })
+                <div class="col-sm-8">
+                    <textarea title=" " class="form-control" cols="20" role="2" data-bind="value: responseModel.Text,enable:false, attr: { id: 'Responsetxt' + Index, name: 'Responsetxt' + Index }, required: true"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Mandatory", new { @class = "control-label col-sm-3 required" })
+                <div class="col-sm-8">
+                    <lable class="control-label-text" data-bind="html:(responseModel.Mandatory()==true) ? 'Yes' : 'No'"></lable>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Response type", new { @class = "control-label col-sm-3 required" })
+                <div class="col-sm-8">
+                    <!--ko if:Type() ==1 -->
+                    <lable class="control-label-text">Text box</lable>
+                    <!--/ko-->
+                    <!--ko if:Type() ==3 -->
+                    <lable class="control-label-text">Radio button</lable>
+                    <!--/ko-->
+                    <!--ko if:Type() ==4 -->
+                    <lable class="control-label-text">Check box</lable>
+                    <!--/ko-->
+                </div>
+            </div>
+
+            <!--ko if:Type() !=1 -->
+            <div class="form-group">
+                <!--ko if:Type() == 3-->
+                @Html.Label("Number of Radio buttons", new { @class = "control-label col-sm-3 required" })
+                <!--/ko-->
+                <!--ko if:Type() == 4-->
+                @Html.Label("Number of Check boxes", new { @class = "control-label col-sm-3 required" })
+                <!--/ko-->
+
+                <div class="col-sm-8">
+                    <lable class="control-label-text" data-bind="html:responseModel.Buttons"></lable>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Response text", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-8">
+                    <table class="table table-hover table-striped">
+                        <tbody data-bind="foreach: { data: Options, as: 'optionModel' } ">
+                            <!--ko if:IsDeleted() == false-->
+                            <tr>
+                                <td style="text-align: left;">
+                                    <!--ko if:responseModel.Type() == 3-->
+                                    <input type="radio" data-bind="checked: IsCorrect, checkedValue: true, enable:false"title=" " />&nbsp;&nbsp;&nbsp;
+                                    <!--/ko-->
+                                    <!--ko if:responseModel.Type() == 4-->
+                                    <input type="checkbox" data-bind="checked: IsCorrect, checkedValue: true, enable:false" title=" "/>&nbsp;&nbsp;&nbsp;
+                                    <!--/ko-->
+                                    <input type="text" data-bind="value: Lable, enable:false" style="width: 260px; height: 25px; border: 1px solid #dddddd;" title=" "/>
+                                    &nbsp;
+                                    &nbsp;&nbsp;
+                                    <!--ko if:responseModel.Index == 1-->
+                                    <input type="text" data-bind="value: Score, enable:false" placeholder="Score Value"
+                                           class="form-control input-sm _number " style="width: 80px; display: inline-block;" title=" "/>
+                                    &nbsp;&nbsp;
+                                    <!--/ko-->
+                                    <input type="checkbox" data-bind="checked: AddTextbox, enable:false, attr: { id: 'chk' + uuid }" title=" "/>
+                                    &nbsp;<label data-bind="    attr: { for: 'chk' + uuid }">Add text box</label>
+                                </td>
+                            </tr>
+                            <!--/ko-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--/ko-->
+        </div>
+    </div>
+    <!--/ko-->
+    <!--/ko-->
+
+    <div class="button-content">
+        <!--ko if:step() >1-->
+        <button class="mainbutton mainright-btn submit-btn submit" id="btnPrevious" type="button" data-bind="event: { click: previous }">Previous</button>
+        <!--/ko-->
+        <!--ko if:step() < 3 || (step() ==3 && responseType.value == 2)-->
+        <button class="mainbutton mainright-btn submit-btn submit" id="btnNext" type="button" data-bind="event: { click: next }">Next</button>
+        <!--/ko-->
+    </div>
+</form>

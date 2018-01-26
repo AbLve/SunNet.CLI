@@ -1,0 +1,12 @@
+﻿CREATE TABLE [dbo].[UserClassRelations](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[ClassId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL
+) ON [PRIMARY]
+
+GO

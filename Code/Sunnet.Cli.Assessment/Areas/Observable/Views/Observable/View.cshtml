@@ -1,0 +1,384 @@
+﻿@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Observable.Models
+@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Observable.Entities
+@using Sunnet.Cli.Core.Users.Enums;
+@model Sunnet.Cli.Core.Cot.Entities.CotWaveEntity
+@{
+    ViewBag.Title = "Assessment";
+    var assessmentId = (int)ViewBag.assessmentId;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Areas/Observable/Views/Shared/_Layout_Report.cshtml";
+    ObservableAssessmentModel AssessmentModel = ViewBag.AssessmentModel;
+    ObservableAssessmentEntity ObservableModel = ViewBag.ObservableAssessmentModel;
+    var StudentOrChild = ViewBag.UserRole == Role.Parent ? "Child" : "Student";
+}
+
+
+@Scripts.Render("~/scripts/observable")
+<style>
+    body {
+        background: #fff;
+    }
+</style>
+
+<div class="main-content" style="margin-left: 5%; width: 90%;">
+    <div class="panel-group" id="accordion" data-bind="foreach: { data: measures, as: 'measure' }">
+        <table cellpadding="0" cellspacing="0" class="noborder header" style="width: 100%;background: #fff">
+            <thead>
+                <tr>
+                    <th style="width: 8%;"></th>
+                    <th style="width: 8%;"></th>
+                    <th style="width: 8%;"></th>
+                    <th style="width: 8%;"></th>
+
+                    <th style="width: 8%;"></th>
+                    <th style="width: 8%;"></th>
+                    <th style="width: 8%;"></th>
+                    <th style="width: 8%;"></th>
+
+                    <th style="width: 8%;"></th>
+                    <th style="width: 8%;"></th>
+                    <th style="width: 8%;"></th>
+                    <th style="width: 8%;"></th>
+                </tr>
+
+                <tr>
+                    <th colspan="8">&nbsp;</th>
+                    <th colspan="4" rowspan="3" class="th_right">
+                        <img src="@(SFConfig.AssessmentDomain)Resources/cli_logo.png" alt="CLI Logo" style="width: 150px;" />
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="4">&nbsp;</th>
+                    <th colspan="4" class="title">
+                        <span>@AssessmentModel.Name</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="4">&nbsp;</th>
+                    <th colspan="4" class="title">
+                        Child: <span>@ViewBag.ObjectName</span>
+                    </th>
+                </tr>
+                @if (ViewBag.UserRole != Role.Parent)
+                {
+                    <tr>
+                        <th colspan="4" class="th_left">Community:&nbsp @ViewBag.CommunityName</th>
+                        <th colspan="4">&nbsp;</th>
+                        <th colspan="4" class="th_right">Class:&nbsp;@ViewBag.ClassName</th>
+                    </tr>
+                    <tr>
+                        <th colspan="4" class="th_left">School:&nbsp;@ViewBag.SchoolName</th>
+                        <th colspan="4">&nbsp;</th>
+                        <th colspan="4" class="th_right">Teacher:&nbsp;@ViewBag.TeacherName</th>
+                    </tr>
+                    <tr>
+                        <th colspan="4" class="th_left">School Year:&nbsp;@ViewBag.SchoolYear</th>
+                        <th colspan="4">&nbsp;</th>
+                        <th colspan="4" class="th_right">Assessmnet Date:&nbsp;<span>@ObservableModel.CreatedOn.ToString("MM/dd/yyyy")</span></th>
+                    </tr>
+                }
+                @if (ViewBag.UserRole == Role.Parent)
+                {
+                    <tr>
+                        <th colspan="8">&nbsp;</th>
+                        <th colspan="4" class="th_right">Assessmnet Performed By:&nbsp;@ViewBag.PerformBy</th>
+                    </tr>
+                    <tr>
+                        <th colspan="8">&nbsp;</th>
+                        <th colspan="4" class="th_right">Assessmnet Date:&nbsp;<span>@ObservableModel.CreatedOn.ToString("MM/dd/yyyy")</span></th>
+                    </tr>
+                }
+                <tr>
+                    <th colspan="12">&nbsp;</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td colspan="12">
+                        @foreach (var measure in AssessmentModel.Measures)
+                        {
+                            <div class="panel panel-default" id="avoidPageBreak">
+                                <div class="panel-heading" role="tab">
+                                    <h4 class="panel-title">
+                                        <span style="font-weight:900">
+                                            @measure.Name
+                                    </span>
+                                </h4>
+                            </div>
+                            <div>
+                                <div class="panel-body">
+                                    <div class="content-body-tab">
+                                        @if (measure.Items.Any())
+                                        {
+                                            <table class="table table-hover table-striped table-condensed">
+
+                                                <thead>
+
+                                                    <tr>
+                                                        <th style="width: 10px;"></th>
+                                                        <th style="text-align: left">Description</th>
+                                                        <th style="width: 30%; text-align: left">Response</th>
+                                                        <th style="width: 15%; text-align: left">Date</th>
+                                                    </tr>
+
+
+                                                </thead>
+
+                                                <tbody>
+                                                    @for (var i = 0; i < measure.Items.ToList().Count; i++)
+                                                    {
+                                                        var item = measure.Items.ToList()[i];
+                                                        <tr>
+                                                            <td>@(i + 1).</td>
+                                                            <td style="text-align: left;">
+                                                                @Html.Raw(item.FullTargetText)
+                                                        </td>
+                                                        <td>
+                                                            <table>
+                                                                @if (item.Type == ItemType.ObservableChoice)
+                                                                {
+                                                                    for (var n = 0; n < item.Answers.ToList().Count; n++)
+                                                                    {
+                                                                        var answer = item.Answers.ToList()[n];
+                                                                        if (item.Type == ItemType.ObservableChoice)
+                                                                        {
+                                                                            if (item.IsMultiChoice)
+                                                                            {
+                                                                                if (item.Res != null && item.Res.IndexOf("," + answer.ID, System.StringComparison.Ordinal) >= 0)
+                                                                                {
+                                                                                    <tr class="info">
+                                                                                        <td style="text-align: left;">
+                                                                                            <label>@answer.Text</label>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                if (item.Res != null && item.Res == answer.ID.ToString())
+                                                                                {
+                                                                                    <tr class="info">
+                                                                                        <td style="text-align: left;">
+                                                                                            <label>@answer.Text</label>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        else if (item.Type == ItemType.ObservableResponse)
+                                                                        {
+                                                                            <tr>
+                                                                                <td style="text-align: left">
+                                                                                    <span>@item.Res</span>
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+
+                                                                    }
+                                                                }
+                                                                else if (item.Type == ItemType.ObservableResponse)
+                                                                {
+                                                                    <tr>
+                                                                        <td style="text-align: left">
+                                                                            <span>@item.Res</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+
+                                                            </table>
+                                                        </td>
+                                                        <td style="text-align: left;">
+
+                                                            <span style="">@item.Date</span>
+
+                                                        </td>
+                                                    </tr>
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        }
+                                        @if (measure.Children.Any())
+                                        {
+                                            foreach (var childMeasureModel in measure.Children)
+                                            {
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading" role="tab">
+                                                        <h4 class="panel-title">
+                                                            <span>
+                                                                @childMeasureModel.Name
+                                                        </span>
+                                                    </h4>
+                                                </div>
+                                                <div>
+                                                    <div class="panel-body">
+                                                        <div class="content-body-tab">
+                                                            <table class="table table-hover table-striped table-condensed">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th style="width: 10px;"></th>
+                                                                        <th style="text-align: left">Description</th>
+                                                                        <th style="width: 30%; text-align: left">Response</th>
+                                                                        <th style="width: 15%; text-align: left">Date</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @for (var i = 0; i < childMeasureModel.Items.ToList().Count; i++)
+                                                                    {
+                                                                        var item = childMeasureModel.Items.ToList()[i];
+                                                                        <tr>
+                                                                            <td>@(i + 1).</td>
+                                                                            <td style="text-align: left; font-weight: bold">
+                                                                                @item.Name
+                                                                        </td>
+                                                                        <td>
+                                                                            <table>
+                                                                                @if (item.Type == ItemType.ObservableChoice)
+                                                                                {
+                                                                                    for (var n = 0; n < item.Answers.ToList().Count; n++)
+                                                                                    {
+                                                                                        var answer = item.Answers.ToList()[n];
+                                                                                        if (item.Type == ItemType.ObservableChoice)
+                                                                                        {
+                                                                                            if (item.IsMultiChoice)
+                                                                                            {
+                                                                                                if (item.Res != null && item.Res.IndexOf("," + answer.ID, System.StringComparison.Ordinal) >= 0)
+                                                                                                {
+                                                                                                    <tr class="info">
+                                                                                                        <td style="text-align: left;">
+                                                                                                            <label>@answer.Text</label>
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                }
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                if (item.Res != null && item.Res == answer.ID.ToString())
+                                                                                                {
+                                                                                                    <tr class="info">
+                                                                                                        <td style="text-align: left;">
+                                                                                                            <label>@answer.Text</label>
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                        else if (item.Type == ItemType.ObservableResponse)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                <td style="text-align: left">
+                                                                                                    <span>@item.Res</span>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        }
+
+                                                                                    }
+                                                                                }
+                                                                                else if (item.Type == ItemType.ObservableResponse)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td style="text-align: left">
+                                                                                            <span>@item.Res</span>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            </table>
+                                                                        </td>
+                                                                        <td style="text-align: left;">
+
+                                                                            <span style="">@item.Date</span>
+
+                                                                        </td>
+                                                                    </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        }
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+
+<script type="text/html" id="_tmp_item">
+    <tr>
+        <td data-bind="text: $index() + 1"></td>
+        <td style="text-align: left;">
+            <b data-bind="text: Name"></b>
+        </td>
+        <td>
+            <!-- ko if:answers && answers.length -->
+            <!-- ko if:ismultichoice -->
+            <table>
+                <!-- ko template:{name:'_tmp_answer_multip',foreach:answers,as:'answer'}-->
+                <!-- /ko-->
+            </table>
+            <!-- /ko-->
+            <!-- ko if:ismultichoice == false -->
+            <table>
+                <!-- ko template:{name:'_tmp_answer_sig',foreach:answers,as:'answer'}-->
+                <!-- /ko-->
+            </table>
+            <!-- /ko-->
+            <!-- /ko-->
+            <!-- ko if:type.value ==13 -->
+            <table>
+                <tr>
+                    <td style="text-align: left">
+                        <span data-bind="html: item.res"></span>
+                    </td>
+                </tr>
+            </table>
+            <!-- /ko-->
+        </td>
+        <td style="text-align: left; vertical-align: bottom; padding-bottom: 5px;">
+            <!-- ko if:item.updated   -->
+            <span style="" data-bind="html: item.updated"></span>
+            <!-- /ko-->
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_measure">
+    <tr class="info">
+        <td colspan="3" style="text-align: left;">
+            <b data-bind="text: Name"></b>
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_answer_multip">
+    <tr class="info">
+        <!-- ko if:item.isshown &&  item.res && item.res.indexOf(','+id)>=0  -->
+        <td style="text-align: left;">
+            <label data-bind="text: text, attr: { 'for': 'checkbox_' + id }"></label>
+        </td>
+        <!-- /ko-->
+    </tr>
+</script>
+<script type="text/html" id="_tmp_answer_sig">
+    <tr class="info">
+        <!-- ko if:item.isshown && item.res == id -->
+        <td style="text-align: left;">
+            <label data-bind="text: text, attr: { 'for': 'radio_' + id }"></label>
+        </td>
+        <!-- /ko-->
+    </tr>
+</script>
+

@@ -1,0 +1,250 @@
+﻿
+
+/****** Object:  StoredProcedure [dbo].[COTCECCompletionReport]    Script Date: 2015/4/10 18:27:19 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	BOY & MOY - COT & CEC Assessment Completion Report
+-- =============================================
+CREATE PROCEDURE [dbo].[COTCECCompletionReport]
+@COTAssessmentId int,
+@CECAssessmentId int,
+@SchoolYear varchar(5)
+AS
+BEGIN
+
+with cotList as (
+select cota.TeacherId ,wave  from [dbo].[CotWaves] c
+inner join [COTAssessments] cota on c.CotAssessmentId = cota.id 
+where c.Status = 20 and cota.SchoolYear = @SchoolYear and cota.AssessmentId = @COTAssessmentId
+)
+, CotCompletion as (
+select t.CoachId , count(*) as Total  from cotList c1 
+inner join cotList c2 on c1.TeacherId = c2.TeacherId and c2.Wave = 2
+inner join [Cli_Engage__Teachers] t on c1.TeacherId = t.Id
+inner join [Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+where c1.Wave =1 and t.CoachId > 0
+group by t.CoachId
+)
+,cecCompletion as (
+	select CoachId ,count(*) as Total from [CecHistories] cec 
+inner join [CecHistories] cec2 on cec.TeacherId = cec2.TeacherId and cec2.SchoolYear = @SchoolYear and cec2.Wave=2 and cec.AssessmentId = cec2.AssessmentId
+inner join [Cli_Engage__Teachers] t on cec.TeacherId = t.Id
+inner join [Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+where cec.AssessmentId = @CECAssessmentId and cec.Wave=1
+group by CoachId 
+)
+, Totals as (
+select t.CoachId, coachUser.FirstName ,coachUser.LastName,COUNT(*) as Total   from [dbo].[Cli_Engage__Teachers] t
+inner join [dbo].[Cli_Engage__Users] coachUser on t.CoachId = coachUser.ID and coachUser.Status =1 
+inner join [dbo].[Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+group by t.CoachId,coachUser.FirstName ,coachUser.LastName ,coachUser.ID
+)
+select t.* ,isnull(c.Total,0) as COTCompletion , isnull(cec.Total,0) as CECCompletion from totals t
+left join CotCompletion c on c.coachid = t.coachid
+left join cecCompletion cec on cec.coachid = t.coachid
+order by t.FirstName
+
+END
+
+GO
+
+
+
+/****** Object:  StoredProcedure [dbo].[EOYCECCompletion]    Script Date: 2015/4/10 18:27:32 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[EOYCECCompletion]
+	@CECAssessmentId int ,
+		@SchoolYear varchar(5)
+AS
+BEGIN
+with Totals as (
+select t.CoachId, coachUser.FirstName ,coachUser.LastName,COUNT(*) as Total   from [dbo].[Cli_Engage__Teachers] t
+inner join [dbo].[Cli_Engage__Users] coachUser on t.CoachId = coachUser.ID and coachUser.Status =1 
+inner join [dbo].[Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+group by t.CoachId,coachUser.FirstName ,coachUser.LastName ,coachUser.ID
+),
+ Completes as (
+select CoachId,COUNT(*) as Complete from [CecHistories] cec 
+inner join [Cli_Engage__Teachers] t on cec.TeacherId = t.Id
+inner join [Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+where Wave = 3 and cec.SchoolYear = @SchoolYear and cec.AssessmentId =@CECAssessmentId
+group by t.CoachId 
+)
+select t.* , ISNULL(c.Complete,0) as Complete from Totals t 
+left join Completes c on t.CoachId = c.CoachId
+order by FirstName
+END
+
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[STGR_Completion_Report]    Script Date: 2015/4/10 18:27:55 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[STGR_Completion_Report]
+AS
+BEGIN
+with stg as(
+select TeacherId from CotStgReports stg 
+inner join [COTAssessments] cot on stg.CotAssessmentId = cot.ID
+where stg.Status = 20
+group by cot.TeacherId
+)
+select teacher.CommunityId,teacher.CoachId,count(0) as Total  from stg inner join   [dbo].[Cli_Engage__Teachers] teacher on stg.TeacherId = teacher.id
+inner join [dbo].[Cli_Engage__Users] uTeacher on teacher.UserId =uTeacher.ID and uTeacher.Status = 1
+inner join [dbo].[Cli_Engage__Communities] c on  teacher.CommunityId = c.ID
+where teacher.CoachId > 0
+group by teacher.CommunityId,teacher.CoachId
+order by CommunityId ,CoachId ,Total ;
+
+END
+
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[Teacher_Missing_STGR]    Script Date: 2015/4/10 18:28:08 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[Teacher_Missing_STGR]
+AS
+BEGIN
+
+
+with list as (
+select basicC.Name as CommunityName ,c.ID as CommunityID
+ , basicS.Name as SchoolName ,s.ID as SchoolID 
+  ,uTeacher.FirstName as TeacherFirstName ,uTeacher.LastName as TeacherLastName
+ , t.CoachId ,uMentor.FirstName as CoachFirstName ,uMentor.LastName as CoachLastName 
+from [Cli_Engage__Teachers] t 
+inner join [Cli_Engage__Users] uTeacher on t.UserId =uTeacher.ID and uTeacher.Status = 1
+inner join [Cli_Engage__Users] uMentor on t.CoachId = uMentor.ID and uMentor.Status = 1
+inner join [Cli_Engage__Schools] s on s.ID = t.SchoolId
+inner join [Cli_Engage__BasicSchools] basicS on basicS.ID = s.BasicSchoolId
+inner join [Cli_Engage__Communities]  c on  t.CommunityId = c.ID
+inner join [Cli_Engage__BasicCommunities] basicC on basicC.ID = c.BasicCommunityId
+where t.UserId 
+not in (select TeacherId from CotStgReports stg 
+inner join [COTAssessments] cot on stg.CotAssessmentId = cot.ID
+where stg.Status = 20)
+)
+select l.* , isnull((select top 1 u.FirstName + ' ' + u.LastName  from [Cli_Engage__Users] u
+inner join [Cli_Engage__UserCommunityRelations] r on u.id = r.userid
+where Role = 20 and Status = 1 and r.CommunityId = l.CommunityID ),'') PM
+ from list l
+ order by l.CommunityName ,l.SchoolName
+END
+
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[TeacherMissingCEC]    Script Date: 2015/4/10 18:28:19 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[TeacherMissingCEC]
+	@CecAssessmentId int,
+	@SchoolYear varchar(5),
+	@Wave int
+AS
+BEGIN
+ select t.ID ,t.UserId ,tUser.FirstName as Teacher_FirstName , tUser.LastName as Teacher_LastName 
+, coachUser.FirstName as Coach_FirstName ,coachUser.LastName as Coach_LastName
+, basicC.Name as CommunityName , basicS.Name as SchoolName
+from [dbo].[Cli_Engage__Teachers] t
+inner join [dbo].[Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+inner join [dbo].[Cli_Engage__Users] coachUser on coachUser.ID = t.CoachId and coachUser.Status = 1
+inner join [dbo].[Cli_Engage__Schools] s on s.ID = t.SchoolId
+inner join [dbo].[Cli_Engage__BasicSchools] basicS on basicS.ID = s.BasicSchoolId
+inner join [dbo].[Cli_Engage__Communities] c on c.ID = t.CommunityId
+inner join [dbo].[Cli_Engage__BasicCommunities] basicC on basicC.ID = c.BasicCommunityId
+where 
+t.ID not in(select TeacherId from [CecHistories] where SchoolYear = @SchoolYear and wave = @Wave)
+order by CommunityName
+
+END
+
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[TeacherMissingMOYCOT]    Script Date: 2015/4/10 18:28:31 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[TeacherMissingMOYCOT]
+	@COTAssessmentId int,
+	@SchoolYear varchar(5)
+AS
+BEGIN
+ select t.ID ,t.UserId ,tUser.FirstName as Teacher_FirstName , tUser.LastName as Teacher_LastName 
+, coachUser.FirstName as Coach_FirstName ,coachUser.LastName as Coach_LastName
+, basicC.Name as CommunityName , basicS.Name as SchoolName
+from [dbo].[Cli_Engage__Teachers] t
+inner join [dbo].[Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+inner join [dbo].[Cli_Engage__Users] coachUser on coachUser.ID = t.CoachId and coachUser.Status = 1
+inner join [dbo].[Cli_Engage__Schools] s on s.ID = t.SchoolId
+inner join [dbo].[Cli_Engage__BasicSchools] basicS on basicS.ID = s.BasicSchoolId
+inner join [dbo].[Cli_Engage__Communities] c on c.ID = t.CommunityId
+inner join [dbo].[Cli_Engage__BasicCommunities] basicC on basicC.ID = c.BasicCommunityId
+where 
+t.ID not in(
+select TeacherId from [dbo].[CotWaves] w
+inner join [dbo].[COTAssessments] c on w.CotAssessmentId = c.ID
+where w.Status = 20 and Wave =2 and SchoolYear =@SchoolYear and c.AssessmentId =@COTAssessmentId
+)
+order by CommunityName
+
+END
+GO
+
+

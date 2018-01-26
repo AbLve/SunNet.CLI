@@ -1,0 +1,11 @@
+﻿CREATE TABLE [dbo].[UserComSchRelations](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[CommunityId] [int] NOT NULL,
+	[SchoolId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL
+)

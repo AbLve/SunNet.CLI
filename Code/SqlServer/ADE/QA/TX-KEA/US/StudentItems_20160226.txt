@@ -1,0 +1,20 @@
+﻿
+
+if not exists(select * from syscolumns where id=object_id('StudentItems') and name='LastItemIndex')
+	alter table StudentItems add LastItemIndex int
+go 
+
+update StudentItems set LastItemIndex = 0 where LastItemIndex is null
+go 
+alter table StudentItems alter column LastItemIndex int not null
+go
+
+
+if not exists(select * from syscolumns where id=object_id('StudentItems') and name='ResultIndex')
+	alter table StudentItems add ResultIndex int
+go 
+
+update StudentItems set ResultIndex = 0 where ResultIndex is null
+go 
+alter table StudentItems alter column ResultIndex int not NULL
+go

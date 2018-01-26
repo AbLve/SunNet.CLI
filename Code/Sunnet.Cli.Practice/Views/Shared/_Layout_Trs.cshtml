@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+@{
+    const string siteName = "Cli Engage";
+    var relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    var lastModified = FileHelper.GetFileLastModified(Server.MapPath(relativePath));
+    var moduleTitle = "";
+    moduleTitle = relativePath.IndexOf("Areas/Trs", StringComparison.CurrentCultureIgnoreCase) > 0 ? "TRS" : moduleTitle;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword" content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>@ViewBag.Title - @moduleTitle - @siteName</title>
+    @Styles.Render("~/css/basic")
+    @Styles.Render("~/css/trs")
+    @RenderSection("Styles", false)
+    @Scripts.Render("~/scripts/modernizr")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/scripts/ie68")
+    <![endif]-->
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <!-- Begin New Design -->
+    <div class="container-fluid publicLayout">
+        <div class="row" style="margin-right: 0;">
+            <div class="col-sm-12" style="padding: 0; text-align: center">
+                <img class="img-responsive" src="/images/ReDesign/Banner/CLIe-HOME-banner_tinystrip.png" alt="CLI Engage" />
+            </div>
+        </div>
+    </div>
+
+    @if (ViewBag.Login)
+    {
+        <div class="col-sm-2 logbox" style="top: 28px;">
+            <a class="header-sign-btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" href="#" data-toggle="modal">
+                <i class="icon-user"></i>@ViewBag.FirstName
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li role="presentation"><a style="color: #656565" class="menutext" role="menuitem" tabindex="-1" href="@(DomainHelper.MainSiteDomain)home/dashboard"><i class="icon-dashboard"></i>Dashboard</a></li>
+                <li role="presentation"><a style="color: #656565" class="menutext" role="menuitem" tabindex="-1" href="@(DomainHelper.MainSiteDomain)Profile/MyProfile"><i class="icon-bullhorn"></i>My Profile</a></li>
+            </ul>
+            |  <a href="@(DomainHelper.SsoSiteDomain)home/LogOut">LOGOUT</a>
+        </div>
+    }
+    else
+    {
+        <div class="col-sm-2 logbox">
+            <div style="display: table-cell; vertical-align: middle"><a href="@(DomainHelper.MainSiteDomain)home/signup">SIGN UP</a> | <a href="@(DomainHelper.MainSiteDomain)home/signin">LOGIN</a></div>
+        </div>
+    }
+
+    @Html.Partial("_Partial_Menu")
+    <!-- End New Desgin -->
+
+    @RenderSection("Banner", false)
+    @RenderSection("Slides", false)
+    <div class="main-container renderBody-style" style="margin-top: -50px; font-size: 14px;">
+        @if (IsSectionDefined("LeftMenu"))
+        {
+            <div class="main-con-left menu-side">
+                @RenderSection("LeftMenu", false)
+            </div>
+        }
+        <div class="main-con-middle">
+            @if (IsSectionDefined("BreadPath"))
+            {
+                <h4 class="backlink">@RenderSection("BreadPath", false)</h4>
+            }
+            <div class="right-content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <div class="row footer publicLayout" style="padding-top: 26px; padding-left: 0px; margin-left: 0px;font-family: 'Nobel Book', sans-serif;line-height: 1.8em;">
+        <div class="col-sm-12">
+            <div class="col-sm-4">
+                <img class="img-responsive toolicon" style="height: 131px; float: right;" src="/images/ReDesign/UTH_CLI_co_brand_wht.png" alt="CLI Engage News">
+            </div>
+            <div class="col-sm-4">
+                <p class="footerheader">RECEIVE OUR NEWSLETTERS</p>
+                <p style="padding-top: 18px;"><a class="btn btn-default footerlink" style="color: #d61616 !important; background-color: #ffffff;" href="http://visitor.r20.constantcontact.com/manage/optin?v=001uxu9h741ik21QwTj2fX_kssB2o93cAd8WnJxJCTJJ8ufUzTruJeLJM3wBav7plT2LMOCMGOEz6etL-V_2_YmcEfwTBqpO2gJEhz_gYFG-kV_G3nVb2UleQ%3D%3D">STAY IN TOUCH</a></p>
+            </div>
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p class="footerheader">CONNECT WITH US</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="col-sm-2">
+                            <a href="https://www.facebook.com/cliengage">
+                                <img class="img-responsive socialicon" width="45" src="/images/ReDesign/facebookrnd.png" alt="facebook">
+                            </a>
+                        </div>
+                        <div class="col-sm-2">
+                            <a href="https://twitter.com/CLIEngage">
+                                <img class="img-responsive socialicon" width="45" src="/images/ReDesign/twitterrnd.png" alt="Twitter">
+                            </a>
+                        </div>
+                        <div class="col-sm-2">
+                            <a href="#">
+                                <img class="img-responsive socialicon" width="45" src="/images/ReDesign/youtubernd.png" alt="YouTube">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <p>
+                Copyright © 2015 by <a style="color: #ffffff;" href="https://www.uth.edu/">The University of Texas Health Science Center at Houston (UTHealth)</a><br />
+                All rights reserved. <a style="color: #ffffff;" href="https://www.uth.edu/index/policies.htm">Site Policies</a> | <a style="color: #ffffff;" href="https://www.uth.edu/index/file-viewing-information.htm">Web File Viewing</a> | Webmaster: <a style="color: #ffffff;" href="mailto:bang.n.pham@uth.tmc.edu">bang.n.pham@uth.tmc.edu</a>
+            </p>
+        </div>
+
+        @if (Request.Url.ToString().ToLower().Contains("cliengage.org"))
+        {
+            <script type="text/javascript">
+                (function (i, s, o, g, r, a, m) {
+                    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+                ga('create', 'UA-66997903-1', 'auto');
+                ga('send', 'pageview');
+            </script>
+        }
+        else
+        {
+            <script>
+                (function (i, s, o, g, r, a, m) {
+                    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+                ga('create', 'UA-58865275-1', 'auto');
+                ga('send', 'pageview');
+
+            </script>
+
+        }
+
+    </div>
+    <div id="modalSmall" class="modal" data-cache="false" data-confirm="true" data-backdrop="static" style="font-size: 14px;">
+        <div class="modal-dialog-sm">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static" style="font-size: 14px;">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalLarge" class="modal" data-cache="false" data-confirm="true" data-backdrop="static" style="font-size: 14px;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @Scripts.Render("~/scripts/jquery")
+    @Scripts.Render("~/scripts/jquery_val")
+    @Scripts.Render("~/scripts/bootstrap")
+    @Scripts.Render("~/scripts/knockout")
+    @Scripts.Render("~/scripts/format")
+    @Scripts.Render("~/scripts/cli")
+    @RenderSection("Scripts", false)
+</body>
+</html>

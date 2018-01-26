@@ -1,0 +1,132 @@
+﻿@model Sunnet.Cli.Core.BUP.Entities.AutomationSettingEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "View";
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.BUP)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Data Management", "Index", "BUP"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;View Automation Setting
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        jQuery(function () {
+            registerFormCallbacks("frmAutomation", {
+                onPosted: function (response) {
+                    redirectBack("index");
+                }
+            });
+        });
+    </script>
+}
+
+
+@using (Ajax.BeginForm("", "", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    HttpMethod = "Post",
+    role = "form",
+    id = "frmAutomation",
+    @class = "form-horizontal"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Automation Setting List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.Display("CommunityName")
+                </div>
+                @Html.LabelFor(model => model.Status, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.Status)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.HostIp, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.HostIp)
+                </div>
+                @Html.LabelFor(model => model.Port, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.Port)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.UserName)
+                </div>
+            </div>
+            <div class="content-title">File folders(from root)</div>
+            <div class="form-group"></div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.SchoolPath)
+                </div>
+                @Html.LabelFor(model => model.ClassroomPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.ClassroomPath)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClassPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.ClassPath)
+                </div>
+                @Html.LabelFor(model => model.StudentPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.StudentPath)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CommunityUserPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.CommunityUserPath)
+                </div>
+                @Html.LabelFor(model => model.CommunitySpecialistPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.CommunitySpecialistPath)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrincipalPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.PrincipalPath)
+                </div>
+                @Html.LabelFor(model => model.SchoolSpecialistPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.SchoolSpecialistPath)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TeacherPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.TeacherPath)
+                </div>
+                @Html.LabelFor(model => model.ParentPath, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.ParentPath)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="button-content">
+        <button class="mainbutton mainright-btn create-btn" type="button" onclick='redirectBack("index")' id="btnBack">Back</button>
+    </div>
+}

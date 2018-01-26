@@ -1,0 +1,8 @@
+﻿IF NOT EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('ItemBases') AND name = 'RandomAnswer' )
+BEGIN
+ALTER TABLE [dbo].ItemBases ADD RandomAnswer BIT NULL 
+END
+GO
+UPDATE ItemBases SET RandomAnswer = 0
+GO 
+ALTER TABLE ItemBases ALTER COLUMN RandomAnswer BIT NOT NULL

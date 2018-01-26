@@ -1,0 +1,16 @@
+﻿@model string
+@{
+}
+
+@if (string.IsNullOrEmpty(Model))
+{
+    <label class="control-label-text">
+        <span style="display: none;">wave</span>
+    </label>
+}
+else
+{
+    <label class="control-label-text">
+        @Model
+    </label>
+}

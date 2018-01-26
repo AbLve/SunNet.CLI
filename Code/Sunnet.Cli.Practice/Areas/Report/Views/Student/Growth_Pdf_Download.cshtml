@@ -1,0 +1,97 @@
+﻿@using Sunnet.Cli.Business.Cpalls.Models
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+
+    var reportModels = ViewBag.Models as List<GrowthReportModel>;
+    bool isFirst = true;
+    int index = 0;
+}
+@foreach (var reportModel in reportModels)
+{
+    for (int i = 2; i < reportModel.Report.Count;)
+    {
+        <table cellpadding="0" cellspacing="0" class="noborder header  @(isFirst ? "" : "newpager") ">
+            <thead>
+                <tr>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                </tr>
+                <tr>
+                    <th colspan="4"></th>
+                    <th colspan="4" class="title">
+                        @(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+                        @(reportModel.Title)<br />
+                        @(reportModel.Report[i][0].Text)<br />
+                        @(reportModel.Type.ToDescription())
+                    </th>
+                    <th colspan="4">
+                        <img src="@(DomainHelper.PracticeDomain)images/cli_logo.png" style="height: 60px; vertical-align: middle; width: 150px;" />
+                    </th>
+                </tr>
+            <tr>
+                <th colspan="6" class="heading">
+                    @(Html.DisplayNameFor(x => reportModel.Language)):&nbsp;@(reportModel.Language.ToDescription())
+                </th>
+                <th colspan="3">&nbsp;</th>
+                <th colspan="3" class="heading">
+                    @(Html.DisplayNameFor(x => reportModel.SchoolYear)):&nbsp;@(reportModel.SchoolYear)
+                </th>
+            </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                        <p>Practice Class</p>
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @(ViewBag.UserName)
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                    </th>
+                    <th colspan="3"><span style="display:none;">1</span></th>
+                    <th colspan="3" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Wave1)):&nbsp;@(reportModel.Wave1.FormatDateString())
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                    </th>
+                    <th colspan="3"><span style="display:none;">1</span></th>
+                    <th colspan="3" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Wave2)):&nbsp;@(reportModel.Wave2.FormatDateString())
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                    </th>
+                    <th colspan="3"><span style="display:none;">1</span></th>
+                    <th colspan="3" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Wave3)):&nbsp;@(reportModel.Wave3.FormatDateString())
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="chart@(index)" style="height: 520px; width: @ReportHelper.GetChartWidth(reportModel.Report[i][0].Rowspan + 1,160)px;text-align: center; page-break-inside: avoid; margin: 0 auto;">
+            <img src='@(ViewData["Image" + index++])' />
+        </div>
+        {
+            isFirst = false;
+            i += reportModel.Report[i][0].Rowspan;
+        }
+    }
+}

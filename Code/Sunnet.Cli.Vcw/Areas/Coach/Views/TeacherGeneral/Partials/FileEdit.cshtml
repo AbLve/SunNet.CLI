@@ -1,0 +1,174 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherGeneralFileModel
+@using Sunnet.Cli.Core.Vcw.Enums
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase
+@using Sunnet.Framework
+@{
+    List<SelectItemModel> Contents = ViewBag.Contents as List<SelectItemModel>;
+    List<SelectItemModel> Contexts = ViewBag.Contexts as List<SelectItemModel>;
+}
+
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        @Html.LabelFor(model => model.IdentifyFileName, new { @class = "control-label required" })
+                    </div>
+                    <div class="inputtext-con">
+                        @Html.TextBoxFor(model => model.IdentifyFileName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IdentifyFileName)
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <label class="control-label" for="DateVieoRecorded">Date Video Recorded</label>
+                    </div>
+                    <div class="inputtext-con">
+                        @Html.TextBoxFor(model => model.DateVieoRecorded, new
+                                   {
+                                       @class = "form-control date"
+                                       ,
+                                       @Value = Model.DateVieoRecorded.Value.FormatDateString()
+                                   })
+                        @Html.ValidationMessageFor(model => model.DateVieoRecorded)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Video Context</div>
+                    </div>
+                    @if (Contexts != null)
+                    {
+                        foreach (SelectItemModel item in Contexts)
+                        {
+                            bool isChecked = Model.ContextId == item.ID;
+                            if (item.Name.Trim().ToLower() == SFConfig.ContextOther)
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline checkbox-other">
+                                <input type="checkbox" name="Context" value="@(item.ID)"  @(isChecked ? "checked" : "") isOther="true"/>@item.Name
+                            </label>
+                            <label class="textbox-other">
+                                @if (isChecked)
+                                {
+                                    @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control", disabled = "disabled" })  
+                                }
+                            </label>
+                            @Html.ValidationMessageFor(model => model.ContextOther)
+                        </div>
+                            }
+                            else
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="Context" value="@(item.ID)" @(isChecked ? "checked" : "")/>@item.Name
+                            </label>
+                        </div>
+                            }
+
+                        }
+                    }
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Video Content</div>
+                    </div>
+                    @if (Contents != null)
+                    {
+                        foreach (SelectItemModel item in Contents)
+                        {
+                            bool isChecked = Model.ContentIds.Contains(item.ID);
+                            if (item.Name.Trim().ToLower() == SFConfig.VideoContentOther)
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline checkbox-other">
+                                <input type="checkbox" name="Content" onclick="ContentClick(this)" 
+                                                    value="@item.ID" @(isChecked ? "checked" : "")>@item.Name
+                            </label>
+                            <label class="textbox-other">
+                                @if (isChecked)
+                                {
+                                    @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control", @disabled = "disabled" })   
+                                }
+                            </label>
+                            @Html.ValidationMessageFor(model => model.ContentOther)
+                        </div>
+                            }
+                            else
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="Content"  
+                                                    value="@item.ID" @(isChecked ? "checked" : "") >
+                                @item.Name
+                            </label>
+                        </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        @Html.Partial("/Areas/Coach/Views/Partials/UploadedFile2.cshtml")
+    </div>
+    <div class="col-sm-6">
+        <video controls="controls" class="videoplay">
+            <source src="@(FileHelper.GetPreviewPathofUploadFile(Model.FilePath).Replace("\\", "/"))" />
+        </video>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    Description
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                </div>
+                <label for="Description" class="hide">&nbsp;</label>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "2" })
+                @Html.ValidationMessageFor(m => m.Description)
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    FeedbackText
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                </div>
+                <label for="FeedbackText" class="hide">&nbsp;</label>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(model => model.FeedbackText, new { @class = "form-control", @rows = "2" })
+                @Html.ValidationMessageFor(model => model.FeedbackText)
+            </div>
+        </div>
+    </div>
+</div>
+
+

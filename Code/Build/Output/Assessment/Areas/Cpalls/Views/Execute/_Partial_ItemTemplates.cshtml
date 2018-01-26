@@ -1,0 +1,384 @@
+﻿@{
+    Layout = null;
+}
+
+<script type="text/html" id="measure_Start">
+    <!--Start Page-->
+    <div class="item-main-body" data-bind="html:content">
+    </div>
+</script>
+<script type="text/html" id="measure_End">
+    <!--End Page-->
+    <div class="item-main-body" data-bind="html:content">
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_9">
+    <!--Direction:9-->
+    <div class="item-main-body" data-bind="cpalls_item:isShowing()">
+        <div class="item-text-con  item-text-con-oneline">
+            <p data-bind="html:directionText">
+            </p>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_1">
+    <!--Cec:1-->
+</script>
+<script type="text/html" id="_cpalls_Item_2">
+    <!--Cot:2-->
+</script>
+<script type="text/html" id="_cpalls_Item_3">
+    <!--MultipleChoices:3-->
+    <div class="item-main-body" data-bind="cpalls_item:isShowing()">
+        <div class="item-text-con">
+            <p class="target">
+            </p>
+        </div>
+        <div class="item-body-con item-body-con-manypic">
+            <ul class="answer" data-bind="foreach:{data:answers,as:'answer'}">
+                <li data-bind="css:{'active':choosed()}">
+                    <!--ko if:picture.file-->
+                    <a href="#" class="item-pic-con" data-bind="event:{click:$root.choose},html:picture.html,visible:picture.timeout==0,showIn:picture.timeout">
+                    </a>
+                    <a href='#' class='time' data-bind="html:execHelper.waitingHtml,visible:picture.timeout>0,hideIn:picture.timeout"></a>
+                    <!--/ko-->
+                </li>
+                <!--ko if: $index() == 3-->
+                <li class="blank" style="width:10%">
+                </li>
+                <!--/ko-->
+            </ul>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_4">
+    <!--Pa:4-->
+    <div class="item-main-body" data-bind="cpalls_item:isShowing()">
+        <div class="row">
+            <div class="item-text-left col-md-12">
+                <p class="target">
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="item-body-right col-md-12">
+                <ul class="text-item answer" data-bind="foreach:{data:answers,as:'answer'}">
+                    <li data-bind="html:text.text,event:{click:$root.choose},css:{active:choosed()}" style="display: none;"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_5">
+    <!--Quadrant:5-->
+    <div class="item-main-body" data-bind="cpalls_item:isShowing()">
+        <div class="item-text-con">
+            <p class="target">
+            </p>
+        </div>
+        <div class="item-body-con item-body-con-fourpic">
+            <ul class="answer" data-bind="foreach:{data:answers,as:'answer'}">
+                <li data-bind="css:{active:choosed(),'item-pic-b-r':$index()==0 || $index()==2,'item-pic-b-b':$index() == 0 || $index() == 1}">
+                    <!--ko if:picture.file-->
+                    <a href="#" class="item-pic-con" data-bind="event:{click:$root.choose},html:picture.html,visible:picture.timeout==0,showIn:picture.timeout">
+                    </a>
+                    <a href='#' class='time' data-bind="html:execHelper.waitingHtml,visible:picture.timeout>0,hideIn:picture.timeout"></a>
+                    <!--/ko-->
+                </li>
+            </ul>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_6">
+    <!--Rapid Expressive:6-->
+    <div class="item-main-body" data-bind="cpalls_item:isShowing()">
+        <div class="item-text-con">
+            <p class="target">
+            </p>
+        </div>
+        <div class="item-body-con item-pic-con-onepic">
+            <!-- ko foreach:{data:answers,as:'answer'}-->
+            <div class="answer">
+                <div style="
+    text-align: center;
+">
+                    <!--ko if:picture.file-->
+                    <a href="#" class="item-pic-con" data-bind="event:{click:$root.choose},html:picture.html,visible:picture.timeout==0,showIn:picture.timeout">
+                    </a>
+                    <a href='#' class='time' data-bind="html:execHelper.waitingHtml,visible:picture.timeout>0,hideIn:picture.timeout"></a>
+                    <!--/ko-->
+                </div>
+            </div>
+            <!-- /ko-->
+
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_7">
+    <!--Receptive without prompt:7-->
+    <div class="item-main-body" data-bind="cpalls_item:isShowing()">
+        <div class="item-text-con">
+            <p class="target">
+            </p>
+        </div>
+        <div class="item-body-con  item-body-con-oneline item-body-con-threepic">
+            <ul class="answer" data-bind="foreach:{data:answers,as:'answer'}">
+                <li data-bind="css:{active:choosed(),'item-pic-b-l':$index()==0}" class="item-pic-b-b item-pic-b-t item-pic-b-r">
+                    <!--ko if:picture.file-->
+                    <a href="#" class="item-pic-con" data-bind="event:{click:$root.choose},html:picture.html,visible:picture.timeout==0,showIn:picture.timeout">
+                    </a>
+                    <a href='#' class='time' data-bind="html:execHelper.waitingHtml,visible:picture.timeout>0,hideIn:picture.timeout"></a>
+                    <!--/ko-->
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_8">
+    <!--Receptive with prompt:8-->
+    <div class="item-main-body" data-bind="cpalls_item:isShowing()">
+        <div class="item-body-con">
+            <div class="item-text-con">
+                <p class="target">
+                </p>
+            </div>
+        </div>
+        <div class="item-body-con">
+            <div class="item-text-con-pic row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <a class="item-pic-con  prompt img">
+                    </a>
+                </div>
+                <p class="col-md-4 prompt text">
+
+                </p>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="item-body-con item-body-con-threepic-little">
+            <ul class="answer" data-bind="foreach:{data:answers,as:'answer'}">
+                <li data-bind="css:{active:choosed(),'item-pic-b-l':$index()==0 }" class="item-pic-b-b item-pic-b-t item-pic-b-r">
+                    <!--ko if:picture.file-->
+                    <a href="#" class="item-pic-con" data-bind="event:{click:$root.choose},html:picture.html,visible:picture.timeout==0,showIn:picture.timeout">
+                    </a>
+                    <a href='#' class='time' data-bind="html:execHelper.waitingHtml,visible:picture.timeout>0,hideIn:picture.timeout"></a>
+                    <!--/ko-->
+                </li>
+            </ul>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_10">
+    <!--Checklist:10, Null for Normal Item binder-->
+</script>
+<script type="text/html" id="_cpalls_Item_10_1">
+    <!--Checklist:10,for Checklist Measure-->
+    <tr data-bind="if:item.type == Ade_ItemType.Checklist.value">
+        <td data-bind="html:target.text"></td>
+        <td>
+            <!--ko foreach:{data:answers,as:'answer'}-->
+            <!--ko if:item.multiChoice-->
+            <a class="item-list-btn " data-bind="event:{click:function(){$root.choose(answer,item);}},css:{'item-list-btn-tr':item.direction==Cpalls_Direction.Landscape,'item-list-btn-td':item.direction==Cpalls_Direction.Portrait}">
+                <i data-bind="css:{'icon-check':choosed(),'icon-check-empty':!choosed()}"></i>
+                <span data-bind="html:($index()+1)+ ' - ' +text.text"></span>
+            </a>
+            <!-- /ko-->
+            <!--ko ifnot:item.multiChoice-->
+            <a class="item-list-btn" data-bind="event:{click:function(){$root.choose(answer,item);}},css:{'item-list-btn-tr':item.direction==Cpalls_Direction.Landscape,'item-list-btn-td':item.direction==Cpalls_Direction.Portrait}">
+                <i data-bind="css:{'icon-circle':choosed(),'icon-circle-blank':!choosed()}"></i>
+                <span data-bind="html:($index()+1)+ ' - ' +text.text"></span>
+            </a>
+            <!-- /ko-->
+            <!-- /ko-->
+
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_cpalls_Item_11">
+    <!--TypedResponse:11-->
+    <!--ko ifnot:showingResponse()--><!-- /ko-->
+    <div class="item-main-body typedresponse" data-bind="cpalls_item:isShowing()">
+        <div class="item-text-con">
+            <p class="target">
+            </p>
+        </div>
+        <div class="item-body-con item-pic-con-onepic">
+            <!-- ko foreach:{data:answers,as:'answer'}-->
+            <div class="answer">
+                <div style="text-align: center;">
+                    <!--ko if:picture.file-->
+                    <a href="#" class="item-pic-con" data-bind="event:{click:$root.choose},html:picture.html,visible:picture.timeout==0,showIn:picture.timeout">
+                    </a>
+                    <a href='#' class='time' data-bind="html:execHelper.waitingHtml,visible:picture.timeout>0,hideIn:picture.timeout"></a>
+                    <!--/ko-->
+                </div>
+            </div>
+            <!-- /ko-->
+        </div>
+    </div>
+    
+    <!--ko if:showingResponse()--> <!-- /ko-->
+    <div class="item-main-body typedresponse">
+        <!-- ko template:{name:responseTemplate,data:item}-->
+        <!--/ko-->
+    </div>
+   
+</script>
+<!-- responseTemplate: maybe one of these below:-->
+<script type="text/html" id="_cpalls_Item_11_Response">
+    <div class=" item-response well">
+        <div class="item-response-img thumbnail">
+            <!--ko if:picture-->
+            <a href="#" class="item-pic-con" data-bind="html:html,visible:pictureTimeIn===0,showIn:pictureTimeIn">
+            </a>
+            <a href='#' class='time' data-bind="html:execHelper.waitingHtml,visible:pictureTimeIn>0,hideIn:pictureTimeIn"></a>
+            <!--/ko-->
+        </div>
+        <div class="item-response-label">
+            <label data-bind="attr:{'for':uuid},html:text,visible:textTimeIn===0,showIn:textTimeIn"></label>
+        </div>
+        <div class="item-response-input" data-bind="css:{'has-error': required && alerting()}">
+            <!-- ko if:type === TypedResponseType.Text-->
+            <input class="form-control" type="text"
+                   data-bind="attr:{id:uuid,maxlength:length,placeholder:'Max Characters: '+length},value:content" />
+            <!--/ko-->
+            <!-- ko if:type === TypedResponseType.Numerical-->
+            <input class="form-control" type="number"
+                   data-bind="attr:{id:uuid,maxlength:length,placeholder:'Number of decimals: '+length},value:content"
+                   min="0" max="10000" />
+            <!--/ko-->
+        </div>
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_11_Response_1">
+    <!--
+       ------------
+       -----█------
+       ------------
+       -->
+
+    <div class="item-responses responses-1" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_Item_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_11_Response_2">
+    <!--
+        ------------
+        -█-----█----
+        ------------
+        -->
+    <div class="item-responses responses-2" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko if:$index() == 1-->
+        <div class="item-response">
+        </div>
+        <!--/ko-->
+        <!-- ko template:{name:'_cpalls_Item_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_11_Response_3">
+    <!--
+        ------------
+        -█-█-█------
+        ------------
+        -->
+    <div class="item-responses responses-3" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_Item_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_11_Response_4">
+    <!--
+        ------------
+        -█-----█----
+        -█-----█----
+        ------------
+        -->
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko if:$index() == 1||$index() == 3-->
+        <div class="item-response">
+        </div>
+        <!--/ko-->
+        <!-- ko template:{name:'_cpalls_Item_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_11_Response_5">
+    <!--
+        ------------
+        -█-----█----
+        ----█-------
+        -█-----█----
+        ------------
+        -->
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko if:$index() == 1||$index() == 2||$index() == 3||$index() == 4-->
+        <div class="item-response">
+        </div>
+        <!--/ko-->
+        <!-- ko template:{name:'_cpalls_Item_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_11_Response_6">
+    <!--
+        ------------
+        -█-█-█------
+        -█-█-█------
+        ------------
+        -->
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_Item_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_11_Response_7">
+    <!--
+       ------------
+       -█-█-█------
+       ---█--------
+       -█-█-█------
+       ------------
+       -->
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko if:$index() == 3||$index() == 4-->
+        <div class="item-response">
+        </div>
+        <!--/ko-->
+        <!-- ko template:{name:'_cpalls_Item_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_11_Response_8">
+    <!--
+        ------------
+        -█---█---█--
+        -█---█---█--
+        -█-------█--
+        ------------
+        -->
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko if:$index() == 7-->
+        <div class="item-response">
+        </div>
+        <!--/ko-->
+        <!-- ko template:{name:'_cpalls_Item_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>
+<script type="text/html" id="_cpalls_Item_11_Response_9">
+    <!--
+        ------------
+        -█-█-█--
+        -█-█-█--
+        -█-█-█--
+        ------------
+        -->
+    <div class="item-responses" data-bind="foreach:{data:responses,as:'response'}">
+        <!-- ko template:{name:'_cpalls_Item_11_Response',data:response}-->
+        <!--/ko-->
+    </div>
+</script>

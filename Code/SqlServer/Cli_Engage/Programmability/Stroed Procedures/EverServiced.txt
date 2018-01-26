@@ -1,0 +1,15 @@
+﻿--Ever serviced
+create procedure EverServiced
+AS
+begin
+select BC.Name as CommunityName,BS.Name as SchoolName,S.SchoolId as SchoolCode,S.PhysicalAddress1,S.PhysicalAddress2,
+S.City,CT.Name as County,STT.Name State,S.Zip,ST.Name as SchoolType,S.SchoolYear,
+(select COUNT(*) from Classrooms where SchoolId in (select ID from Schools where ID=S.ID)) as ClassroomCount,
+(select COUNT(*) from Teachers where SchoolId in (select ID from Schools where ID=S.ID)) as TeacherCount,
+(select COUNT(*) from Students where SchoolId in (select ID from Schools where ID=S.ID)) as StudentCount
+from Schools S left join BasicSchools BS on BS.ID=S.BasicSchoolId
+left join Counties CT on CT.ID=S.CountyId left join States STT on STT.ID=S.StateId 
+left join SchoolTypes ST on ST.ID=S.SchoolTypeId
+left join Communities C on S.CommunityId=C.ID left join BasicCommunities BC on BC.ID=C.BasicCommunityId 
+order by BC.Name,BS.Name
+end

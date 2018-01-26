@@ -1,0 +1,121 @@
+﻿--Media Consent Percent
+CREATE procedure MediaConsentPercent
+AS
+begin
+select BC.Name as CommunityName,BS.Name as SchoolName,S.SchoolId as SchoolCode,(U.FirstName+' '+U.LastName) as TeacherName,T.TeacherId as TeacherCode,
+(Coachs.FirstName+' '+Coachs.LastName) as CoachName,T.MediaRelease as TeacherMediaRelease,Cl.Name as ClassName,Cl.ClassId as ClassCode,Cl.ID as ClassId,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID) and IsMediaRelease=1) as MediaReleaseYes,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID) and (IsMediaRelease=2 or IsMediaRelease=0)) as MediaReleaseNo,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID) and IsMediaRelease=3) as MediaReleaseRefused,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID)) as TotalStudentsinClass
+from Teachers T inner join Users U on U.ID=T.UserId left join (select * from Users where Role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+left join TeacherClassRelations TCL on T.id=TCL.TeacherId inner join Classes CL on CL.ID=TCL.ClassId
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId order by BC.Name
+end
+go
+
+--Media Consent Detail
+CREATE procedure MediaConsentDetail
+AS
+begin
+select Cl.ID into #Class
+from Teachers T inner join Users U on U.ID=T.UserId 
+left join (select * from Users where Role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+left join TeacherClassRelations TCL on T.id=TCL.TeacherId inner join Classes CL on CL.ID=TCL.ClassId
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId order by BC.Name
+
+select BC.Name as CommunityName,BS.Name as SchoolName,S.SchoolId as SchoolCode,
+(U.FirstName+' '+U.LastName) as TeacherName,T.TeacherId as TeacherCode,
+(Coachs.FirstName+' '+Coachs.LastName) as CoachName,
+ST.FirstName+' '+ST.LastName as StudentName,ST.StudentId as StudentCode,ST.Status as StudentStatus,ST.IsMediaRelease as StudentMediaRelease
+ from Students St
+left join StudentClassRelations SC on St.ID=SC.StudentId inner join Classes CL on CL.ID=SC.ClassId
+left join TeacherClassRelations TCL on CL.ID=TCL.ClassId inner join Teachers T on T.ID=TCL.TeacherId
+inner join Users U on U.ID=T.UserId left join (select * from Users where Role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+inner join Schools S on St.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join Communities C on St.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId
+where St.ID in (select StudentId from StudentClassRelations where ClassId in (select ID from #Class))
+order by BC.Name
+drop table #Class
+end
+GO
+
+--coach report
+CREATE procedure CoachReport
+@coachId int,
+@fundingIds varchar(max),
+@status int
+AS
+begin
+declare @sql varchar(max)
+ set @sql='select U.Status,T.ID,F.ID,Coachs.ID, BC.Name as CommunityName,BS.Name as SchoolName,ST.Name as SchoolType,U.FirstName,U.LastName,F.Name as TeacherFunding,
+(case when T.TeacherType=0 then '''' when T.TeacherType=1 then ''Lead Teacher'' when T.TeacherType=1 then ''Lead Teacher'' when T.TeacherType=2 then ''Co-Teacher'' 
+when T.TeacherType=3 then ''Assistant Teacher'' else T.TeacherTypeOther end) as TeacherType,'''' as TargetStatus 
+from Teachers T inner join Users U on U.ID=T.UserId left join (select * from Users where role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+left join Fundings F on F.ID=T.CLIFundingId
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId left join SchoolTypes ST on ST.ID=S.SchoolTypeId 
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId 
+where F.ID in ('+CAST(@fundingIds AS varchar(max))+') and Coachs.ID='+CAST(@coachId as varchar(100))+''
+if(@status=1 or @status=2)
+	set @sql+=' and U.Status='+CAST(@status as varchar(100))+''
+set @sql+=' order by BC.Name'
+exec(@sql)
+end
+GO
+
+
+--Beech report
+CREATE procedure BeechReport
+AS
+begin
+select BC.Name as CommunityDistrict,BC.Name as SchoolName,S.SchoolId as SchoolCode,S.PhoneNumber as Phone,S.PhysicalAddress1 as PhysicalAddress,S.City,S.Zip,'' as AdminName,'' as AdminEmail,'' as ChildCareLicense,(case when T.PrimaryLanguageOther='' then L.Language else T.PrimaryLanguageOther end) as Language,(U.FirstName+' '+U.LastName) as TeacherName,T.TeacherId as TeacherCode,S.Notes as SchoolNotes,
+(select COUNT(*) from Students S where ID in (select StudentId from StudentClassRelations where ClassId in (select ClassId from TeacherClassRelations where TeacherId=T.ID)) 
+and DATEADD(d,28,s.BirthDate)<GETDATE() and  DATEDIFF(MM,S.BirthDate,GETDATE())<17) as Infant,
+(select COUNT(*) from Students S where ID in (select StudentId from StudentClassRelations where ClassId in (select ClassId from TeacherClassRelations where TeacherId=T.ID)) 
+and DATEDIFF(MM,S.BirthDate,GETDATE()) between 18 and 35) as Toddler,
+(select COUNT(*) from Students S where ID in (select StudentId from StudentClassRelations where ClassId in (select ClassId from TeacherClassRelations where TeacherId=T.ID)) 
+and DATEDIFF(MM,S.BirthDate,GETDATE()) between 36 and 48) as Preschool
+from  Teachers T inner join Users U on U.ID=T.UserId 
+left join Languages L on L.ID=T.PrimaryLanguageId 
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId
+end
+GO
+
+--Currently Participant School List example: 
+GO
+CREATE procedure CurrentParticipantSchool
+As 
+begin
+select BC.Name as CommunityName,BS.Name as SchoolName,S.SchoolId as SchoolCode,S.PhysicalAddress1,S.PhysicalAddress2,
+S.City,CT.Name as County,STT.Name State,S.Zip,S.PrimaryPhone as Phone,ST.Name as SchoolType,'' as ChildCareLicense,F.Name as Funding,
+(select COUNT(*) from Classrooms where SchoolId in (select ID from Schools where ID=S.ID)) as ClassroomCount,
+(select COUNT(*) from Teachers where SchoolId in (select ID from Schools where ID=S.ID)) as TeacherCount,
+(select COUNT(*) from Students where SchoolId in (select ID from Schools where ID=S.ID)) as StudentCount
+from Schools S left join BasicSchools BS on BS.ID=S.BasicSchoolId
+left join Counties CT on CT.ID=S.CountyId left join States STT on STT.ID=S.StateId 
+left join SchoolTypes ST on ST.ID=S.SchoolTypeId
+left join Fundings F on F.ID=S.FundingId
+left join Communities C on S.CommunityId=C.ID left join BasicCommunities BC on BC.ID=C.BasicCommunityId 
+where S.Status=1
+order by BC.Name
+end
+GO
+
+--Ever serviced
+create procedure EverServiced
+AS
+begin
+select BC.Name as CommunityName,BS.Name as SchoolName,S.SchoolId as SchoolCode,S.PhysicalAddress1,S.PhysicalAddress2,
+S.City,CT.Name as County,STT.Name State,S.Zip,ST.Name as SchoolType,S.SchoolYear,
+(select COUNT(*) from Classrooms where SchoolId in (select ID from Schools where ID=S.ID)) as ClassroomCount,
+(select COUNT(*) from Teachers where SchoolId in (select ID from Schools where ID=S.ID)) as TeacherCount,
+(select COUNT(*) from Students where SchoolId in (select ID from Schools where ID=S.ID)) as StudentCount
+from Schools S left join BasicSchools BS on BS.ID=S.BasicSchoolId
+left join Counties CT on CT.ID=S.CountyId left join States STT on STT.ID=S.StateId 
+left join SchoolTypes ST on ST.ID=S.SchoolTypeId
+left join Communities C on S.CommunityId=C.ID left join BasicCommunities BC on BC.ID=C.BasicCommunityId 
+order by BC.Name,BS.Name
+end

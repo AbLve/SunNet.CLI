@@ -1,0 +1,226 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Core.Reports.Entities.ResultEntity
+@{
+    ViewBag.Title = "DataExport Report";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Layout_Base.cshtml"; 
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Report_LeftMenu.cshtml", Leftmenu_Report.DataExport)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Report", "Index", "Index"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Report Dashboad
+}
+<div class="modal-l-b"></div>
+@using (Ajax.BeginForm("SubmitDataExport", "Index", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{  
+<div class="main-content">
+
+    <div class="form-group">
+        <div class="nav-tab">
+            <ul id="myTab" class="nav-container" role="tablist">
+                <li class="active"><a href="#divCommunity" role="tab" data-toggle="tab" id="lnkCommunity">Community</a></li>
+                <li><a href="#divSchool" role="tab" data-toggle="tab" id="lnkSchool">School</a></li>
+                <li><a href="#divClassroom" role="tab" data-toggle="tab" id="lnkClassroom">Classroom</a></li>
+                <li><a href="#divClass" role="tab" data-toggle="tab" id="lnkClass">Class</a></li>
+                <li><a href="#divTeacher" role="tab" data-toggle="tab" id="lnkTeacher">Teacher</a></li>
+                <li><a href="#divStudent" role="tab" data-toggle="tab" id="lnkStudent">Student</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="divCommunity">
+                    <div class="form-group report-content">
+                        <ul data-bind="foreach: { data: showRecords, as: 'item' }">
+                            <li>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="chkClasses" id="chkClasses" class="required"
+                                        data-bind="value: item.Field, attr: { checked: $root.classChecked(item), id: 'chkClasses' + $index() }" />
+                                    <span data-bind="text: item.DisplayName, attr: { title: item.DisplayName }"></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="divSchool">
+                    <div class="form-group report-content">
+                        <ul data-bind="foreach: { data: showRecords, as: 'item' }">
+                            <li>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="chkClasses" id="chkClasses" class="required"
+                                        data-bind="value: item.Field, attr: { checked: $root.classChecked(item), id: 'chkClasses' + $index() }" />
+                                    <span data-bind="text: item.DisplayName, attr: { title: item.DisplayName }"></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="divClassroom">
+                    <div class="form-group report-content">
+                        <ul data-bind="foreach: { data: showRecords, as: 'item' }">
+                            <li>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="chkClasses" id="chkClasses" class="required"
+                                        data-bind="value: item.Field, attr: { checked: $root.classChecked(item), id: 'chkClasses' + $index() }" />
+                                    <span data-bind="text: item.DisplayName,   attr: { title: item.DisplayName }"></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="divClass">
+                    <div class="form-group report-content">
+                        <ul data-bind="foreach: { data: showRecords, as: 'item' }">
+                            <li>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="chkClasses" id="chkClasses" class="required"
+                                        data-bind="value: item.Field, attr: { checked: $root.classChecked(item), id: 'chkClasses' + $index() }" />
+                                    <span data-bind="text: item.DisplayName,   attr: { title: item.DisplayName }"></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="divTeacher">
+                    <div class="form-group report-content">
+                        <ul data-bind="foreach: { data: showRecords, as: 'item' }">
+                            <li>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="chkClasses" id="chkClasses" class="required"
+                                        data-bind="value: item.Field, attr: { checked: $root.classChecked(item), id: 'chkClasses' + $index() }" />
+                                    <span data-bind="text: item.DisplayName,  attr: { title: item.DisplayName }"></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="divStudent">
+                    <div class="form-group report-content">
+                        <ul data-bind="foreach: { data: showRecords, as: 'item' }">
+                            <li>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="chkClasses" id="chkClasses" class="required"
+                                        data-bind="value: item.Field, attr: { checked: $root.classChecked(item), id: 'chkClasses' + $index() }" />
+                                    <span data-bind="text: item.DisplayName,  attr: { title: item.DisplayName }"></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button class="mainbutton modal-btn submit-btn" type="submit">Submit</button>
+    <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack()'>Cancel</button>
+</div>
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Community = {};
+        var list_School = {};
+        var list_Classroom = {};
+        var list_Class = {};
+        var list_Teacher = {};
+        var list_Student = {};
+        var checkedCommunityList =  @Html.Raw( ViewBag.checkedCommunityList);
+        var checkedSchoolList =   @Html.Raw(ViewBag.checkedSchoolList);
+        var checkedClassroomList =   @Html.Raw(ViewBag.checkedClassroomList);
+        var checkedClassList =   @Html.Raw(ViewBag.checkedClassList);
+        var checkedStudentList =   @Html.Raw(ViewBag.checkedStudentList);
+        var checkedTeacherList =   @Html.Raw(ViewBag.checkedTeacherList);
+        $(function ()
+        {
+            list_Community = GenerateViewModel("list_Community", "Community", checkedCommunityList);
+            list_School = GenerateViewModel("list_School", "School", checkedSchoolList);
+            list_Classroom = GenerateViewModel("list_Classroom", "Classroom", checkedClassroomList);
+            list_Class = GenerateViewModel("list_Class", "Class", checkedClassList);
+            list_Teacher = GenerateViewModel("list_Teacher", "Teacher", checkedTeacherList);
+            list_Student = GenerateViewModel("list_Student", "Student", checkedStudentList);
+
+            $('#lnkCommunity').on('show.bs.tab', function (e)
+            {
+                if (list_Community.showRecordsCount() <= 0)
+                {
+                    list_Community.search();
+                    ko.applyBindings(list_Community, document.getElementById("divCommunity"));
+                }
+            });
+            $('#lnkSchool').on('show.bs.tab', function (e)
+            {
+                if (list_School.showRecordsCount() <= 0)
+                {
+                    list_School.search();
+                    ko.applyBindings(list_School, document.getElementById("divSchool"));
+                }
+            });
+            $('#lnkClassroom').on('show.bs.tab', function (e)
+            {
+                if (list_Classroom.showRecordsCount() <= 0)
+                {
+                    list_Classroom.search();
+                    ko.applyBindings(list_Classroom, document.getElementById("divClassroom"));
+                }
+            });
+            $('#lnkClass').on('show.bs.tab', function (e)
+            {
+                if (list_Class.showRecordsCount() <= 0)
+                {
+                    list_Class.search();
+                    ko.applyBindings(list_Class, document.getElementById("divClass"));
+                }
+            });
+            $('#lnkTeacher').on('show.bs.tab', function (e)
+            {
+                if (list_Teacher.showRecordsCount() <= 0)
+                {
+                    list_Teacher.search();
+                    ko.applyBindings(list_Teacher, document.getElementById("divTeacher"));
+                }
+            });
+            $('#lnkStudent').on('show.bs.tab', function (e)
+            {
+                if (list_Student.showRecordsCount() <= 0)
+                {
+                    list_Student.search();
+                    ko.applyBindings(list_Student, document.getElementById("divStudent"));
+                }
+            });
+            list_Community.search();
+            ko.applyBindings(list_Community, document.getElementById("divCommunity"));
+        });
+
+        function GenerateViewModel(instance, classEntity, chkedList)
+        {
+            var model = new ViewModel(
+                {
+                    instanceName: instance,
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("GetEntityAttrs")))',
+                    searchCriteria: {
+                        entityName: ko.observable(classEntity)
+                    }
+                },
+                 {
+                     classChecked: function (fieldItem) {
+                         console.log(chkedList,fieldItem);
+                         return chkedList.indexOf(fieldItem.Field) >= 0;
+                     }
+                 }
+            );
+            return model;
+        }
+    </script>
+}

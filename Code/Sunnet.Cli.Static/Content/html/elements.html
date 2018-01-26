@@ -1,0 +1,614 @@
+<html lang="zh-en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>assessment</title>
+
+    <!-- Bootstrap -->
+    <link href="/Content/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Content/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Content/lib/Font-Awesome-3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/Content/style/layout.css" rel="stylesheet">
+    <link href="/Content/style/module.css" rel="stylesheet">
+    <script src="../Scripts/jquery-1.10.2.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+</head>
+<body>
+
+
+    <div class="warp">
+        <div class="header">
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="#">
+                        <img src="/Content/images/cli_logo.png"></a>
+                </div>
+                <div class="header-logout"><span>welcome<i class="icon-user"></i>John Smith<a><i class="icon-off"></i>Log out</a></span></div>
+            </div>
+            <div class="nav">
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="demos.html">Engage Demos</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+
+        <div class="main-con-left menu-side">
+            <h4><i></i>ADE</h4>
+            <ul>
+                <li><a href="dashboard.html" class="main-ade-left-active">Dashboard</a></li>
+                <li><a href="#">Manage Assessment</a>
+                    <ul>
+                        <li><a href="#">Assessment</a></li>
+                        <li><a href="#">Manage Assessment</a></li>
+                        <li><a href="#">Assessment</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-con-right">
+            <h4 class="backlink"><a href="ade.html">ADE</a> <i class="icon-angle-right"></i>Inputs </h4>
+            <div class="right-content">
+                <!---- 提示框 ---->
+                <div class="message-Container">
+                    <!---- success ---->
+                    <div class="alert alert-success alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <i class="icon-ok icon-2x"></i>
+                        <!----<h4>success</h4>--->
+                        <p>
+                            <strong></strong>Operation failed from server. 
+                            test error message title
+                        </p>
+                    </div>
+
+                    <!---- danger ---->
+                    <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <i class="icon-remove icon-2x"></i>
+                        <!----<h4>Sorry</h4>--->
+                        <p>
+                            Operation failed from server. 
+                            test error message title
+                        </p>
+                    </div>
+
+                    <!---- warning ---->
+                    <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+
+                        <i class="icon-warning-sign icon-3x"></i>
+                        <!---- <h4>Warning!</h4>--->
+                        <p>
+                            <strong></strong>Are you sure?
+                            test error message title
+                        </p>
+                        <p>
+                            <button type="button" class="mainbutton btn-danger">Delete</button>
+                            <button type="button" class="mainbutton nav-btn">Back</button>
+                        </p>
+                    </div>
+
+                </div>
+                <!-- 弹框 -->
+                <div class="main-content">
+                    <input type="button" class="mainbutton mainright-btn create-btn" value="Back">
+                    <input type="button" class="mainbutton mainright-btn create-btn" data-toggle="modal" data-target="#myModal" value="Create Assessment">
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Create Assessment</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="modal-main-content">
+                                        <div class="modal-content-body">
+
+
+                                            <form class="form-horizontal" role="form">
+                                                <div class="form-group">
+                                                    <label for="inputPassword" class="col-sm-2 control-label">Ethnicity</label>
+                                                    <div class="col-sm-4">
+                                                        <select class="form-control">
+                                                            <option value="">A</option>
+                                                            <option value="">B</option>
+                                                            <option value="">C</option>
+                                                        </select>
+                                                    </div>
+                                                    <label for="inputPassword" class="col-sm-2 control-label">Vedor Code</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" placeholder="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword" class="col-sm-2 control-label">Email</label>
+                                                    <div class="col-sm-4">
+                                                        <p class="form-control-static">12345467@gmail.com</p>
+                                                    </div>
+                                                    <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" placeholder="Password">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword" class="col-sm-2 control-label">Frist Name</label>
+                                                    <div class="col-sm-4">
+                                                        <p class="form-control-static">12345467@gmail.com</p>
+                                                    </div>
+                                                    <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+                                                    <div class="col-sm-4">
+                                                        <label class="radio-inline">
+                                                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                                                            Yes</label>
+                                                        <label class="radio-inline">
+                                                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2" checked>
+                                                            No</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword" class="col-sm-2 control-label">Email</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" placeholder="Password">
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal-l-b"></div>
+
+                                                <div class="form-group">
+                                                    <label for="inputPassword" class="col-sm-4 control-label">Home Mailing Address</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" placeholder="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword" class="col-sm-4 control-label">Home Mailing Address</label>
+                                                    <div class="col-sm-8">
+                                                        <label class="checkbox-inline">
+                                                            <input type="checkbox" id="inlineCheckbox1" value="option1">
+                                                            Classroom Management
+                                                        </label>
+                                                        <label class="checkbox-inline">
+                                                            <input type="checkbox" id="inlineCheckbox1" value="option1">
+                                                            Classroom Management
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword" class="col-sm-4 control-label">Previous Last Name</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" placeholder="">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <select class="form-control">
+                                                            <option value="">A</option>
+                                                            <option value="">B</option>
+                                                            <option value="">C</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-l-b"></div>
+                                                <div class="form-group">
+                                                    <div class="modal-body-tab">
+                                                        <table class="table table-hover table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>No</th>
+                                                                    <th>Type</th>
+                                                                    <th>Amount</th>
+                                                                    <th>Sessions Atteched</th>
+                                                                    <th>Total Sessions</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>1</td>
+                                                                    <td>Incentive</td>
+                                                                    <td>$1000</td>
+                                                                    <td>2</td>
+                                                                    <td>10</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>2</td>
+                                                                    <td>Incentive</td>
+                                                                    <td>$1000</td>
+                                                                    <td>2</td>
+                                                                    <td>10</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>3</td>
+                                                                    <td>Incentive</td>
+                                                                    <td>$1000</td>
+                                                                    <td>2</td>
+                                                                    <td>10</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="mainbutton mainright-btn save-btn">Save changes</button>
+                                                    <button type="button" class="mainbutton mainright-btn close-btn" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-l-b"></div>
+                <!---表单--->
+                <!---Basic Information--->
+                <div class="main-content">
+                    <div class="content-title">Basic Information</div>
+                    
+                    <div class="content-body">
+                        <div class="content-title2">Information</div>
+                        <form class="form-horizontal" role="form">
+                            
+                            <div class="group-bg-b">
+                                <div class="form-group">
+                                    <label for="inputPassword" class="col-sm-2 control-label">Last Name</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" placeholder="">
+                                    </div>
+                                    <label for="inputPassword" class="col-sm-2 control-label">Previous Last Name</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" placeholder="">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="inputPassword" class="col-sm-2 control-label">Gander</label>
+                                    <div class="col-sm-4">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
+                                            Male</label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" checked>
+                                            Female</label>
+                                    </div>
+                                    <div class="has-date has-feedback">
+                                        <label for="inputPassword" class="col-sm-2 control-label">Birth Date</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPassword" class="col-sm-2 control-label">Ethnicity</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control">
+                                            <option value="">A</option>
+                                            <option value="">B</option>
+                                            <option value="">C</option>
+                                        </select>
+                                    </div>
+                                    <label for="inputPassword" class="col-sm-2 control-label">Vedor Code</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="group-bg-y">
+                                <div class="form-group">
+                                    <label for="inputPassword" class="col-sm-2 control-label">Primary Language</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control">
+                                            <option value="">A</option>
+                                            <option value="">B</option>
+                                            <option value="">C</option>
+                                        </select>
+                                    </div>
+                                    <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control">
+                                            <option value="">A</option>
+                                            <option value="">B</option>
+                                            <option value="">C</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="group-bg-b">
+                                <div class="form-group">
+                                    <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control">
+                                            <option value="">A</option>
+                                            <option value="">B</option>
+                                            <option value="">C</option>
+                                        </select>
+                                    </div>
+                                    <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control">
+                                            <option value="">A</option>
+                                            <option value="">B</option>
+                                            <option value="">C</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="group-bg-b">
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                <div class="col-sm-10">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked>
+                                        Yes</label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" checked>
+                                        No</label>
+                                </div>
+                            </div>
+                                </div>
+                        </form>
+                    </div>
+                    <div class="content-body content-body-green">
+                        <div class="content-title2">Information</div>
+                        <form class="form-horizontal" role="form">
+                            
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Ethnicity</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">Vedor Code</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Primary Language</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                <div class="col-sm-10">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="Radio3" value="option1" checked>
+                                        Yes</label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="Radio4" value="option2" checked>
+                                        No</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="content-body content-body-yellow">
+                        <div class="content-title2">Information</div>
+                        <form class="form-horizontal" role="form">
+                            
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Ethnicity</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">Vedor Code</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Primary Language</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                <div class="col-sm-10">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="Radio1" value="option1" checked>
+                                        Yes</label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="Radio2" value="option2" checked>
+                                        No</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    
+                    <div class="content-body content-body-bule">
+                        <div class="content-title2">Information</div>
+                        <form class="form-horizontal" role="form">
+                            
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Ethnicity</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">Vedor Code</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Primary Language</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">A</option>
+                                        <option value="">B</option>
+                                        <option value="">C</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                <div class="col-sm-10">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="Radio5" value="option1" checked>
+                                        Yes</label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="inlineRadioOptions" id="Radio6" value="option2" checked>
+                                        No</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+
+                <!---Button style--->
+                <div class="button-content">
+                    <input type="button" class="mainbutton mainright-btn create-btn" value="Back">
+                    <input type="button" class="mainbutton mainright-btn create-btn" value="Create">
+                    <input type="button" class="mainbutton mainright-btn update-btn" value="Update">
+                    <input type="button" class="mainbutton mainright-btn submit-btn" value="Submit">
+                    <input type="button" class="mainbutton mainright-btn search-btn" value="Search">
+                    <input type="button" class="mainbutton mainright-btn save-btn" value="Save">
+                    <input type="button" class="mainbutton mainright-btn cancel-btn" value="Cancle">
+                    <input type="button" class="mainbutton mainright-btn cancel-btn" value="Reset">
+                    <input type="button" class="mainbutton mainright-btn close-btn" value="Close">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="homelink">
+            <ul>
+                <li class="link-ut"><a href="#">
+                    <img src="/Content/images/UT.png"></a></li>
+                <li class="link-cli"><a href="#">
+                    <img src="/Content/images/CLI.png"></a></li>
+                <li class="link-tsr"><a href="#">
+                    <img src="/Content/images/TSR.png"></a></li>
+            </ul>
+        </div>
+        <div class="copyright">
+            <div class="nav-bottom">
+                <ul>
+                    <li><a href="#">Home</a>|</li>
+                    <li><a href="#">About Us</a>|</li>
+                    <li><a href="#">Engage Demos</a>|</li>
+                    <li><a href="#">FAQ</a>|</li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <p>Copyright 2008-Present - The University of xxxx at Houston </p>
+        </div>
+    </div>
+
+
+</body>
+</html>

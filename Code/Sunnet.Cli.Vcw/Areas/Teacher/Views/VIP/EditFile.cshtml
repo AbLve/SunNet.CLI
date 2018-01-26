@@ -1,0 +1,193 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherVIPFileModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Vcw.Enums
+@using System.Web.Optimization
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase;
+
+@{
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    bool isSummary = !string.IsNullOrEmpty(ViewBag.Redirect);
+    ViewBag.IsVideo = true;
+    List<SelectItemModel> Languages = ViewBag.Languages as List<SelectItemModel>;
+}
+
+@if (isSummary)
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Summary", "Index", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        File
+    }
+}
+else
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("My VIP Assignments", "Index", "VIP"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("VIP", "View", "VIP", new { id = Model.AssignmentID }, null))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        View
+    }
+}
+
+
+@if (isSummary)
+{
+    @section LeftMenu
+{
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Teacher_Summary)
+    }
+}
+else
+{
+    @section LeftMenu
+{
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Teacher_VIP)
+    }
+}
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var isVideo = true;
+    </script>
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var backurl = "@(ViewBag.Redirect)";
+                    if (backurl != "") {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "Summary"))");
+                    }
+                    else {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("View", new { id = Model.AssignmentID }))");
+                    }
+
+                }
+            });
+        })
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+    </script>
+}
+@using (Ajax.BeginForm("Edit", "VIP", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.AssignmentID)
+    <div class="right-content-top">
+        @if (isSummary)
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("Index", "Summary"))" >Back to Files</a>
+        }
+        else
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("View", "VIP", new { id = Model.AssignmentID }, ""))" >Back to VIP</a>
+        }
+    </div>
+    <div class="main-content">
+        <div class="content-title">Selected Video Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IdentifyFileName, new { @class = "control-label col-sm-3 required" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.IdentifyFileName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.IdentifyFileName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Date Video Recorded</div>
+                                </div>
+                                <div class="textarea-con">
+                                    <label for="DateRecorded" class="hide">&nbsp;</label>
+                                    @Html.TextBoxFor(m => m.DateRecorded, new { @class = "form-control date", @Value = Model.DateRecorded.Value.FormatDateString() })
+                                    @Html.ValidationMessageFor(m => m.DateRecorded)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Video language</div>
+                                </div>
+                                @if (Languages != null)
+                                {
+                                    foreach (SelectItemModel item in Languages)
+                                    {
+                                    <div class="checkbox-con">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="language" value="@item.ID"
+                                                @(Model.LanguageId == item.ID ? "checked" : "")>@item.Name
+                                        </label>
+                                    </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">
+                                        Teacher Comments
+                                        <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                                    </div>
+                                </div>
+                                <div class="textarea-con">
+                                    <label for="Description" class="hide">&nbsp;</label>
+                                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", row = "3" })
+                                    @Html.ValidationMessageFor(m => m.Description)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.Partial("/Areas/Coach/Views/Partials/UploadedFile2.cshtml")
+                </div>
+                <div class="col-sm-6">
+                    <video controls="controls" class="videoplay">
+                        <source src="@(FileHelper.GetPreviewPathofUploadFile(Model.FilePath).Replace("\\", "/"))" />
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="uploadfiles" id="uploadfiles" />
+    <div class="modal-footer">
+        <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit_edit(this);">
+        @if (!string.IsNullOrEmpty(ViewBag.Redirect))
+        {
+            <button class="mainbutton modal-btn cancel-btn" type="button"  
+                onclick="redirectBack('@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "Summary"))');">
+                Cancel</button>
+        }
+        else
+        {
+            <button class="mainbutton modal-btn cancel-btn" type="button"  
+                onclick="redirectBack('@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("View", new { id = Model.AssignmentID }))');">
+                Cancel</button>    
+        }
+    </div>
+}

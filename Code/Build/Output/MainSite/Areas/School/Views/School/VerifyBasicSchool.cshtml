@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Verify Basic School";
+    Layout = "~/Views/Shared/_Layout_FullContent.cshtml";
+}
+@model Sunnet.Cli.Core.Schools.Entities.BasicSchoolEntity
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function Approve() {
+            var url = window.location.href;
+            $.post("ApproveBasicSchool", { msg: "@ViewBag.msg", urlStr: url }, function (data)
+            {
+                if (data.success) {
+                    showMessage("success", " Operation successed.");
+                } else {
+                    showMessage("fail", data.msg);
+                }
+            }, "json");
+        }
+
+        function Deny()
+        {
+            var url = window.location.href;
+            $.post("DenyBasicSchool", { msg: "@ViewBag.msg", urlStr: url }, function (data)
+            {
+                if (data.success) {
+                    showMessage("success", " Operation successed.");
+                } else {
+                    showMessage("fail", data.msg);
+                }
+            }, "json");
+        }
+
+        function Resend() {
+            $.post("ResendBasicSchool?msg=@ViewBag.msg", function(data) {
+                if (data.success) {
+                    showMessage("success", " Operation successed.");
+                } else {
+                    showMessage("fail", data.msg);
+                }
+            }, "json");
+        }
+    </script>
+}
+<div class="main-con">
+    <div class="dashboard-text">
+        <h3>Welcome to CLI Engage!</h3>
+        <p>@Model.Name</p>
+    </div>
+    <div class="dashboard-text">
+        <p>
+            @ViewBag.Content
+        </p>
+    </div>
+  
+     @if (ViewBag.ViewRequest)
+       {
+                 <div class="dashboard-text">
+                     <p>
+                         <button class="mainbutton modal-btn submit-btn" onclick="return Resend()" type="button">Resend</button>  
+                     </p>
+                 </div>
+     }
+     else
+     {
+       if (ViewBag.isValid)
+             {
+                 <div class="dashboard-text">
+                     <p>
+          
+                         <button class="mainbutton modal-btn submit-btn" onclick="return Approve()" type="submit">Approve</button>
+                         <button class="mainbutton modal-btn cancel-btn" type="button" onclick="return Deny()">Deny</button>
+       
+        
+                     </p>
+                 </div>
+       }
+     }
+
+</div>

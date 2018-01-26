@@ -1,0 +1,241 @@
+﻿
+/****** Object:  Table [dbo].[VIPDocuments]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[VIPDocuments](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[FileName] [varchar](200) NULL,
+	[FilePath] [varchar](500) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_VIPDocuments] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[FileShareds]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[FileShareds](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[FileId] [int] NOT NULL,
+	[UserId] [int] NOT NULL,
+	[Type] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_FileShareds] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[FileSelections]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[FileSelections](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[FileId] [int] NOT NULL,
+	[SelectionId] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_FileSelections] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Files]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Files](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AssignmentId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[OwnerId] [int] NOT NULL,
+	[UploadUserId] [int] NOT NULL,
+	[UploadDate] [datetime] NOT NULL,
+	[VideoType] [tinyint] NOT NULL,
+	[FileName] [varchar](200) NULL,
+	[FilePath] [varchar](500) NULL,
+	[FeedbackText] [varchar](500) NULL,
+	[FeedbackFileName] [varchar](200) NULL,
+	[FeedbackFilePath] [varchar](500) NULL,
+	[DateRecorded] [datetime] NOT NULL,
+	[ContextId] [tinyint] NULL,
+	[ContextOther] [varchar](100) NULL,
+	[ContentId] [tinyint] NULL,
+	[ContentOther] [varchar](100) NULL,
+	[StrategyId] [tinyint] NULL,
+	[StrategyOther] [varchar](100) NULL,
+	[Language] [tinyint] NULL,
+	[Objectives] [varchar](500) NULL,
+	[Effectiveness] [varchar](500) NULL,
+	[TBRSDate] [datetime] NOT NULL,
+	[Description] [varchar](500) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[IsDelete] [bit] NOT NULL,
+ CONSTRAINT [PK_Files] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[AssignmentWatchFiles]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[AssignmentWatchFiles](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AssignmentId] [int] NOT NULL,
+	[FileName] [varchar](200) NULL,
+	[FilePath] [varchar](500) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_AssignmentWatchFiles] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[AssignmentUploadTypes]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AssignmentUploadTypes](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AssignmentId] [int] NOT NULL,
+	[TypeId] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_AssignmentUploadTypes] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Assignments]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Assignments](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[AssignmentType] [tinyint] NOT NULL,
+	[SendUserId] [int] NOT NULL,
+	[ReceiveUserId] [int] NOT NULL,
+	[CommunityId] [int] NOT NULL,
+	[DueDate] [datetime] NOT NULL,
+	[FeedbackCalllDate] [datetime] NOT NULL,
+	[Session] [tinyint] NOT NULL,
+	[Wave] [tinyint] NOT NULL,
+	[ContextOther] [varchar](100) NULL,
+	[ContentOther] [varchar](100) NULL,
+	[FeedbackText] [varchar](500) NULL,
+	[FeedbackFileName] [varchar](200) NULL,
+	[FeedbackFilePath] [varchar](500) NULL,
+	[Description] [varchar](500) NULL,
+	[StrategyId] [tinyint] NULL,
+	[StrategyOther] [varchar](100) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[IsDelete] [bit] NOT NULL,
+ CONSTRAINT [PK_Assignments] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[AssignmentFiles]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[AssignmentFiles](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AssignmentId] [int] NOT NULL,
+	[FileName] [varchar](200) NULL,
+	[FilePath] [varchar](500) NULL,
+	[CreatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_AssignmentFiles] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[AssignmentContexts]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AssignmentContexts](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AssignmentId] [int] NOT NULL,
+	[ContextId] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_AssignmentStrategies] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AssignmentContents]    Script Date: 11/12/2014 16:44:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AssignmentContents](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AssignmentId] [int] NOT NULL,
+	[ContentId] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_AssignmentContents] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Default [DF_Assignments_Status]    Script Date: 11/12/2014 16:44:45 ******/
+ALTER TABLE [dbo].[Assignments] ADD  CONSTRAINT [DF_Assignments_Status]  DEFAULT ((1)) FOR [Status]
+GO
+/****** Object:  Default [DF__Assignmen__Delet__4AB81AF0]    Script Date: 11/12/2014 16:44:45 ******/
+ALTER TABLE [dbo].[Assignments] ADD  CONSTRAINT [DF__Assignmen__Delet__4AB81AF0]  DEFAULT ((0)) FOR [IsDelete]
+GO
+/****** Object:  Default [DF_Files_Status]    Script Date: 11/12/2014 16:44:45 ******/
+ALTER TABLE [dbo].[Files] ADD  CONSTRAINT [DF_Files_Status]  DEFAULT ((1)) FOR [Status]
+GO
+/****** Object:  Default [DF__Files__DeleteFlg__4CA06362]    Script Date: 11/12/2014 16:44:45 ******/
+ALTER TABLE [dbo].[Files] ADD  DEFAULT ((0)) FOR [IsDelete]
+GO

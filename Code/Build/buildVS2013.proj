@@ -1,0 +1,87 @@
+<Project DefaultTargets="Compile" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<!--
+Vs 2013: 12.0
+Vs 2012: 4.0
+		-->
+		<NetVersion>12.0</NetVersion>
+		</PropertyGroup>
+	<PropertyGroup>
+		<!--
+Vs 2013: v12.0
+Vs 2012: v11.0
+		-->
+		<VSToolsPath>C:\Program Files (x86)\MSBuild\Microsoft\VisualStudio\v12.0</VSToolsPath>
+		<OutputPath>.\Output</OutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<AssessmentFiles Exclude="..\Sunnet.Cli.Assessment\obj\**\*.*;..\Sunnet.Cli.Assessment\Properties\**\*.*;..\Sunnet.Cli.Assessment\bin\zh-Hans\**\*.*;..\Sunnet.Cli.Assessment\**\*.cs;..\Sunnet.Cli.Assessment\web.*config;..\Sunnet.Cli.Assessment\log4net*.*config;..\Sunnet.Cli.Assessment\*.csproj*;..\Sunnet.Cli.Assessment\**\*.bat;" Include="..\Sunnet.Cli.Assessment\**\*.*"/>
+		<MainSiteFiles Exclude="..\Sunnet.Cli.MainSite\obj\**\*.*;..\Sunnet.Cli.MainSite\Properties\**\*.*;..\Sunnet.Cli.MainSite\bin\zh-Hans\**\*.*;..\Sunnet.Cli.MainSite\**\*.cs;..\Sunnet.Cli.MainSite\web.*config;..\Sunnet.Cli.MainSite\log4net*.*config;..\Sunnet.Cli.MainSite\*.csproj*;..\Sunnet.Cli.MainSite\**\*.bat;" Include="..\Sunnet.Cli.MainSite\**\*.*"/>
+		<SsoFiles Exclude="..\Sunnet.Cli.Sso\obj\**\*.*;..\Sunnet.Cli.Sso\Properties\**\*.*;..\Sunnet.Cli.Sso\bin\zh-Hans\**\*.*;..\Sunnet.Cli.Sso\**\*.cs;..\Sunnet.Cli.Sso\web.*config;..\Sunnet.Cli.Sso\log4net*.*config;..\Sunnet.Cli.Sso\*.csproj*;..\Sunnet.Cli.Sso\**\*.bat;" Include="..\Sunnet.Cli.Sso\**\*.*"/>
+		<StaticFiles Exclude="..\Sunnet.Cli.Static\obj\**\*.*;..\Sunnet.Cli.Static\Properties\**\*.*;..\Sunnet.Cli.Static\bin\zh-Hans\**\*.*;..\Sunnet.Cli.Static\**\*.cs;..\Sunnet.Cli.Static\web.*config;..\Sunnet.Cli.Static\log4net*.*config;..\Sunnet.Cli.Static\*.csproj*;..\Sunnet.Cli.Static\**\*.bat;" Include="..\Sunnet.Cli.Static\**\*.*"/>
+		<VcwFiles Exclude="..\Sunnet.Cli.Vcw\obj\**\*.*;..\Sunnet.Cli.Vcw\Properties\**\*.*;..\Sunnet.Cli.Vcw\bin\zh-Hans\**\*.*;..\Sunnet.Cli.Vcw\**\*.cs;..\Sunnet.Cli.Vcw\web.*config;..\Sunnet.Cli.Vcw\log4net*.*config;..\Sunnet.Cli.Vcw\*.csproj*;..\Sunnet.Cli.Vcw\**\*.bat;" Include="..\Sunnet.Cli.Vcw\**\*.*"/>
+	</ItemGroup>
+	<Target Name="DeleteAssessment">
+		<RemoveDir ContinueOnError="false" Directories="$(OutputPath)/Assessment"/>
+		<MakeDir ContinueOnError="false" Directories="$(OutputPath)/Assessment"/>
+	</Target>
+	<Target DependsOnTargets="DeleteAssessment" Name="BuildAssessment">
+		<MSBuild Projects="../Sunnet.Cli.Assessment/Sunnet.Cli.Assessment.csproj" ToolsVersion="$(NetVersion)"/>
+	</Target>
+	<Target DependsOnTargets="BuildAssessment" Name="CopyAssessment">
+		<Copy DestinationFiles="@(AssessmentFiles-&gt;'.\Output\Assessment\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" SourceFiles="@(AssessmentFiles)"/>
+		<Message Text="Assessment build success!" Importance="high"/>
+	</Target>
+
+	<Target Name="DeleteMainSite">
+		<RemoveDir ContinueOnError="false" Directories="$(OutputPath)/MainSite"/>
+		<MakeDir ContinueOnError="false" Directories="$(OutputPath)/MainSite"/>
+	</Target>
+	<Target DependsOnTargets="DeleteMainSite" Name="BuildMainSite">
+		<MSBuild Projects="../Sunnet.Cli.MainSite/Sunnet.Cli.MainSite.csproj" ToolsVersion="$(NetVersion)"/>
+	</Target>
+	<Target DependsOnTargets="BuildMainSite" Name="CopyMainSite">
+		<Copy DestinationFiles="@(MainSiteFiles-&gt;'.\Output\MainSite\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" SourceFiles="@(MainSiteFiles)"/>
+		<Message Text="MainSite build success!" Importance="high"/>
+	</Target>
+
+	<Target Name="DeleteSso">
+		<RemoveDir ContinueOnError="false" Directories="$(OutputPath)/Sso"/>
+		<MakeDir ContinueOnError="false" Directories="$(OutputPath)/Sso"/>
+	</Target>
+	<Target DependsOnTargets="DeleteSso" Name="BuildSso">
+		<MSBuild Projects="../Sunnet.Cli.Sso/Sunnet.Cli.Sso.csproj" ToolsVersion="$(NetVersion)"/>
+	</Target>
+	<Target DependsOnTargets="BuildSso" Name="CopySso">
+		<Copy DestinationFiles="@(SsoFiles-&gt;'.\Output\Sso\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" SourceFiles="@(SsoFiles)"/>
+		<Message Text="SSO build success!" Importance="high"/>
+	</Target>
+
+	<Target Name="DeleteStatic">
+		<RemoveDir ContinueOnError="false" Directories="$(OutputPath)/Static"/>
+		<MakeDir ContinueOnError="false" Directories="$(OutputPath)/Static"/>
+	</Target>
+	<Target DependsOnTargets="DeleteStatic" Name="BuildStatic">
+		<MSBuild Projects="../Sunnet.Cli.Static/Sunnet.Cli.Static.csproj" ToolsVersion="$(NetVersion)"/>
+	</Target>
+	<Target DependsOnTargets="BuildStatic" Name="CopyStatic">
+		<Copy DestinationFiles="@(StaticFiles-&gt;'.\Output\Static\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" SourceFiles="@(StaticFiles)"/>
+		<Message Text="Static build success!" Importance="high"/>
+	</Target>
+
+	<Target Name="DeleteVcw">
+		<RemoveDir ContinueOnError="false" Directories="$(OutputPath)/Collaborative"/>
+		<MakeDir ContinueOnError="false" Directories="$(OutputPath)/Collaborative"/>
+	</Target>
+	<Target DependsOnTargets="DeleteVcw" Name="BuildVcw">
+		<MSBuild Projects="../Sunnet.Cli.Vcw/Sunnet.Cli.Vcw.csproj" ToolsVersion="$(NetVersion)"/>
+	</Target>
+	<Target DependsOnTargets="BuildVcw" Name="CopyVcw">
+		<Copy DestinationFiles="@(VcwFiles-&gt;'.\Output\Collaborative\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" SourceFiles="@(VcwFiles)"/>
+		<Message Text="VCW build success!" Importance="high"/>
+	</Target>
+
+	<Target DependsOnTargets="CopyAssessment;CopyMainSite;CopySso;CopyStatic;CopyVcw;" Name="Build">
+		<Message Text="All Completed!" Importance="high"/>
+	</Target>
+</Project>

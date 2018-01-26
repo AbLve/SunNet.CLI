@@ -1,0 +1,139 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Core.Reports.Entities.ResultEntity
+@{
+    ViewBag.Title = "DataExport Report";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Layout_Base.cshtml";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Report_LeftMenu.cshtml", Leftmenu_Report.DataExport)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Report", "Index", "Index"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Report Dashboad
+}
+
+
+<div class="modal-l-b"></div>
+@using (Ajax.BeginForm("SubmitDataExport", "Index", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    <div class="form-group">
+        @Html.Label("", "Community/District", new { @class = "control-label col-sm-2 required", @for = "txtCommunity" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#CommunityId",
+                data_remote = Url.Action("GetCommunitySelectListForSearch", "Community", new { Area = "Community" }),
+                data_text = "Name",
+                data_value = "ID",
+                id = "txtCommunity",
+                placeholder = "Enter key text to search",
+                @for = "CommunityId",
+                data_bind = "value: searchCriteria.communityName",
+                data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+                data_required = "false"
+            })
+
+            @Html.HiddenFor(model => model.CommunityId, new
+               {
+                   @class = "form-control validate",
+                   placeholder = "Selected Community",
+                   @Value = (Model.CommunityId == 0 ? "" : Model.CommunityId.ToString())
+               })
+            @Html.ValidationMessageFor(model => model.CommunityId)
+        </div>
+    </div>
+
+    <div class=" main-content">
+        <div class="content-body">
+            <div class="col-sm-4">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Community</div>
+                    </div>
+
+                    <div>
+                        @Html.DropDownList("ListCommunity", (IEnumerable<SelectListItem>)ViewBag.listCommunity, new { @class = "form-control", multiple = "multiple" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">School</div>
+                    </div>
+
+                    <div>
+                        @Html.DropDownList("ListSchool", (IEnumerable<SelectListItem>)ViewBag.listSchool, new { @class = "form-control", multiple = "multiple" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Teacher</div>
+                    </div>
+
+                    <div>
+                        @Html.DropDownList("ListTeacher", (IEnumerable<SelectListItem>)ViewBag.listTeacher, new { @class = "form-control", multiple = "multiple" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Student</div>
+                    </div>
+
+                    <div>
+                        @Html.DropDownList("ListStudent", (IEnumerable<SelectListItem>)ViewBag.listStudent, new { @class = "form-control", multiple = "multiple" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-sm-4">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Classroom</div>
+                    </div>
+
+                    <div>
+                        @Html.DropDownList("ListClassroom", (IEnumerable<SelectListItem>)ViewBag.listClassroom, new { @class = "form-control", multiple = "multiple" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Class</div>
+                    </div>
+
+                    <div>
+                        @Html.DropDownList("ListClass", (IEnumerable<SelectListItem>)ViewBag.listClass, new { @class = "form-control", multiple = "multiple" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="submit">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack()'>Cancel</button>
+    </div>
+}
+

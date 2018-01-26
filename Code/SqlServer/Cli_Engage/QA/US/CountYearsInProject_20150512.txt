@@ -1,0 +1,64 @@
+﻿ALTER procedure [dbo].[CountYearsInProject]
+@communityId int,
+@funding varchar(max),
+@startDate datetime,
+@endDate datetime,
+@status int
+as
+begin
+declare @sql varchar(max)
+if(@status=1)
+	set @sql='with statusMax as (
+		select max(id) as id from TeacherStatusHistories where updatedon <='''+CAST(@endDate as varchar(50))+''' group by TeacherId
+		),
+		statuslist as(
+		select h.* from TeacherStatusHistories h 
+		inner join statusMax s on h.Id = s.ID
+		),
+		inactiveList as (
+		select TeacherId from TeacherStatusHistories where UpdatedOn >='''+CAST(@endDate as varchar(50))+''' and UpdatedOn <='''+CAST(@endDate as varchar(50))+'''
+		and TeacherId in (select TeacherId from statuslist where Status =2)
+		)'
+else if(@status=2)
+	set @sql='with statusMax as (
+		select max(id) as id from TeacherStatusHistories where updatedon <='''+CAST(@endDate as varchar(50))+''' group by TeacherId
+		),
+		statuslist as(
+		select h.* from TeacherStatusHistories h 
+		inner join statusMax s on h.Id = s.ID
+		),
+		inactiveList as (
+		select TeacherId from TeacherStatusHistories where UpdatedOn >='''+CAST(@endDate as varchar(50))+''' and UpdatedOn <='''+CAST(@endDate as varchar(50))+'''
+		and TeacherId in (select TeacherId from statuslist where Status =1)
+		)'
+else
+	set @sql=''
+set @sql+='select ST.Name as SchoolType,ISNULL(YearsInProjectId,0) as YearsInProjectId,ISNULL(T.Count,0) as Count from SchoolTypes ST left join'
+set @sql+='(select SchoolTypeId,ISNULL(YearsInProjectId,0) as YearsInProjectId,COUNT(T.ID) as Count from Schools S 
+left join Teachers T on T.SchoolId=S.ID where 1=1 '
+if(@communityId>0)
+	set @sql+=' and T.CommunityId='+cast(@communityId as varchar(10))
+if(@funding!='')
+	set @sql+='  and T.CLIFundingId in ('+cast(@funding as varchar(max))+')'
+if(@status=1)
+	begin
+		set @sql+=' and T.ID in ('
+		set @sql+='
+				select TeacherId from statuslist where Status =1
+				union
+				select TeacherId from inactiveList'
+		set @sql+=' )'
+	end
+else if(@status=2)
+	begin
+		set @sql+=' and T.ID in ('
+		set @sql+='select TeacherId from statuslist where Status =2
+				union
+				select TeacherId from inactiveList'
+		set @sql+=' )'
+	end
+set @sql+=' group by S.SchoolTypeId,T.YearsInProjectId)T on ST.ID=T.SchoolTypeId'
+set @sql+=' where ST.ParentId=0 and SUBSTRING(ST.Name,1,4)!=''Demo'' order by ST.Name'
+
+exec(@sql)
+end

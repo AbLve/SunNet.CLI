@@ -1,0 +1,2 @@
+﻿if not exists(select * from syscolumns where id=object_id('Users') and name='gmail')
+	alter table Users add  gmail varchar(200)  default('') not null

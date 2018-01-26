@@ -1,0 +1,403 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.TeacherEntity
+@using System.Web.Optimization
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Users.Entities
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Business.Permission.Models
+@using Sunnet.Cli.Core.Students.Enums
+@{
+    IEnumerable<SelectItemModel> pDList = ViewBag.PDList;
+    IEnumerable<SelectItemModel> certificateList = ViewBag.CertificateList;
+    certificateList = certificateList.Where(e => e.Selected == true).ToList();
+}
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.ID)
+@Html.HiddenFor(model => model.UserInfo.ID)
+@Html.HiddenFor(model => model.UserInfo.GoogleId)
+@Html.HiddenFor(model => model.UserInfo.Role)
+@Html.HiddenFor(model => model.UserInfo.StatusDate)
+@Html.HiddenFor(model => model.UserInfo.Sponsor)
+@Html.HiddenFor(model => model.UserInfo.InvitationEmail)
+@Html.HiddenFor(model => model.UserInfo.EmailExpireTime)
+@Html.HiddenFor(model => model.UserInfo.Notes)
+@Html.HiddenFor(model => model.UserInfo.CreatedOn)
+@Html.HiddenFor(model => model.IsAssessmentEquipment)
+@Html.Hidden("confirm", false)
+<input type='hidden' name='certificates' id='txtCers' value="@ViewBag.CertificateText" />
+<div class="content-title">Basic Information</div>
+<div class="content-body">
+    <div class="form-group">
+        @Html.HiddenFor(x => x.UserInfo.Gmail)
+        @Html.Label("communityId", "Community/District", new { @class = "col-sm-2 control-label required", @for = "txtCommunity" })
+        <div class="col-sm-4">
+            @Html.TextBox("txtCommunity", string.Join(", ", Model.UserInfo.UserCommunitySchools.Select(x => x.Community.Name).Distinct()), new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#CommunityId",
+                data_remote = "/Community/Community/GetCommunitySelectList",
+                data_text = "Name",
+                data_value = "ID",
+                id = "txtCommunity",
+                name = "txtCommunity",
+                @for = "CommunityId",
+                @readonly = true,
+                placeholder = "Enter key text to search"
+            })
+            @Html.Hidden("CommunityId", 0, new { @class = "form-control validate", placeholder = "selected from autocomplete" })
+        </div>
+        @Html.Label("schoolId", "School", new { @class = "col-sm-2 control-label", @for = "txtSchool" })
+        <div class="col-sm-4">
+            @Html.TextBox("txtSchool", string.Join(", ", Model.UserInfo.UserCommunitySchools.Where(e => e.SchoolId > 0).Select(x => x.School.Name).Distinct()), new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#SchoolId",
+                data_remote = "/School/School/GetSchoolSelectList",
+                data_text = "Name",
+                data_value = "ID",
+                id = "txtSchool",
+                name = "txtSchool",
+                @for = "SchoolId",
+                data_extraParams = "{\"communityId\":\"#CommunityId\"}",
+                @readonly = true,
+                placeholder = "Enter key text to search"
+            })
+            @Html.Hidden("SchoolId", 0, new { @class = "form-control validate", placeholder = "selected from autocomplete" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.TeacherId, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.TeacherId, new { @class = "form-control", @readonly = "readonly" })
+        </div>
+        @Html.LabelFor(model => model.SchoolYear, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", @readonly = "readonly" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.FirstName, null, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.FirstName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.FirstName)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.MiddleName, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.MiddleName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.LastName, null, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.LastName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.LastName)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.PreviousLastName, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.PreviousLastName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group" data-bind="visible: (EmployedBy != 'X' || UserInfo_Status != 'X')">
+        @Html.LabelFor(model => model.EmployedBy, null, new { @class = "col-sm-2 control-label", data_bind = "visible: EmployedBy != 'X', disable:EmployedBy=='R'" })
+        <div class="col-sm-4">
+            @Html.EnumDropDownListFor(model => model.EmployedBy, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control", data_bind = "visible: EmployedBy != 'X', disable:EmployedBy=='R'" })
+            @Html.ValidationMessageFor(model => model.EmployedBy)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.Status, null, new { @class = "col-sm-2 control-label required", data_bind = "visible: UserInfo_Status != 'X', disable:UserInfo_Status=='R'" })
+        @if (Model.UserInfo.Status == EntityStatus.Active)
+        {
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.UserInfo.Status, Model.UserInfo.Status.ToSelectList(), new { @class = "form-control", data_bind = "visible: UserInfo_Status != 'X', disable:UserInfo_Status=='R'", onchange = "changeInactive(this);" })
+                @Html.ValidationMessageFor(model => model.UserInfo.Status)
+            </div>
+        }
+        else
+        {
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.UserInfo.Status, Model.UserInfo.Status.ToSelectList(), new { @class = "form-control", data_bind = "visible: UserInfo_Status != 'X', disable:UserInfo_Status=='R'" })
+                @Html.ValidationMessageFor(model => model.UserInfo.Status)
+            </div>
+        }
+    </div>
+    <div class="form-group" data-bind="visible: PrimaryLanguageId != 'X'">
+        @Html.LabelFor(model => model.PrimaryLanguageId, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.DropDownListFor(e => e.PrimaryLanguageId, (IEnumerable<SelectListItem>)ViewBag.Language, new { @class = "form-control" })
+            @Html.LabelFor(model => model.PrimaryLanguageOther, new { @class = "control-label hide" })
+            @Html.TextBoxFor(model => model.PrimaryLanguageOther, new { @class = "form-control", type = "hidden" })
+        </div>
+        @Html.LabelFor(model => model.SecondaryLanguageId, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.DropDownListFor(e => e.SecondaryLanguageId, (IEnumerable<SelectListItem>)ViewBag.Language, new { @class = "form-control" })
+            @Html.LabelFor(model => model.SecondaryLanguageOther, new { @class = "control-label hide" })
+            @Html.TextBoxFor(model => model.SecondaryLanguageOther, new { @class = "form-control", type = "hidden" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Teacher Number", null, new { @class = "col-sm-2 control-label",@for="UserInfo_InternalID" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.InternalID, new { @class = "form-control" })
+        </div>
+        @Html.LabelFor(model => model.BirthDate, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.BirthDate, new { @class = "form-control date", @Value = DateTime.Parse(Model.BirthDate.ToString()).FormatDateString() })
+        </div>
+    </div>
+    <div class="form-group" data-bind="visible: (Ethnicity != 'X')">
+        @Html.LabelFor(model => model.TeacherTSDSID, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.TeacherTSDSID, new { @class = "form-control" })
+        </div>
+        @Html.LabelFor(model => model.Ethnicity, null, new { @class = "col-sm-2 control-label", data_bind = "visible: Ethnicity != 'X', disable:Ethnicity=='R'" })
+        <div class="col-sm-4">
+            @Html.EnumDropDownListFor(model => model.Ethnicity, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control", data_bind = "visible: Ethnicity != 'X', disable:Ethnicity=='R'" })
+            @Html.LabelFor(model => model.EthnicityOther, new { @class = "control-label hide" })
+            @Html.TextBoxFor(model => model.EthnicityOther, new { @class = "form-control", type = "hidden", data_bind = "visible: Ethnicity != 'X', disable:Ethnicity=='R'" })
+        </div>
+    </div>
+    <div class="form-group">
+        <span class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Gender)</span>
+        <div class="col-sm-4">
+            @Html.RadioButtonFor(model => model.Gender, Gender.Male, new { id = "Gender1", data_bind = "disable: Gender == 'R'" })
+            @Html.Label("", Gender.Male.ToDescription(), new { @for = "Gender1" })
+            @Html.RadioButtonFor(model => model.Gender, Gender.Female, new { id = "Gender2", data_bind = "disable: Gender == 'R'" })
+            @Html.Label("", Gender.Female.ToDescription(), new { @for = "Gender2" })
+            @Html.RadioButtonFor(model => model.Gender, 0, new { id = "Gender3", @class = "hide" })
+            @Html.Label("Gender3", new { @class = "hide" })
+        </div>
+    </div>
+</div>
+
+<div class="content-title">Contact Information</div>
+<div class="content-body">
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.PrimaryEmailAddress, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.PrimaryEmailAddress, new { @class = "form-control email" })
+            @Html.ValidationMessageFor(model => model.UserInfo.PrimaryEmailAddress)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.SecondaryEmailAddress, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.SecondaryEmailAddress, new { @class = "form-control email" })
+            @Html.ValidationMessageFor(model => model.UserInfo.SecondaryEmailAddress)
+        </div>
+    </div>
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            @Html.LabelFor(model => model.HomeMailingAddress, null, new { @class = "col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.TextBoxFor(model => model.HomeMailingAddress, new { @class = "form-control m-b", placeholder = "Address 1" })
+                @Html.LabelFor(model => model.HomeMailingAddress2, null, new { @class = "control-label hide" })
+                @Html.TextBoxFor(model => model.HomeMailingAddress2, new { @class = "form-control m-b", placeholder = "Address 2(optional)" })
+                <div class="col-lg-3 m-l-n">
+                    @Html.LabelFor(model => model.City, null, new { @class = "control-label hide" })
+                    @Html.TextBoxFor(model => model.City, new { @class = "form-control", placeholder = "City" })
+                </div>
+                <div class="col-lg-3 m-l-n">
+                    @Html.LabelFor(model => model.StateId, null, new { @class = "control-label hide" })
+                    @Html.DropDownListFor(model => model.StateId, (IEnumerable<SelectListItem>)ViewBag.State,
+                        new { @class = "form-control", placeholder = "State", data_bind = "value:selectedState" })
+                </div>
+                <div class="col-lg-3 m-l-n">
+                    @Html.LabelFor(model => model.CountyId, null, new { @class = "control-label hide" })
+                    @Html.DropDownListFor(model => model.CountyId, (IEnumerable<SelectListItem>)ViewBag.County,
+                        new
+                        {
+                            @class = "form-control",
+                            placeholder = "County",
+                            data_bind = "options: countiesOptions, optionsText: 'Text', optionsValue: 'Value',value:selectedCounty"
+                        })
+                </div>
+                <div class="col-lg-3 m-l-n">
+                    @Html.LabelFor(model => model.Zip, null, new { @class = "control-label hide" })
+                    @Html.TextBoxFor(model => model.Zip, new { @class = "form-control _num_5", placeholder = "Zip" })
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.PrimaryPhoneNumber, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.PrimaryPhoneNumber, new { @class = "form-control _homephone" })
+            @Html.ValidationMessageFor(model => model.UserInfo.PrimaryPhoneNumber)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.PrimaryNumberType, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.UserInfo.PrimaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.PrimaryNumberType)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.SecondaryPhoneNumber, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.SecondaryPhoneNumber, new { @class = "form-control _homephone" })
+        </div>
+        @Html.LabelFor(model => model.UserInfo.SecondaryNumberType, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.UserInfo.SecondaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.FaxNumber, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.FaxNumber, new { @class = "_phone form-control" })
+        </div>
+    </div>
+</div>
+
+<div class="content-title">Professional Information</div>
+<div class="content-body">
+
+    <div class="form-group">
+        @Html.Label("ageGroups", "Age group you are currently teaching", new { @class = "col-sm-5 control-label" })
+        <div class="col-sm-7">
+            @Html.DropDownList("ageGroups", (IEnumerable<SelectListItem>)ViewBag.AgeGroup, new { @class = "form-control", multiple = "multiple" })
+            @Html.LabelFor(model => model.AgeGroupOther, new { @class = "control-label hide" })
+            @Html.TextBoxFor(model => model.AgeGroupOther, new { @class = "form-control", type = "hidden" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.TotalTeachingYears, null, new { @class = "col-sm-5 control-label" })
+        <div class="col-sm-2">
+            @Html.TextBoxFor(model => model.TotalTeachingYears, new { @class = "_num_2 form-control" })
+        </div>
+        @Html.LabelFor(model => model.CurrentAgeGroupTeachingYears, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-2">
+            @Html.TextBoxFor(model => model.CurrentAgeGroupTeachingYears, new { @class = "_num_2 form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <span class="col-sm-5 control-label">In what areas have you received Professional Development(PD) 
+                    <br>
+            in over the last 12 months?
+                    <br>
+            (check all that apply)</span>
+        <div class="col-sm-7">
+            @foreach (var item in pDList)
+            {
+                string stChecked = "";
+                if (Model.UserInfo.ProfessionalDevelopments.Where(e => e.ID == item.ID).Count() > 0)
+                {
+                    stChecked = "checked='checked'";
+                }
+                <div class="with50">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="chkPDs" @(stChecked) PDText="@item.Name" value="@item.ID">
+                        @item.Name
+                    </label>
+                </div>
+            }
+            @Html.LabelFor(model => model.PDOther, new { @class = "control-label hide" })
+            @Html.TextBoxFor(model => model.PDOther, new { @class = "form-control", type = (Model.PDOther == "" ? "hidden" : "text") })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.EducationLevel, null, new { @class = "col-sm-5 control-label" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.EducationLevel, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+        </div>
+        <span class="col-sm-4 control-label" style="text-align: left;">Certificates and Credentials (check all that apply)</span>
+    </div>
+    <div class="form-group">
+        <span class="col-sm-8"></span>
+        <div class="col-sm-4" id="dvCertificate">
+            @foreach (var item in certificateList)
+            {
+                <span class="col-lg-8 control-label m-l-n m-b">
+                    @item.Name</span>
+                <div class="m-b">
+                    <label class="radio-inline">
+                        <input type="radio" name="certificate@(item.ID)" @(Model.UserInfo.Certificates.Where(e => e.ID == item.ID).Count() > 0 ? "checked='checked'" : "") value="@item.ID">
+                        Yes</label>
+                    <label class="radio-inline">
+                        <input type="radio" name="certificate@(item.ID)" @(Model.UserInfo.Certificates.Where(e => e.ID == (item.ID + 1)).Count() > 0 ? "checked='checked'" : "") value="@(item.ID + 1)">
+                        No</label>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="content-title" @(!ViewBag.IsCLIUser ? "style=display:none" : "")>For CLI Use</div>
+<div class="content-body" @(!ViewBag.IsCLIUser ? "style=display:none" : "")>
+    <div class="form-group" data-bind="visible: (VendorCode != 'X' || MediaRelease != 'X')">
+        @Html.LabelFor(model => model.VendorCode, null, new { @class = "col-sm-3 control-label", data_bind = "visible: VendorCode != 'X', disable:VendorCode=='R'" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.VendorCode, new { @class = "form-control", data_bind = "visible: VendorCode != 'X', disable:VendorCode=='R'" })
+        </div>
+        <span class="col-sm-3 control-label" data_bind="visible: MediaRelease != 'X'">@Html.DisplayNameFor(model => model.MediaRelease)</span>
+        <div class="col-sm-3">
+            @Html.RadioButtonFor(model => model.MediaRelease, MediaRelease.Yes, new { id = "MediaRelease1", data_bind = "visible: MediaRelease != 'X',disable:MediaRelease=='R'" })
+            @Html.Label("", ViewTextHelper.BoolInTexts[true], new { @for = "MediaRelease1", data_bind = "visible: MediaRelease != 'X'" })
+            @Html.RadioButtonFor(model => model.MediaRelease, MediaRelease.No, new { id = "MediaRelease2", data_bind = "visible: MediaRelease != 'X',disable:MediaRelease=='R'" })
+            @Html.Label("", ViewTextHelper.BoolInTexts[false], new { @for = "MediaRelease2", data_bind = "visible: MediaRelease != 'X'" })
+            @Html.RadioButtonFor(model => model.MediaRelease, 0, new { id = "MediaRelease3", @class = "hide" })
+            @Html.Label("MediaRelease3", new { @class = "hide" })
+        </div>
+    </div>
+    <div class="form-group" data-bind="visible: (CLIFundingID != 'X')">
+        @Html.LabelFor(model => model.CLIFundingID, null, new { @class = "col-sm-3 control-label", data_bind = "visible: CLIFundingId != 'X', disable:CLIFundingId=='R'" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(e => e.CLIFundingID, (IEnumerable<SelectListItem>)ViewBag.Funding, new { @class = "form-control", data_bind = "visible: CLIFundingId != 'X', disable:CLIFundingId=='R'" })
+        </div>
+        @Html.LabelFor(model => model.TeacherType, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.TeacherType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+            @Html.LabelFor(model => model.TeacherTypeOther, new { @class = "control-label hide" })
+            @Html.TextBoxFor(model => model.TeacherTypeOther, new { @class = "form-control", type = "hidden" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.CoachAssignmentWay, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.CoachAssignmentWay, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+            @Html.LabelFor(model => model.CoachAssignmentWayOther, new { @class = "control-label hide" })
+            @Html.TextBoxFor(model => model.CoachAssignmentWayOther, new { @class = "form-control", type = "hidden" })
+        </div>
+        @Html.LabelFor(model => model.YearsInProjectId, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(model => model.YearsInProjectId, (IEnumerable<SelectListItem>)ViewBag.YearsInProject, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.CoachId, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(model => model.CoachId, (IEnumerable<SelectListItem>)ViewBag.CoachOptions, new { @class = "form-control" })
+        </div>
+        @Html.LabelFor(model => model.ECIRCLEAssignmentWay, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.ECIRCLEAssignmentWay, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+            @Html.LabelFor(model => model.ECIRCLEAssignmentWayOther, new { @class = "control-label hide" })
+            @Html.TextBoxFor(model => model.ECIRCLEAssignmentWayOther, new { @class = "form-control", type = "hidden" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.CoachingHours, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.CoachingHours, new { @class = "_number form-control", @float = 2 })
+            @Html.ValidationMessageFor(model => model.CoachingHours)
+        </div>
+        @Html.LabelFor(model => model.ReqCycles, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.ReqCycles, new { @class = "_number form-control", @float = 2 })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.CoreAndSupplemental, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.TextBoxFor(model => model.CoreAndSupplemental, new { @class = "form-control" })
+            @Html.LabelFor(model => model.CoreAndSupplemental2, null, new { @class = "hide" })
+            @Html.TextBoxFor(model => model.CoreAndSupplemental2, new { @class = "form-control" })
+            @Html.LabelFor(model => model.CoreAndSupplemental3, null, new { @class = "hide" })
+            @Html.TextBoxFor(model => model.CoreAndSupplemental3, new { @class = "form-control" })
+            @Html.LabelFor(model => model.CoreAndSupplemental4, null, new { @class = "hide" })
+            @Html.TextBoxFor(model => model.CoreAndSupplemental4, new { @class = "form-control" })
+        </div>
+    </div>
+</div>

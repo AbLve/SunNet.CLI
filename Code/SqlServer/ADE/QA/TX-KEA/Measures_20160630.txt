@@ -1,0 +1,10 @@
+GO 
+ALTER TABLE dbo.Measures ADD GroupByParentMeasure BIT NOT NULL DEFAULT 0;
+GO 
+UPDATE  dbo.Measures
+SET     GroupByParentMeasure = 1
+WHERE   AssessmentId IN ( SELECT    A.ID
+                          FROM      dbo.Assessments AS A
+                          WHERE     A.GroupbyParentMeasure = 1 );
+GO
+ALTER TABLE dbo.Assessments DROP COLUMN GroupbyParentMeasure;

@@ -1,0 +1,144 @@
+﻿@model TypedResponseItemModel
+@{
+    ViewBag.Title = "View " + Model.Label;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Detail", "Measure", new { id = Model.MeasureId });
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @Html.Partial("NEV_Item_BreadPath", Model)
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+        function getToFolder() {
+            return "assessment";
+        }
+
+        CKEDITOR.replace('TargetText',
+        {
+            toolbar: 'Cli'
+        });
+        var itemModel;
+        jQuery(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@Html.Raw(backUrl)");
+                }
+            });
+
+            var jsonModel = @Html.Raw(ViewBag.ModelJson);
+            var formEle = document.getElementById("@formId");
+            itemModel = getTypedResponseItemModel(jsonModel, {Answer:"#Answers",Responses:"#Responses"});
+            ko.applyBindings(itemModel, formEle);
+        });
+    </script>
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+    @if (Model.ID > 0)
+    {
+        <a class="mainbutton mainright-btn nav-btn" target="_blank" href='@(Url.Action("Preview", "Execute", new { Area = "Cpalls", itemId = Model.ID, measureId = Model.MeasureId }))'>Preview</a>
+    }
+</div>
+<form id="@formId" class="form-horizontal">
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.Label)
+                </div>
+                <div class="col-sm-1">
+                    @Html.LabelFor(model => model.Status, new { @class = "hide" })
+                    @Html.DisplayFor(x => x.Status)
+                </div>
+                @Html.LabelFor(model => model.IsPractice, new { @class = "control-label col-sm-1 " })
+                <div class="col-sm-1">
+                    @Html.DisplayFor(x => x.IsPractice)
+                </div>
+                @if (Model.IsPractice)
+                {
+                    @Html.LabelFor(model => model.ShowAtTestResume, new { @class = "control-label col-sm-2 " })
+                    <div class="col-sm-1">
+                        @Html.DisplayFor(x => x.ShowAtTestResume)
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-10">
+                    @Html.DisplayFor(model => model.Description)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TargetText, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.TargetText, new { @class = "form-control", rows = 3, disabled = "true" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TargetText, new { @class = "control-label col-sm-2", @for = "TargetTextTimeout" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(m => m.TargetTextTimeout, new { format = "{0} ms" })
+                </div>
+                @Html.LabelFor(model => model.Timed, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-1">@Html.DisplayFor(model => model.Timed)</div>
+                @Html.LabelFor(model => model.Timeout, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.Timeout, new { format = "{0} ms" })
+                </div>
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(model => model.TargetAudio, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-1">
+                    @Html.DisplayFor(m => m.TargetAudioTimeout, new { format = "{0} ms" })
+                </div>
+                <div class="col-sm-1">
+                    @if (!string.IsNullOrEmpty(Model.TargetAudio))
+                    {
+                        <div class="webuploader-preview">
+                            <a href="@FileHelper.GetPreviewPathofUploadFile(Model.TargetAudio)"
+                               class="table-btn icon-zoom-in preview-btn" target="_blank"></a>
+                        </div>
+                        @ViewTextHelper.HtmlEmptySeparator
+                    }
+                </div>
+
+                @Html.LabelFor(model => model.Scored, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-1">@Html.DisplayFor(model => model.Scored)</div>
+                @Html.LabelFor(model => model.Score, new { @class = "control-label col-sm-2", data_bind = "visible:Scored" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.Score)
+                </div>
+            </div>
+            @Html.DisplayFor(x => x.Answers, "AnswersPictureAudio")
+            <br />
+            <div class="form-group">
+                <div class="col-sm-12">
+                    @Html.DisplayNameFor(x => x.Responses)
+                    @Html.HiddenFor(x => x.Responses)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    @Html.DisplayFor(x => x.Responses, "Response")
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

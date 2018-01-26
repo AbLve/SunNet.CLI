@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "Select an existing item";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+}
+@model ItemModel
+
+@section Scripts{
+    <script type="text/javascript">
+    +(function() {
+        var parent = @(Request.QueryString["listObj"]);
+        var isFirst = true;
+        var list_Items2 = new ViewModel(
+        {
+            instanceName: "list_Items2",
+            modalId: "modalSmall",
+            getDataUrl: '@Html.Raw(Url.Action("Search", "Item"))',
+            orderBy: "Label",
+            orderDirection: "ASC",
+            pageSize: 10,
+            searchCriteria: {
+                assessmentId: ko.observable(@(ViewBag.toAssessment)),
+                measureId: ko.observable(@(ViewBag.toMeasure)),
+                label: ko.observable(""),
+                description: ko.observable(""),
+                createdBy: ko.observable(""),
+                status: ko.observable(-1)
+            }
+        }, {
+            preview: function(item) {
+                var url = '@Url.Action("Preview", "Execute", new { Area = "Cpalls", measureId = Request.QueryString["measureId"].ToString()})' + '&itemId=' + item.ID;
+                window.open(url);
+            },
+            selectedItem: ko.observable(0),
+            continueWith: function() {
+                if (list_Items2.selectedItem()) {
+                    var copyUrl = '@Url.Action("Copy")' + "/" + list_Items2.selectedItem() + '?measureId=@(Request.QueryString["measureId"])&returnurl=' + parent.getLocation();;
+                    location.href = copyUrl;
+                } else {
+                    showMessage("hint", "Please_Select_an_Item");
+                }
+            },
+            selectItem: function(item) {
+                list_Items2.selectedItem(item.ID);
+            },
+            measureOptions: ko.observableArray([]),
+            isCpalls: "@(ViewBag.isCpalls)" == "True"
+        });
+        var defaultOption = new SelectItemModel("@(ViewTextHelper.DefaultAllText)", -1);
+
+        function getMeasure() {
+            var assessmentId = list_Items2.searchCriteria.assessmentId();
+            if (+assessmentId == -1) {
+                list_Items2.measureOptions.removeAll();
+                list_Items2.measureOptions.push(defaultOption);
+            } else {
+                $.getJSON('@Url.Action("GetMeasures", "Measure")', {
+                        assessmentId: assessmentId
+                    },
+                    function(measures) {
+                        list_Items2.measureOptions.removeAll();
+                        list_Items2.measureOptions.push.apply(list_Items2.measureOptions, getSelectOptions(measures));
+
+                        if (isFirst) {
+                            list_Items2.search();
+                            isFirst = false;
+                        }
+                    });
+            }
+        }
+        list_Items2.searchCriteria.assessmentId.subscribe(function() {
+            getMeasure();
+        });
+        ko.applyBindings(list_Items2, document.getElementById("@formId"));
+    })();
+    </script>
+}
+<form class="form-horizontal" role="form" id="@formId">
+    <div class="form-group">
+        @Html.LabelFor(model => model.Measure.AssessmentLabel, new { @class = "control-label col-sm-3" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(model => model.Measure.AssessmentLabel,
+            (IEnumerable<SelectListItem>)ViewBag.Assessments,
+            new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.assessmentId"
+            })
+        </div>
+        @Html.LabelFor(model => model.Measure.Label, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(model => model.Measure.Label, (IEnumerable<SelectListItem>)ViewBag.Assessments,
+            new
+            {
+                @class = "form-control",
+                data_bind = "options:measureOptions,optionsText:'text',value:searchCriteria.measureId"
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-3", @for = formId + "Label" })
+        <div class="col-sm-3">
+            <input class="form-control " data-bind="value: searchCriteria.label" id="Areas_Ade_Views_Item_ExistingLabel" name="Label" type="text">
+        </div>
+        @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-2", @for = formId + "Description" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Description, new
+            {
+                @class = "form-control",
+                id = formId + "Description",
+                data_bind = "value: searchCriteria.description"
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.CreatedByName, new { @class = "control-label col-sm-3", @for = formId + "CreatedByName" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.CreatedByName, new
+            {
+                @class = "form-control",
+                id = formId + "CreatedByName",
+                data_bind = "value: searchCriteria.createdBy"
+            })
+        </div>
+        @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2", @for = formId + "Status" })
+        <div class="col-sm-2">
+            @Html.EnumDropDownListFor(model => model.Status, ViewTextHelper.DefaultAllText, "-1",
+                new
+                {
+                    @class = "form-control",
+                    id = formId + "Status",
+                    data_bind = "value: searchCriteria.status"
+
+                })
+        </div>
+        <div class="col-sm-1">
+            <input type="button" class="mainbutton  modal-btn  sreach-btn" data-bind="event:{click:search}" value="Search">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="modal-body-tab">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th width="5%"></th>
+                        <th width="15%">@Html.DisplayNameFor(model => model.Label)</th>
+                        <th width="*">@Html.DisplayNameFor(model => model.Description)</th>
+                        <th width="15%">@Html.DisplayNameFor(model => model.CreatedByName)</th>
+                        <th width="10%">@Html.DisplayNameFor(model => model.UpdatedOn)</th>
+                        <th width="10%">@Html.DisplayNameFor(model => model.Status)</th>
+                        <th width="5%"></th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr>
+                        <td>
+                            <label class="hide" data-bind="attr:{for:'Item'+$index()}">Select </label>
+                            <input type="radio" name="SelectedItem" data-bind="value:ID,checked: $root.selectedItem,event:{click:$root.continueWith},attr:{id:'Item'+$index()}" />
+                        </td>
+                        <td data-bind="text: item.Label"></td>
+                        <td data-bind="text: item.Description"></td>
+                        <td data-bind="text: item.CreatedByName"></td>
+                        <td data-bind="text: item.UpdatedOn"></td>
+                        <td data-bind="text: item.Status.text"></td>
+                        <td>
+                            <a class="table-btn icon-zoom-in preview-btn" href="#" data-bind="event:{click:$root.preview},visible:$root.isCpalls"><span style="display:none;">1</span></a>
+                        </td>
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 7 })
+            </table>
+        </div>
+    </div>
+
+    <div class="modal-footer" style="text-align: right;">
+        <button class="mainbutton modal-btn create-btn" type="button"
+                data-bind="event:{click:$root.loadMore},visible:$root.hasMore">
+            View more
+        </button>
+    </div>
+</form>

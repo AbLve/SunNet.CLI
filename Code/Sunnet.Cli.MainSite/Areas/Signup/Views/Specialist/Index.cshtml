@@ -1,0 +1,311 @@
+﻿@model Sunnet.Cli.Business.Users.Models.ApplicantSpecialistModel
+@using Sunnet.Cli.Core.Users.Enums
+@using Sunnet.Cli.UIBase.Models;
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Specialist Sign Up";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $("input[name=UserType]")[0].checked = true;
+            $("#select_School").hide();
+            $("#PositionOther").hide();
+            //School add required
+            $("#CommunityId").rules("add", { required: true, messages: { required: "The District/Community field is required." } });
+
+            //isfindschool changed
+            $("#chkIsFindSchool").click(function() {
+                if ($("#chkIsFindSchool").prop("checked") == true) {
+                    //remove required
+                    $("#CommunityId").rules("remove", "required");
+                    $("#SchoolId").rules("remove", "required");
+
+                    $("#txtCommunity, #CommunityId, #txtSchool, #SchoolId").val("");
+
+                    //disable School and Community
+                    $("input[name=UserType], #txtSchool, #txtCommunity").attr({ "disabled": "disabled" });
+                } else {
+                    //enable School and Community
+                    $("input[name=UserType], #txtSchool, #txtCommunity").removeAttr("disabled");
+                    if ($("input[name=UserType]")[0].checked == true) {
+                        $("#CommunityId").rules("add", { required: true, messages: { required: "The District/Community field is required." } });
+                    } else {
+                        $("#SchoolId").rules("add", { required: true, messages: { required: "The School field is required." } });
+                    }
+                }
+            });
+
+            //isAgree event change
+            $("#chkAgree").click(function() {
+                if ($("#chkAgree").prop("checked") == true) {
+                    $(".submit-btn").removeAttr("disabled");
+                } else {
+                    $(".submit-btn").attr({ "disabled": "disabled" });
+                }
+            });
+
+
+            //PositionId changed
+            $("#PositionId").change(
+                function() {
+                    if ($("#PositionId option:selected").text() == "Other") {
+                        $("#PositionOther").show();
+                    } else {
+                        $("#PositionOther").hide();
+                    }
+                });
+        });
+
+        //district and school select changed
+        function ChangeType(obj) {
+            var role = "@((int)Role.District_Community_Specialist)";
+            if (obj.value == "0") {
+                $("#select_Community").show();
+                $("#select_School").hide();
+                $("#CommunityId").rules("add", { required: true, messages: { required: "The District/Community field is required." } });
+                $("#SchoolId").rules("remove", "required");
+                $("#RoleType").val("0");
+                $("#lbl_Description").html("I can not find my District/Community");
+                role = "@((int)Role.District_Community_Specialist)";
+            } else if (obj.value == "1") {
+                $("#select_School").show();
+                $("#select_Community").hide();
+                $("#SchoolId").rules("add", { required: true, messages: { required: "The School field is required." } });
+                $("#CommunityId").rules("remove", "required");
+                $("#RoleType").val("1");
+                $("#lbl_Description").html("I can not find my School");
+                role = "@((int)Role.TRS_Specialist)";
+            } else if (obj.value == "2") {
+                $("#select_School").show();
+                $("#select_Community").hide();
+                $("#SchoolId").rules("add", { required: true, messages: { required: "The School field is required." } });
+                $("#CommunityId").rules("remove", "required");
+                $("#RoleType").val("2");
+                $("#lbl_Description").html("I can not find my School");
+                role = "@((int)Role.School_Specialist)";
+            }
+            $.post("/Signup/Specialist/GetPositions?role=" + role, function (data) {
+                var positionHtml = '<option value="0">Please select...</option>';
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        positionHtml += '<option value="' + data[i].ID + '">' + data[i].Name + '</option>';
+                    }
+                    $("#PositionId").html(positionHtml);
+                }
+            }, 'json');
+        }
+
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function(response) {
+                //can not find community/district or school checked
+                if ($("#chkIsFindSchool").prop("checked") == true) {
+                    if ($("input[name=UserType]")[0].checked == true) //can not find community/district selected
+                    {
+                        location = "/Signup/Specialist/CommunityInvitedRegister?applicantId=" + encodeURIComponent(response.data.entity.ApplicantId)
+                            + "&basicCommunityId=" + encodeURIComponent($("#CommunityId").val());
+                    }
+                    if ($("input[name=UserType]")[1].checked == true || $("input[name=UserType]")[2].checked == true) //can not find school selected
+                    {
+                        location = "/Signup/Teacher/PrincipalInvitedRegister?applicantId=" + encodeURIComponent(response.data.entity.ApplicantId) + "&isSpecialist=true"
+                            + "&basicSchoolId=" + encodeURIComponent($("#SchoolId").val());
+                    }
+                } else //check if is verified
+                {
+                    if (response.data.isCommunityVerified == false) //district not verified
+                    {
+                        location = "/Signup/Specialist/CommunityInvitedRegister?applicantId=" + encodeURIComponent(response.data.entity.ApplicantId)
+                            + "&basicCommunityId=" + encodeURIComponent($("#CommunityId").val());
+                    } else {
+                        if (response.data.isSchoolVerified == false) //school not verified
+                        {
+                            location = "/Signup/Teacher/PrincipalInvitedRegister?applicantId=" + response.data.entity.ApplicantId + "&isSpecialist=true"
+                                + "&basicSchoolId=" + encodeURIComponent($("#SchoolId").val());
+                        } else {
+                            $("#confirmation").click();
+                        }
+                    }
+
+
+                }
+            }
+        });
+    </script>
+}
+
+@using (Ajax.BeginForm("SpecialistApplicant", "Specialist", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{          
+    <a href="/Signup/Teacher/Confirmation" id="confirmation" data-toggle="modal" data-target="#modalNormal"></a>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+    <div class="main-container">
+        <div class="main-con">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3><b>Specialist</b> Sign Up</h3>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.EnumDropDownListFor(model => model.Title, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.Title)
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.FirstName)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="logup-tip">@Html.ValidationMessageFor(model => model.LastName)</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control col-sm-4 email" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.Email)
+                    </div>
+                </div>
+
+                <div class="form-group" id="select_UserType">
+                    @Html.LabelFor(model => model.RoleType, new { @class = "col-sm-4 control-label  required", @for = "radio_District" })
+                    <div class="col-sm-4">
+                        <input type="radio" id="radio_CommunitySpecialist" name="UserType" value="0" checked="checked" onchange="ChangeType(this)" />
+                        <span>District/Community</span>
+                        <span style="width: 80px">&nbsp;</span>
+                        <input type="radio" id="radio_TRSSpecialist" name="UserType" value="1" onchange="ChangeType(this)" />
+                        <label for="radio_TRSSpecialist">TRS</label>
+                        <span style="width: 80px">&nbsp;</span>
+                        <input type="radio" id="radio_SchoolSpecialist" name="UserType" value="2" onchange="ChangeType(this)" />
+                        <label for="radio_SchoolSpecialist">School</label>
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PositionId, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(model => model.PositionId, (IEnumerable<SelectListItem>)ViewBag.Position, new { @class = "form-control col-sm-4" })
+                        <br />
+                        <br />
+                        @Html.LabelFor(model => model.PositionOther, null, new { @class = "control-label hide" })
+                        @Html.TextBoxFor(model => model.PositionOther, new { @class = "form-control logup-right", placeholder = "enter other jobtitle" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.PositionId)
+                    </div>
+                </div>
+
+                <div class="form-group" id="select_Community">
+                    @Html.Label("District/Community", new { @class = "col-sm-4 control-label required", @for = "txtCommunity" })
+                    <div class="col-sm-4">
+                        @Html.TextBox("txtCommunity", "", new
+                           {
+                               autocomplete = "off",
+                               @class = "form-control logup-right",
+                               data_list = "true",
+                               data_for = "#CommunityId",
+                               data_remote = Url.Action("GetBasicCommunitySelectList", "Teacher", new { Area = "Signup", isActive = false }),
+                               data_text = "Name",
+                               data_value = "ID",
+                               data_searchfields = "Zip",
+                               id = "txtCommunity",
+                               name = "txtCommunity",
+                               @for = "CommunityId",
+                               placeholder = "Enter District/Community name or zipcode to search"
+                           })
+                        @Html.HiddenFor(model => model.CommunityId, new { @class = "form-control logup-right validate" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.CommunityId)
+                    </div>
+                </div>
+
+                <div class="form-group" id="select_School">
+                    @Html.Label("School", new { @class = "col-sm-4 control-label required", @for = "txtSchool" })
+                    <div class="col-sm-4">
+                        @Html.TextBox("txtSchool", "", new
+                        {
+                            autocomplete = "off",
+                            @class = "form-control logup-right",
+                            data_list = "true",
+                            data_for = "#SchoolId",
+                            data_remote = Url.Action("GetBasicSchoolSelectList", "Teacher", new { Area = "Signup" }),
+                            data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+                            data_text = "Name",
+                            data_value = "ID",
+                            data_searchfields = "City,Zip",
+                            id = "txtSchool",
+                            name = "txtSchool",
+                            @for = "SchoolId",
+                            placeholder = "Enter school name or zipcode to search"
+                        })
+                        @Html.HiddenFor(model => model.SchoolId, new { @class = "form-control logup-right validate" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.SchoolId)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8">
+                        @Html.CheckBox("chkIsFindSchool")
+                        <label id="lbl_Description" for="chkIsFindSchool">I can not find my District/Community</label>
+                    </div>
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8" style="display: none;">
+                        <label>
+                            <label class="hide" for="chkAgree">&nbsp;</label>
+                            @Html.CheckBox("chkAgree", new { @checked = true })
+                            I agree to the <a href="#" class="loginup-link">Terms of Service</a> and <a href="#" class="loginup-link">Privacy Policy</a></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12 logbtn-con">
+                        <input type="submit" class="logbutton submit-btn" value="Submit">
+                        <input type="button" class="logbutton cancel-btn" onclick="javascript: location.href = '/Home/SignUp/'" value="Cancel">
+                    </div>
+                </div>
+                <div style="display: none">
+                    <label class="hide" for="RoleType">&nbsp;</label>
+                    @Html.TextBox("RoleType", 0);
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

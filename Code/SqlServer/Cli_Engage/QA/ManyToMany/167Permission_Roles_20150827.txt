@@ -1,0 +1,19 @@
+﻿  SET IDENTITY_INSERT Permission_Pages ON
+  GO
+  INSERT Permission_Pages (ID, Name,Ispage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+  VALUES( 6100 , 'TRS',1,6000,'',1,1,'TRS','2015-8-27','2015-8-27')
+  GO
+  SET IDENTITY_INSERT Permission_Pages OFF
+  GO
+
+  
+  INSERT Permission_PageAuthorities ( PageId, ActionId)
+  VALUES( 6100 , 1);
+  GO
+  
+  INSERT Permission_PageAuthorities ( PageId, ActionId)
+  VALUES( 6100 , 4096);
+  go
+
+  insert into Permission_RolePageAuthorities 
+select RoleId ,6100 ,'1;4096;',getdate(),GETDATE() from Permission_RolePageAuthorities where pageid = 6000

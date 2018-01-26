@@ -1,0 +1,76 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.CoachFileModel
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Vcw.Enums
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <span class="col-sm-6 control-label">File Name</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @Model.IdentifyFileName
+            </span>
+        </div>
+        <span class="col-sm-6 control-label">Date Video Recorded</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @Model.DateRecorded.Value.FormatDateString()
+            </span>
+        </div>
+        <span class="col-sm-6 control-label">Video Language</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @(Model.Language == LanguageEnum.None ? "" : Model.Language.ToDescription())
+            </span>
+        </div>
+        <span class="col-sm-6 control-label">Video Context</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @Model.Context
+            </span>
+        </div>
+        <span class="col-sm-6 control-label">Video Content</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @Model.Content
+            </span>
+        </div>
+        <span class="col-sm-6 control-label">Coaching Strategies</span>
+        <div class="col-sm-6">
+            <span class="control-label-text">
+                @(Model.StrategyId == StrategyEnum.None ? "" : Model.StrategyId.ToDescription())
+            </span>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Coaching Objectives</div>
+                    </div>
+                    <div class="textarea-con">
+                        @Model.Objectives
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Coaching Effectiveness</div>
+                    </div>
+                    <div class="textarea-con">
+                        @Model.Effectiveness
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div id='div_sunnet'>
+                <div style='width:100%;height:450px; text-align:center; background:#333333 url(@(Sunnet.Framework.SFConfig.AssessmentDomain)/images/not-played.jpg) no-repeat center center; line-height:450px;'>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

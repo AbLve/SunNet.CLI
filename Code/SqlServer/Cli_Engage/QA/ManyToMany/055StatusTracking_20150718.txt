@@ -1,0 +1,11 @@
+﻿  alter table [dbo].[StatusTrackings] 
+  add Type tinyint not null default 0
+  go 
+
+  update [dbo].[StatusTrackings] 
+  set Type=1 where Type=0
+  go
+
+  alter table [dbo].[StatusTrackings] 
+  add ProcessAddress varchar(1000) default ''
+  go

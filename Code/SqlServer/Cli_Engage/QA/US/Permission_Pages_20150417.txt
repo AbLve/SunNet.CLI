@@ -1,0 +1,36 @@
+﻿
+SET IDENTITY_INSERT Permission_Pages ON
+;
+insert into Permission_Pages (ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+select id +10000, Name, 1,case [type] when 1 then 2100 when 2 then 2300 when 3 then 2200 end ,'',1,1,'',GETDATE(),GETDATE() from [Cli_Ade__Assessments] WHERE Isdeleted = 0 
+;
+SET IDENTITY_INSERT Permission_Pages OFF
+;
+ insert Permission_PageAuthorities (PageId,ActionId)
+ select id + 10000, 1 from [Cli_Ade__Assessments];
+
+  insert Permission_PageAuthorities (PageId,ActionId)
+ select id + 10000, 32768 from [Cli_Ade__Assessments];
+
+ update Permission_Pages set ispage = 0 
+ where id in (2100,
+2200,
+2300);
+
+delete Permission_Pages where id in (
+2400,
+2500,
+2600);
+
+delete Permission_PageAuthorities
+where pageid 
+in (2100,
+2200,
+2300,
+2400,
+2500,
+2600);
+
+delete Permission_RolePageAuthorities
+where pageid >= 2000 and pageid < 3000 ;
+

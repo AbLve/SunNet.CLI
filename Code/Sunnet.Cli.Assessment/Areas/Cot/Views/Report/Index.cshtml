@@ -1,0 +1,553 @@
+﻿@using Sunnet.Cli.Business.Cot.Enum
+@using Sunnet.Cli.Business.Cot.Cumulative
+@using Sunnet.Cli.Business.Cot.Growth
+@using Sunnet.Cli.Business.Cot.Summary
+@model Sunnet.Cli.Business.Users.Models.TeacherModel
+@{
+    ViewBag.Title = "COT Reports";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    string formID = PostFormHelper.GetFormId(Html.ViewContext.View);
+    string form2Id = formID + "_2";
+}
+<form class="form-horizontal" id="@(formID)">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="list-group" data-bind="foreach:{data:measures,as:'measure'}">
+                <a href="#" class="list-group-item" data-bind="text:name,css:{active:selected},click:$root.choose"></a>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <h4>COT Observed Strategies Report</h4>
+        </div>
+    </div>
+    <div class="right-content-top">
+        <button type="button" class="mainbutton mainright-btn submit-btn"
+                reporttype="@(ObservedReportType.SingleTeacher)"
+                data-bind="click:$root.getCotReport">
+            @(Model.FullName) Personal
+        </button>
+        <button type="button" class="mainbutton mainright-btn submit-btn"
+                school="@(Model.Schools != null ? string.Join(",", Model.Schools.Select(s => s.ID)) : "")"
+                reporttype="@(ObservedReportType.AssignedTeachers)"
+                data-bind="click:$root.getCotReport">
+            Multi-Teacher Personal
+        </button>
+        @if (Model.Schools != null)
+        {
+            foreach (var schoolModel in Model.Schools)
+            {
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        school="@(schoolModel.ID)"
+                        schoolname="@(Html.Raw(schoolModel.Name))"
+                        reporttype="@(ObservedReportType.AssignedTeachersAverage)"
+                        data-bind="click:$root.getCotReport">
+                    Assigned Teachers Average (@(Html.Raw(schoolModel.Name)))
+                </button>
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        school="@(schoolModel.ID)"
+                        schoolname="@(Html.Raw(schoolModel.Name))"
+                        reporttype="@(ObservedReportType.SchoolAverage)"
+                        data-bind="click:$root.getCotReport">
+                    School Average Report (@(Html.Raw(schoolModel.Name)))
+                </button>
+            }
+        }
+        @if (Model.Communities != null)
+        {
+            foreach (var communityModel in Model.Communities)
+            {
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        community="@(communityModel.ID)"
+                        reporttype="@(ObservedReportType.DistrictAverage)"
+                        data-bind="click:$root.getCotReport">
+                    Community/District Average (@(Html.Raw(communityModel.CommunityName)))
+                </button>
+            }
+        }
+    </div>
+    <div class="clearfix" style="height: 20px;"></div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <h4>COT Item Report</h4>
+        </div>
+    </div>
+    <div class="right-content-top">
+        <button type="button" class="mainbutton mainright-btn submit-btn"
+                reporttype="@(CumulativeReportType.SingleTeacher)"
+                data-bind="click:$root.getCumulativeReport">
+            @(Model.FullName) Personal
+        </button>
+        <button type="button" class="mainbutton mainright-btn submit-btn"
+                school="@(Model.Schools != null ? string.Join(",", Model.Schools.Select(s => s.ID)) : "")"
+                reporttype="@(CumulativeReportType.AssignedTeachers)"
+                data-bind="click:$root.getCumulativeReport">
+            Multi-Teacher Personal
+        </button>
+
+        @if (Model.Schools != null)
+        {
+            foreach (var schoolModel in Model.Schools)
+            {
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        school="@(schoolModel.ID)"
+                        schoolname="@(Html.Raw(schoolModel.Name))"
+                        reporttype="@(CumulativeReportType.AssignedTeachersCumulative)"
+                        data-bind="click:$root.getCumulativeReport">
+                    All Assigned Teachers Cumulative (@(Html.Raw(schoolModel.Name)))
+                </button>
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        school="@(schoolModel.ID)"
+                        schoolname="@(Html.Raw(schoolModel.Name))"
+                        reporttype="@(CumulativeReportType.SchoolCumulative)"
+                        data-bind="click:$root.getCumulativeReport">
+                    School Cumulative (@(Html.Raw(schoolModel.Name)))
+                </button>
+            }
+        }
+        @if (Model.Communities != null)
+        {
+            foreach (var communityModel in Model.Communities)
+            {
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        community="@(communityModel.ID)"
+                        reporttype="@(CumulativeReportType.DistrictCumulative)"
+                        data-bind="click:$root.getCumulativeReport">
+                    Community/District  Cumulative (@(Html.Raw(communityModel.CommunityName)))
+                </button>
+            }
+        }
+    </div>
+    <div class="clearfix" style="height: 20px;"></div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <h4>COT Growth Report</h4>
+        </div>
+    </div>
+    <div class="right-content-top">
+        <button type="button" class="mainbutton mainright-btn submit-btn"
+                reporttype="@(GrowthReportType.SingleTeacher)"
+                data-bind="click:$root.getGrowthReport">
+            @(Model.FullName) Personal
+        </button>
+        <button type="button" class="mainbutton mainright-btn submit-btn"
+                school="@(Model.Schools != null ? string.Join(",", Model.Schools.Select(s => s.ID)) : "")"
+                reporttype="@(GrowthReportType.AssignedTeachers)"
+                data-bind="click:$root.getGrowthReport">
+            Multi-Teacher Personal
+        </button>
+
+        @if (Model.Schools != null)
+        {
+            foreach (var schoolModel in Model.Schools)
+            {
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        school="@(schoolModel.ID)"
+                        schoolname="@(Html.Raw(schoolModel.Name))"
+                        reporttype="@(GrowthReportType.AssignedTeachersAverage)"
+                        data-bind="click:$root.getGrowthReport">
+                    Assigned Teachers Average (@(Html.Raw(schoolModel.Name)))
+                </button>
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        school="@(schoolModel.ID)"
+                        schoolname="@(Html.Raw(schoolModel.Name))"
+                        reporttype="@(GrowthReportType.SchoolAverage)"
+                        data-bind="click:$root.getGrowthReport">
+                    School Average (@(Html.Raw(schoolModel.Name)))
+                </button>  }
+        }
+        @if (Model.Communities != null)
+        {
+            foreach (var communityModel in Model.Communities)
+            {
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        community="@(communityModel.ID)"
+                        reporttype="@(GrowthReportType.DistrictAverage)"
+                        data-bind="click:$root.getGrowthReport">
+                    Community/District  Average (@(Html.Raw(communityModel.CommunityName)))
+                </button>
+            }
+        }
+
+    </div>
+
+    <div class="clearfix" style="height: 20px;"></div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <h4>COT Summary Report</h4>
+        </div>
+    </div>
+    <div class="right-content-top">
+        <button type="button" class="mainbutton mainright-btn submit-btn"
+                reporttype="@(GrowthReportType.SingleTeacher)"
+                data-bind="click:$root.getSummaryReport">
+            @(Model.FullName) Personal
+        </button>
+        <button type="button" class="mainbutton mainright-btn submit-btn"
+                school="@(Model.Schools != null ? string.Join(",", Model.Schools.Select(s => s.ID)) : "")"
+                reporttype="@(GrowthReportType.AssignedTeachers)"
+                data-bind="click:$root.getSummaryReport">
+            Multi-Teacher Personal
+        </button>
+
+        @if (Model.Schools != null)
+        {
+            foreach (var schoolModel in Model.Schools)
+            {
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        school="@(schoolModel.ID)"
+                        schoolname="@(Html.Raw(schoolModel.Name))"
+                        reporttype="@(GrowthReportType.AssignedTeachersAverage)"
+                        data-bind="click:$root.getSummaryReport">
+                    Assigned Teachers Average (@(Html.Raw(schoolModel.Name)))
+                </button>
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        school="@(schoolModel.ID)"
+                        schoolname="@(Html.Raw(schoolModel.Name))"
+                        reporttype="@(GrowthReportType.SchoolAverage)"
+                        data-bind="click:$root.getSummaryReport">
+                    School Average (@(Html.Raw(schoolModel.Name)))
+                </button>  }
+        }
+        @if (Model.Communities != null)
+        {
+            foreach (var communityModel in Model.Communities)
+            {
+                <button type="button" class="mainbutton mainright-btn submit-btn"
+                        community="@(communityModel.ID)"
+                        reporttype="@(GrowthReportType.DistrictAverage)"
+                        data-bind="click:$root.getSummaryReport">
+                    Community/District  Average (@(Html.Raw(communityModel.CommunityName)))
+                </button>
+            }
+        }
+
+    </div>
+</form>
+
+@using (Html.BeginForm("CotPdf", "Report", FormMethod.Post, new { target = "_blank", id = form2Id }))
+{
+    @Html.Hidden("teacherId")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("type")
+    @Html.Hidden("SchoolId")
+    @Html.Hidden("CommunityId")
+    @Html.Hidden("measures")
+
+    @Html.Hidden("yearsInProject", (object)"{}")
+    @*@Html.Hidden("coachModels")
+    @Html.Hidden("eCircles")*@
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            console.log(1);
+            var measuresJson = @Html.Raw(ViewBag.Measures);
+            var $form = $("#@(form2Id)");
+
+            function CotMeasureModel(defaultValues) {
+                var that = this;
+                this.id = window.isNull("ID", defaultValues, 0);
+                this.name = window.isNull("Name", defaultValues, "");
+                this.selected = ko.observable(false);
+            }
+
+            function prepareForReport(event) {
+                var $sender = $(event.target);
+                if ($sender.attr("reporttype")) {
+                    $form.find("#type").val($sender.attr("reporttype"));
+                }
+                if ($sender.attr("school")) {
+                    $form.find("#SchoolId").val($sender.attr("school"));
+                } else {
+                    $form.find("#SchoolId").val(0);
+                }
+                if ($sender.attr("community")) {
+                    $form.find("#CommunityId").val($sender.attr("community"));
+                } else {
+                    $form.find("#CommunityId").val(0);
+                }
+
+                $form.find("#teacherId").val(@Model.Id);
+                $form.find("#assessmentId").val(@Request.QueryString["assessmentId"]);
+                $form.find("#year").val(@Request.QueryString["year"]);
+            }
+
+            function CotReportModel(measures) {
+                var that = this;
+                this.measures = [];
+                for (var i = 0; i < measures.length; i++) {
+                    this.measures.push(new CotMeasureModel(measures[i]));
+                }
+                this.getCotReport = function(vm,event) {
+                    prepareForReport(event);
+                    var $sender = $(event.target);
+                    var type = $sender.attr("reporttype");
+                    $form.attr("action", "/Cot/Report/CotPdf");
+                    if (that.selectedMeasures().length == 0) {
+                        window.showMessage("hint", "Cot_Report_Need_Measure");
+                        return;
+                    }
+                    var measures = that.selectedMeasures().join(",");
+                    $form.find("#measures").val(that.selectedMeasures().join(","));
+
+                    var cotReportType = '@CotReportType.Observed';
+                    if (type == '@(ObservedReportType.AssignedTeachers)') {
+                        var teachersUrl='@Html.Raw(Url.Action("TeacherList", "Report",
+                                        new
+                                        {
+                                            teacherId = Model.Id,
+                                            assessmentId = Request.QueryString["assessmentId"],
+                                            year = Request.QueryString["year"]
+                                        }))'
+                            + '&schoolId=' + ($sender.attr("school") || 0)
+                            + '&schoolName=' + encodeURIComponent($sender.attr("schoolName") || '')
+                            + '&communityId=' + ($sender.attr("community") || 0)
+                            + '&type=' + type
+                            + '&measures=' + measures
+                            + '&cotReportType=' + cotReportType;
+                        window.loading(true);
+                        closeModal($("#@(formID)"));
+                        $("#modalNormal").modal({ remote: teachersUrl, confirm: false });
+                    }
+
+                    var types2 = ['@(ObservedReportType.AssignedTeachersAverage)', '@(ObservedReportType.SchoolAverage)', '@(ObservedReportType.DistrictAverage)'];
+
+                    //NOTE:June Deployment 2017 FINAL 05302017.docx ,
+                    //item 92.3, 1.1 When an Average or Cumulative report is run, do not display the Filter Selection window;
+                    //do not delete the code as we don’t know if we will use it again in the future.
+                    @*if (types2.indexOf(type) >= 0) {
+                        var url = '@Html.Raw(Url.Action("Filter", "Report",
+                                        new
+                                        {
+                                            teacherId = Model.Id,
+                                            assessmentId = Request.QueryString["assessmentId"],
+                                            year = Request.QueryString["year"]
+                                        }))'
+                            + '&schoolId=' + ($sender.attr("school") || 0)
+                            + '&schoolName=' + encodeURIComponent($sender.attr("schoolName") || '')
+                            + '&communityId=' + ($sender.attr("community") || 0)
+                            + '&type=' + type
+                            + "&measures=" + measures;
+                        window.loading(true);
+                        closeModal($("#@(formID)"));
+                        $("#modalNormal").modal({ remote: url, confirm: false });
+                    } else {
+                        $form.submit();
+                    }*@
+                    if (types2.indexOf(type) >= 0) {
+                        $form.attr("action", "/Cot/Report/CotPdf");
+                        $form.submit();
+                    } else {
+                        $form.submit();
+                    }
+                };
+                this.getCumulativeReport = function(vm,event) {
+                    prepareForReport(event);
+                    var $sender = $(event.target);
+                    var type = $sender.attr("reporttype");
+                    $form.attr("action", "/Cot/Report/CumulativePdf");
+                    if (that.selectedMeasures().length == 0) {
+                        window.showMessage("hint", "Cot_Report_Need_Measure");
+                        return;
+                    }
+                    var measures = that.selectedMeasures().join(",");
+                    $form.find("#measures").val(measures);
+
+                    var cotReportType = '@CotReportType.Cumulative';
+                    if (type == '@(CumulativeReportType.AssignedTeachers)') {
+                        var teachersUrl='@Html.Raw(Url.Action("TeacherList", "Report",
+                                        new
+                                        {
+                                            teacherId = Model.Id,
+                                            assessmentId = Request.QueryString["assessmentId"],
+                                            year = Request.QueryString["year"]
+                                        }))'
+                            + '&schoolId=' + ($sender.attr("school") || 0)
+                            + '&schoolName=' + encodeURIComponent($sender.attr("schoolName") || '')
+                            + '&communityId=' + ($sender.attr("community") || 0)
+                            + '&type=' + type
+                            + '&measures=' + measures
+                            + '&cotReportType=' + cotReportType;
+                        window.loading(true);
+                        closeModal($("#@(formID)"));
+                        $("#modalNormal").modal({ remote: teachersUrl, confirm: false });
+                    }
+
+                    var types2 = ['@(CumulativeReportType.AssignedTeachersCumulative)', '@(CumulativeReportType.SchoolCumulative)', '@(CumulativeReportType.DistrictCumulative)'];
+                    //NOTE:June Deployment 2017 FINAL 05302017.docx ,
+                    //item 92.3, 1.1 When an Average or Cumulative report is run, do not display the Filter Selection window;
+                    //do not delete the code as we don’t know if we will use it again in the future.
+                    @*if (types2.indexOf(type) >= 0) {
+                        var url = '@Html.Raw(Url.Action("Filter1", "Report",
+                                                new
+                                                {
+                                                    teacherId = Model.Id,
+                                                    assessmentId = Request.QueryString["assessmentId"],
+                                                    year = Request.QueryString["year"]
+                                                }))'
+                            + '&schoolId=' + ($sender.attr("school") || 0)
+                            + '&schoolName=' + encodeURIComponent($sender.attr("schoolName") || '')
+                            + '&communityId=' + ($sender.attr("community") || 0)
+                            + '&type=' + type
+                            + "&measures=" + measures;
+                        window.loading(true);
+                        closeModal($("#@(formID)"));
+                        $("#modalNormal").modal({ remote: url, confirm: false });
+
+                    } else {
+                        $form.submit();
+                    }*@
+                    if (types2.indexOf(type) >= 0) {
+                        $form.attr("action", "/Cot/Report/Cumulative2Pdf");
+                        $form.submit();
+                    } else {
+                        $form.submit();
+                    }
+                };
+                this.getGrowthReport = function(vm,event) {
+                    prepareForReport(event);
+                    var $sender = $(event.target);
+                    var type = $sender.attr("reporttype");
+                    $form.attr("action", "/Cot/Report/Growth");
+                    if (that.selectedMeasures().length == 0) {
+                        window.showMessage("hint", "Cot_Report_Need_Measure");
+                        return;
+                    }
+                    var measures = that.selectedMeasures().join(",");
+                    $form.find("#measures").val(measures);
+
+                    var cotReportType = '@CotReportType.Grouth';
+                    if (type == '@(GrowthReportType.AssignedTeachers)') {
+                        var teachersUrl='@Html.Raw(Url.Action("TeacherList", "Report",
+                                        new
+                                        {
+                                            teacherId = Model.Id,
+                                            assessmentId = Request.QueryString["assessmentId"],
+                                            year = Request.QueryString["year"]
+                                        }))'
+                            + '&schoolId=' + ($sender.attr("school") || 0)
+                            + '&schoolName=' + encodeURIComponent($sender.attr("schoolName") || '')
+                            + '&communityId=' + ($sender.attr("community") || 0)
+                            + '&type=' + type
+                            + '&measures=' + measures
+                            + '&cotReportType=' + cotReportType;
+                        window.loading(true);
+                        closeModal($("#@(formID)"));
+                        $("#modalNormal").modal({ remote: teachersUrl, confirm: false });
+                    }
+
+                    var types2 = ['@(GrowthReportType.AssignedTeachersAverage)', '@(GrowthReportType.SchoolAverage)', '@(GrowthReportType.DistrictAverage)'];
+                    //NOTE:June Deployment 2017 FINAL 05302017.docx ,
+                    //item 92.3, 1.1 When an Average or Cumulative report is run, do not display the Filter Selection window;
+                    //do not delete the code as we don’t know if we will use it again in the future.
+                    @*if (types2.indexOf(type) >= 0) {
+                        var url = '@Html.Raw(Url.Action("Filter2", "Report",
+                                    new
+                                    {
+                                        teacherId = Model.Id,
+                                        assessmentId = Request.QueryString["assessmentId"],
+                                        year = Request.QueryString["year"]
+                                    }))'
+                            + '&schoolId=' + ($sender.attr("school") || 0)
+                            + '&schoolName=' + encodeURIComponent($sender.attr("schoolName") || '')
+                            + '&communityId=' + ($sender.attr("community") || 0)
+                            + '&type=' + type
+                            + "&measures=" + measures;
+                        window.loading(true);
+                        closeModal($("#@(formID)"));
+                        $("#modalNormal").modal({ remote: url, confirm: false });
+                    } else {
+                        $form.submit();
+                    }*@
+                    if (types2.indexOf(type) >= 0) {
+                        $form.attr("action", "/Cot/Report/Growth2");
+                        $form.submit();
+                    } else {
+                        $form.submit();
+                    }
+                };
+
+                this.getSummaryReport = function(vm,event) {
+                    prepareForReport(event);
+                    var $sender = $(event.target);
+                    var type = $sender.attr("reporttype");
+                    $form.attr("action", "/Cot/Report/Summary");
+                    if (that.selectedMeasures().length == 0) {
+                        window.showMessage("hint", "Cot_Report_Need_Measure");
+                        return;
+                    }
+                    var measures = that.selectedMeasures().join(",");
+                    $form.find("#measures").val(that.selectedMeasures().join(","));
+
+                    var cotReportType = '@CotReportType.Summary';
+                    if (type == '@(SummaryReportType.AssignedTeachers)') {
+                        var teachersUrl='@Html.Raw(Url.Action("TeacherList", "Report",
+                                        new
+                                        {
+                                            teacherId = Model.Id,
+                                            assessmentId = Request.QueryString["assessmentId"],
+                                            year = Request.QueryString["year"]
+                                        }))'
+                            + '&schoolId=' + ($sender.attr("school") || 0)
+                            + '&schoolName=' + encodeURIComponent($sender.attr("schoolName") || '')
+                            + '&communityId=' + ($sender.attr("community") || 0)
+                            + '&type=' + type
+                            + '&measures=' + measures
+                            + '&cotReportType=' + cotReportType;
+                        window.loading(true);
+                        closeModal($("#@(formID)"));
+                        $("#modalNormal").modal({ remote: teachersUrl, confirm: false });
+                    }
+
+                    var types2 = ['@(SummaryReportType.AssignedTeachersAverage)', '@(SummaryReportType.SchoolAverage)', '@(SummaryReportType.DistrictAverage)'];
+                    //NOTE:June Deployment 2017 FINAL 05302017.docx ,
+                    //item 92.3, 1.1 When an Average or Cumulative report is run, do not display the Filter Selection window;
+                    //do not delete the code as we don’t know if we will use it again in the future.
+                    @*if (types2.indexOf(type) >= 0) {
+                        var url = '@Html.Raw(Url.Action("Filter2", "Report",
+                                    new
+                                    {
+                                        teacherId = Model.Id,
+                                        assessmentId = Request.QueryString["assessmentId"],
+                                        year = Request.QueryString["year"]
+                                    }))'
+                            + '&schoolId=' + ($sender.attr("school") || 0)
+                            + '&schoolName=' + encodeURIComponent($sender.attr("schoolName") || '')
+                            + '&communityId=' + ($sender.attr("community") || 0)
+                            + '&type=' + type
+                            + "&measures=" + measures;
+                        window.loading(true);
+                        closeModal($("#@(formID)"));
+                        $("#modalNormal").modal({ remote: url, confirm: false });
+                    } else {
+                        $form.submit();
+                    }*@
+                    if (types2.indexOf(type) >= 0) {
+                        $form.attr("action", "/Cot/Report/Summary2");
+                        $form.submit();
+                    } else {
+                        $form.submit();
+                    }
+                };
+                this.selectedMeasures = ko.observableArray([]);
+
+                this.choose = function(measure) {
+                    measure.selected(!measure.selected());
+                    if (measure.selected()) {
+                        that.selectedMeasures.push(measure.id);
+                    } else {
+                        that.selectedMeasures.remove(measure.id);
+                    }
+                };
+            }
+
+            var viewModel = new CotReportModel(measuresJson);
+            ko.applyBindings(viewModel, document.getElementById("@(formID)"));
+
+        })();
+    </script>
+}

@@ -1,0 +1,43 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Home";
+    ViewBag.CurrentMenu = Cli_Menus.Home;
+    
+}
+@section Styles
+{
+    @Styles.Render("~/css/home")
+}
+
+@section Slides{
+    @Html.Partial("_Partial_Slides")
+}
+@section Scripts
+{
+
+}
+<div class="welcome-video left-container">
+    <div class="video-container col-sm-4">
+        <img src="/images/logo_larger.png" height="215" alt="CLI Engage">
+
+        @*<iframe width="100%" height="" class="embed-responsive-item" src="https://www.youtube.com/embed/KflPfzNFW-A?list=UU_HlAYPlceEzrnsZL6G6WSQ" frameborder="0" allowfullscreen></iframe>*@
+    </div>
+    <div class="video-text col-sm-8">
+        <h3>Welcome to CLI Engage!</h3>
+        <p>CLI Engage is the comprehensive professional development platform for public school pre-k and Head Start teachers in Texas, providing free access to <i>Texas School Ready!</i> tools and resources. Learn more about us and register for access to our research-based tools.</p>
+    </div>
+</div>
+<div class="news-update left-container">
+    <h3>News & Updates</h3>
+    <ul>
+        <li><i class="icon-angle-right"></i>CLI Engage now enrolling school districts and Head Start programs for Fall 2015 access!</li>
+        <li><i class="icon-angle-right"></i>Texas School Ready! Program Goes Digital: <a href="http://www.kwtx.com/video?videoid=3022641&device=tablet&c=y&device=phone&c=y">Watch the Video</a></li>
+        <li><i class="icon-angle-right"></i>CLI Engage will start enrolling school districts for Fall 2015 in January – Stay Tuned</li>
+        <li><i class="icon-angle-right"></i>The CLI Engage Pilot Project has begun!</li>
+		<li><i class="icon-angle-right"></i><a href="http://www.texasschoolready.org/pilot">CLI Engage Pilot Participants: visit the CLI Engage Pilot Resources page for tools and resources.</a></li>
+        <a href="https://texasrisingstar.org/trs/docs/C1/P-CQT-03-Topic-Alignment-Practice.docx" target="_blank">https://texasrisingstar.org/trs/docs/C1/P-CQT-03-Topic-Alignment-Practice.docx</a>
+    </ul>
+</div>
+
+

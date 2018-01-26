@@ -1,0 +1,29 @@
+﻿alter procedure BeechReport
+@communityId int,
+@schoolId int,
+@teacher varchar(200)
+AS
+begin
+declare @sql varchar(max)
+set @sql='select BC.Name as CommunityDistrict,BC.Name as SchoolName,S.SchoolId as SchoolCode,S.PhoneNumber as Phone,S.PhysicalAddress1 as PhysicalAddress,S.City,S.Zip,
+S.PrimaryName as AdminName,S.PrimaryEmail as AdminEmail,S.SchoolNumber as ChildCareLicense,(case when T.PrimaryLanguageOther='''' then L.Language else T.PrimaryLanguageOther end) as Language,
+(U.FirstName+'' ''+U.LastName) as TeacherName,T.TeacherId as TeacherCode,S.Notes as SchoolNotes,
+(select COUNT(*) from Students S where ID in (select StudentId from StudentClassRelations where ClassId in (select ClassId from TeacherClassRelations where TeacherId=T.ID)) 
+and DATEADD(d,28,s.BirthDate)<GETDATE() and  DATEDIFF(MM,S.BirthDate,GETDATE())<17) as Infant,
+(select COUNT(*) from Students S where ID in (select StudentId from StudentClassRelations where ClassId in (select ClassId from TeacherClassRelations where TeacherId=T.ID)) 
+and DATEDIFF(MM,S.BirthDate,GETDATE()) between 18 and 35) as Toddler,
+(select COUNT(*) from Students S where ID in (select StudentId from StudentClassRelations where ClassId in (select ClassId from TeacherClassRelations where TeacherId=T.ID)) 
+and DATEDIFF(MM,S.BirthDate,GETDATE()) between 36 and 48) as Preschool
+from  Teachers T inner join Users U on U.ID=T.UserId 
+left join Languages L on L.ID=T.PrimaryLanguageId 
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId'
+
+if(@communityId>0)
+	set @sql+=' and T.CommunityId='+convert(varchar(100),@communityId)
+if(@schoolId>0)
+	set @sql+=' and T.SchoolId='+convert(varchar(100),@schoolId)
+if(@teacher!='')
+	set @sql+=' and (U.FirstName like ''%'+@teacher+'%'' or U.LastName like ''%'+@teacher+'%'')'
+exec(@sql)
+end

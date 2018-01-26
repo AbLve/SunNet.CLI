@@ -1,0 +1,7 @@
+﻿EXEC  sp_rename   'applicants.JobTitle' , 'PositionId'
+EXEC  sp_rename   'applicants.JobTitleOther' , 'PositionOther'
+GO
+declare @name varchar(8000)
+select @name=b.name from syscolumns a,sysobjects b where a.id=object_id('applicants') and b.id=a.cdefault and a.name='PositionId' and b.name like 'DF%'
+exec('alter table applicants drop constraint '+@name)
+alter table applicants alter column PositionId int not null 

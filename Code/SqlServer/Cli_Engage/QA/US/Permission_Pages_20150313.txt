@@ -1,0 +1,160 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5100,'Teachers',0,5000,'',1,1,'Teachers',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5110,'Teacher VIP Assignments',1,5100,'',1,1,'Teacher VIP Assignments',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5120,'Teacher Coaching Assignments',1,5100,'',2,1,'Teacher Coaching Assignments',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5130,'Teacher General',1,5100,'',3,1,'Teacher General',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5140,'Teacher Summary',1,5100,'',4,1,'Teacher Summary',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5150,'COT & CEC Reports',1,5100,'',5,1,'COT & CEC Reports',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5200,'Mentor/Coach and Coordinators',0,5000,'',2,1,'Mentor/Coach and Coordinators',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5210,'Coach Assignments',1,5200,'',1,1,'Coach Assignments',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5220,'Coach Send Assignments – VIP/Coaching',1,5200,'',2,1,'Coach Send Assignments – VIP/Coaching',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5230,'Coach General',1,5200,'',3,1,'Coach General',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5240,'Coach Summary',1,5200,'',4,1,'Coach Summary',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5300,'Project Managers',0,5000,'',3,1,'Project Managers',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5310,'Teachers',1,5300,'',1,1,'Teachers',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5320,'Coaches',1,5300,'',2,1,'Coaches',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5330,'Summary',1,5300,'',3,1,'Summary',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+
+GO
+
+
+
+
+insert into Permission_PageAuthorities
+values(5110,1)
+
+insert into Permission_PageAuthorities
+values(5120,1)
+
+insert into Permission_PageAuthorities
+values(5130,1)
+
+insert into Permission_PageAuthorities
+values(5140,1)
+
+insert into Permission_PageAuthorities
+values(5150,1)
+
+insert into Permission_PageAuthorities
+values(5210,1)
+
+insert into Permission_PageAuthorities
+values(5220,1)
+
+insert into Permission_PageAuthorities
+values(5230,1)
+
+insert into Permission_PageAuthorities
+values(5240,1)
+
+insert into Permission_PageAuthorities
+values(5310,1)
+
+insert into Permission_PageAuthorities
+values(5320,1)
+
+insert into Permission_PageAuthorities
+values(5330,1)
+
+GO
+
+
+insert into Permission_RolePageAuthorities
+values(20,5100,'128;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(20,5110,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(20,5120,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(20,5130,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(20,5140,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(20,5150,'1;',GETDATE(),GETDATE())
+
+
+insert into Permission_RolePageAuthorities
+values(9,5200,'128;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(9,5210,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(9,5220,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(9,5230,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(9,5240,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(8,5200,'128;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(8,5210,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(8,5220,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(8,5230,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(8,5240,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(5,5300,'128;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(5,5310,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(5,5320,'1;',GETDATE(),GETDATE())
+
+insert into Permission_RolePageAuthorities
+values(5,5330,'1;',GETDATE(),GETDATE())
+
+GO
+
+
+
+
+--需要重启IIS

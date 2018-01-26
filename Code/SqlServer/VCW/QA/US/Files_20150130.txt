@@ -1,0 +1,4 @@
+﻿
+if not exists(select * from syscolumns where id=object_id('Files') and name='IdentifyFileName')
+alter table dbo.Files
+add IdentifyFileName varchar(100) not null default ''

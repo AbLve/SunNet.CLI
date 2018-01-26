@@ -1,0 +1,183 @@
+﻿@model Sunnet.Cli.Business.BUP.Model.AutomationSettingModel
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Automation Settings";
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.BUP)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Data Management", "Index", "BUP"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;Automation Setting
+}
+
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn"
+         href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "BUP"))" >Back to Data Management List</a>
+    <button type="button"  href='@Url.Action("New")' class="mainbutton mainright-btn create-btn" 
+        data-bind="click: addData" >
+        Add Automation Setting</button>
+</div>
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="txtCommunity">Community/District</label>
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#CommunityId",
+                data_remote = Url.Action("GetCommunitySelectListForSearch", "Community", new { Area = "Community" }),
+                data_text = "Name",
+                placeholder = "Enter key text to search",
+                data_value = "ID",
+                id = "txtCommunity",
+                name = "txtCommunity",
+                @for = "CommunityId",
+                data_required = "false",
+                data_bind = "value: searchCriteria.communityName",
+                data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+                @Value = @ViewBag.communityName
+            })
+            @Html.HiddenFor(model => model.CommunityId,
+                new
+                {
+                    @class = "form-control",
+                    placeholder = "Selected Community",
+                    data_bind = "value: searchCriteria.communityId",
+                    @Value = @ViewBag.communityId
+                })
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        <label class="control-label col-sm-2" for="Status">Status </label>
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(m => m.Status, "All", "-1", new { @class = "form-control", data_bind = "value: searchCriteria.status" })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">Automation Setting</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.CommunityName"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td data-bind="text: item.HostIp"></td>
+                    <td data-bind="text: item.Port"></td>
+                    <td data-bind="text: item.UserName"></td>
+                    @*<td data-bind="text: item.PassWord"></td>*@
+                    <td>
+                        <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                        <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                    </td>
+                </tr>
+            </tbody>
+            @Html.Display("e", "NoData", new { Colspan = 10 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Community = {};
+        $(function () {
+
+            list_Automation = new ViewModel(
+                {
+                    instanceName: "list_Automation",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: "Redirect",
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: "Redirect",
+                    viewDataUrl: '@Html.Raw(Url.Action("ViewInfo"))',
+                    viewType: "Redirect",
+                    orderBy: "Id",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+
+                        {
+                            text: "@Html.DisplayNameFor(model => model.CommunityName)",
+                            field: "@Html.NameFor(model => model.CommunityName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.HostIp)",
+                            field: "@Html.NameFor(model => model.HostIp)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Port)",
+                            field: "@Html.NameFor(model => model.Port)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.UserName)",
+                            field: "@Html.NameFor(model => model.UserName)",
+                            order: true,
+                            width: '10%'
+                        },
+                        @*{
+                            text: "@Html.DisplayNameFor(model => model.PassWord)",
+                            field: "@Html.NameFor(model => model.PassWord)",
+                            order: true,
+                            width: '10%'
+                        },*@
+                        { text: "Action", width: '15%' }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("communityId", "@ViewBag.communityId")),
+                        communityName: ko.observable(window.queryString("communityName", "@Html.Raw(ViewBag.communityName)")),
+                        status: ko.observable(window.queryString("status", -1))
+                    }
+                }
+            );
+            list_Automation.search();
+            ko.applyBindings(list_Automation);
+        });
+    </script>
+}
+

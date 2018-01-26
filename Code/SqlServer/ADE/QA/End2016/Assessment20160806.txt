@@ -1,0 +1,3 @@
+﻿ alter table [dbo].[Assessments] add [Description] varchar(5000) not null default ''
+  go
+  update [Assessments] set [Description] =''

@@ -1,0 +1,260 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Schools.Models.SchoolModel
+@{
+    ViewBag.Title = Model.SchoolName + " Playgrounds";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formIdPage = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View) + "1";
+    var formId2 = PostFormHelper.GetFormId(Html.ViewContext.View) + "2";
+}
+
+@Html.AntiForgeryToken()
+
+
+<form class="form-horizontal clearfix" role="form">
+    <div class="form-group">
+        <div id="@formId">
+            <div class="tab-content tab-d" style="padding-top: 0px; width: 48%">
+                <div class="content-title">
+                    Playgrounds
+                </div>
+                <div class="tab-d-input">
+                    <label class="hide" for="Keyword">Keyword</label>
+                    <input class="form-control" placeholder="Enter playground name to Add"
+                        id="name" name="name" type="text" value="" maxlength="50" style="width: 65%" title=" "/>
+                    <button class="mainbutton mainright-btn sreach-btn" onclick=" AddPlayground(); return false;">Add</button>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr data-bind="foreach: { data: headers, as: 'header' }">
+                            <!-- ko if: ($index() === 0)-->
+                            <th>Select one playground
+                            </th>
+                            <th><span class="hide">none</span></th>
+                            <!-- /ko-->
+                            <!-- ko if: (header.order === true)-->
+
+                            <!-- /ko-->
+                            <!-- ko if: (header.order === false) -->
+
+                            <!-- /ko-->
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                        <tr>
+                            <td>
+                                <input type="radio" name="chkPlayground" data-bind="value: item.ID, attr: { id: 'chkPlayground' + $index() }, checked: $root.selectedPlayground">
+                                <label data-bind="text: item.Name, attr: { for: 'chkPlayground' + $index() }"></label>
+                            </td>
+                            <td>
+                                <a class="main-icon-btn" data-bind="event: { click: $root.DeletePlayGround }"><i class="icon-remove"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    @Html.Display("e", "NoData", new { Colspan = 2 })
+                </table>
+
+            </div>
+            <div class="tab-d-m" style="text-align: center; width: 4%;">
+            </div>
+        </div>
+        <div class="tab-content tab-d" id="@formId2" style="padding-top: 0px; width: 48%">
+            <div class="content-title">Available TRS Classes</div>
+            <div class="tab-d-input">
+                <label class="hide" for="Keyword2">Keyword</label>
+                <input class="form-control" placeholder="Enter key to search" data-bind="value: searchCriteria.name"
+                    id="Keyword2" name="Keyword" type="text" value="" style="width: 60%" />
+                <button class="mainbutton mainright-btn sreach-btn" data-bind="event: { click: search }">Search</button>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: ($index() === 0)-->
+                        <th>
+
+                            <input type="checkbox" onclick="CheckAll(this)" value="@formId2" id="chkSelectAll2" />
+                            <label for="chkSelectAll2">Select All</label>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"><span class="hide">none</span></th>
+                        <!-- /ko-->
+
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr>
+                        <td>
+                            <label data-bind=" attr: { 'for': 'chkTRSClass' + $index() }" class="hide">hiddenChk</label>
+                            <input type="checkbox" name="chkTRSClass" data-bind="value: item.ID, attr: { id: 'chkTRSClass' + $index(), checked: (item.PlaygroundId > 0) }">
+                        </td>
+                        <td data-bind="text: item.TRSClassName"></td>
+
+                    </tr>
+                </tbody>
+                @Html.Display("e", "NoData", new { Colspan = 2 })
+            </table>
+            @Html.Partial("_Partial_Pager")
+        </div>
+
+
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" title="Assign classes to selected playground" onclick="return playgroundAssignAll();">
+            Assign
+        </button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Close</button>
+    </div>
+</form>
+
+
+
+
+
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function AddPlayground() {
+            $.post("SavePlayground", { schoolId: "@Model.ID", name: $("#name").val() }, function(data) {
+                var res = JSON.parse(data);
+                if (res.success == true) {
+                    $("#name").val("");
+                    list_Playgrounds.search();
+                }
+            });
+        }
+
+        function CheckAll(obj) {
+            var formId = $(obj).val();
+            if ($(obj).is(":checked")) {
+                $("#" + formId + " [name='chkTRSClass']").prop("checked", true);
+            } else {
+                $("#" + formId + " [name='chkTRSClass']").prop("checked", false);
+            }
+        }
+
+        function GetAllCheckedItem(formId) {
+            var ids = new Array();
+            $("#" + formId + " input:checked").not("#chkSelectAll").not("#chkSelectAll2").each(function(index, obj) {
+                ids.push($(this).val());
+            });
+            return ids;
+        }
+
+        var list_Playgrounds = {};
+        var list_TRSClasses = {};
+        $(function() {
+            InitList = function() {
+                list_Playgrounds.search();
+                list_TRSClasses.search();
+            }
+            list_Playgrounds = new ViewModel(
+                {
+                    instanceName: "list_Playgrounds",
+                    modalId: "modalNormal",
+                    viewType: "Redirect",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("GetPlaygrounds")))',
+                    orderBy: "Name",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "Playground",
+                            field: "Name",
+                            order: true,
+                            width: '70%'
+                        }
+                    ],
+                    miniPager: true,
+                    searchCriteria: {
+                        schoolId: ko.observable("@Model.ID")
+                    }
+                },
+                {
+                    DeletePlayGround: function(item) {
+                        var playGroundId = item.ID;
+                        if (playGroundId != "") {
+                            $.post("DeletePlayground", { id: playGroundId }, function(data) {
+                                var res = JSON.parse(data);
+                                if (res.success == true) {
+                                    list_Playgrounds.search();
+                                }
+                            });
+                        }
+                    },
+                    SelectedPlayGround: function(item) {
+                        list_TRSClasses.search();
+                        return "";
+                    },
+                    selectedPlayground: ko.observable(0)
+                }
+            );
+            list_Playgrounds.selectedPlayground.subscribe(function(playgroundId) {
+                list_TRSClasses.searchCriteria.playgroundId(playgroundId);
+                list_TRSClasses.search();
+            });
+            list_TRSClasses = new ViewModel(
+                {
+                    instanceName: "list_TRSClasses",
+                    modalId: "modalNormal",
+                    viewType: "Redirect",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("GetTRSClasses")))',
+                    orderBy: "TRSClassName",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    miniPager: true,
+                    headers: [
+                        {
+                            text: "TRS Class Name",
+                            field: "Name",
+                            order: true,
+                            width: '70%'
+                        }
+                    ],
+                    searchCriteria: {
+                        playgroundId: ko.observable(0),
+                        schoolId: ko.observable("@Model.ID"),
+                        name: ko.observable("")
+                    }
+                }
+            );
+            list_Playgrounds.search();
+            list_TRSClasses.search();
+            ko.applyBindings(list_Playgrounds, document.getElementById("@formId"));
+            ko.applyBindings(list_TRSClasses, document.getElementById("@formId2"));
+
+        });
+
+
+        function playgroundAssignAll()
+        {
+            var ids = GetAllCheckedItem("@formId2");
+            var playgroundId = GetAllCheckedItem("@formId");
+            if (playgroundId.length == 0) {
+                return false;
+            }
+         
+            $.post("UpdateTRSClassPlayground", { playgroundId: playgroundId, trsClassIds: ids }, function(data) {
+                var res = JSON.parse(data);
+                if (res.success == true) {
+                    showMessage("success");
+                   InitList();
+                }
+            });
+        }
+    </script>
+}

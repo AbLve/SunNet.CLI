@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "Student Summary Report";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var language = (int)ViewBag.language;
+    var theOtherLanguage = (int)ViewBag.TheOtherLanguage;
+}
+@section Scripts
+{
+    <script type="text/javascript">
+    var models = {};
+    +(function() {
+        var $form = $("#@(formId)");
+        var groups = @(Html.Raw(ViewBag.MeasureJson));
+        var waveMeasure = new WaveMeasures(groups);
+
+        var groups2 = @(Html.Raw(ViewBag.MeasureJson2));
+        var vaveMeasure2;
+        if (groups2) {
+            vaveMeasure2 = new WaveMeasures(groups2);
+        }
+
+        models.languages = {};
+        models.languages[@(language)] = waveMeasure;
+        if (vaveMeasure2) {
+            models.languages[@(theOtherLanguage)] = vaveMeasure2;
+        } else {
+            models.languages[@(theOtherLanguage)] = false;
+        }
+        models.selectedLanguage = ko.observable(@(language));
+        models.assessment = ko.computed(function() {
+            return models.languages[models.selectedLanguage()];
+        }, models);
+        models.selectedLanguage.subscribe(function(language) {
+            var targetWave = $("#@(formId)").find("#myTab").find("li.active").find("a").attr("href").replace("#content", "");
+            models.languages[language].chooseWave(parseInt(targetWave));
+        });
+        models.submit = function(color) {
+            if (color) {
+                $form.find("#Gray").val(color);
+            }else {
+                $form.find("#Gray").val("");
+            }
+            $form.attr("target", "_blank");
+            if($.support.mobile === false){
+                $form.attr("target", "export");
+            }
+            var measures = {};
+            $.each(models.assessment().waves, function(i, wave) {
+                measures[i] = [];
+            });
+            var selectedWaves = [];
+            $.each(models.assessment().groups, function(j, group) {
+                $.each(group.measures, function(k, measure) {
+                    $.each(measure.selectedWaves(), function(l, wave) {
+                        if (selectedWaves.indexOf(wave) < 0) {
+                            selectedWaves.push(wave);
+                        }
+                        measures[wave].push(measure.id);
+                        if (group.parent && measures[wave].indexOf(group.parent.id) <= 0) {
+                            measures[wave].push(group.parent.id);
+                        }
+                    });
+                });
+            });
+
+            var strMeas = JSON.stringify(measures);
+            if (strMeas == '{"1":[],"2":[],"3":[]}') {
+                window.showMessage("hint", "Export_Select_Measure");
+            } else {
+                $form.find("#waves").val(strMeas);
+                $form.submit();
+                setTimeout(function() {$form.cliForm("loaded");}, 3000);
+            }
+        };
+        models.entireClass = ko.observable(false);
+        models.printComment = ko.observable(false);
+        ko.applyBindings(models, document.getElementById("@(formId)"));
+        $("#languages").find("label.active").find("input").prop("checked", true);
+    })();
+    </script>
+}
+<form class="form-horizontal" role="form" method="POST" id="@(formId)" action='@Url.Action("Index", "Student", new { Area = "Report" })' target="export">
+    <div class="btn-group" data-toggle="buttons" style="position: absolute; top: -47px; left: 250px;" >
+        <label class="btn  btn-default" for="entireClass" style="border-radius: 0px;">
+            <input autocomplete="off" id="entireClass" name="entireClass" type="radio" value="true">
+            Entire Class
+        </label>
+        <label class="btn btn-default active" for="entireClass2" style="width:150px;border-radius: 0px;margin-left:5px;text-overflow: ellipsis;white-space: nowrap; overflow:hidden;">
+            <input autocomplete="off" id="entireClass2" name="entireClass" type="radio" value="false" checked="">
+            @(ViewBag.Student) Only
+        </label>
+    </div>
+    <button type="button" class="btn btn-default radio-btn"
+            data-bind="click:function(){printComment(!printComment());}"
+            data-toggle="button" aria-pressed="false" autocomplete="off">
+        <i class="" data-bind="css:{'icon-check-empty':printComment() == false,'icon-check':printComment()}"></i>
+        Print Comments
+    </button>
+    <div class="clearfix">
+        @Html.Hidden("language")
+        @Html.Hidden("printComments","flase",new
+        {
+            data_bind = "value:printComment()"
+        })
+        <br />
+    </div>
+    @Html.Partial("_Partial_Select_Wave_Measure")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("classId")
+    @Html.Hidden("id")
+    @Html.Hidden("waves")
+    @Html.Hidden("export", true)
+    @Html.Hidden("imgSource")
+    @Html.Hidden("Gray")
+    <div class="modal-footer">
+        <button type="button" class="mainbutton mainright-btn submit-btn "
+                data-bind="click:function(){submit('gray');}">
+            Scores (B&W)
+        </button>
+        <button type="button" class="mainbutton mainright-btn submit-btn "
+                data-bind="click:submit">
+            Scores (Color)
+        </button>
+    </div>
+</form>
+
+<iframe id="export" name="export" style="display: none;height:0px;width:0px;"></iframe>

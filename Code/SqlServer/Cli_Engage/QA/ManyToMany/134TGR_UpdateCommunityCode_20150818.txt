@@ -1,0 +1,22 @@
+﻿ if exists(select * from dbo.sysobjects where id = object_id(N'[dbo].[UpdateCommunityCode]') and OBJECTPROPERTY(id, N'IsTrigger') = 1) 
+ DROP TRIGGER [dbo].[UpdateCommunityCode]
+GO
+
+/****** Object:  Trigger [dbo].[UpdateCommunityCode]    Script Date: 2015/8/18 20:11:47 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER [dbo].[UpdateCommunityCode] ON [dbo].[Communities] 
+FOR INSERT
+AS
+  declare @ID int
+  select @ID = ID from Inserted
+  if(@ID is not null) begin
+  update Communities set CommunityId = 'EDS'+ left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqCommunityCode ),'5') 
+  where id = @ID
+  end
+GO
+

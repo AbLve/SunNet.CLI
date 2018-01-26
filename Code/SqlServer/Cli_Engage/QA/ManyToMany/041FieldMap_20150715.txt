@@ -1,0 +1,668 @@
+ 
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1, N'ID', N'Community ID', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (2, N'Name', N'Community Name', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (3, N'Status', N'Community Status', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (4, N'StatusDate', N'Community Status Date', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (5, N'FundingId', N'Community Funding Name', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'LEFT JOIN Fundings CommunityFundings ON C.FundingId = CommunityFundings.ID', N'CommunityFundings.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (6, N'SchoolYear', N'Community School Year', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (7, N'MouStatus', N'Community MOU Status', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (8, N'MouDocument', N'Community MouDocument', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (9, N'WebAddress', N'Community WebAddress', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (10, N'DistrictNumber', N'Community DistrictNumber', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (11, N'PhysicalAddress1', N'Community PhysicalAddress1', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (12, N'PhysicalAddress2', N'Community PhysicalAddress2', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (13, N'ECircle', N'Community PhysicalAddress2 ECircle', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (14, N'City', N'Community City', CAST(0x0000A4CD00000000 AS DateTime), CAST(0x0000A4CD00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (15, N'CountyId', N'Community County', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Counties CommunityCounty ON C.CountyId=CommunityCounty.ID', N'CommunityCounty.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (16, N'StateId', N'Community State', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN States CommunityStates ON C.StateId=CommunityStates.ID', N'CommunityStates.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (17, N'Zip', N'Community Zip', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (18, N'PhoneNumber', N'Community PhoneNumber', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (19, N'PhoneNumberType', N'Community PhoneNumber Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (20, N'PrimarySalutation', N'Community Primary Contact Salutation', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (21, N'PrimaryName', N'Community Primary Contact Name', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (22, N'PrimaryTitleId', N'Community Primary Contact Title', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Titles CommunityPrimaryTitle ON C.PrimaryTitleId=CommunityPrimaryTitle.ID', N'CommunityPrimaryTitle.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (23, N'PrimaryPhone', N'Community Primary Contact Phone', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (24, N'PrimaryPhoneType', N'Community Primary Contact Phone Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (25, N'PrimaryEmail', N'Community Primary Contact Email', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (26, N'SecondarySalutation', N'Community Second Contact Salutation', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (27, N'SecondaryName', N'Community Second Contact Name', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (28, N'SecondaryTitleId', N'Community Second Contact Title', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Titles CommunitySecondaryTitle ON C.SecondaryTitleId=CommunitySecondaryTitle.ID', N'CommunitySecondaryTitle.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (29, N'SecondaryPhone', N'Community Second Contact Phone', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (30, N'SecondaryPhoneType', N'Community Second Contact Phone Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (31, N'SecondaryEmail', N'Community Second Contact Email', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (32, N'Notes', N'Community Notes', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (101, N'ID', N'School ID', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (102, N'Name', N'School Name', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (103, N'SchoolYear', N'School Year', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (104, N'Status', N'School Status', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (105, N'StatusDate', N'School StatusDate', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (106, N'EscName', N'School EscName', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (107, N'ParentAgencyId', N'School Parent Agency', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN ParentAgencies SchoolParentAgencies ON S.ParentAgencyId=SchoolParentAgencies.ID', N'SchoolParentAgencies.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (108, N'SchoolTypeId', N'School Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN SchoolTypes SchoolTypes ON S.SchoolTypeId=SchoolTypes.ID', N'SchoolTypes.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (109, N'SubTypeId', N'Sub School Type Name', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN SchoolTypes SchoolSubTypes ON S.SubTypeId=SchoolSubTypes.ID ', N'SchoolSubTypes.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (110, N'SchoolSize', N'School Size', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (111, N'FundingId', N'School TEA Project Funding', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Fundings SchoolFunding ON S.FundingId=SchoolFunding.ID', N'SchoolFunding.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (112, N'AtRiskPercent', N'% of At-Risk students in school ', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (113, N'SchoolNumber', N'School Number', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (114, N'StarDate', N'School Star designation date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (115, N'TrsLastStatusChange', N'School TRS Last Status Date Change', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (116, N'IspId', N'School Internet Service Provider', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN InternetServiceProviders SchoolInternetServiceProviders ON S.IspId=SchoolInternetServiceProviders.ID', N'SchoolInternetServiceProviders.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (117, N'InternetType', N'School Internet Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (118, N'InternetSpeed', N'School Internet Speed', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (119, N'PrimarySalutation', N'School Primary Contact Salutation', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (120, N'PrimaryName', N'School Primary Contact  Name', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (121, N'PrimaryTitleId', N'School Primary Contact Title', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Titles SchoolPrimaryTitle ON S.PrimaryTitleId=SchoolPrimaryTitle.ID', N'SchoolPrimaryTitle.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (122, N'PrimaryPhone', N'School Primary Contact Phone', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (123, N'PrimaryPhoneType', N'School Primary Contact Phone Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (124, N'PrimaryEmail', N'School Primary Contact Email', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (125, N'SecondarySalutation', N'School Second Contact Salutation', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (126, N'SecondaryName', N'School Second Contact Name', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (127, N'SecondaryTitleId', N'School Second Contact Title', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Titles SchoolSecondaryTitle ON S.SecondaryTitleId=SchoolSecondaryTitle.ID', N'SchoolSecondaryTitle.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (128, N'SecondaryPhoneNumber', N'School Second Contact Phone', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (129, N'SecondaryPhoneType', N'School Second Contact Phone Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (130, N'SecondaryEmail', N'School Second Contact Email', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (131, N'PhysicalAddress1', N'School Physical Address1', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (132, N'PhysicalAddress2', N'School Physical Address2', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (133, N'City', N'School City', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (134, N'StateId', N'School State', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN States SchoolStates ON S.StateId=SchoolStates.ID ', N'SchoolStates.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (135, N'CountyId', N'School County', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Counties SchoolCounties ON S.CountyId=SchoolCounties.ID', N'SchoolCounties.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (136, N'Zip', N'School Zip', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (137, N'PhoneNumber', N'School PhoneNumber', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (138, N'PhoneType', N'School PhoneType', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (139, N'Latitude', N'School Latitude', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (140, N'Longitude', N'School Longitude', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (141, N'MailingAddress1', N'School Mailing Address1', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (142, N'MailingAddress2', N'School Mailing Address2', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (143, N'MailingCity', N'School Mailing City', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (144, N'MailingStateId', N'School Mailing State', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN States SchoolMailingStates ON S.MailingStateId=SchoolMailingStates.ID ', N'SchoolMailingStates.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (145, N'MailingCountyId', N'School Mailing County', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Counties SchoolMailingCounties ON S.MailingCountyId=SchoolMailingCounties.ID', N'SchoolMailingCounties.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (146, N'MailingZip', N'School Mailing Zip', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (147, N'Notes', N'School Notes', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (201, N'ID', N'Classroom ID', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (202, N'Name', N'Classroom Name', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (203, N'Status', N'Classroom Status', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (204, N'StatusDate', N'Classroom Status Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (205, N'InterventionStatus', N'Classroom Intervention Status', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (206, N'InterventionOther', N'Classroom Intervention Other', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (207, N'FundingId', N'Classroom Funding', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Fundings ClassroomFundings ON Classroom.FundingId=ClassroomFundings.ID', N'ClassroomFundings.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (208, N'KitId', N'Classroom Current School Readiness Kit ', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomKits ON Classroom.KitId=ClassroomKits.ID', N'ClassroomKits.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (209, N'KitUpdatedOn', N'Classroom Kit Last Modified Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (210, N'FcNeedKitId', N'Classroom School Readiness Kit - FC Needed', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomFcNeedKit ON Classroom.FccNeedKitId=ClassroomFcNeedKit.ID', N'ClassroomFcNeedKit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (211, N'FcFundingId', N'Classroom School Readiness Kit - FC Funding', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Fundings ClassroomFcFunding ON Classroom.FcFundingId=ClassroomFcFunding.ID', N'ClassroomFcFunding.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (212, N'Part1KitId', N'Classroom Current School Readiness Kit - Part 1', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomPart1Kit ON Classroom.Part1KitId=ClassroomPart1Kit .ID', N'ClassroomPart1Kit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (213, N'Part1KitUpdatedOn', N'Classroom Part1 Last Modified Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (214, N'Part1NeedKitId', N'Classroom School Readiness Kit - Part 1 Needed', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomPart1NeedKit ON Classroom.Part1NeedKitId=ClassroomPart1NeedKit.ID', N'ClassroomPart1NeedKit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (215, N'Part1FundingId', N'Classroom School Readiness Kit - Part 1 Funding', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Fundings ClassroomPart1Funding ON Classroom.Part1FundingId=ClassroomPart1Funding.ID', N'ClassroomPart1Funding.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (216, N'Part2KitId', N'Classroom Current School Readiness Kit - Part 2', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomPart2Kit ON Classroom.Part2KitId=ClassroomPart2Kit.ID', N'ClassroomPart2Kit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (217, N'Part2KitUpdatedOn', N'Classroom Part2 Last Modified Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (218, N'Part2NeedKitId', N'Classroom School Readiness Kit - Part 2 Needed', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomPart2NeedKit ON Classroom.Part2NeedKitId=ClassroomPart2NeedKit.ID', N'ClassroomPart2NeedKit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (219, N'Part2FundingId', N'Classroom School Readiness Kit - Part 2 Funding', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Fundings ClassroomPart2Funding ON Classroom.Part2FundingId=ClassroomPart2Funding.ID', N'ClassroomPart2Funding.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (220, N'StartupKitId', N'Classroom Startup Kit', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomStartupKit ON Classroom.StartupKitId=ClassroomStartupKit.ID', N'ClassroomStartupKit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (221, N'StartupKitUpdatedOn', N'Classroom Startup Kit Last Modified Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (222, N'StartupNeedKitId', N'Classroom Startup Kit Needed', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomStartupNeedKit ON Classroom.StartupNeedKitId=ClassroomStartupNeedKit.ID', N'ClassroomStartupNeedKit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (223, N'StartupKitFundingId', N'Classroom Startup Kit Funding', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Fundings ClassroomStartupFunding ON Classroom.StartupKitFundingId=ClassroomStartupFunding.ID', N'ClassroomStartupFunding.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (224, N'CurriculumId', N'Classroom Current Curriculum Kit', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Curriculums ClassroomCurriculums ON Classroom.CurriculumId=ClassroomCurriculums.ID', N'ClassroomCurriculums.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (225, N'CurriculumUpdatedOn', N'Classroom Curriculum Last Modified Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (226, N'NeedCurriculumId', N'Classroom Curriculum Kit Needed', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Curriculums ClassroomNeedCurriculums ON Classroom.NeedCurriculumId=ClassroomNeedCurriculums.ID', N'ClassroomNeedCurriculums.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (227, N'NeedCurriculumUpdatedOn', N'Classroom Need Curriculum Last Modified Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (228, N'CurriculumFundingId', N'Classroom Curriculum Kit Funding', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Fundings ClassroomCurriculumFunding ON Classroom.CurriculumFundingId=ClassroomCurriculumFunding.ID', N'ClassroomCurriculumFunding.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (229, N'DevelopingTalkersKitId', N'Classroom Current Developing Talkers Kit', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomDevelopingTalkersKit ON Classroom.DevelopingTalkersKitId=ClassroomDevelopingTalkersKit.ID', N'ClassroomDevelopingTalkersKit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (230, N'DevelopingTalkersKitUpdatedOn', N'Classroom Developing Talkers Kit Last Modified Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (231, N'DevelopingTalkersNeedKitId', N'Classroom Developing Talkers Kit Needed', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomDevelopingTalkersNeedKit ON Classroom.DevelopingTalkersNeedKitId=ClassroomDevelopingTalkersNeedKit.ID', N'ClassroomDevelopingTalkersNeedKit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (232, N'DevelopingTalkerKitFundingId', N'Classroom Developing Talkers Kit Funding', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Fundings ClassroomDevelopingTalkerFunding ON Classroom.DevelopingTalkerKitFundingId=ClassroomDevelopingTalkerFunding.ID', N'ClassroomDevelopingTalkerFunding.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (233, N'FccKitId', N'Classroom Current Fcc Kit', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomFccKit ON Classroom.FccKitId=ClassroomFccKit.ID', N'ClassroomFccKit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (234, N'FccKitUpdatedOn', N'Classroom Fcc Kit Last Modified Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (235, N'FccNeedKitId', N'Classroom Fcc Kit Needed', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Kits ClassroomFccNeedKit ON Classroom.FccNeedKitId=ClassroomFccNeedKit.ID', N'ClassroomFccNeedKit.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (236, N'FccKitFundingId', N'Classroom Fcc Kit Funding', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Fundings ClassroomFccKitFunding ON Classroom.FccKitFundingId=ClassroomFccKitFunding.ID', N'ClassroomFccKitFunding.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (237, N'InternetSpeed', N'Classroom Internet Speed', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (238, N'InternetType', N'Classroom Internet Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (239, N'IsInteractiveWhiteboard', N'Classroom  Interactive whiteboard in classroom', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (240, N'IsUsingInClassroom', N'Classroom Staff use computer or tablet in classroom', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (241, N'ComputerNumber', N'Classroom # of computers or tablets accessible to children', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (242, N'MaterialsNotes', N'Classroom Materials Notes', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (243, N'TechnologyNotes', N'Classroom Technology Notes', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (301, N'ID', N'Class ID', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (302, N'Name', N'Class Name', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (303, N'Status', N'Class Status', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (304, N'StatusDate', N'Class Status Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (305, N'DayType', N'Class Day Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (306, N'ClassType', N'Class Type', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (307, N'Classlevel', N'Class level', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (308, N'LeadTeacher', N'Class Lead Teacher', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Teachers LeadTeacher ON Cla.LeadTeacherId=LeadTeacher.ID  
+LEFT JOIN Users LeadTeacherUser ON LeadTeacher.UserId=LeadTeacherUser.ID', N'LeadTeacherUser.FirstName+''  ''+LeadTeacherUser.LastName')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (309, N'TrsAssessorId', N'Class Trs Assessor', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Users TrsAssessorUser ON Cla.TrsAssessorId=TrsAssessorUser.ID', N'TrsAssessorUser.FirstName+''  ''+TrsAssessorUser.LastName')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (310, N'TrsMentorId', N'Class Trs Mentor', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Users TrsMentorUser ON Cla.TrsMentorId=TrsAssessorUser.ID', N'TrsMentorUser.FirstName+''  ''+TrsMentorUser.LastName')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (311, N'ClassLanguage ', N'Class Language ', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN ClassLanguages ON Cla.ID=dbo.ClassLanguages.ClassId  
+LEFT JOIN Languages ClassLanguagesName ON dbo.ClassLanguages.LanguageId=ClassLanguagesName.ID ', N'ClassLanguagesName.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (312, N'CurriculumId', N'Class Curriculum Used', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Curriculums ClassCurriculums ON Cla.CurriculumId=ClassCurriculums.ID', N'ClassCurriculums.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (313, N'SupplementalCurriculumId', N'Class Supplemental Curriculum Used', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Curriculums ClassSupplementalCurriculum ON Cla.SupplementalCurriculumId=ClassSupplementalCurriculum.ID', N'ClassSupplementalCurriculum.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (314, N'AtRiskPercent', N'Class At Risk Percent', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (315, N'MonitoringToolId', N'Class Monitoring Tool', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN MonitoringTools ClassMonitoringTools ON Cla.MonitoringToolId=ClassMonitoringTools.ID', N'ClassMonitoringTools.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (316, N'MonitoringToolOther', N'Class Other Monitoring Tool', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (317, N'UsedEquipment', N'Class Used Equipment', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (318, N'EquipmentNumber', N'Class Equipment Number', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (319, N'Teachers', N'Class Teachers', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN TeacherClassRelations ON Cla.ID=TeacherClassRelations.ClassId  
+LEFT JOIN Teachers ClassTeachers ON TeacherClassRelations.TeacherId=ClassTeachers.ID  
+LEFT JOIN Users ClassTeachersUser ON ClassTeachers.UserId=ClassTeachersUser.ID', N'ClassTeachersUser.FirstName+''  ''+ClassTeachersUser.LastName')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (320, N'Notes', N'Class Notes', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (401, N'ID', N'Student ID', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (402, N'FirstName', N'Student FirstName', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (403, N'MiddleName', N'Student MiddleName', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (404, N'LastName', N'Student LastName', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (405, N'Status', N'Student Status', CAST(0x0000A4C0010FCA4E AS DateTime), CAST(0x0000A4C0010FCA4E AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (406, N'StatusDate', N'Student Status Date', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (407, N'Ethnicity', N'Student Ethnicity', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (408, N'BirthDate', N'Student BirthDate', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (409, N'Gender', N'Student Gender', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (410, N'PrimaryLanguageId', N'Student Primary Language', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Languages StuPrimaryLanguages ON Stu.PrimaryLanguageId=StuPrimaryLanguages.ID', N'StuPrimaryLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (411, N'SecondaryLanguageId', N'Student Secondary Language', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'LEFT JOIN Languages StuSecondaryLanguages ON Stu.SecondaryLanguageId=StuSecondaryLanguages.ID', N'StuSecondaryLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (412, N'PrimaryLanguageOther', N'Student Other Language', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (413, N'LocalStudentID', N'Student Local StudentID', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (414, N'AssessmentLanguage', N'Student Assessment Language', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (415, N'TSDSStudentID', N'Student TSDS StudentID', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (416, N'GradeLevel', N'Student GradeLevel', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (417, N'Notes', N'Student Notes', CAST(0x0000A4CE00000000 AS DateTime), CAST(0x0000A4CE00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (501, N'ID', N'User ID', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (502, N'Role', N'Role', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (503, N'GoogleId', N'GoogleId', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (504, N'FirstName', N'FirstName', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (505, N'MiddleName', N'MiddleName', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (506, N'LastName', N'LastName', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (507, N'PreviousLastName', N'Previous LastName', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (508, N'Status', N'Status', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (509, N'StatusDate', N'Status Date', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (510, N'PrimaryEmailAddress', N'Primary Email Address', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (511, N'PrimaryPhoneNumber', N'Primary Phone Number', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (512, N'PrimaryNumberType', N'Primary Number Type', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (513, N'SecondaryEmailAddress', N'Secondary Email Address', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (514, N'SecondaryPhoneNumber', N'Secondary Phone Number', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (515, N'SecondaryNumberType', N'Secondary Number Type', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (516, N'FaxNumber', N'Fax Number', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (517, N'IsDeleted', N'Is Deleted', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (518, N'Sponsor', N'Sponsor', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'LEFT JOIN Users SponsorUsers ON U.Sponsor=SponsorUsers.ID', N'SponsorUsers.FirstName+'' ''+SponsorUsers.LastName')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (519, N'InvitationEmail', N'Invitation Email', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (520, N'EmailExpireTime', N'Email Expire Time', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (521, N'Notes', N'Notes', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (522, N'gmail', N'gmail', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (523, N'IsSyncLms', N'IsSyncLms', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (524, N'CreatedOn', N'CreatedOn', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (525, N'UpdatedOn', N'UpdatedOn', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (601, N'CommunityUserId', N'Community User Id', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (602, N'SchoolYear', N'School Year', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (603, N'BirthDate', N'Birth Date', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (604, N'Gender', N'Gender', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (605, N'PositionId', N'Position', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'LEFT JOIN Positions CommunityUsersPositions ON CU.PositionId=CommunityUsersPositions.ID', N'CommunityUsersPositions.Title')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (606, N'PositionOther', N'Position Other', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (607, N'Address', N'Address1', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (608, N'Address2', N'Address2', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (609, N'City', N'City', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (610, N'CountyId', N'County', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'LEFT JOIN Counties CommunityUsersCounties ON CU.CountyId=CommunityUsersCounties.ID', N'CommunityUsersCounties.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (611, N'StateId', N'State', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'LEFT JOIN States CommunityUsersStates ON CU.StateId=CommunityUsersStates.ID', N'CommunityUsersStates.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (612, N'Zip', N'Zip', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (613, N'PrimaryLanguageId', N'Primary Language', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'LEFT JOIN Languages CommunityUsersLanguages ON CU.PrimaryLanguageId=CommunityUsersLanguages.ID', N'CommunityUsersLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (614, N'PrimaryLanguageOther', N'Primary Language Other', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (615, N'TotalYearCurrentRole', N'Total Year Current Role', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (616, N'EducationLevel', N'Education Level', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (617, N'CommunityNotes', N'Community User Notes', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (618, N'ParentId', N'Parent Id', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (619, N'CommunityLevelRequest', N'Community Level Request', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (620, N'SchoolLevelRequest', N'School Level Request', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (701, N'StateWideId', N'StateWide User Id', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (702, N'SchoolYear', N'School Year', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (703, N'PositionId', N'Position Title', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N' LEFT JOIN Positions StateWidePositions ON SW.PositionId = StateWidePositions.ID', N'StateWidePositions.Title')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (704, N'PositionOther', N'Position Other', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (705, N'StateWideNotes', N'StateWide Notes', CAST(0x0000A4CF0064BB1C AS DateTime), CAST(0x0000A4CF0064BB1C AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (801, N'PrincipalId', N'Principal User Id', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (802, N'SchoolYear', N'School Year', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (803, N'BirthDate', N'Birth Date', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (804, N'Gender', N'Gender', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (805, N'PositionId', N'Position Title', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN Positions PrincipalsPositions ON Principals.PositionId = PrincipalsPositions.ID', N'PrincipalsPositions.Title')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (806, N'PositionOther', N'Position Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (807, N'Address', N'Address1', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (808, N'Address2', N'Address2', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (809, N'City', N'City', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (810, N'CountyId', N'County', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN Counties PrincipalsCounties ON Principals.CountyId = PrincipalsCounties.ID', N'PrincipalsCounties.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (811, N'StateId', N'State', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN States PrincipalsStates ON Principals.StateId=PrincipalsStates.ID', N'PrincipalsStates.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (812, N'Zip', N'Zip', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (813, N'Ethnicity', N'Ethnicity', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (814, N'EthnicityOther', N'Ethnicity Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (815, N'PrimaryLanguageId', N'Primary Language', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN Languages PrincipalsPrimaryLanguages ON Principals.PrimaryLanguageId=PrincipalsPrimaryLanguages.ID', N'PrincipalsPrimaryLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (816, N'PrimaryLanguageOther', N'Primary Language Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (817, N'TotalYearCurrentRole', N'Total Year Current Role', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (818, N'TotalYearSchoolWorking', N'TotalY ear School Working', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (819, N'EducationLevel', N'Education Level', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (820, N'PDOther', N'PD Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (821, N'PrincipalNotes', N'Principal Notes', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (822, N'ParentId', N'ParentId', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (823, N'SchoolLevelRequest', N'School Level Request', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (901, N'TeacherId', N'Teacher User Id', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (902, N'SchoolYear', N'School Year', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (903, N'BirthDate', N'Birth Date', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (904, N'Gender', N'Gender', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (905, N'HomeMailingAddress', N'Home Mailing Address1', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (906, N'HomeMailingAddress2', N'Home Mailing Address2', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (907, N'City', N'City', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (908, N'CountyId', N'County', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN Counties TeachersCounties ON Teachers.CountyId = TeachersCounties.ID', N'TeachersCounties.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (909, N'StateId', N'State', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN States TeachersStates ON Teachers.StateId=TeachersStates.ID', N'TeachersStates.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (910, N'Zip', N'Zip', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (911, N'Ethnicity', N'Ethnicity', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (912, N'EthnicityOther', N'Ethnicity Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (913, N'PrimaryLanguageId', N'Primary Language', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN Languages TeachersPrimaryLanguages ON Teachers.PrimaryLanguageId=TeachersPrimaryLanguages.ID', N'TeachersPrimaryLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (914, N'PrimaryLanguageOther', N'Primary Language Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (915, N'SecondaryLanguageId', N'Secondary Language', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN Languages TeachersSecondaryLanguages ON Teachers.SecondaryLanguageId=TeachersSecondaryLanguages.ID', N'TeachersSecondaryLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (916, N'SecondaryLanguageOther', N'Secondary Language Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (917, N'TotalTeachingYears', N'Total Teaching Years', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (918, N'AgeGroupOther', N'Age Group Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (919, N'CurrentAgeGroupTeachingYears', N'Current Age Group Teaching Years', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (920, N'TeacherType', N'Teacher Type', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (921, N'TeacherTypeOther', N'Teacher Type Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (922, N'PDOther', N'PD Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (923, N'EducationLevel', N'Education Level', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (924, N'CoachId', N'Coach', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Users TeachersUsers ON Teachers.CoachId=TeachersUsers.ID', N'TeachersUsers.FirstName+'' ''+TeachersUsers.LastName')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (925, N'CoachAssignmentWay', N'Coach Assignment Way', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (926, N'CoachAssignmentWayOther', N'Coach Assignment Way Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (927, N'ECIRCLEAssignmentWay', N'ECIRCLE Assignment Way', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (928, N'ECIRCLEAssignmentWayOther', N'ECIRCLE Assignment Way Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (929, N'YearsInProjectId', N'Years In Project Id', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (930, N'CoreAndSupplemental', N'Core And Supplemental1', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (931, N'CoreAndSupplemental2', N'Core And Supplemental2', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (932, N'CoreAndSupplemental3', N'Core And Supplemental3', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (933, N'CoreAndSupplemental4', N'Core And Supplemental4', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (934, N'VendorCode', N'Vendor Code', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (935, N'CoachingHours', N'Coaching Hours', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (936, N'EmployedBy', N'Employed By', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (937, N'CLIFundingId', N'CLI Funding', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Fundings TeachersFundings ON Teachers.CLIFundingId=TeachersFundings.ID', N'TeachersFundings.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (938, N'MediaRelease', N'Media Release', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (939, N'IsAssessmentEquipment', N'Is Assessment Equipment', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (940, N'TeacherNotes', N'Teacher Notes', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (941, N'TeacherNumber', N'Teacher Number', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (942, N'ReqCycles', N'ReqCycles', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1001, N'ParentId', N'Parent User Id', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1002, N'SchoolYear', N'School Year', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1003, N'ParentNotes', N'Parent Notes', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1101, N'AuditorId', N'Auditor User Id', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1102, N'SchoolYear', N'School Year', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1103, N'PositionId', N'Positions Title', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN Positions AuditorsPositions ON Auditors.PositionId = AuditorsPositions.ID', N'AuditorsPositions.Title')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1104, N'PositionOther', N'Position Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1105, N'AffiliationId', N'Affiliation', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N' LEFT JOIN Affiliations  AuditorsAffiliations ON Auditors.AffiliationId=AuditorsAffiliations.ID', N'AuditorsAffiliations.Affiliation')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1106, N'AffiliationOther', N'Affiliation Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1107, N'AuditorNotes', N'Auditor Notes', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1201, N'ID', N'Coord Coach ID', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1202, N'SchoolYear', N'School Year', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1203, N'BirthDate', N'Birth Date', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1204, N'Gender', N'Gender', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1205, N'OfficeAddress1', N'Office Address1', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1206, N'OfficeAddress2', N'Office Address2', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1207, N'OfficeCity', N'Office City', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1208, N'OfficeCountyId', N'Office County', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Counties CoordCoachsOfficeCounties ON CC.OfficeCountyId=CoordCoachsOfficeCounties.ID', N'CoordCoachsOfficeCounties.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1209, N'OfficeStateId', N'Office State', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN States CoordCoachsOfficeStates ON CC.OfficeStateId=CoordCoachsOfficeStates.ID', N'CoordCoachsOfficeStates.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1210, N'OfficeZip', N'Office Zip', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1211, N'OfficeIsReceiveFedEx', N'Office Is Receive Fed Ex', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1212, N'OfficeIsReceiveMail', N'Office Is Receive Mail', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1213, N'HomeMailingAddress1', N'Home Mailing Address1', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1214, N'HomeMailingAddress2', N'Home Mailing Address2', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1215, N'HomeMailingCity', N'Home Mailing City', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1216, N'HomeMailingCountyId', N'Home Mailing County', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Counties CoordCoachsHomeCounties ON CC.HomeMailingCountyId=CoordCoachsHomeCounties.ID', N'CoordCoachsHomeCounties.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1217, N'HomeMailingStateId', N'Home Mailing State', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN States CoordCoachsHomeStates ON CC.HomeMailingStateId=CoordCoachsOfficeStates.ID', N'CoordCoachsHomeStates.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1218, N'HomeMailingZip', N'Home Mailing Zip', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1219, N'HomeIsReceiveFedEx', N'Home Is Receive Fed Ex', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1220, N'HomeIsReceiveMail', N'Home Is Receive Mail', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1221, N'Ethnicity', N'Ethnicity', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1222, N'EthnicityOther', N'Ethnicity Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1223, N'PrimaryLanguageId', N'Primary Language', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Languages CoordCoachsPrimaryLanguages ON CC.PrimaryLanguageId=CoordCoachsPrimaryLanguages.ID', N'CoordCoachsPrimaryLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1224, N'PrimaryLanguageOther', N'Primary Language Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1225, N'SecondaryLanguageId', N'Secondary Language', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Languages CoordCoachsSecondaryLanguages ON CC.SecondaryLanguageId= CoordCoachsSecondaryLanguages.ID', N'CoordCoachsSecondaryLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1226, N'SecondaryLanguageOther', N'Secondary Language Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1227, N'TotalYearsCoaching', N'Total Years Coaching', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1228, N'EducationLevel', N'Education Level', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1229, N'PMAssignmentId', N'PM Assignment', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Users CoordCoachsUsers ON CC.PMAssignmentId=CoordCoachsUsers.ID', N'CoordCoachsUsers.FirstName+'' ''+CoordCoachsUsers.LastName')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1230, N'CoachingType', N'Coaching Type', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1231, N'CoachingTypeOther', N'Coaching Type Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1232, N'VendorCode', N'Vendor Code', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1233, N'FTE', N'FTE', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1234, N'CLIFundingId', N'CLI Funding', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Fundings CoordCoachsFundings ON CC.CLIFundingId=CoordCoachsFundings.ID', N'CoordCoachsFundings.Name')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1235, N'FundedThrough', N'Funded Through', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1236, N'FundedThroughOther', N'Funded Through Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1237, N'AccountSponsor', N'Account Sponsor', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1238, N'Employer', N'Employer', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1239, N'IsAssessmentEquipment', N'Is Assessment Equipment', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1240, N'CoordCoachNotes', N'CoordCoach Notes', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1241, N'F2FAvailableHours', N'F2FAvailableHours', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1242, N'RemAvailableCycle', N'RemAvailableCycle', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1301, N'ID', N'Video Coding ID', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1302, N'PrimaryLanguageId', N'Primary Language', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Languages VideoCodingsPrimaryLanguages ON VC.PrimaryLanguageId = VideoCodingsPrimaryLanguages.ID', N'VideoCodingsPrimaryLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1303, N'PrimaryLanguageOther', N'Primary Language Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1304, N'SecondaryLanguageId', N'Secondary Language', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'LEFT JOIN Languages VideoCodingsSecondaryLanguages ON VC.SecondaryLanguageId=VideoCodingsSecondaryLanguages.ID', N'VideoCodingsSecondaryLanguages.Language')
+GO
+INSERT [dbo].[FieldMap] ([ID], [FieldName], [DisplayName], [CreatedOn], [UpdatedOn], [AssociateSql], [SelectName]) VALUES (1305, N'SecondaryLanguageOther', N'Secondary Language Other', CAST(0x0000A4CF00000000 AS DateTime), CAST(0x0000A4CF00000000 AS DateTime), N'', N'')
+GO

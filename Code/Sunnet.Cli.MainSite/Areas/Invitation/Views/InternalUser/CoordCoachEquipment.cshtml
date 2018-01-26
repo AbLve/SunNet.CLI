@@ -1,0 +1,184 @@
+﻿@using Sunnet.Cli.Core.Users.Entities
+@{
+    ViewBag.Title = "Issued Assessment Equipment";
+    var formId = Sunnet.Cli.UIBase.Models.PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    IEnumerable<SelectListItem> Equipment = ViewBag.Equipment;
+    List<CoordCoachEquipmentEntity> listCoordCoacEquipment = ViewBag.CoordCoachEquipments;
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    closeModal($("#@(formId)"));
+                }
+            });
+            if('@ViewBag.IsAssessmentEquipment'!="True"){
+                $("#dvEquipment").find("input").each(function () {
+                    $(this).attr("disabled", "disabled");
+                }) 
+            }
+            else{
+                $("#assessmentequipment1").prop("checked",true);
+                if('@ViewBag.EquipmentAccess'=='RW')
+                    $("[name='chkEquipment']").removeAttr("disabled");
+            }
+        })();
+
+        function ChangeYesEquipment(object)
+        {
+            $("[name='chkEquipment']").removeAttr("disabled");
+        }
+
+        function ChangeNoEquipment(object)
+        {
+            $("[name='chkEquipment']").prop("checked",false);
+            $("[name='UTHealthTag']").val("");
+            $("[name='SerialNumber']").val("");
+            $("#dvEquipment").find("input").attr("disabled", "disabled");
+        } 
+
+        function ChangeEquipment(object,id)
+        {
+            if($(object).prop("checked")==true)
+            {
+                $("#UTHealthTag"+id).removeAttr("disabled"); 
+                $("#SerialNumber"+id).removeAttr("disabled");   
+            }
+            else
+            {
+                $("#UTHealthTag"+id).attr("disabled", "disabled");
+                $("#SerialNumber"+id).attr("disabled", "disabled");     
+            }
+        }
+    </script>
+}
+@using (Ajax.BeginForm("SaveEquipment", "InternalUser", null, Sunnet.Cli.UIBase.Models.PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="coordCoachId" value="@ViewBag.CoordCoachId" />
+    if (ViewBag.EquipmentAccess == "R")
+    {
+    <div class="form-group">
+        <span class="control-label col-sm-8">
+            UT Health issued assessment equipment? (e.g. netbook/ipad/cameras/etc.)
+        </span>
+        <div class="col-sm-4">
+            @Html.RadioButton("isAssessmentEquipment", 1, new { id = "assessmentequipment1", onclick = "ChangeYesEquipment(this)", disabled = "disabled" })
+            @Html.Label("", Sunnet.Cli.UIBase.Models.ViewTextHelper.BoolInTexts[true], new { @for = "assessmentequipment1" })
+            @Html.RadioButton("isAssessmentEquipment", 2, new { id = "assessmentequipment2", onclick = "ChangeNoEquipment(this)", disabled = "disabled" })
+            @Html.Label("", Sunnet.Cli.UIBase.Models.ViewTextHelper.BoolInTexts[false], new { @for = "assessmentequipment2" })
+            @Html.RadioButton("isAssessmentEquipment", 0, new { id = "assessmentequipment3", @checked = true, @class = "hide", disabled = "disabled" })
+            @Html.Label("assessmentequipment3", new { @class = "hide" })
+        </div>
+    </div>
+    <div class="content-body" id="dvEquipment">
+        @foreach (var item in Equipment)
+        {
+            int equipmentId = Convert.ToInt32(item.Value);
+
+            CoordCoachEquipmentEntity coordCoachEquipment = new CoordCoachEquipmentEntity();
+            if (listCoordCoacEquipment.Where(e => e.EquipmentId == equipmentId).Count() > 0)
+            {
+                coordCoachEquipment = listCoordCoacEquipment.Where(e => e.EquipmentId == equipmentId).First();
+            }
+            string isChecked = "";
+            string isDisabled = "disabled='disabled'";
+            if (coordCoachEquipment.EquipmentId > 0)
+            {
+                isChecked = "checked='checked'";
+            }
+            else
+            {
+                isChecked = "";
+            }
+            <div class="form-group">
+                <div class="col-log-1"></div>
+                <div class="col-sm-3">
+                    <input id="chkEquipment@(item.Value)" type="checkbox" @isChecked name="chkEquipment" @isDisabled  value="@item.Value" onclick="ChangeEquipment(this,@(item.Value))" />
+                    &nbsp;
+                    @Html.Label(item.Text, new { @for = "chkEquipment" + item.Value })
+                </div>
+                @Html.Label("UTHealthTag" + item.Value, "Serial Number", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    <input id="UTHealthTag@(item.Value)" name="UTHealthTag" type="text" value="@coordCoachEquipment.UTHealthTag" @isDisabled class="form-control" />
+                </div>
+                @Html.Label("SerialNumber" + item.Value, "UT Health Tag #", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-2">
+                    <input id="SerialNumber@(item.Value)" name="SerialNumber" type="text" value="@coordCoachEquipment.SerialNumber" @isDisabled class="form-control" />
+                </div>
+            </div>
+        }
+        <div class="modal-footer">
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+    }
+    else if (ViewBag.EquipmentAccess == "RW")
+    { 
+       
+    <div class="form-group">
+        <span class="control-label col-sm-8">
+            UT Health issued assessment equipment? (e.g. netbook/ipad/cameras/etc.)
+        </span>
+        <div class="col-sm-4">
+            @Html.RadioButton("isAssessmentEquipment", 1, new { id = "assessmentequipment1", onclick = "ChangeYesEquipment(this)" })
+            @Html.Label("", Sunnet.Cli.UIBase.Models.ViewTextHelper.BoolInTexts[true], new { @for = "assessmentequipment1" })
+            @Html.RadioButton("isAssessmentEquipment", 2, new { id = "assessmentequipment2", onclick = "ChangeNoEquipment(this)" })
+            @Html.Label("", Sunnet.Cli.UIBase.Models.ViewTextHelper.BoolInTexts[false], new { @for = "assessmentequipment2" })
+            @Html.RadioButton("isAssessmentEquipment", 0, new { id = "assessmentequipment3", @checked = true, @class = "hide" })
+            @Html.Label("assessmentequipment3", new { @class = "hide" })
+        </div>
+    </div>
+    <div class="content-body" id="dvEquipment">
+        @foreach (var item in Equipment)
+        {
+            int equipmentId = Convert.ToInt32(item.Value);
+
+            CoordCoachEquipmentEntity coordCoachEquipment = new CoordCoachEquipmentEntity();
+            if (listCoordCoacEquipment.Where(e => e.EquipmentId == equipmentId).Count() > 0)
+            {
+                coordCoachEquipment = listCoordCoacEquipment.Where(e => e.EquipmentId == equipmentId).First();
+            }
+            string isChecked = "";
+            string isDisabled = "";
+            if (coordCoachEquipment.EquipmentId > 0)
+            {
+                isChecked = "checked='checked'";
+            }
+            else
+            {
+                isDisabled = "disabled='disabled'";
+                isChecked = "";
+            }
+            <div class="form-group">
+                <div class="col-log-1"></div>
+                <div class="col-sm-3">
+                    <input id="chkEquipment@(item.Value)" type="checkbox" @isDisabled @isChecked name="chkEquipment" value="@item.Value" onclick="ChangeEquipment(this,@(item.Value))" />
+                    &nbsp;
+                    @Html.Label(item.Text, new { @for = "chkEquipment" + item.Value })
+                </div>
+                @Html.Label("UTHealthTag" + item.Value, "Serial Number", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    <input id="UTHealthTag@(item.Value)" name="UTHealthTag" type="text" value="@coordCoachEquipment.UTHealthTag" @isDisabled class="form-control" />
+                </div>
+                @Html.Label("SerialNumber" + item.Value, "UT Health Tag #", new { @class = "control-label col-sm-3" })
+                <div class="col-sm-2">
+                    <input id="SerialNumber@(item.Value)" name="SerialNumber" type="text" value="@coordCoachEquipment.SerialNumber" @isDisabled class="form-control" />
+                </div>
+            </div>
+        }
+        <div class="modal-footer">
+            <button class="mainbutton modal-btn submit-btn" type="submit" data-bind="event: { click: submit }">Submit</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div> 
+    }
+}

@@ -1,0 +1,9 @@
+﻿update StudentMeasures set goal=
+(
+ISNULL(
+(
+select sum(case when Goal=-1 then 0 else Goal end) from StudentMeasures 
+where SAId=SM.SAId and MeasureId in (select ID from Measures where ParentId=SM.MeasureId)
+),0)
+)
+ from StudentMeasures SM where Status=1

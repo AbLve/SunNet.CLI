@@ -1,0 +1,206 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentModel
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase.Models;
+@using System.Web.Optimization;
+@using Sunnet.Cli.Business.Vcw.Models
+@using Sunnet.Framework
+@{
+    int TeacherTableId = ViewBag.TeacherTableId == null ? 0 : (int)ViewBag.TeacherTableId;
+    List<SelectItemModel> UploadTypes = ViewBag.UploadTypes as List<SelectItemModel>;
+    List<SelectItemModel> Contents = ViewBag.Contents as List<SelectItemModel>;
+    List<SelectItemModel> Contexts = ViewBag.Contexts as List<SelectItemModel>;
+}
+
+
+
+<div class="form-group">
+    @Html.LabelFor(model => model.DueDate, new { @class = "col-sm-3 control-label required" })
+    <div class="col-sm-3">
+        @Html.TextBoxFor(model => model.DueDate, new { @class = "form-control date", @Value = "" })
+        @Html.ValidationMessageFor(model => model.DueDate)
+    </div>
+    @Html.LabelFor(model => model.CallDate, new { @class = "col-sm-3 control-label" })
+    <div class="col-sm-3">
+        @Html.TextBoxFor(model => model.CallDate, new { @class = "form-control date" })
+        @Html.ValidationMessageFor(model => model.CallDate)
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">Content</div>
+            </div>
+            @foreach (SelectItemModel item in Contents)
+            {
+                if (item.Name.Trim().ToLower() == SFConfig.AssignmentContentOther)
+                {
+                <div class="checkbox-con checkbox-con-double">
+                    <label class="checkbox-inline checkbox-other">
+                        <input type="checkbox" name="Content" id="content-other" onclick="ContentClick(this)" value="@item.ID">@item.Name
+                    </label>
+                    <label class="textbox-other">
+                        @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control form-control-double", @disabled = "disabled" })
+                    </label>
+                    @Html.ValidationMessageFor(model => model.ContentOther)
+                </div>
+                }
+                else
+                {
+                <div class="checkbox-con checkbox-con-double">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="Content" value="@item.ID">@item.Name
+                    </label>
+                </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">Video Context</div>
+            </div>
+
+            @if (Contexts != null)
+            {
+                foreach (SelectItemModel item in Contexts)
+                {
+                    if (item.Name.Trim().ToLower() == SFConfig.ContextOther)
+                    {
+                <div class="checkbox-con">
+                    <label class="checkbox-inline checkbox-other">
+                        <input type="checkbox" onclick="ContextClick(this)"  name="Context_Assignment" value="@(item.ID)">@item.Name
+                    </label>
+                    <label class="textbox-other">
+                        @Html.TextBoxFor(model => model.ContextOther, new { @class = "form-control", @disabled = "disabled" })
+                    </label>
+                    @Html.ValidationMessageFor(model => model.ContextOther)
+                </div>
+                    }
+                    else
+                    {
+                <div class="checkbox-con">
+                    <label class="checkbox-inline">
+                        <input type="checkbox"  name="Context_Assignment" value="@(item.ID)">@item.Name
+                    </label>
+                </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">Upload Type</div>
+            </div>
+            @if (UploadTypes != null)
+            {
+                foreach (SelectItemModel item in UploadTypes)
+                {                    
+                <div class="checkbox-con">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="UploadType" value="@(item.ID)">@item.Name
+                    </label>
+                </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-3">
+        <div class="content-con">
+            <div class="content-title3">
+                @Html.LabelFor(model => model.SessionId, new { @class = "control-label" })
+            </div>
+            <div class="inputtext-con">
+                @Html.DropDownListFor(model => model.SessionId, ViewBag.Session as IEnumerable<SelectListItem>, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SessionId)
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    Coach Assignment File
+                    (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                </div>
+            </div>
+            <div class="upload-btn">
+                <div id="picker">1) Select File</div>
+            </div>
+            <div id="filelists" class="uploader-list"></div>
+            <div class="upload-btn">
+                <a id="ctlBtn">2) Start Upload</a>
+            </div>
+            <input type="hidden" id="filetarget" />
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="content-con" style="min-height: 137px">
+            <div class="content-title3">
+                <div class="control-label">Assignment STG Report</div>
+            </div>
+            <div class="select-stg-btn">
+                @if (TeacherTableId > 0)
+                {
+                    <a href="/STGReport/STGSend/STGReport?teacherId=@(TeacherTableId)" 
+                        data-target="#modalNormal" data-toggle="modal">Select STG Report</a>
+                }
+                else
+                {
+                    <span>Select STG Report</span>
+                }
+
+            </div>
+            <script type="text/html" id="template_stg_select">
+                <%for ( var i = 0; i < this.length ; i++) {%> 
+                                      <div class="stg-list-con">
+                                          <input type="hidden" name="stgreports" value="<% this[i].id %>" /><% this[i].address%>
+                                          <button type="button" class="close" data-dismiss="alert" onclick="moveStgList('<% this[i].id %>')">
+                                              <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                      </div>
+                <%}%>
+            </script>
+            <div id="divStgSelect">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    <label>Resources</label>
+                    (<span class="redtext">@ViewTextHelper.Vcw_MulitipleLinks</span>)
+                </div>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(model => model.Watch, new { @class = "form-control", @rows = "5" })
+                @Html.ValidationMessageFor(model => model.Watch)
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    @Html.LabelFor(model => model.Description)
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                </div>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = "5" })
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,675 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Schools.Models.SchoolModel
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Status, null, new { @class = "col-sm-2 control-label required" })
+    <div class="col-sm-4">
+        @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.StatusOptions,
+                    new { @class = "form-control", @disabled = "true" })
+        @Html.ValidationMessageFor(model => model.Status)
+    </div>
+    @Html.LabelFor(o => o.StatusDate, null, new { @class = "col-sm-2 control-label " })
+    <div class="col-sm-4">
+        @Html.TextBoxFor(model => model.StatusDate, new
+   {
+       @class = "form-control",
+       @disabled = "true",
+       @Value = Model.StatusDate.FormatDateString()
+   })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.EscName, null, new { @class = "col-sm-2 control-label" })
+    <div class="col-sm-4">
+        @Html.DropDownListFor(model => model.EscName, (IEnumerable<SelectListItem>)ViewBag.EscNameOptions,
+                    new { @class = "form-control", @disabled = "true" })
+    </div>
+    @Html.LabelFor(model => model.ParentAgencyId, null, new { @class = "col-sm-2 control-label required" })
+    <div class="col-sm-4">
+        @Html.DropDownListFor(model => model.ParentAgencyId, (IEnumerable<SelectListItem>)ViewBag.ParentAgencyOptions,
+                    new { @class = "form-control", @disabled = "true" })
+
+        @Html.ValidationMessageFor(model => model.ParentAgencyId)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.SchoolTypeId, null, new { @class = "col-sm-2 control-label required" })
+    <div class="col-sm-4">
+        @Html.DropDownListFor(model => model.SchoolTypeId, (IEnumerable<SelectListItem>)ViewBag.SchoolTypeOptions,
+                        new { @class = "form-control", @onchange = "SchoolTypeChanged()", @disabled = "true" })
+        @Html.ValidationMessageFor(model => model.SchoolTypeId)
+        @Html.Label("lbSubTypeId", "SubTypeId", new { @class = "hide", @for = "SubTypeId" })
+        @Html.DropDownListFor(model => model.SubTypeId, (IEnumerable<SelectListItem>)ViewBag.ChildCareSchoolTypeOptions,
+            new { typename = "childCare", @class = "form-control", @style = "display: none", @disabled = "true" })
+        @Html.ValidationMessageFor(model => model.SubTypeId)
+
+    </div>
+    <label class="col-sm-2 control-label " for="SchoolSize">
+        School Size
+        <i class="icon-question-sign question-tip" id="tooltip1" data-toggle="tooltip" data-placement="top"
+           title="Approximate number of students enrolled for all ages and grade levels."></i>
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(model => model.SchoolSize, new { @class = "form-control", @disabled = "true" })
+        @Html.ValidationMessageFor(model => model.SchoolSize)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.FundingId, null, new { @class = "col-sm-2 control-label " })
+    <div class="col-sm-4">
+        @Html.DropDownListFor(model => model.FundingId, (IEnumerable<SelectListItem>)ViewBag.FundingOptions,
+                        new { @class = "form-control", @disabled = "true" })
+    </div>
+    @Html.LabelFor(model => model.AtRiskPercent, null, new { @class = "col-sm-2 control-label required" })
+    <div class="col-sm-4">
+        @Html.TextBoxFor(model => model.AtRiskPercent, new { @class = "form-control uint", @disabled = "true" })
+        @Html.ValidationMessageFor(model => model.AtRiskPercent)
+    </div>
+</div>
+
+<div class="form-group">
+
+    @Html.LabelFor(model => model.SchoolNumber, null, new { @class = "col-sm-2 control-label " })
+    <div class="col-sm-4">
+        @Html.TextBoxFor(model => model.SchoolNumber, new
+   {
+       @class = "form-control ",
+       @disabled = "true"
+   })
+        @Html.ValidationMessageFor(model => model.SchoolNumber)
+    </div>
+    @Html.LabelFor(model => model.TrsStatus, null, new { @class = "col-sm-2 control-label" })
+    <div class="col-sm-4">
+        @Html.DisplayFor(model => model.TrsStatus)
+    </div>
+</div>
+<div class="form-group">
+    <div>
+        <label class="col-sm-2 control-label col-sm-offset-6" for="VSDesignation">Star Rating</label>
+        <div class="col-sm-4">
+            @Html.DisplayFor(model => model.VSDesignation)
+        </div>
+    </div>
+</div>
+@Html.HiddenFor(model => model.Status)
+@Html.HiddenFor(model => model.StatusDate)
+@Html.HiddenFor(model => model.EscName)
+@Html.HiddenFor(model => model.ParentAgencyId)
+@Html.HiddenFor(model => model.SchoolTypeId)
+@Html.HiddenFor(model => model.SubTypeId)
+@Html.HiddenFor(model => model.SchoolSize)
+@Html.HiddenFor(model => model.FundingId)
+@Html.HiddenFor(model => model.AtRiskPercent)
+@Html.HiddenFor(model => model.SchoolNumber)
+
+@Html.HiddenFor(model => model.StarDate)
+@Html.HiddenFor(model => model.TrsLastStatusChange)
+
+@Html.HiddenFor(model => model.IspId)
+@Html.HiddenFor(model => model.IspOther)
+@Html.HiddenFor(model => model.InternetType)
+@Html.HiddenFor(model => model.InternetSpeed)
+@Html.HiddenFor(model => model.WirelessType)
+@Html.HiddenFor(model => model.ClassroomCount3Years)
+@Html.HiddenFor(model => model.ClassroomCount4Years)
+@Html.HiddenFor(model => model.ClassroomCount34Years)
+@Html.HiddenFor(model => model.ClassroomCountKinder)
+@Html.HiddenFor(model => model.ClassroomCountgrade)
+@Html.HiddenFor(model => model.ClassroomCountOther)
+@Html.HiddenFor(model => model.ClassroomCountEarly)
+@Html.HiddenFor(model => model.ClassroomCountInfant)
+@Html.HiddenFor(model => model.ClassroomCountToddler)
+@Html.HiddenFor(model => model.ClassroomCountPreSchool)
+@Html.HiddenFor(model => model.PrimarySalutation)
+@Html.HiddenFor(model => model.PrimaryTitleId)
+@Html.HiddenFor(model => model.PrimaryName)
+@Html.HiddenFor(model => model.PrimaryEmail)
+@Html.HiddenFor(model => model.PrimaryPhone)
+@Html.HiddenFor(model => model.PrimaryPhoneType)
+@Html.HiddenFor(model => model.SecondarySalutation)
+@Html.HiddenFor(model => model.SecondaryTitleId)
+@Html.HiddenFor(model => model.SecondaryName)
+@Html.HiddenFor(model => model.SecondaryEmail)
+@Html.HiddenFor(model => model.SecondaryPhoneNumber)
+@Html.HiddenFor(model => model.SecondaryPhoneType)
+@Html.HiddenFor(model => model.PhysicalAddress1)
+@Html.HiddenFor(model => model.PhysicalAddress2)
+@Html.HiddenFor(model => model.City)
+@Html.HiddenFor(model => model.StateId)
+@Html.HiddenFor(model => model.CountyId)
+@Html.HiddenFor(model => model.Zip)
+@Html.HiddenFor(model => model.PhoneNumber)
+@Html.HiddenFor(model => model.PhoneType)
+@Html.HiddenFor(model => model.Latitude)
+@Html.HiddenFor(model => model.Longitude)
+@Html.HiddenFor(model => model.IsSamePhysicalAddress)
+@Html.HiddenFor(model => model.MailingAddress1)
+@Html.HiddenFor(model => model.MailingAddress2)
+@Html.HiddenFor(model => model.MailingCity)
+@Html.HiddenFor(model => model.MailingStateId)
+@Html.HiddenFor(model => model.MailingCountyId)
+@Html.HiddenFor(model => model.MailingZip)
+@Html.HiddenFor(model => model.Notes)
+
+</div>
+</div>
+<div class="main-content" id="divTRS" style="display: none">
+    <div class="content-title">TRS Information</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.Label("Class Count", null, new { @class = "col-sm-2 control-label" })
+            <span class="col-sm-10">
+                <span style="border-bottom: 1px dashed #ddd; display: block; padding-bottom: 5px">
+                    <span style="width: 20%; display: inline-block;">
+                        @Html.Label("Infants", null, new { @class = "control-label" }) &nbsp;
+                        @ViewBag.Infants
+                    </span>
+                    <span style="width: 20%; display: inline-block;">
+                        @Html.Label("Toddlers", null, new { @class = "control-label" }) &nbsp;
+                        @ViewBag.Toddlers
+                    </span>
+                    <span style="width: 20%; display: inline-block;">
+                        @Html.Label("Preschool", null, new { @class = " control-label" }) &nbsp;
+                        @ViewBag.Preschool
+                    </span>
+                    <span style="width: 20%; display: inline-block;">
+                        @Html.Label("SA", null, new { @class = "control-label" }) &nbsp;
+                        @ViewBag.SchoolAge
+                    </span>
+                </span>
+            </span>
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.StarDate, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.StarDate, new
+           {
+               @Value = Model.StarDate.FormatDateString()
+           })
+            </div>
+            @Html.LabelFor(model => model.TrsLastStatusChange, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.TrsLastStatusChange, new
+           {
+               @Value = Model.TrsLastStatusChange.FormatDateString()
+           })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.TrsAssessorId, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.TrsAssessorId, (IEnumerable<SelectListItem>)ViewBag.CoachOptions, new { @class = "form-control" })
+            </div>
+            @Html.LabelFor(model => model.TrsTaStatus, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.Display("TrsTaStatusOption")
+                @Html.HiddenFor(o => o.TrsTaStatus)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.StarStatus, null, new { @class = "col-sm-2 control-label" })
+            @Html.HiddenFor(o => o.StarStatus)
+            @Html.HiddenFor(o => o.StrStarAssessmentType)
+            <span class="col-sm-10">
+                <span style="border-bottom: 1px dashed #ddd; display: block; padding-bottom: 5px">
+                    <span style="width: 15%; display: inline-block;">
+                        @Html.DisplayTextFor(o => o.StrStarStatus)
+                    </span>
+                    <span style="width: 30%; display: inline-block;">
+                        @Html.Label("Calculated Date", null, new { @class = "control-label" }) &nbsp;
+                        @Html.DisplayTextFor(o => o.StarDateFormat)
+                    </span>
+                    <span style="width: 52%; display: inline-block;">
+                        @Html.Label("Assessment Type", null, new { @class = "control-label" }) &nbsp;
+                        @Html.DisplayTextFor(o => o.StrStarAssessmentType)
+                    </span>
+                </span>
+            </span>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.VSDesignation, null, new { @class = "col-sm-2 control-label" })
+            @Html.HiddenFor(model => model.VSDesignation)
+            <span class="col-sm-10">
+                <span style="border-bottom: 1px dashed #ddd; display: block; padding-bottom: 5px">
+                    <span style="width: 15%; display: inline-block;">
+                        @Html.DisplayTextFor(model => model.StrVSDesignation)
+                    </span>
+                    <span style="width: 83%; display: inline-block;">
+                        @Html.Label("Verified Date", null, new { @class = "control-label" }) &nbsp;
+                        @Html.DisplayTextFor(o => o.TrsLastStatusChangeFormat)
+                    </span>
+                </span>
+            </span>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DfpsNumber, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.DfpsNumber, new { @class = "form-control  required" })
+                @Html.ValidationMessageFor(model => model.DfpsNumber)
+            </div>
+            @Html.LabelFor(model => model.RecertificatedBy, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.RecertificatedBy)
+                @Html.HiddenFor(model => model.RecertificatedBy)
+                @*@Html.TextBoxFor(model => model.RecertificatedBy, new
+                    {
+                        @class = "form-control date",
+                        @Value = Model.RecertificatedBy.FormatDateString(),
+                        data_bind = "value:recertificationBy, required:false"
+                    })
+                         @Html.ValidationMessageFor(model => model.RecertificatedBy)*@
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.OwnerFirstName, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.OwnerFirstName, new { @class = "form-control  required" })
+                @Html.ValidationMessageFor(model => model.OwnerFirstName)
+            </div>
+            @Html.LabelFor(model => model.OwnerLastName, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.OwnerLastName, new { @class = "form-control  required" })
+                @Html.ValidationMessageFor(model => model.OwnerLastName)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.OwnerEmail, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.OwnerEmail, new { @class = "form-control email  required" })
+                @Html.ValidationMessageFor(model => model.OwnerEmail)
+            </div>
+            @Html.LabelFor(model => model.OwnerPhone, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.OwnerPhone, new { @class = "form-control _homephone  required" })
+                @Html.ValidationMessageFor(model => model.OwnerPhone)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FacilityType, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.FacilityType, (IEnumerable<SelectListItem>)ViewBag.FacilityTypeOptions,
+                    new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.FacilityType)
+            </div>
+            @Html.LabelFor(model => model.RegulatingEntity, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.RegulatingEntity, (IEnumerable<SelectListItem>)ViewBag.RegulatingEntityOptions,
+                new
+                {
+                    @class = "form-control",
+                    data_bind = "value:choosenRegulation"
+                })
+                @Html.ValidationMessageFor(model => model.RegulatingEntity)
+            </div>
+        </div>
+        @Html.HiddenFor(model => model.EnableAutoAssign4Star)
+        @Html.HiddenFor(model => model.NAEYC)
+        @Html.HiddenFor(model => model.CANASA)
+        @Html.HiddenFor(model => model.NECPA)
+        @Html.HiddenFor(model => model.NACECCE)
+        @Html.HiddenFor(model => model.NAFCC)
+        @Html.HiddenFor(model => model.ACSI)
+        @Html.HiddenFor(model => model.USMilitary)
+        @Html.HiddenFor(model => model.QELS)
+        @if (Model.ID > 0 && ViewBag.AccessTRSClassManagement)
+        {
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <a class="mainbutton mainright-btn sreach-btn" href="/School/School/PlaygroundPopup?shoolId=@Model.ID" data-toggle="modal" data-target="#modalNormal">Show Playgrounds</a>
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+</div>
+<div class="main-content">
+    <div class="content-title">Internet Information</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.IspId, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.IspId, (IEnumerable<SelectListItem>)ViewBag.IspOptions,
+                    new { @class = "form-control", onchange = "IspChanged()", @disabled = "true" })
+                @Html.Label("lbIspOther", "IspOther", new { @class = "hide", @for = "IspOther" })
+                @Html.TextBoxFor(model => model.IspOther, new { @class = "form-control", @disabled = "true" })
+            </div>
+            @Html.LabelFor(model => model.InternetType, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.InternetType, (IEnumerable<SelectListItem>)ViewBag.InternetTypeOptions,
+                    new { @class = "form-control", onchange = "InternetTypeChanged()", @disabled = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.InternetSpeed, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.InternetSpeed, (IEnumerable<SelectListItem>)ViewBag.InternetSpeedOptions,
+                    new { @class = "form-control", @disabled = "true" })
+
+            </div>
+            @Html.LabelFor(model => model.WirelessType, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.WirelessType, (IEnumerable<SelectListItem>)ViewBag.WirelessTypeOptions,
+                    new { @class = "form-control", @disabled = "true" })
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="main-content" id="divClassroomCount" style="display: none">
+    <div class="content-title">Classroom Count</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCount3Years, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCount3Years, new { @class = "form-control", @disabled = "true" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCount4Years, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCount4Years, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCount34Years, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCount34Years, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountKinder, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountKinder, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountgrade, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountgrade, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountOther, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountOther, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountEarly, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountEarly, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountInfant, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountInfant, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountToddler, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountToddler, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountPreSchool, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountPreSchool, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="content-title">Primary Contact</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrimarySalutation, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.PrimarySalutation, (IEnumerable<SelectListItem>)ViewBag.PrimarySalutationOptions, new { @class = "form-control", @disabled = "true" })
+            </div>
+            @Html.LabelFor(model => model.PrimaryTitleId, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.PrimaryTitleId, (IEnumerable<SelectListItem>)ViewBag.TitleOptions, new { @class = "form-control", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.PrimaryTitleId)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrimaryName, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.PrimaryName, new { @class = "form-control", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.PrimaryName)
+            </div>
+            @Html.LabelFor(model => model.PrimaryEmail, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.PrimaryEmail, new { @class = "form-control email", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.PrimaryEmail)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrimaryPhone, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.PrimaryPhone, new { @class = "form-control _homephone", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.PrimaryPhone)
+            </div>
+            @Html.LabelFor(model => model.PrimaryPhoneType, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.EnumDropDownListFor(model => model.PrimaryPhoneType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.PrimaryPhoneType)
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="content-title">Secondary Contact</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.SecondarySalutation, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.SecondarySalutation, (IEnumerable<SelectListItem>)ViewBag.PrimarySalutationOptions, new { @class = "form-control", @disabled = "true" })
+            </div>
+            @Html.LabelFor(model => model.SecondaryTitleId, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.SecondaryTitleId, (IEnumerable<SelectListItem>)ViewBag.TitleOptions2, new { @class = "form-control", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.SecondaryTitleId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SecondaryName, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.SecondaryName, new { @class = "form-control", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.SecondaryName)
+            </div>
+            @Html.LabelFor(model => model.SecondaryEmail, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.SecondaryEmail, new { @class = "form-control email", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.SecondaryEmail)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SecondaryPhoneNumber, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.SecondaryPhoneNumber, new { @class = "form-control _homephone", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.SecondaryPhoneNumber)
+            </div>
+            @Html.LabelFor(model => model.SecondaryPhoneType, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.SecondaryPhoneType, (IEnumerable<SelectListItem>)ViewBag.PhoneTypeOptions2, new { @class = "form-control", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.SecondaryPhoneType)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main-content">
+    <div class="content-title">School Physical Address (No P.O. Boxes)</div>
+    <div class="content-body">
+        <div class="form-group">
+            <label class="col-sm-2 " for="PhysicalAddress1"><span style="display: none">1</span>&nbsp;</label>
+            <div class="col-sm-10">
+                @Html.TextBoxFor(model => model.PhysicalAddress1, new { @class = "form-control", placeholder = "Address1*", data_bind = "value:address1", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.PhysicalAddress1)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 " for="PhysicalAddress2"><span style="display: none">1</span>&nbsp;</label>
+            <div class="col-sm-10">
+                @Html.TextBoxFor(model => model.PhysicalAddress2, new
+           {
+               @class = "form-control",
+               placeholder = "Address2(optional)",
+               data_bind = "value:address2",
+               @disabled = "true"
+           })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 ">&nbsp;</div>
+            @Html.Label("lbCity", "City", new { @class = "hide", @for = "City" })
+            @Html.Label("lbStateId", "StateId", new { @class = "hide", @for = "StateId" })
+            @Html.Label("lbCountyId", "CountyId", new { @class = "hide", @for = "CountyId" })
+            @Html.Label("lbZip", "Zip", new { @class = "hide", @for = "Zip" })
+
+            <div class="col-sm-10">
+                <div class="col-lg-3 m-l-n">
+                    @Html.TextBoxFor(model => model.City, new { @class = "form-control", placeholder = "City*", data_bind = "value:city", @disabled = "true" })
+                    @Html.ValidationMessageFor(model => model.City)
+                </div>
+                <div class="col-lg-3 m-l-n">
+                    @Html.DropDownListFor(model => model.StateId, (IEnumerable<SelectListItem>)ViewBag.StateOptions,
+                        new { @class = "form-control", placeholder = "State*", data_bind = "value:selectedState", @disabled = "true" })
+                    @Html.ValidationMessageFor(model => model.StateId)
+                </div>
+                <div class="col-lg-3 m-l-n">
+                    @Html.DropDownListFor(model => model.CountyId, (IEnumerable<SelectListItem>)ViewBag.CountyOptions,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "County*",
+                                data_bind = "options: countiesOptions, optionsText: 'Text', optionsValue: 'Value',value:selectedCounty",
+                                @disabled = "true"
+                            })
+                    @Html.ValidationMessageFor(model => model.CountyId)
+                </div>
+
+                <div class="col-lg-3 m-l-n">
+                    @Html.TextBoxFor(model => model.Zip, new { @class = "form-control _num_5", placeholder = "Zip*", data_bind = "value:zip", @disabled = "true" })
+                    @Html.ValidationMessageFor(model => model.Zip)
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PhoneNumber, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control _homephone", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.PhoneNumber)
+            </div>
+            @Html.LabelFor(model => model.PhoneType, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.PhoneType, (IEnumerable<SelectListItem>)ViewBag.PhoneTypeOptions, new { @class = "form-control", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.PhoneType)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Latitude, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Latitude, new { @class = "form-control", @disabled = "true" })
+            </div>
+            @Html.LabelFor(model => model.Longitude, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Longitude, new { @class = "form-control", @disabled = "true" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="content-title">School Mailing Address (Can be a P.O. Box)</div>
+    <div class="content-body">
+        <div class="form-group">
+            <div class="col-sm-2 ">&nbsp;</div>
+            @Html.CheckBoxFor(model => model.IsSamePhysicalAddress, new { data_bind = "checked:keepMailSameAsPhysical", @disabled = "true" })
+            @Html.LabelFor(model => model.IsSamePhysicalAddress, null, new { style = "text-align: left" })
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 " for="MailingAddress1"><span style="display: none">1</span>&nbsp;</label>
+            <div class="col-sm-10">
+                @Html.TextBoxFor(model => model.MailingAddress1, new { @class = "form-control", placeholder = "Address1*", data_bind = "value:mailAddress1", @disabled = "true" })
+                @Html.ValidationMessageFor(model => model.MailingAddress1)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 " for="MailingAddress2"><span style="display: none">1</span>&nbsp;</label>
+            <div class="col-sm-10">
+                @Html.TextBoxFor(model => model.MailingAddress2, new
+           {
+               @class = "form-control",
+               placeholder = "Address2(optional)",
+               data_bind = "value:mailAddress2",
+               @disabled = "true"
+           })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-2 ">&nbsp;</div>
+            @Html.Label("lbMailingCity", "MailingCity", new { @class = "hide", @for = "MailingCity" })
+            @Html.Label("lbMailingStateId", "MailingStateId", new { @class = "hide", @for = "MailingStateId" })
+            @Html.Label("lbMailingCountyId", "MailingCountyId", new { @class = "hide", @for = "MailingCountyId" })
+            @Html.Label("lbMailingZip", "MailingZip", new { @class = "hide", @for = "MailingZip" })
+
+            <div class="col-sm-10">
+                <div class="col-lg-3 m-l-n">
+                    @Html.TextBoxFor(model => model.MailingCity, new { @class = "form-control", placeholder = "City*", data_bind = "value:mailCity", @disabled = "true" })
+                    @Html.ValidationMessageFor(model => model.MailingCity)
+                </div>
+                <div class="col-lg-3 m-l-n">
+                    @Html.DropDownListFor(model => model.MailingStateId, (IEnumerable<SelectListItem>)ViewBag.StateOptions,
+            new { @class = "form-control", placeholder = "State*", data_bind = "value:mailSelectedState", @disabled = "true" })
+                    @Html.ValidationMessageFor(model => model.MailingStateId)
+                </div>
+                <div class="col-lg-3 m-l-n">
+                    @Html.DropDownListFor(model => model.MailingCountyId, (IEnumerable<SelectListItem>)ViewBag.CountyOptions,
+            new
+            {
+                @class = "form-control",
+                @disabled = "true",
+                placeholder = "County*",
+                data_bind = "options: mailCountiesOptions, optionsText: 'Text', optionsValue: 'Value',value:mailSelectedCounty"
+            })
+                    @Html.ValidationMessageFor(model => model.MailingCountyId)
+                </div>
+                <div class="col-lg-3 m-l-n">
+                    @Html.TextBoxFor(model => model.MailingZip, new { @class = "form-control _num_5", placeholder = "Zip*", data_bind = "value:mailZip", @disabled = "true" })
+                    @Html.ValidationMessageFor(model => model.MailingZip)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="content-title">School Notes</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Notes, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.Notes, 8, 6, new { @class = " form-control", placeholder = "Limit to 600 characters.", @disabled = "true" })
+                    @Html.ValidationMessageFor(model => model.Notes)
+                </div>
+            </div>

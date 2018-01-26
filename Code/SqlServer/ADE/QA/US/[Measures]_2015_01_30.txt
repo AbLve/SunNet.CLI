@@ -1,0 +1,8 @@
+﻿IF NOT EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('Measures') AND name = 'ShortName' )
+ALTER TABLE [dbo].Measures ADD ShortName NVARCHAR(10)
+GO
+UPDATE Measures SET ShortName = ''
+GO
+ALTER TABLE [dbo].Measures ALTER COLUMN ShortName NVARCHAR(10) NOT NULL
+ALTER TABLE [dbo].Measures ALTER COLUMN TotalScore DECIMAL(18,2) NOT NULL
+

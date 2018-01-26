@@ -1,0 +1,129 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase.Models
+
+@using System.Web.Optimization
+@using Sunnet.Cli.Business.Permission
+@using Sunnet.Cli.Core.Classes.Enums
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Index";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        function MediaConsentReport() {
+            location.href = "/Report/Index/GetMediaConsentPercent?communityId=" + $("#CommunityId").val()
+                + "&schoolId=" + $("#SchoolId").val() + "&teacher=" + $("#teacher").val();
+        }
+
+        $(function() {
+            var $txtCommunity = $("#txtCommunity");
+            var $txtSchool = $("#txtSchool");
+            var $teacher = $("#teacher");
+            $txtCommunity.on("selected.sunnet.datalist", function() {
+                $txtSchool.datalist("clear");
+            });
+            $txtSchool.on("selected.sunnet.datalist", function() {
+                $teacher.datalist("clear");
+            });
+        });
+    </script>
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Reports)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Reports", "Index", "Index"))&nbsp;<i class="icon-angle-right"></i>&nbsp;TSR Media Consent Reports
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back </a>
+</div>
+<div class="main-content form-horizontal">
+    <div class="content-title">TSR Media Consent Reports</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.Label("Community/District", new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+            <div class="col-sm-3">
+                @Html.TextBox("txtCommunity", "", new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#CommunityId",
+                    data_remote = "/Community/Community/GetCommunitySelectList",
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "txtCommunity",
+                    name = "txtCommunity",
+                    @for = "CommunityId",
+                    placeholder = "Enter key text to search",
+                    data_bind = "value: searchCriteria.txtCommunity",
+                    data_required = "false"
+                })
+                @Html.Hidden("CommunityId", new
+           {
+               @class = "form-control ",
+               placeholder = "selected from autocomplete",
+               data_bind = "value: searchCriteria.communityId"
+           })
+            </div>
+            @Html.Label("School", new
+       {
+           @class = "control-label col-sm-2",
+           @for = "txtSchool"
+       })
+            <div class="col-sm-3">
+                @Html.TextBox("txtSchool", "", new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#SchoolId",
+                    data_remote = "/School/School/GetSchoolSelectList",
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "txtSchool",
+                    name = "txtSchool",
+                    @for = "SchoolId",
+                    placeholder = "Enter key text to search",
+                    data_extraParams = "{\"communityId\":\"#CommunityId\"}",
+                    data_bind = "value: searchCriteria.txtSchool",
+                    data_required = "false"
+                })
+                @Html.Hidden("SchoolId", new
+           {
+               @class = "form-control",
+               placeholder = "selected from autocomplete",
+               data_bind = "value: searchCriteria.schoolId"
+           })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("", "Teacher", new { @class = "control-label col-sm-2", @for = "startDate" })
+            <div class="col-sm-3">
+                @Html.TextBox("teacher", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_remote = Url.Action("GetTeachers"),
+                data_text = "Name",
+                placeholder = "Enter key text to search",
+                data_value = "ID",
+                data_required = "false",
+                data_extraParams = "{\"communityId\":\"#CommunityId\",\"schoolId\":\"#SchoolId\",\"classroomId\":\"#selClassroom\"}",
+            })
+            </div>
+        </div>
+    </div>
+
+    <div class="button-content">
+        <input type="button" class="mainbutton mainright-btn submit-btn" value="Export Report" onclick=" MediaConsentReport(); ">
+    </div>
+</div>

@@ -1,0 +1,123 @@
+﻿@using System.Collections.Generic
+@using Sunnet.Cli.MainSite.Models
+@model Sunnet.Cli.Business.Students.Models.StudentModel
+@{
+    ViewBag.Title = "My Children";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.My_Children)
+}
+
+
+<div class="right-content-top">
+    <button type="button" data-bind="click: $root.addData" class="mainbutton mainright-btn create-btn"
+        data-target="#modalNormal" data-toggle="modal">
+        Add Another Child
+    </button>
+</div>
+<div class="modal-l-b"></div>
+<div class="main-content main-content">
+    <div class="content-title">My Children</div>
+
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.StudentId"></td>
+                    <td data-bind="text: item.FirstName"></td>
+                    <td data-bind="text: item.LastName"></td>
+                 
+                    <td data-bind="text: item.TSDSStudentID"></td>
+   <td data-bind="text: item.Status.text"></td>
+                    <td>
+                        <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Students = {};
+        $(function () {
+            list_Students = new ViewModel(
+                {
+                    instanceName: "list_Students",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("ParentSearch")))',
+                    addDataUrl: '@Html.Raw(Url.Action("AddChild"))',
+                    viewDataUrl: '@Html.Raw(Url.Action("ProfileView"))',
+                    viewType: 'Redirect',
+                    orderBy: "FirstName",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "Child ID",
+                            field: "@Html.NameFor(model => model.StudentId)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.FirstName)",
+                            field: "@Html.NameFor(model => model.FirstName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.LastName)",
+                            field: "@Html.NameFor(model => model.LastName)",
+                            order: true,
+                            width: '20%'
+                        },
+                          {
+                              text: "@Html.DisplayNameFor(model => model.TSDSStudentID)",
+                              field: "@Html.NameFor(model => model.TSDSStudentID)",
+                              order: true,
+                              width: '20%'
+                          },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                        { text: "Action", width: '15%' }
+                    ]
+                }, {
+                    onDataUpdated: function () {
+                        list_Students.search();
+                    }
+                }
+            );
+
+            list_Students.search();
+            ko.applyBindings(list_Students);
+        });
+    </script>
+}
+

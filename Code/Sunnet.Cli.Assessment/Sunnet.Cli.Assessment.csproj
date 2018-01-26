@@ -1,0 +1,726 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{93152120-2DC8-448C-B44C-23CE14993F4E}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sunnet.Cli.Assessment</RootNamespace>
+    <AssemblyName>Sunnet.Cli.Assessment</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\EF\6.0\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\Sunnet.Framework\_Dlls\EF\6.0\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="evohtmltopdf, Version=6.16.0.0, Culture=neutral, PublicKeyToken=e1fcbb86597de299, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\Pdf\6.16\evohtmltopdf.dll</HintPath>
+    </Reference>
+    <Reference Include="evopdfmerge">
+      <HintPath>..\Sunnet.Framework\_Dlls\Pdf\PdfMerge\7.0\evopdfmerge.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap, Version=2.6.1.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\IoC\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.0\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.0\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="404.html" />
+    <Content Include="Areas\Ade\Views\Assessment\ScoreActivities.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\TeacherList.cshtml" />
+    <Content Include="Areas\Report\Views\Student\Growth.cshtml" />
+    <Content Include="colorpicker.html" />
+    <Content Include="Content\Site.css" />
+    <Content Include="error.html" />
+    <Content Include="Example_page.html" />
+    <Content Include="favicon.ico" />
+    <Content Include="Areas\Ade\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\Index.cshtml" />
+    <Content Include="Areas\Cpalls\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Cpalls\Views\School\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Ade\AdeAreaRegistration.cs" />
+    <Compile Include="Areas\Ade\Controllers\AssessmentController.cs" />
+    <Compile Include="Areas\Ade\Controllers\ItemController.cs" />
+    <Compile Include="Areas\Ade\Controllers\MeasureController.cs" />
+    <Compile Include="Areas\BulkUpload\BulkUploadAreaRegistration.cs" />
+    <Compile Include="Areas\BulkUpload\Controllers\ItemBupController.cs" />
+    <Compile Include="Areas\BulkUpload\Controllers\PublicController.cs" />
+    <Compile Include="Areas\Cec\CecAreaRegistration.cs" />
+    <Compile Include="Areas\Cec\Controllers\CecController.cs" />
+    <Compile Include="Areas\Cec\Controllers\OfflineController.cs" />
+    <Compile Include="Areas\Cot\Controllers\IndexController.cs" />
+    <Compile Include="Areas\Cot\Controllers\OfflineController.cs" />
+    <Compile Include="Areas\Cot\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Cot\Controllers\StgReportController.cs" />
+    <Compile Include="Areas\Cot\Controllers\TeacherController.cs" />
+    <Compile Include="Areas\Cot\CotAreaRegistration.cs" />
+    <Compile Include="Areas\Cot\Models\CotHelper.cs" />
+    <Compile Include="Areas\Cpalls\Controllers\ClassController.cs" />
+    <Compile Include="Areas\Cpalls\Controllers\ExecuteController.cs" />
+    <Compile Include="Areas\Cpalls\Controllers\GroupController.cs" />
+    <Compile Include="Areas\Cpalls\Controllers\SchoolController.cs" />
+    <Compile Include="Areas\Cpalls\Controllers\StudentController.cs" />
+    <Compile Include="Areas\Cpalls\CpallsAreaRegistration.cs" />
+    <Compile Include="Areas\Cpalls\Models\CpallsView.cs" />
+    <Compile Include="Areas\Cpalls\Models\SchoolViewModel.cs" />
+    <Compile Include="Areas\Observable\Controllers\ObservableController.cs" />
+    <Compile Include="Areas\Observable\ObservableAreaRegistration.cs" />
+    <Compile Include="Areas\Layout\Controllers\LayoutController.cs" />
+    <Compile Include="Areas\Layout\LayoutAreaRegistration.cs" />
+    <Compile Include="Areas\Offline\Controllers\IndexController.cs" />
+    <Compile Include="Areas\Offline\OfflineAreaRegistration.cs" />
+    <Compile Include="Areas\Practice\Controllers\PracticeController.cs" />
+    <Compile Include="Areas\Practice\PracticeAreaRegistration.cs" />
+    <Compile Include="Areas\Report\Controllers\ClassController.cs" />
+    <Compile Include="Areas\Report\Controllers\SchoolController.cs" />
+    <Compile Include="Areas\Report\Controllers\StudentController.cs" />
+    <Compile Include="Areas\Report\Models\MeasureGroup.cs" />
+    <Compile Include="Areas\Report\ReportAreaRegistration.cs" />
+    <Compile Include="Areas\Trs\Controllers\ItemMaintainController.cs" />
+    <Compile Include="Areas\Trs\Controllers\IndexController.cs" />
+    <Compile Include="Areas\Trs\Controllers\OfflineController.cs" />
+    <Compile Include="Areas\Trs\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Trs\TrsAreaRegistration.cs" />
+    <Compile Include="Areas\Tsds\Controllers\IndexController.cs" />
+    <Compile Include="Areas\Tsds\Controllers\TsdsController.cs" />
+    <Compile Include="Areas\Tsds\TsdsAreaRegistration.cs" />
+    <Compile Include="Controllers\AssessmentHomeController.cs" />
+    <Compile Include="Controllers\Apis\MessagesController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OfflineHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Cec\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Cec\Views\Cec\Index.cshtml" />
+    <Content Include="Areas\Cot\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Class\Index.cshtml" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Resources\cli_logo.png" />
+    <Content Include="Resources\EmailTemplate\ParentActivities_Template.xml" />
+    <Content Include="Resources\EmailTemplate\ParentInvitationPDF_CoverPage.xml" />
+    <Content Include="Resources\EmailTemplate\ParentPinPagePDF_Template.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Resources\EmailTemplate\ParentInvitationPDF_Template1.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Resources\EmailTemplate\TrsNotification_Template.xml" />
+    <Content Include="Resources\PinPage\img_01.png" />
+    <Content Include="Resources\PinPage\img_02.png" />
+    <Content Include="Resources\PinPage\img_03.svg" />
+    <Content Include="Resources\PinPage\style.css" />
+    <Content Include="Resources\ReportHeader.html" />
+    <Content Include="robot.txt" />
+    <Content Include="Areas\Report\Views\Class\Growth.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\_Partial_Select_Wave_Measure.cshtml" />
+    <Content Include="Areas\Trs\Views\ItemMaintain\Edit.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\ExpressiveImage.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\ItemLayoutPreview.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\_PartialImages.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\_PartialExpressiveLayout.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\_PartialResponses.cshtml" />
+    <Content Include="Areas\Layout\Views\web.config" />
+    <Content Include="Areas\Layout\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Layout\Views\Layout\Index.cshtml" />
+    <Content Include="Areas\Layout\Views\Layout\New.cshtml" />
+    <Content Include="Areas\Layout\Views\Layout\Copy.cshtml" />
+    <Content Include="Areas\Layout\Views\Layout\PreviewLayout.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\ChooseLayout.cshtml" />
+    <Content Include="Areas\Layout\Views\Layout\View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\TxkeaExpressResponsePreview.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\TxkeaReceptive_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\TxkeaExpressive_View.cshtml" />
+    <Content Include="Areas\BulkUpload\Views\web.config" />
+    <Content Include="Areas\BulkUpload\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\BulkUpload\Views\ItemBup\Index.cshtml" />
+    <Content Include="Areas\BulkUpload\Views\ItemBup\UploadList.cshtml" />
+    <Content Include="Areas\BulkUpload\Views\ItemBup\ViewDetail.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\BranchingScore.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\BranchingScore.cshtml" />
+    <Content Include="Areas\Tsds\Views\web.config" />
+    <Content Include="Areas\Tsds\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Tsds\Views\Index\DownloadIndex.cshtml" />
+    <Content Include="Areas\Tsds\Views\Index\Dashboard.cshtml" />
+    <Content Include="Areas\Tsds\Views\Tsds\Index.cshtml" />
+    <Content Include="Areas\Tsds\Views\Tsds\RequestList.cshtml" />
+    <Content Include="Areas\Tsds\Views\Tsds\DownloadXmlFile.cshtml" />
+    <Content Include="Areas\Trs\Views\Report\ReportWithComments.cshtml" />
+    <Content Include="Areas\Observable\Views\Observable\ObservableList.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\Accreditations.cshtml" />
+    <Content Include="Areas\Observable\Views\Observable\ReportHistory.cshtml" />
+    <Content Include="Areas\Report\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\Notification.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\ParentActivities.cshtml" />
+    <Content Include="Areas\Report\Views\Student\ParentReport.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Group\ParentEmailActivities.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\RetainStar.cshtml" />
+    <Content Include="Areas\Report\Views\Student\ParentReportTemplate.cshtml" />
+    <Content Include="Areas\Report\Views\Student\StudentReportWaves.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\HomeActivities.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\ParentActivities_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\HomeActivities.cshtml" />
+    <Content Include="Areas\Cpalls\Views\School\Index_backup20160929.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\ChangeStarLevel.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\Benchmarks.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\AssignReport.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\MeasureCutoffScores.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\Benchmarks.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\ItemLinks.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\ItemLinks.cshtml" />
+    <Content Include="Areas\Report\Views\Student\StudentPercentileRankPdf.cshtml" />
+    <Content Include="Areas\Report\Views\Student\ClassPercentileRank.cshtml" />
+    <Content Include="Areas\Report\Views\Class\ClassPercentileRankAverage.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\SummaryPercentileRankAveragePdf.cshtml" />
+    <Content Include="Areas\Report\Views\School\SummaryPercentileRank.cshtml" />
+    <Content Include="Areas\Practice\Views\web.config" />
+    <Content Include="Areas\Practice\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Practice\Views\Practice\Index.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\MeasureCutoffScores.cshtml" />
+    <Content Include="Areas\Practice\Views\Practice\DemoRecord.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\UploadLegend.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Group\SelectActivity.cshtml" />
+    <Content Include="Areas\Tsds\Views\Tsds\DownloadErrorFile.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\ScoreIndex.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\NewScore.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\_Partial_CumulativeReport_Head.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\EditScore.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\_Partial_GrowthReport_Head1.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Summary.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\_Partial_SummaryReport_Head.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Summary_Download.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Growth2.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Summary2.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\_Partial_CumulativeReport_Head2.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\_Partial_GrowthReport_Head2.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Growth2_Download.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Summary2_Download.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\FinalScore.cshtml" />
+    <Content Include="Areas\Report\Views\Student\CustomScoreReportView.cshtml" />
+    <Content Include="Areas\Report\Views\Student\CustomScorePdf.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\CustomScore.cshtml" />
+    <Content Include="Areas\Report\Views\Class\CustomScorePdf.cshtml" />
+    <Content Include="Areas\Report\Views\Class\CustomScoreReportView.cshtml" />
+    <Content Include="Areas\Report\Views\School\CustomScorePdf.cshtml" />
+    <Content Include="Areas\Report\Views\School\CustomScoreReportView.cshtml" />
+    <Content Include="Areas\Report\Views\School\CustomScoreDL_Report.cshtml" />
+    <Content Include="Areas\Report\Views\Class\CustomScoreDL_Report.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\_Partial_Select_Measure_Score.cshtml" />
+    <Content Include="Areas\Report\Views\Class\CustomScoreBenchmarkPdf.cshtml" />
+    <Content Include="Areas\Report\Views\Class\CustomScoreBenchmarkDL_Report.cshtml" />
+    <Content Include="Areas\Report\Views\School\CustomScoreBenchmarkDL_Report.cshtml" />
+    <Content Include="Areas\Report\Views\School\CustomScoreBenchmarkPdf.cshtml" />
+    <Content Include="Areas\Report\Views\Student\CustomScoreBenchmarkPdf.cshtml" />
+    <Content Include="Areas\Report\Views\Student\CustomScoreBenchmark.cshtml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\Hunk.pubxml" />
+    <None Include="Properties\PublishProfiles\Irving.pubxml" />
+    <None Include="Properties\PublishProfiles\TX-KEA_Assessment.pubxml" />
+    <Content Include="Resources\XLSX\Receptive_Template.xlsx" />
+    <Content Include="Resources\XLSX\Expressive_Template.xlsx" />
+    <None Include="Properties\PublishProfiles\Xiaowu.pubxml" />
+    <Content Include="Resources\Pdf\Parent_Report_Cover.pdf" />
+    <Content Include="Resources\PinPage\04a8a57e-0000-0000-0000-000000000000.woff" />
+    <Content Include="Resources\PinPage\377920f8-0000-0000-0000-000000000000.woff" />
+    <Content Include="Resources\PinPage\43637003-0000-0000-0000-000000000000.woff" />
+    <Content Include="Resources\PinPage\7d524fb3-0000-0000-0000-000000000000.woff" />
+    <Content Include="Resources\PinPage\96713410-0000-0000-0000-000000000000.woff" />
+    <Content Include="Resources\PinPage\d644c988-0000-0000-0000-000000000000.woff" />
+    <Content Include="Resources\Pdf\CPM-Parent_Report_Cover_Page-Spanish.pdf" />
+    <Content Include="Resources\XLSX\Practice_Class_Template.xlsx" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Areas\Cpalls\Views\Group\Note.cshtml" />
+    <Content Include="Areas\Cpalls\Views\School\HideMeasures.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\ObservableChoice.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\ObservableResponse.cshtml" />
+    <Content Include="Areas\Observable\Views\web.config" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Areas\Observable\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Observable\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Observable\Views\Observable\Index.cshtml" />
+    <Content Include="Areas\Observable\Views\Observable\Detail.cshtml" />
+    <Content Include="Areas\Observable\Views\Observable\AccessResults.cshtml" />
+    <Content Include="Areas\Observable\Views\Observable\View.cshtml" />
+    <Content Include="Areas\Observable\Views\Shared\_Layout_Report.cshtml" />
+    <Content Include="Areas\Observable\Views\Shared\NotAvailable.cshtml" />
+    <Content Include="Areas\Observable\Views\Observable\ViewReport.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\ObservableChoice_view.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\ObservableResponse_view.cshtml" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Views\web.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\AssessmentHome\Index.cshtml" />
+    <Content Include="StructureMap.config" />
+    <Content Include="Areas\Ade\Views\web.config" />
+    <Content Include="Views\Shared\_Partial_Menu.cshtml" />
+    <Content Include="Views\Shared\_Partial_Pager.cshtml" />
+    <Content Include="Views\Shared\_Modal_Layout.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\New.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\Edit.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\Detail.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\CutoffScores.cshtml" />
+    <Content Include="log4net.config" />
+    <Content Include="Areas\Ade\Views\Measure\New.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\Detail.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\_Partial_MeasureList.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\Edit.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\AdjustOrder.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\CutoffScores.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\Links.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Select.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Cec.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Cot.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\RapidExpressive.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Quadrant.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\AdjustOrder.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Links.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Existing.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Pa.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\MultipleChoices.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\ReceptivePrompt.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Receptive.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Direction.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\_Partial_ItemList.cshtml" />
+    <Content Include="Areas\Cpalls\Views\web.config" />
+    <Content Include="Areas\Cot\Views\web.config" />
+    <Content Include="Areas\Cec\Views\web.config" />
+    <Content Include="Areas\Cpalls\Views\Execute\Index.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\Go.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\_Partial_ItemTemplates.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\_Partial_MeasureResult.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Student\Index.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\View.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Shared\_Layout_Cpalls.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\Preview.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\View.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\CutoffScores.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\CutoffScores.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Cec_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Cot_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Direction_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\MultipleChoices_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Quadrant_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Pa_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Receptive_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\RapidExpressive_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\ReceptivePrompt_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\Links.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\Links.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\Links_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Links_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\Answers.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\Answers.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\NEV_Item_BreadPath.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Checklist_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\Checklist.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\_Partial_Checklist.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\IsMultiChoice.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\IsMultiChoice.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\_Layout_Report.cshtml" />
+    <Content Include="Areas\Report\Views\web.config" />
+    <Content Include="Areas\Report\Views\School\Summary.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\PercentageofSatisfactory.cshtml" />
+    <Content Include="Areas\Report\Views\Class\Summary.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\SummaryWithAverge.cshtml" />
+    <Content Include="Areas\Report\Views\Student\Summary.cshtml" />
+    <Content Include="Areas\Report\Views\Student\Index.cshtml" />
+    <Content Include="Areas\Report\Views\School\Growth.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Shared\_Layout_Cpalls_Report.cshtml" />
+    <Content Include="Areas\Report\Views\School\Completion.cshtml" />
+    <Content Include="Areas\Report\Views\School\Comparison.cshtml" />
+    <Content Include="Areas\Report\Views\Class\Comparison.cshtml" />
+    <Content Include="Areas\Report\Views\Class\Completion.cshtml" />
+    <Content Include="Areas\Report\Views\Student\Completion.cshtml" />
+    <Content Include="Areas\Report\Views\School\CompletionPdf.cshtml" />
+    <Content Include="Areas\Report\Views\Student\Waves.cshtml" />
+    <Content Include="Areas\Report\Views\Class\CompletionPdf.cshtml" />
+    <Content Include="Areas\Report\Views\Student\CompletionPdf.cshtml" />
+    <Content Include="Areas\Report\Views\School\ComparisonPdf.cshtml" />
+    <Content Include="Areas\Report\Views\Class\ComparisonPdf.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Group\Index.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Group\AddGroup.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Group\Student.cshtml" />
+    <Content Include="Areas\Report\Views\School\ComparisonPdf_Export.cshtml" />
+    <Content Include="Areas\Report\Views\Class\ComparisonPdf_Export.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Group\MoveToGroup.cshtml" />
+    <Content Include="Areas\Report\Views\School\CompletionExcel.cshtml" />
+    <Content Include="Areas\Report\Views\Class\CompletionExcel.cshtml" />
+    <Content Include="Areas\Report\Views\Student\CompletionExcel.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\_Partial_Row_Measure.cshtml" />
+    <Content Include="Areas\Report\Views\School\CompletionPdf_Export.cshtml" />
+    <Content Include="Areas\Report\Views\Class\CompletionPdf_Export.cshtml" />
+    <Content Include="Areas\Report\Views\Student\CompletionPdf_Export.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Group\EditGroup.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\PercentageofSatisfactory_Pdf.cshtml" />
+    <Content Include="Areas\Offline\Views\web.config" />
+    <Content Include="Areas\Offline\Views\Index\Index.cshtml" />
+    <Content Include="Areas\Offline\Views\Index\Preparing.cshtml" />
+    <Content Include="Areas\Cec\Views\Cec\Measure.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Group\MeasureGroupPdf.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Group\CustomGroupPdf.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\_Partial_Completion_Measure.cshtml" />
+    <Content Include="Areas\Cec\Views\Cec\CECReport.cshtml" />
+    <Content Include="Areas\Cot\Views\Teacher\All.cshtml" />
+    <Content Include="Areas\Cot\Views\Teacher\Index.cshtml" />
+    <Content Include="Areas\Cot\Views\Index\Assessment.cshtml" />
+    <Content Include="Areas\Cot\Views\StgReport\Edit.cshtml" />
+    <Content Include="Areas\Cot\Views\Index\Report.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\_Partial_Completion_Measure_Header.cshtml" />
+    <Content Include="Areas\Cot\Views\Shared\_Layout_Report.cshtml" />
+    <Content Include="Areas\Cot\Views\Index\Pdf.cshtml" />
+    <Content Include="Areas\Cot\Views\StgReport\Pdf.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\Edit_CECCOT.cshtml" />
+    <Content Include="Areas\Ade\Views\Assessment\View_CECCOT.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\New_CEC.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\Edit_CEC.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\View_CEC.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\New_COT.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\Edit_COT.cshtml" />
+    <Content Include="Areas\Ade\Views\Measure\View_COT.cshtml" />
+    <Content Include="Areas\Cot\Views\Offline\Index.cshtml" />
+    <Content Include="Areas\Cot\Views\Offline\Preparing.cshtml" />
+    <Content Include="Areas\Cec\Views\Offline\Index.cshtml" />
+    <Content Include="Areas\Cot\Views\Offline\Assessment.cshtml" />
+    <Content Include="Areas\Cot\Views\Offline\Report.cshtml" />
+    <Content Include="Areas\Cot\Views\Offline\Stg.cshtml" />
+    <Content Include="Areas\Cot\Views\Offline\Teacher.cshtml" />
+    <Content Include="Areas\Cot\Views\Offline\_Partial_Log.cshtml" />
+    <Content Include="Areas\Cec\Views\Offline\Preparing.cshtml" />
+    <Content Include="Areas\Cec\Views\Offline\Measure.cshtml" />
+    <Content Include="Areas\Cec\Views\Offline\CECReport.cshtml" />
+    <Content Include="Areas\Trs\Views\web.config" />
+    <Content Include="Areas\Trs\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\Index.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\School.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\Assessment.cshtml" />
+    <Content Include="Areas\Trs\Views\Report\AssessmentResults.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\FillInformation.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\Finalized.cshtml" />
+    <Content Include="Areas\Trs\Views\Shared\_Trs_Report_Layout.cshtml" />
+    <Content Include="Areas\Trs\Views\Report\Facility.cshtml" />
+    <Content Include="Areas\Trs\Views\Report\Class.cshtml" />
+    <Content Include="Areas\Trs\Views\Report\NotAvailable.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\VerifiedStar.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Index.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\CotPdf.cshtml" />
+    <Content Include="Areas\Cot\Views\Shared\_Layout_Report_Chart.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\_Partial_CotReport_TeacherHead.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\CotPdf_Download.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\_Partial_CotReport_TeacherHead2.cshtml" />
+    <Content Include="Areas\Cot\Views\Offline\StgResult.cshtml" />
+    <Content Include="Areas\Trs\Views\Index\SchoolNotAvailable.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\CumulativePdf.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\CumulativePdf_Download.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Filter1.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Cumulative2Pdf.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Cumulative2Pdf_Download.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\_Partial_Select_Measure.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Growth.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Growth_Download.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Filter2.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\NoTeacher.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\NoData.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\Growth_Pdf_Average.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\Growth_Pdf_Download.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\Growth_Pdf_MeetingBenchmark.cshtml" />
+    <Content Include="Areas\Cot\Views\Report\Filter.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Shared\_Partial_Measure_Header.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Student\_Partial_Templates.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Student\_Partial_Header.cshtml" />
+    <Content Include="Areas\Trs\Views\Report\AssessmentResultsFirst.cshtml" />
+    <Content Include="Areas\Report\Views\School\SummaryWithAverge_Report.cshtml" />
+    <Content Include="Areas\Report\Views\School\PercentageofSatisfactory.cshtml" />
+    <Content Include="Areas\Report\Views\Shared\_Partial_PercentageofSatisfactory.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\TypedResponse_View.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\TypedResponse.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\Response.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\EditorTemplates\AnswersPictureAudio.cshtml" />
+    <Content Include="Areas\Trs\Views\Offline\Preparing.cshtml" />
+    <Content Include="Areas\Trs\Views\Offline\Index.cshtml" />
+    <Content Include="Areas\Trs\Views\Offline\School.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\Response.cshtml" />
+    <Content Include="Areas\Ade\Views\Shared\DisplayTemplates\AnswersPictureAudio.cshtml" />
+    <Content Include="Areas\Trs\Views\Offline\Assessment.cshtml" />
+    <Content Include="Areas\Trs\Views\Offline\VerifiedStar.cshtml" />
+    <Content Include="Areas\Trs\Views\Offline\Preview.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\GetPdf.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\Comment.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\List.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\_Partial_MeasureResultList.cshtml" />
+    <Content Include="Areas\Trs\Views\Shared\_Trs_OfflineReport_Layout.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\GetListPdf.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\_Partial_MeasureResultView.cshtml" />
+    <Content Include="Areas\Cpalls\Views\Execute\_Partial_Comment.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\TxkeaReceptive.cshtml" />
+    <Content Include="Areas\Ade\Views\Item\TxkeaExpressive.cshtml" />
+    <None Include="Properties\PublishProfiles\Assessment_David.pubxml" />
+    <None Include="Properties\PublishProfiles\Hunk.config.pubxml" />
+    <None Include="Properties\PublishProfiles\Jack_Web_deploy.pubxml" />
+    <Content Include="Views\Shared\_Partial_Left_Ade.cshtml" />
+    <None Include="Properties\PublishProfiles\Lee.pubxml" />
+    <None Include="Properties\PublishProfiles\Sam.pubxml" />
+    <None Include="Properties\PublishProfiles\sunnet.cli.assessment.pubxml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\404.cshtml" />
+    <Content Include="Views\Shared\_Partial_Left_Cpalls.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\AssessmentHome\LogOut.cshtml" />
+    <Content Include="Views\Shared\_Modal_Null.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Enum.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\String.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\List.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Int32.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Int64.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\decimal.cshtml" />
+    <Content Include="Views\Error\nonauthorized.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\NoData.cshtml" />
+    <Content Include="Areas\Offline\Views\Shared\_Layout_Offline.cshtml" />
+    <Content Include="Views\Shared\_Layout_Offline.cshtml" />
+    <Content Include="Views\Shared\_Layout_Trs.cshtml" />
+    <Content Include="Views\Shared\_Layout_TrsReport.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\DateTime.cshtml" />
+    <Content Include="Views\Shared\Offline\_Partial_Pin.cshtml" />
+    <Content Include="Views\Shared\Offline\_Partial_Unlock.cshtml" />
+    <Content Include="Views\Shared\Offline\_Partial_Reset.cshtml" />
+    <Content Include="Views\Shared\_Layout_ReportQueue.cshtml" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Shared\_Partial_Left_Observable.cshtml" />
+    <Content Include="Views\Shared\_Layout_KeaItem.cshtml" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Shared\_Partial_Left_TSDS.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Areas\Ade\Models\" />
+    <Folder Include="Areas\BulkUpload\Models\" />
+    <Folder Include="Areas\BulkUpload\Views\Public\" />
+    <Folder Include="Areas\BulkUpload\Views\Shared\" />
+    <Folder Include="Areas\Cec\Models\" />
+    <Folder Include="Areas\Cec\Views\Shared\" />
+    <Folder Include="Areas\Layout\Models\" />
+    <Folder Include="Areas\Layout\Views\Shared\" />
+    <Folder Include="Areas\Observable\Models\" />
+    <Folder Include="Areas\Offline\Models\" />
+    <Folder Include="Areas\Practice\Models\" />
+    <Folder Include="Areas\Practice\Views\Shared\" />
+    <Folder Include="Areas\Trs\Models\" />
+    <Folder Include="Areas\Tsds\Models\" />
+    <Folder Include="Areas\Tsds\Views\Shared\" />
+    <Folder Include="Views\Base\" />
+    <Folder Include="Views\Shared\EditorTemplates\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sunnet.Cli.Business\Sunnet.Cli.Business.csproj">
+      <Project>{c6616ca8-1f8a-403a-8726-0b333071dad4}</Project>
+      <Name>Sunnet.Cli.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Cli.Core\Sunnet.Cli.Core.csproj">
+      <Project>{aef8d87a-9af5-47e1-bd90-f77fc916affe}</Project>
+      <Name>Sunnet.Cli.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Cli.Impl\Sunnet.Cli.Impl.csproj">
+      <Project>{0c8f14ca-5530-4a9d-9875-f1cf91974a88}</Project>
+      <Name>Sunnet.Cli.Impl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Cli.UIBase\Sunnet.Cli.UIBase.csproj">
+      <Project>{81e9aca3-4391-4ff4-abdd-3c36e6989088}</Project>
+      <Name>Sunnet.Cli.UIBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Framework\Sunnet.Framework.csproj">
+      <Project>{14a83fe3-67ab-4bd7-b171-870de20f5bf1}</Project>
+      <Name>Sunnet.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>14396</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

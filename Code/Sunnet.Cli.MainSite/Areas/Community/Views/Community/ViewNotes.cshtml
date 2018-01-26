@@ -1,0 +1,148 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Communities.Models
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models 
+@{
+    ViewBag.Title = ViewBag.CommunityName;
+ 
+  var listNotes = (ViewBag.CommunityNotes as List<CommunityNotesModel>);
+    var firstPanel = true;
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Community)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Community/District", "Index", "Community"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;Edit Custom Notifications
+} 
+<div class="right-content-top"> 
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to Community/District List
+    </a>
+ <a class="mainbutton mainright-btn nav-btn" href="/Community/Community/NewNote?comId=@(ViewBag.CommunityId)"  data-toggle="modal" data-target="#modalLarge" >Add Custom Notification
+    </a>
+</div>
+ <div style="text-align: center;margin-top:10px">
+        Community Name：
+        @ViewBag.CommunityName
+    </div>
+ <div style="text-align: left; font-weight: bold;margin-top:10px">
+     This Custom Notification page can be used to create a customized message that will appear for all users in your Community/District in CLI Engage every 
+time they login between the dates specified below. If the message should no longer appear, change the Status to inactive.
+ </div>
+<style>
+    ul, li, ol {
+        margin: 0;
+        padding: 0;
+        list-style:inherit;
+    }
+    ol {
+        display: block;
+        list-style-type: decimal;
+        -webkit-margin-before: 1em;
+        -webkit-margin-after: 1em;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+        -webkit-padding-start: 40px;
+ 
+    }
+</style>
+@section Scripts{
+ @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        $(function() {
+            $("body").on("hidden.bs.modal", function() {
+                if (CKEDITOR.stylesSet.registered.default != null) {
+                    CKEDITOR.stylesSet.registered.default = [];
+                    CKEDITOR.stylesSet.registered.default = null;
+                }
+                window.location.href = window.location.href;
+            });
+        });
+
+        function EditCommunityNote(noteId, communityId, sender) {
+
+            if (noteId <= 0) {
+                window.showMessage("fail", "Note can not be null.");
+                $(sender).attr("data-target", "#");
+            } else {
+                $(sender).attr("data-target", "#modalLarge");
+                $("#modalLarge").modal({
+                    remote: "/Community/Community/EditNote?noteId=" + noteId + "&communityId=" + communityId
+                });
+            }
+        } 
+       
+    </script>
+}
+<div class="panel-group" id="accordion">
+    @foreach (var note in listNotes)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#@(note.ID)" >
+                <h4 class="panel-title"> 
+                    <span style="font-size: 14px">Status:</span> 
+                    @if (note.Status == CommunityNoteStatus.Active)
+                    {
+                        <span style="font-size: 16px;color:#247432;font-weight: bold">@(note.Status)</span>
+                         <span style="font-size: 14px;padding-left: 90px"> Start/Stop:</span>
+                    }
+                    else if (note.Status == CommunityNoteStatus.Inactive)
+                    {
+                        <span style="font-size: 16px;color:red;font-weight: bold">@(note.Status)</span>
+                         <span style="font-size: 14px;padding-left: 80px"> Start/Stop:</span>
+                    }
+                    else
+                    { 
+                        <span style="font-size: 16px;color:coral;font-weight: bold">@(note.Status)</span> 
+                        <span style="font-size: 14px;padding-left: 68px"> Start/Stop:</span>
+                    }
+                
+                    <span style=" color:#247432;font-size: 12px;">@(note.StartOn.ToString("MM/dd/yyyy"))</span> -
+                    <span style=" color:#247432;font-size: 12px; ">@(note.StopOn.ToString("MM/dd/yyyy"))</span> 
+
+                    <span style="float: right">
+                        <a class="table-btn icon-pencil pencil-btn"  onclick="EditCommunityNote(@note.ID,@note.CommunityId,this)" title="Edit Custom Notification"
+                           href="#"><span class="hide">Edit Custom Notification</span></a>
+                                       
+                   </span> 
+ 
+                </h4>
+            </div>
+
+            @if (firstPanel)
+            {
+                <div  id="@(note.ID)" style="overflow-x:auto" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        @if (!string.IsNullOrEmpty(note.LogoUrl) && note.DisplayLogo)
+                        {
+                            <div style="height: 120px; text-align: center">
+                                <img alt="@(note.CommunityName)" src="@FileHelper.GetPreviewPathofUploadFile(note.LogoUrl)" style="max-width: 250px; max-height: 100px" />
+                            </div>
+                        }
+                        @Html.Raw(note.Messages)
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div id="@(note.ID)" style="overflow-x:auto" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        @if (!string.IsNullOrEmpty(note.LogoUrl) && note.DisplayLogo)
+                        {
+                            <div style="height: 120px; text-align: center">
+                                <img alt="@(note.CommunityName)" src="@FileHelper.GetPreviewPathofUploadFile(note.LogoUrl)" style="max-width: 250px; max-height: 100px"/>
+                            </div>
+                        }
+                        @Html.Raw(note.Messages)
+                    </div>
+                </div>
+            }
+        </div>
+        firstPanel = false;
+    }
+</div> 

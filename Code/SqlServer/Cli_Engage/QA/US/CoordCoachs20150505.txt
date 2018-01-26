@@ -1,0 +1,15 @@
+﻿if not exists(select * from syscolumns where id=object_id('CoordCoachs') and name='F2FAvailableHours')
+alter table CoordCoachs add  F2FAvailableHours decimal(18, 2) 
+
+go
+update CoordCoachs set F2FAvailableHours =0 where F2FAvailableHours is null
+
+GO
+
+if not exists(select * from syscolumns where id=object_id('CoordCoachs') and name='RemAvailableCycle')
+alter table CoordCoachs add  RemAvailableCycle decimal(18, 2) 
+go
+
+update CoordCoachs set RemAvailableCycle =0 where RemAvailableCycle is null
+
+go

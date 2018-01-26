@@ -1,0 +1,144 @@
+﻿@using System.Globalization
+@using System.Text
+@using System.Text.RegularExpressions
+@using Examine
+@using Umbraco.Core.Logging
+@using Umbraco.Web.Models
+@inherits umbraco.MacroEngines.DynamicNodeContext
+@{
+    var cliDomain = System.Configuration.ConfigurationSettings.AppSettings["CliEngageDomain"];
+	var c="";
+	if(Request.Cookies["UserLoginInfo"]!=null)
+	{
+		c=Request.Cookies["UserLoginInfo"].Value;
+	}
+	
+}
+@{
+    <div id="btnAddActivity" style="display:none;padding-left:10px;cursor: pointer;" title='Add to my Activities' onclick='AddMyActivity();'>
+        <button style="background:#919191 url(/Umbraco_Client/BootStrap3/add1.png) 15px center no-repeat;background-size:19px 19px;padding:6px 10px 6px 40px;border-radius:50px;color:#fff;border:0;font-size:10px;font-weight:600;">ADD TO MY ACTIVITIES</button>
+    </div>
+    <div id="btnRemoveActivity" style="display:none;padding-left:10px;cursor: pointer;" title='Remove from my Activities' onclick='RemoveMyActivity();'>
+        <button style="background:#D81900 url(/Umbraco_Client/BootStrap3/remove1.png) 15px center no-repeat;background-size:19px 19px;padding:6px 10px 6px 40px;border-radius:50px;color:#fff;border:0;font-size:10px;font-weight:600;">REMOVE MY ACTIVITIES</button>
+    </div>
+    <div id="btnAddNote" style="display:none;padding-left:10px;cursor: pointer;" title='My Activity Note' data-toggle="modal"
+         data-target=".bs-example-modal-sm">
+		<button style="background:#266FBC url(/Umbraco_Client/BootStrap3/info1.png) 15px center no-repeat;background-size:17px 17px;padding:6px 10px 6px 40px;border-radius:50px;color:#fff;border:0;font-size:10px;font-weight:600;">MY NOTES</button>
+    </div>
+    <div id="dvNoLog" style="display:none;padding-left:10px;">
+		Please <a href="@(cliDomain)/home/signin" style="font-weight:bold;">log into</a> your UTHealth or Google account to add or remove this activity!
+    </div>
+
+	<!-- Button trigger modal -->
+   <!-- Modal -->
+    <div class="modal fade bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="border-radius:15px;">
+                <div class="modal-header" style="background:#266FBC;border-radius:13px 13px 0 0;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:#fff;opacity:1;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="mySmallModalLabel" style="color:#fff;">My notes</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control" id="txtRemark" rows="3" style="background:#F5F5F5;"></textarea>
+                </div>
+                <div class="modal-footer" style="text-align:center;">
+                    <button type="button" onclick='AddNote()' class="btn btn-primary" data-dismiss="modal" style="width:130px;text-align:center;border-radius:50px;color:#fff;background: -ms-linear-gradient(top, #1F7DD2,  #1D5EAC);background:-moz-linear-gradient(top, #1F7DD2,  #1D5EAC);background: -webkit-linear-gradient(top, #1F7DD2,  #1D5EAC);background: -o-linear-gradient(top, #1F7DD2,  #1D5EAC);border:0;outline:none;padding:3px 0;  ">SAVE NOTES</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="width:130px;text-align:center;border-radius:50px;background:#F5F5F5;margin:0 0 0 10px;padding:3px 0;display:inline-block;color:#333;outline:none;">CANCEL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="/Umbraco_Client/BootStrap3/js/jquery-1.10.2.min.js"></script>
+<script src="/Umbraco_Client/BootStrap3/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var c = "@c";
+		if(c!="")
+		{
+			var postUrl = "@(cliDomain)/tocac/index/IsMyActivity";
+			$.post(postUrl, { a: "@Model.Id", b: "@(Server.UrlEncode(Model.Name))", c: c }, function (res) {
+				var response = eval("(" + res + ")");
+				if (response.success) {
+					$("#txtRemark").val(response.msg);
+					$("#btnAddActivity").hide();
+					$("#btnRemoveActivity").css("display", "inline-block");
+					$("#btnAddNote").css("display", "inline-block");
+				}
+				else {
+					$("#btnAddActivity").css("display", "inline-block");
+					$("#btnRemoveActivity").hide();
+					$("#btnAddNote").hide();
+				}
+
+			});
+			$("#dvNoLog").hide();
+		}else{
+			$("#dvNoLog").show();
+		}
+    });
+    function AddMyActivity() {
+        var b = '@Server.UrlEncode(Model.Name)';
+        var d = '@Server.UrlEncode(Model.Url)';
+        var e = '@Server.UrlEncode(Model.Domain_Title)';
+        var f = '@Server.UrlEncode(Model.SubDomain_Title)';
+        var g = '@Server.UrlEncode(Model.GetPropertyValue("Learning_Objective"))';
+		var h = '@Server.UrlEncode(Model.age_group)';
+        var c = "@c";
+        var postUrl = "@(cliDomain)/tocac/index/AddMyActivity";
+        $.post(postUrl, { a: @(Model.Id), b: b, c: c, d: d, e: e, f: f,g: g,h: h}, function (res) {
+            var response = eval("(" + res + ")");
+            if (response.success) {
+                //alert("Your updates have been saved.");
+                $("#btnAddActivity").hide();
+                $("#btnRemoveActivity").css("display", "inline-block");
+                $("#btnAddNote").css("display", "inline-block");
+            }
+            else {
+                alert(response.msg);
+            }
+        });
+    }
+
+    function RemoveMyActivity() {
+        var c = "@c";
+        var postUrl = "@(cliDomain)/tocac/index/RemoveMyActivity";
+        $.post(postUrl, { a: @(Model.Id), c: c }, function (res) {
+            var response = eval("(" + res + ")");
+            console.log(response);
+            if (response.success) {
+                //alert("Your updates have been saved.");
+                $("#btnAddActivity").css("display", "inline-block");
+                $("#btnRemoveActivity").hide();
+                $("#btnAddNote").hide();
+            }
+            else {
+                alert(response.msg);
+            }
+        });
+    }
+    function AddNote() {
+        var b = '@Server.UrlEncode(Model.Name)';
+        var c = "@c";
+        var d = $("#txtRemark").val();
+        var postUrl = "@(cliDomain)/tocac/index/AddMyActivityNote";
+        $.post(postUrl, { a: @(Model.Id), b: b, c: c, d: htmlencode(d) }, function (res) {
+            var response = eval("(" + res + ")");
+            if (response.success) {
+                //$('#myModal').modal('toggle');
+                //alert("Your updates have been saved.");
+            }
+            else {
+                alert(response.msg);
+            }
+        });
+    }
+
+    function htmlencode(s) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(s));
+        return div.innerHTML;
+    }
+</script>

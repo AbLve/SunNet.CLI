@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Sunnet.Cli.Business.Ade.Models.MeasureModel>
+
+@{
+    ViewBag.Title = "Adjust Order";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Detail", new { id = ViewBag.ParentId });
+    var isCot = Model.First().AssessmentType == AssessmentType.Cot;
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Assessment", "Index", "Assessment"))<i class="icon-angle-right"></i>
+    @Html.ActionLink(Model.FirstOrDefault().AssessmentLabel, "Detail", "Assessment", new { id = ViewBag.AssessmentId }, null)<i class="icon-angle-right"></i>Adjust Order
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#tblMeasures").sortable({
+                items: ':not(:first)'
+            });
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@Html.Raw(backUrl)");
+                }
+            });
+        });
+    </script>
+}
+@using (Ajax.BeginForm("AdjustOrder", "Measure", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    @role = "form",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("assessmentId", (object)ViewBag.AssessmentId)
+    @Html.Hidden("ParentId", (object)ViewBag.ParentId)
+    <div class="main-content">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back to Measure List</a>
+        <button class="mainbutton mainright-btn submit-btn" type="submit" value="Save">Save</button>
+    </div>
+    <div class="main-content">
+        <ul id="tblMeasures" class="sortable list">
+            <li class="disabled">
+                <div class="form-group">
+                    <div class="col-sm-3">@Html.DisplayNameFor(model => model.Label)</div>
+                    <div class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</div>
+                    @*<div class="col-sm-2">@Html.DisplayNameFor(model => model.OrderType)</div>*@
+                    @if (!isCot) { 
+                        <div class="col-sm-2">@Html.DisplayNameFor(model => model.TotalScored)</div>
+                    }
+                    <div class="col-sm-2">@Html.DisplayNameFor(model => model.CreatedByName)</div>
+                    <div class="col-sm-2">@Html.DisplayNameFor(model => model.UpdatedOn)</div>
+                </div>
+            </li>
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                <li>
+                    <div class="form-group">
+                        <input name="measureIds" value="@item.ID" type="hidden"/>
+                        <div class="col-sm-3" title="@item.Label">@item.Label.CutString(30)</div>
+                        <div class="col-sm-3" title="@item.Name">@item.Name.CutString(30)</div>
+                        @*<div class="col-sm-2">@Html.DisplayFor(modelItem => item.OrderType)</div>*@
+@if (!isCot)
+{
+    <div class="col-sm-2">@ViewTextHelper.BoolInTexts[item.TotalScored]</div>
+}
+                        <div class="col-sm-2">@item.CreatedByName</div>
+                        <div class="col-sm-2">@item.UpdatedOn.ToString("MM/dd/yyyy")</div>
+                    </div>
+                </li>
+                }
+            }
+        </ul>
+    </div>
+}

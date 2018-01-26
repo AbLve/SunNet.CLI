@@ -1,0 +1,4 @@
+﻿--更新前，注意备份数据库
+--注意，不能重复执行
+update DataGroups set status=0 where status=1
+update BUP_Tasks set status=0 where status=1

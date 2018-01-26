@@ -1,0 +1,24 @@
+﻿CREATE TABLE [dbo].[Video_Language_Datas](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_Video_Language_Datas] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+SET IDENTITY_INSERT [dbo].[Video_Language_Datas] ON 
+
+GO
+INSERT [dbo].[Video_Language_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (1, N'English', 1, CAST(0x0000A45F01248DCD AS DateTime), CAST(0x0000A45F01248DCD AS DateTime))
+GO
+INSERT [dbo].[Video_Language_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (2, N'Bilingual', 1, CAST(0x0000A45F01248DCD AS DateTime), CAST(0x0000A45F01248DCD AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[Video_Language_Datas] OFF
+GO

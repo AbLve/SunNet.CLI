@@ -1,0 +1,26 @@
+﻿
+/****** Object:  View [dbo].[V_Circle_Data_Export_Students]    Script Date: 2015/7/7 12:26:12 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER VIEW [dbo].[V_Circle_Data_Export_Students]
+AS
+SELECT   COM.ID AS CommunityId, COM.Name AS CommunityName, COM.CommunityId AS CommunityIdentity, 
+                COM.DistrictNumber, SCH.ID AS SchoolId, SCH.Name AS SchoolName, SCH.SchoolId AS SchoolIdentity, 
+                SCH.Status AS SchoolStatus, ISNULL(SCT.Name, '') AS SchoolType, SCH.SchoolNumber, STU.ID, STU.FirstName, 
+                STU.MiddleName, STU.LastName, STU.BirthDate, STU.Status AS StudentStatus, STU.StudentId AS StudentIdentity, 
+                STU.LocalStudentID, STU.TSDSStudentID, dbo.GetTeachersOfStudent(STU.ID) AS Teachers, 
+                dbo.GetClassesOfStudent(STU.ID) AS Classes, STU.GradeLevel
+FROM      dbo.Communities AS COM INNER JOIN
+                dbo.CommunitySchoolRelations AS csr ON csr.CommunityId = COM.ID INNER JOIN
+                dbo.Schools AS SCH ON csr.SchoolId = SCH.ID LEFT OUTER JOIN
+                dbo.SchoolTypes AS SCT ON SCH.SchoolTypeId = SCT.ID INNER JOIN
+                dbo.SchoolStudentRelations AS ssr ON ssr.SchoolId = SCH.ID INNER JOIN
+                dbo.Students AS STU ON ssr.StudentId = STU.ID
+
+GO
+
+

@@ -1,0 +1,349 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.CoachFileModel
+@using Sunnet.Cli.UIBase.Models;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using System.Web.Optimization;
+@using Sunnet.Cli.Business.Vcw.Models;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase;
+
+
+@if (!string.IsNullOrEmpty(ViewBag.Redirect))
+{
+    @section BreadPath
+{
+        @(Html.ActionLink("Coach Summary", "Index", "Summary"))&nbsp;  
+        <i class="icon-angle-right"></i>&nbsp;  
+        @(Html.ActionLink("Coach Files", "Index", "Summary"))&nbsp; 
+        <i class="icon-angle-right"></i>&nbsp;   
+        View
+    }
+}
+else
+{
+    @section BreadPath
+{
+        @(Html.ActionLink("Coach General", "Index", "General"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;       
+    View
+    }
+}
+
+@section LeftMenu
+{
+    @if (!string.IsNullOrEmpty(ViewBag.Redirect))
+    {
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Summary)
+    }
+    else
+    {
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_General)
+    }
+
+}
+
+@{
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<CoachListModel> Coaches = ViewBag.Coaches as List<CoachListModel>;
+    List<int> SharedIds = new List<int>();
+    if (SharedIds != null)
+    {
+        SharedIds = Model.FileShareds.Select(a => a.UserId).ToList();
+    }
+    bool isAll = false;
+    if (Coaches != null && Model.FileShareds != null)
+    {
+        if (Model.FileShareds.Count >= Coaches.Count)
+        {
+            isAll = true;
+        }
+    }
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var backurl = "@(ViewBag.Redirect)";
+                    if (backurl != "") {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "Summary"))");
+                    }
+                    else {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "Index")");
+                    }
+                }
+            });
+
+            $("#coach_all").click(function () {
+                if ($(this)[0].checked) {
+                    $("input[name=Coach]").each(
+                        function () {
+                            $(this)[0].checked = true;
+                        }
+                        );
+                } else {
+                    $("input[name=Coach]").each(
+                        function () {
+                            $(this)[0].checked = false;
+                        }
+                        );
+                }
+            })
+
+            if (CheckIfPlay('@(Model.FileExtension)')) {
+                setPlayerVideo("700", "350", "@(FileHelper.GetPreviewPathofUploadFile(Model.FilePath).Replace("\\", "/"))", "div_sunnet", '@(DomainHelper.StaticSiteDomain)');
+            }
+        })
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+
+        function StrategyClick(sender) {
+            if ($(sender)[0].value == '@(StrategyEnum.Other)') {
+                if ($(sender)[0].checked) {
+                    $("#StrategyOther").removeAttr("disabled");
+                }
+            }
+            else {
+                $("#StrategyOther").attr("disabled", "disabled");
+                $("#StrategyOther").val('');
+            }
+
+        }
+
+        function CancelAll(sender) {
+            if ($(sender)[0].checked == false) {
+                $("#coach_all").removeAttr("checked");
+            }
+        }
+
+    </script>
+}
+@using (Ajax.BeginForm("Edit", "General", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    <div class="right-content-top">
+        @if (!string.IsNullOrEmpty(ViewBag.Redirect))
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "Summary"))" >Back to Summary</a>
+        }
+        else
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to General List</a>
+        }
+    </div>
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    @Html.LabelFor(model => model.IdentifyFileName, new { @class = "control-label required" })
+                                </div>
+                                <div class="inputtext-con">
+                                    @Html.TextBoxFor(model => model.IdentifyFileName, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdentifyFileName)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <label class="control-label" for="DateRecorded">Date Video Recorded</label>
+                                </div>
+                                <div class="inputtext-con">
+                                    @Html.TextBoxFor(m => m.DateRecorded, new
+                           {
+                               @class = "form-control date",
+                               @Value = Model.DateRecorded.Value.FormatDateString(),
+                           })
+                                    @Html.ValidationMessageFor(m => m.DateRecorded)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Coaching Strategies</div>
+                                </div>
+                                @foreach (StrategyEnum item in Enum.GetValues(typeof(StrategyEnum)))
+                                {
+                                    bool isChecked = Model.StrategyId == item;
+                                    if (item != StrategyEnum.None)
+                                    {
+                                        if (item == StrategyEnum.Other)
+                                        {
+                                    <div class="checkbox-con checkbox-con-double">
+                                        <label class="radio-inline">
+                                            @Html.RadioButtonFor(m => m.StrategyId, item, new { onclick = "StrategyClick(this)" })@item.ToDescription()
+                                            &nbsp;&nbsp;
+                                        </label>
+
+                                        @if (isChecked)
+                                        {
+                                            @Html.TextBoxFor(model => model.StrategyOther, new { @class = "form-control form-control-double" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(model => model.StrategyOther, new { @class = "form-control form-control-double", @disabled = "disabled" }) 
+                                        }
+                                        @Html.LabelFor(model => model.StrategyOther, null, new { @class = "control-label hide" })
+                                        @Html.ValidationMessageFor(model => model.StrategyOther)
+                                    </div>
+                                        }
+                                        else
+                                        {
+                                    <div class="checkbox-con checkbox-con-double">
+                                        <label class="radio-inline">
+                                            @Html.RadioButtonFor(m => m.StrategyId, item, new { onclick = "StrategyClick(this)" })@item.ToDescription()
+                                        </label>
+                                    </div>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">
+                                        Coaching Objectives
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                                    </div>
+                                    <label for="Objectives" class="hide">&nbsp;</label>
+                                </div>
+                                <div class="textarea-con">
+                                    @Html.TextAreaFor(m => m.Objectives, new { @class = "form-control", row = "2" })
+                                    @Html.ValidationMessageFor(m => m.Objectives)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">
+                                        Coaching Effectiveness
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                                    </div>
+                                    <label class="hide" for="Effectiveness">&nbsp;</label>
+                                </div>
+                                <div class="textarea-con">
+                                    @Html.TextAreaFor(m => m.Effectiveness, new { @class = "form-control", row = "2" })
+                                    @Html.ValidationMessageFor(m => m.Objectives)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">PM Feedback</div>
+                                </div>
+                                <div class="uploader-list">
+                                    @if (!string.IsNullOrEmpty(Model.FeedbackFilePath))
+                                    {
+                                        <div class="item">
+                                            <i class="icon-paper-clip"></i>
+                                            <a href="@(DownLoadFile.GetDownFilePath(Model.FeedbackFilePath, Model.FeedbackFileName))"  
+                                                class="form-link4">@(Model.FeedbackFileName)</a>
+                                        </div>
+                                    }
+                                    <p>
+                                        @Model.FeedbackText
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div id='div_sunnet'>
+                            <div style='width:100%;height:450px; text-align:center; background:#333333 url(@(Sunnet.Framework.SFConfig.AssessmentDomain)/images/not-played.jpg) no-repeat center center; line-height:450px;'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Send Upload To PM</div>
+                                </div>
+                                <div class="checkbox-con">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" @(ViewBag.PM ? "" : "disabled") @(ViewBag.IsPM ? "checked" : "") name="pm">Project Manager
+                                    </label>
+                                </div>
+                                <div class="content-title3">
+                                    <div class="control-label">Send Upload To Coach</div>
+                                </div>
+                                <div style="min-height: 251px; max-height: 251px; overflow-y: scroll">
+                                    @if (ViewBag.Coaches != null)
+                                    {
+                                        <div class="checkbox-con">
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" id="coach_all" @(isAll ? "checked" : "")>All
+                                            </label>
+                                        </div>
+                                        foreach (CoachListModel item in Coaches)
+                                        {
+                                            bool isChedked = SharedIds.Contains(item.UserId);
+                                        <div class="checkbox-con">
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox"   name="Coach" value="@(item.UserId)" 
+                                        @(isChedked ? "checked" : "") onclick="CancelAll(this)">@item.Name
+                                            </label>
+                                        </div>                              
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @Html.Partial("/Areas/Coach/Views/Partials/UploadedFile.cshtml")
+        </div>
+    </div>
+    <input type="hidden" name="uploadfiles" id="uploadfiles" />
+    <div class="modal-footer">
+        <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit_edit(this);">
+        @if (!string.IsNullOrEmpty(ViewBag.Redirect))
+        {
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal" 
+            onclick='redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "Index")")'>
+                Cancel</button>
+        }
+        else
+        {
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal" 
+            onclick='redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "Summary"))")'>
+                Cancel</button>   
+        }
+
+    </div>
+}

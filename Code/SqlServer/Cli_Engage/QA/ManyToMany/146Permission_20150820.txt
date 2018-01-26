@@ -1,0 +1,141 @@
+﻿update Permission_Pages set IsPage=0 where ID=3906
+go
+
+delete Permission_PageAuthorities where PageId=3906
+go
+
+update Permission_RolePageAuthorities set PageAction='128;' where PageId=3906
+go
+
+
+SET IDENTITY_INSERT Permission_Pages ON
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3940,'Community/District',1,3906,'',1,1,'Community/District',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3941,'School',1,3906,'',2,1,'School',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3942,'Classroom',1,3906,'',3,1,'Classroom',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3943,'Class',1,3906,'',4,1,'Class',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3944,'Teacher',1,3906,'',5,1,'Teacher',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3945,'Student',1,3906,'',6,1,'Student',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3946,'Community/District User/Specialist',1,3906,'',7,1,'Community/District User/Specialist',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3948,'Principal/School Specialist',1,3906,'',9,1,'Principal/School Specialist',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3950,'Parent',1,3906,'',11,1,'Parent',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3951,'Statewide Agency',1,3906,'',12,1,'Statewide Agency',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3952,'Auditor',1,3906,'',13,1,'Auditor',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+go
+
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3940,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3941,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3942,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3943,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3944,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3945,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3946,1)
+go
+
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3948,1)
+go
+
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3950,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3951,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3952,1)
+go
+
+
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3940,'1;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3941,'1;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3942,'1;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3943,'1;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3944,'1;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3945,'1;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3946,'1;',GETDATE(),GETDATE())
+go
+
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3948,'1;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3950,'1;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3951,'1;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3952,'1;',GETDATE(),GETDATE())
+go

@@ -1,0 +1,147 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Users.Enums
+
+@{
+    ViewBag.Title = "Data Management";
+    List<int> UserPages = ViewBag.UserPages as List<int>;
+    Role userRole = (Role)ViewBag.UserRoleType;
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.BUP)
+}
+
+@section Styles{
+    <style type="text/css">
+        .ade-menu-dashboard li {
+            width: 170px;
+        }
+
+            .ade-menu-dashboard li a {
+                width: 170px;
+            }
+
+        .backlink2 {
+            color: #247432;
+            border-bottom: 2px solid #009900;
+        }
+
+        .ade-menu-dashboard li a.roster {
+            background-color: #247432;
+        }
+
+            .ade-menu-dashboard li a.roster:hover {
+                background-color: #ffa07a;
+            }
+
+        .ade-menu-dashboard li a.user {
+            background-color: #a0522d;
+        }
+
+            .ade-menu-dashboard li a.user:hover {
+                background-color: #d2691e;
+            }
+
+        .ade-menu-dashboard li a.automation {
+            background-color: #54757D;
+        }
+
+            .ade-menu-dashboard li a.automation:hover {
+                background-color: #54757D;
+            }
+    </style>
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Data Management", "Index", "BUP"))
+}
+<div class="form-group"></div>
+
+@if (UserPages.Contains((int)PagesModel.DataProcess))
+{
+    <div style="display: inline-block; width: 100%">
+        <h4 class="backlink backlink2">Single Roster. This tool creates Students, Classes, Classrooms and Teachers in a single operation.</h4>
+        <ul class="ade-menu-dashboard">
+            <li><a href="/DataProcess/DataProcess" class="administrative-con roster"><span><em></em>Single Roster</span></a></li>
+        </ul>
+    </div>
+}
+@if (UserPages.Contains((int)PagesModel.BUP_Community) || UserPages.Contains((int)PagesModel.BUP_School) ||
+    UserPages.Contains((int)PagesModel.BUP_Classroom) || UserPages.Contains((int)PagesModel.BUP_Class)
+    || UserPages.Contains((int)PagesModel.BUP_Student))
+{
+    <div style="display: inline-block; width: 100%">
+        <h4 class="backlink backlink2">Add/Manage Structure and Students</h4>
+        <ul class="ade-menu-dashboard">
+            @if (userRole != null && userRole == Role.Super_admin && UserPages.Contains((int)PagesModel.BUP_Community))
+            {
+                <li><a href="/BUP/BUP/Community" class="administrative-con"><span><em></em>Community/District</span></a></li>
+            }
+            @if (UserPages.Contains((int)PagesModel.BUP_School))
+            {
+                <li><a href="/BUP/School/" class="administrative-con"><span><em></em>School</span></a></li>
+            }
+            @if (UserPages.Contains((int)PagesModel.BUP_Classroom))
+            {
+                <li><a href="/BUP/Classroom/" class="administrative-con"><span><em></em>Classroom</span></a></li>
+            }
+            @if (UserPages.Contains((int)PagesModel.BUP_Class))
+            {
+                <li><a href="/BUP/Class/" class="administrative-con"><span><em></em>Class</span></a></li>
+            }
+            @if (UserPages.Contains((int)PagesModel.BUP_Student))
+            {
+                <li><a href="/BUP/Student" class="administrative-con"><span><em></em>Student</span></a></li>
+            }
+        </ul>
+    </div>
+}
+
+@if (UserPages.Contains((int)PagesModel.BUP_Statewide) || UserPages.Contains((int)PagesModel.BUP_Auditor) ||
+    UserPages.Contains((int)PagesModel.BUP_CommunityUser) || UserPages.Contains((int)PagesModel.BUP_Principal)
+    || UserPages.Contains((int)PagesModel.BUP_Teacher) || UserPages.Contains((int)PagesModel.BUP_Parent))
+{
+    <div style="display: inline-block; width: 100%">
+        <h4 class="backlink backlink2">Add/Manage Users</h4>
+        <ul class="ade-menu-dashboard">
+            @if (userRole != null && userRole == Role.Super_admin && UserPages.Contains((int)PagesModel.BUP_Statewide))
+            {
+                <li><a href="/BUP/Statewide" class="administrative-con user"><span><em></em>Statewide Agency</span></a></li>
+            }
+            @if (userRole != null && userRole == Role.Super_admin && UserPages.Contains((int)PagesModel.BUP_Auditor))
+            {
+                <li><a href="/BUP/Auditor" class="administrative-con user"><span><em></em>Auditor</span></a></li>
+            }
+            @if (UserPages.Contains((int)PagesModel.BUP_CommunityUser))
+            {
+                <li><a href="/BUP/CommunityUser" class="administrative-con user"><span><em></em>Community/District User</span></a></li>
+                <li><a href="/BUP/CommunityUser?isSpecialist=true" class="administrative-con user"><span><em></em>Community/District Specialist</span></a></li>
+            }
+            @if (UserPages.Contains((int)PagesModel.BUP_Principal))
+            {
+                <li><a href="/BUP/Principal" class="administrative-con user"><span><em></em>Principal/Director</span></a></li>
+                <li><a href="/BUP/Principal?isSpecialist=true" class="administrative-con user"><span><em></em>School Specialist</span></a></li>
+            }
+            @if (UserPages.Contains((int)PagesModel.BUP_Teacher))
+            {
+                <li><a href="/BUP/Teacher" class="administrative-con user"><span><em></em>Teacher</span></a></li>
+            }
+            @if (UserPages.Contains((int)PagesModel.BUP_Parent))
+            {
+                <li><a href="/BUP/Parent" class="administrative-con user"><span><em></em>Parent</span></a></li>
+            }
+        </ul>
+    </div>
+}
+
+@if (userRole == Role.Community || userRole == Role.Super_admin)
+{
+    <div style="display: inline-block; width: 100%">
+        <h4 class="backlink backlink2">Automation Settings</h4>
+        <ul class="ade-menu-dashboard">
+            <li><a href="/BUP/Automation" class="administrative-con automation"><span><em></em>Automation Settings</span></a></li>
+        </ul>
+    </div>
+}

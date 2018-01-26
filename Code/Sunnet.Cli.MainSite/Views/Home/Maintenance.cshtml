@@ -1,0 +1,37 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Maintenance Notificaton";
+ 
+
+}
+@section Styles
+{
+    @Styles.Render("~/css/home")
+} 
+@section Scripts
+{
+
+}
+<style>
+.nav a.active {
+    color: #ffffff;
+    background-color: transparent;
+}
+</style>  
+ <div class="row" style="padding-bottom:50px;">
+  <div class="col-sm-3" ></div>
+  <div class="col-sm-6" >
+      <h2 align="center" style="color:red">Maintenance Notificaton!</h2>
+      @if (ViewBag.isInternalUser)
+      {
+          <p align="center">The system is currently under scheduled maintenance. Please try back after 9:00PM</p>
+      }
+      else
+      {
+          <p align="center">The system is currently under scheduled maintenance. Please try back after 9:00PM</p>
+      }
+  </div>
+  <div class="col-sm-3" ></div>
+</div>
+ 

@@ -1,0 +1,179 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.UIBase
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Vcw.Entities
+@using System.Web.Optimization
+@using Sunnet.Cli.Business.Vcw.Models
+@using Sunnet.Cli.Vcw.Models
+@{
+    ViewBag.Title = "View Assignment";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Admin_Coaches)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Admin Coaches", "Index", "CoachGeneral"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;   
+    @(Html.ActionLink("Coach Assignments", "Index", "CoachAssignment"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    Assignment Information
+}
+
+@using (Ajax.BeginForm("EditAssignment", "CoachAssignment", null, PostFormHelper.DefaultAjaxOptions, new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(a => a.ID)
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" 
+        href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "CoachAssignment"))" >Back to Assignment List</a>
+    </div>
+    <div class="form-group"></div>
+    <div class="form-group">
+        <div class="nav-tab">
+            <ul id="myTab" class="nav-container" role="tablist">
+                <li><a href="@(Url.Action("ViewAssignmentFiles", "CoachAssignment", new { id = Model.ID, returnurl = Request.QueryString["returnurl"] }))">Submitted Assignment Files</a></li>
+                <li class="active"><a href="@(Url.Action("View", "CoachAssignment", new { id = Model.ID, returnurl = Request.QueryString["returnurl"] }))">Assignment Information</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav-container-main">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Assignment</div>
+                    </div>
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-2">Due Date</span>
+                        <span class="col-sm-2">@(Model.DueDate.FormatDateString())</span>
+                        <span class="control-label col-sm-1">Session</span>
+                        <span class="col-sm-1">@(Model.Session == 0 ? "" : Model.Session.ToDescription())</span>
+                        <span class="control-label col-sm-2">File Type</span>
+                        <span class="col-sm-3">@(Model.UploadType)</span>
+                    </div>
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-2">Call</span>
+                        <span class="col-sm-2">@(Model.CallDate.Value.FormatDateString())</span>
+                        <span class="control-label col-sm-1">Strategies</span>
+                        <span class="col-sm-7">@(Model.Strategy)</span>
+                    </div>
+                    <div class="inputtext-con">
+                        <span class="control-label col-sm-2">Description</span>
+                        <span class="col-sm-10">@(Model.Description)</span>
+                    </div>
+                    <div class="inputtext-con" style="overflow: hidden; padding: 10px 20px 0px;">
+                        <span class="control-label col-sm-2">Watch</span>
+                        <span class="col-sm-10">@Html.Raw(Model.WatchHyperLinked)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Uploaded Project Manager Assignment File</div>
+                    </div>
+                    <div class="uploader-list">
+                        @foreach (AssignmentFileEntity item in Model.AssignmentFiles)
+                        {
+                            <div class="item">
+                                <i class="icon-paper-clip"></i>
+                                <a class="form-link4" 
+                                    href="@(DownLoadFile.GetDownFilePath(item.FilePath, item.FileName))">@(item.FileName)</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <label for="FeedbackText" class="control-label">PM Feedback</label>
+                    </div>
+                    <div class="textarea-con">
+                        @Html.TextAreaFor(model => model.FeedbackText, new { @class = "form-control", @rows = "2" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="content-con" style="min-height: 161px">
+                    <div class="content-title3">
+                        <div class="control-label">Uploaded Feedback Files</div>
+                    </div>
+                    <div class="uploader-list" id="uploader-list">
+                        @if (!string.IsNullOrEmpty(Model.FeedbackFileName))
+                        {
+                            <div class="item">
+                                <i class="icon-paper-clip"></i>
+                                <a class="form-link4"  href="@DownLoadFile.GetDownFilePath(Model.FeedbackFilePath, Model.FeedbackFileName)">@(Model.FeedbackFileName)</a>
+                                <span class="delete" title="Remove this file">
+                                    <a href="javascript:;" onclick="RemoveFile(this)">×</a>
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">
+                            Feedback Files
+                            (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                            </span>)
+                        </div>
+                    </div>
+                    <div class="upload-btn">
+                        <div id="picker">1) Select File to Upload</div>
+                    </div>
+                    <div id="filelists" class="uploader-list"></div>
+                    <div class="upload-btn">
+                        <a id="ctlBtn">2) Start Upload</a>
+                    </div>
+                    <input type="hidden" id="filetarget" />
+                    <label for="filetarget">&nbsp;</label>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="uploadfiles" id="uploadfiles" />
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit_edit(this)">
+            <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                Url.Action("View", "CoachAssignment", new { id = Model.ID }, ""))" >Cancel</a>
+        </div>
+    </div>
+}
+
+
+@section Scripts
+{
+    <script>
+        var isFeedback = true;
+    </script>
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    location.href = "@Url.Action("View", "CoachAssignment", new { id = Model.ID })?returnUrl=@Request.QueryString["returnurl"]";
+                }
+            })
+        });
+
+            function getUploaderPrefix() {
+                return "@(ViewBag.EncryptUserID)_";
+            }
+    </script>
+}

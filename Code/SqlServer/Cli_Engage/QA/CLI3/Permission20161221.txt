@@ -1,0 +1,47 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+ 
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9506,'Talk with Me',1,9500,'https://lms.cliengage.org/course/view.php?id=2679',6,1,'Promoting Infant and Toddler Language Development Part 1',GETDATE(),GETDATE())
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9507,'Talk with Me',1,9500,'https://lms.cliengage.org/course/view.php?id=2680',7,1,'Promoting Infant and Toddler Language Development Part 2',GETDATE(),GETDATE())
+SET IDENTITY_INSERT Permission_Pages OFF
+
+GO
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 9506, -- PageId - int
+          1  -- ActionId - int
+          )
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 9507, -- PageId - int
+          1  -- ActionId - int
+          )
+
+ INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9506 , -- PageId - int
+          '1;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )
+
+INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9507 , -- PageId - int
+          '1;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )

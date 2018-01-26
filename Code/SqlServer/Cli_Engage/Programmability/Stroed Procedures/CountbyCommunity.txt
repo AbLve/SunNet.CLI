@@ -1,0 +1,29 @@
+﻿
+CREATE PROCEDURE CountbyCommunity
+	
+AS
+BEGIN
+
+with fundings as (
+select  CommunityId ,  FundingId,COUNT(*)as Total from Classrooms 
+where FundingId >0 and Status =1 
+group by  CommunityId, FundingId
+),
+activeTeachers as(
+select communityId ,COUNT(*) as Total from Teachers t
+inner join Users u on t.UserId = u.ID and u.Status =1
+group by CommunityId
+),
+activeclassrooms as (
+select communityId ,COUNT(*) as Total from Classrooms 
+where Status =1
+group by CommunityId
+)
+select bc.Name as CommunityName , c.ID as CommunityId ,t.Total as TeacherTotal ,cr.Total as ClassroomTotal,isnull(f.FundingId,0) as FundingId, isnull(f.Total,0) as FundingTotal FROM Communities c
+inner join BasicCommunities bc on c.BasicCommunityId = bc.ID
+inner join activeTeachers t on t.CommunityId = c.ID
+inner join activeclassrooms cr on cr.CommunityId = c.ID
+left join fundings f on f.CommunityId = c.ID
+
+END
+GO

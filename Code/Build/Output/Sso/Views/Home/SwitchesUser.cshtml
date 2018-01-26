@@ -1,0 +1,23 @@
+﻿@using Sunnet.Cli.UIBase.Models;
+@{
+    ViewBag.Title = "Account Switches";
+    Layout = "~/Views/Shared/_Layout_LogOut.cshtml";    
+}
+<div class="login-wrong-main">
+    <div class="login-wrong-header">
+        <a href="#">
+            <img src="/images/cli_logo.png" alt="cli_logo"></a>
+    </div>
+    <div class="login-wrong-body">
+        <p style="color: #333333">Your Google account is associated with another Engage account. Please click the invitation link again and log in with another Google account to complete the registration process.</p>
+        <div class="link-main-body">
+            
+            <p>Choose from the following two options.</p>
+        </div>
+        <div class="link-main-footer">
+            <a class="mainbutton logout-main-btn backhome-btn" href="/Home/">Return to the home page</a>
+            <a class="mainbutton logout-main-btn pass-btn" href="@(DomainHelper.SsoSiteDomain)home/LogOut">Log Out</a>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VCW</title>
+
+    <!-- Bootstrap -->
+    <link href="/Content/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Content/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Content/lib/Font-Awesome-3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/Content/style/layout.css" rel="stylesheet">
+    <link href="/Content/style/module.css" rel="stylesheet">
+    <script src="/Content/Scripts/jquery-1.10.2.js"></script>
+    <script src="/Content/Scripts/bootstrap.js"></script>
+</head>
+<body>
+
+
+    <div class="warp">
+        <div class="header">
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="#">
+                        <img src="/Content/images/cli_logo.png"></a>
+                </div>
+                <div class="header-logout"><span>welcome<i class="icon-user"></i>John Smith<a><i class="icon-off"></i>Log out</a></span></div>
+            </div>
+            <div class="nav">
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="demos.html">Engage Demos</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    
+    <div class="main-container">
+
+        <div class="main-con-left menu-side">
+            <h4><i class="icon-dashboard"></i>Dashboard</h4>
+            <ul>
+                <li><a href="dashboard.html" class="active">ssss</a></li>
+                <li><a href="#">Manage Assessment</a>
+                    <ul>
+                        <li><a href="#">Assessment</a></li>
+                        <li><a href="#">Manage Assessment</a></li>
+                        <li><a href="#">Assessment</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="main-con-right">
+            <h4 class="backlink"><a href="ade.html">ADE</a><i class="icon-angle-right"></i>Inputs</h4>
+            <div class="right-content">
+              
+                <!---Contact Information--->
+                <div class="main-content">
+                    <div class="content-title">Contact Information</div>
+                    <div class="content-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div class="col-sm-2 control-label">Assignment Due</div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" placeholder="">
+                                </div>
+                                <label for="inputPassword" class="col-sm-2 control-label">Feedback Call</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <div class="content-con">
+                                        <div class="content-title3">
+                                            <div class="control-label">Content</div></div>
+                                        <div class="checkbox-con">
+                                            <span class="checkbox-inline"><input type="checkbox" id="Checkbox1" value="option1">Small Group</span>
+                                        </div>
+                                        <div class="mainbox-con">
+                                            <select size="4" name="ctl00$cpMain$lstCommunity" multiple="multiple" id="ctl00_cpMain_lstCommunity" onchange="GetColumn(this)" style="height:160px;">
+                                                <option value="CommunityID">Community ID</option>
+                                                <option value="Community Name">Community Name</option>
+                                                <option value="Community Status">Status</option>
+                                                <option value="ESC Region">ESC Region</option>
+                                                <option value="Lead Agency">Lead Agency</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="content-con">
+                                        <div class="content-title3">
+                                            <div class="control-label">Content</div></div>
+                                        <div class="checkbox-con">
+                                            <span class="checkbox-inline"><input type="checkbox" id="Checkbox2" value="option1">Small Group</span>
+                                        </div>
+                                        <div class="mainbox-con">
+                                            <select size="4" name="ctl00$cpMain$lstCommunity" multiple="multiple" id="Select1" onchange="GetColumn(this)" style="height:160px;">
+	                                            <option value="CommunityID">Community ID</option>
+	                                            <option value="Community Name">Community Name</option>
+	                                            <option value="Community Status">Status</option>
+	                                            <option value="ESC Region">ESC Region</option>
+                                                <option value="Lead Agency">Lead Agency</option>
+                                                <option value="Community Status">Status</option>
+	                                            <option value="ESC Region">ESC Region</option>
+                                                <option value="Lead Agency">Lead Agency</option>
+                                                <option value="Community Status">Status</option>
+	                                            <option value="ESC Region">ESC Region</option>
+	                                            <option value="Lead Agency">Lead Agency</option>
+
+                                            </select>
+                                        </div>
+                                   </div>
+                                </div>
+                                
+
+                               
+                            </div>
+                        </form>
+                     </div>
+                  </div>
+               </div> 
+            </div>
+         </div>
+    
+    <div class="footer">
+        <div class="homelink">
+            <ul>
+                <li class="link-ut"><a href="#">
+                                        <img src="/Content/images/UT.png"></a></li>
+                <li class="link-cli"><a href="#">
+                                         <img src="/Content/images/CLI.png"></a></li>
+                <li class="link-tsr"><a href="#">
+                                         <img src="/Content/images/TSR.png"></a></li>
+            </ul>
+        </div>
+        <div class="copyright">
+            <div class="nav-bottom">
+                <ul>
+                    <li><a href="#">Home</a>|</li>
+                    <li><a href="#">About Us</a>|</li>
+                    <li><a href="#">Engage Demos</a>|</li>
+                    <li><a href="#">FAQ</a>|</li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <p>Copyright 2008-Present - The University of xxxx at Houston </p>
+        </div>
+    
+        </div>
+         </div>   
+
+    <script>
+        $(function ()
+        {
+            $("#tooltip1").tooltip();
+            $("#popover1").popover();
+        });
+    </script>
+</body>
+</html>

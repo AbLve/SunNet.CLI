@@ -1,0 +1,527 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Classrooms.Models.ClassroomModel
+
+@{
+    ViewBag.Title = "Edit Classroom";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Layout_Base.cshtml";
+    var baseClassObj = new { @class = "form-control" };
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Classroom)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Classroom", "Index", "Classroom"))
+    <i class="icon-angle-right"></i>&nbsp;Edit
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/module_classroom")
+    <script type="text/javascript">
+        
+        var roleJson = @Html.Raw(ViewBag.Role);
+        $(function ()
+        {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response)
+                {
+                    redirectBack("index");
+                }
+            });
+            if ($("#InterventionStatus option:selected").text().toLowerCase() == "Engage Only".toLowerCase() ||
+           $("#InterventionStatus option:selected").text().toLowerCase() == "Other".toLowerCase() ||
+                $("#InterventionStatus option:selected").text().toLowerCase() == "Non Applicable".toLowerCase()||
+                $("#InterventionStatus").val() == "")
+            {
+                $("#FundingId").val(0);
+                $("[for='FundingId']").hide();
+                $("#FundingId").hide();
+                $("#FundingId-error").hide();
+                $("#KitOptions select").val(0);
+                $("#KitOptions").hide();
+            }
+            if ($("#InterventionStatus option:selected").text().toLowerCase() == "Other".toLowerCase())
+            {
+                $("[for='InterventionOther']").show();
+                $("#InterventionOther").show();
+            }
+
+            if ($("#InternetType option:selected").text().toLowerCase() == "Wireless".toLowerCase())
+            {
+                $("[for='WirelessType']").show();
+                $("#WirelessType").show();
+            } else
+            {
+                $("[for='WirelessType']").hide();
+                $("#WirelessType").hide();
+            }
+        });
+        var roleJson = @Html.Raw(ViewBag.Role);
+        $(function() {InitControlsByRole();});
+    </script>
+}
+@using (Ajax.BeginForm("Update", "Classroom", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Classroom List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-2 control-label " })
+                @Html.Label("lbCommunityName", "CommunityName", new { @class = "hide", @for = "CommunityName" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.CommunityName, new { @class = "form-control", @readonly = "true" })
+                    @Html.HiddenFor(model => model.CommunityId, new { @class = "form-control " })
+
+                </div>
+                @Html.LabelFor(model => model.SchoolId, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-4">
+                    @Html.Label("lbSchoolName", "SchoolName", new { @class = "hide", @for = "SchoolName" })
+                    @Html.TextBoxFor(model => model.SchoolName, new { @class = "form-control", @readonly = "true" })
+                    @Html.HiddenFor(model => model.SchoolId, new { @class = "form-control " })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Name, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+                @Html.LabelFor(model => model.ClassroomId, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.ClassroomId, new { @class = "form-control", @readonly = "readonly" })
+                    @Html.ValidationMessageFor(model => model.ClassroomId)
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.StatusOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+                @Html.LabelFor(model => model.StatusDate, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.StatusDate, new
+                    {
+                        @class = "form-control ",
+                        @Value = Model.StatusDate.FormatDateString(),
+                        @readonly = "readonly"
+                    })
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolYear, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+
+
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.InterventionStatus,
+                    new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.InterventionStatus,
+                        (IEnumerable<SelectListItem>)ViewBag.InterventionStatusOptions,
+                        new { @class = "form-control", onchange = "InterventionChanged()" })
+                    @Html.Label("lbInterventionOther", "InterventionOther", new { @class = "hide", @for = "InterventionOther" })
+                    @Html.TextBoxFor(model => model.InterventionOther, new { @class = "form-control", style = "display: none" })
+                    @Html.ValidationMessageFor(model => model.InterventionStatus)
+                </div>
+
+                @Html.LabelFor(model => model.FundingId, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.FundingId, (IEnumerable<SelectListItem>)ViewBag.ClassroomFundingOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.FundingId)
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <div id="KitOptions" class="main-content">
+        <div class="content-title">Kit Questions/Options</div>
+        <div class="content-body">
+            <div class="group-bg-b">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.KitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.KitId, (IEnumerable<SelectListItem>)ViewBag.KitOptions, new { @class = "form-control" })
+
+                    </div>
+                    @Html.LabelFor(model => model.KitUpdatedOn, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(model => model.KitUpdatedOn, new
+                        {
+                            @class = "form-control ",
+                            @Value = Model.KitUpdatedOn.FormatDateString(),
+                            @readonly = "readonly"
+                        })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FcNeedKitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.FcNeedKitId, (IEnumerable<SelectListItem>)ViewBag.NeedKitOptions,
+                            new { @class = "form-control" })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FcFundingId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.FcFundingId, (IEnumerable<SelectListItem>)ViewBag.FundingOptions,
+                            new { @class = "form-control" })
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="group-bg-y">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Part1KitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.Part1KitId, (IEnumerable<SelectListItem>)ViewBag.KitOptions, new { @class = "form-control" })
+
+                    </div>
+                    @Html.LabelFor(model => model.Part1KitUpdatedOn, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(model => model.Part1KitUpdatedOn, new
+                    {
+                        @class = "form-control ",
+                        @Value = Model.Part1KitUpdatedOn.FormatDateString(),
+                        @readonly = "readonly"
+                    })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Part1NeedKitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.Part1NeedKitId, (IEnumerable<SelectListItem>)ViewBag.NeedKitOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Part1FundingId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.Part1FundingId, (IEnumerable<SelectListItem>)ViewBag.FundingOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="group-bg-b">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Part2KitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.Part2KitId, (IEnumerable<SelectListItem>)ViewBag.KitOptions, new { @class = "form-control" })
+
+                    </div>
+                    @Html.LabelFor(model => model.Part2KitUpdatedOn, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(model => model.Part2KitUpdatedOn, new
+                    {
+                        @class = "form-control ",
+                        @Value = Model.Part2KitUpdatedOn.FormatDateString(),
+                        @readonly = "readonly"
+                    })
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    @Html.LabelFor(model => model.Part2NeedKitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.Part2NeedKitId, (IEnumerable<SelectListItem>)ViewBag.NeedKitOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Part2FundingId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.Part2FundingId, (IEnumerable<SelectListItem>)ViewBag.FundingOptions,
+                        new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="group-bg-y">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StartupKitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.StartupKitId, (IEnumerable<SelectListItem>)ViewBag.KitOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+                    @Html.LabelFor(model => model.StartupKitUpdatedOn, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(model => model.StartupKitUpdatedOn, new
+                    {
+                        @class = "form-control ",
+                        @Value = Model.StartupKitUpdatedOn.FormatDateString(),
+                        @readonly = "readonly"
+                    })
+
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    @Html.LabelFor(model => model.StartupNeedKitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.StartupNeedKitId, (IEnumerable<SelectListItem>)ViewBag.NeedKitOptions, new { @class = "form-control" })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StartupKitFundingId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.StartupKitFundingId, (IEnumerable<SelectListItem>)ViewBag.FundingOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="group-bg-b">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CurriculumId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.CurriculumId, (IEnumerable<SelectListItem>)ViewBag.CurriculumOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+                    @Html.LabelFor(model => model.CurriculumUpdatedOn, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(model => model.CurriculumUpdatedOn, new
+                    {
+                        @class = "form-control ",
+                        @Value = Model.CurriculumUpdatedOn.FormatDateString(),
+                        @readonly = "readonly"
+                    })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NeedCurriculumId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.NeedCurriculumId, (IEnumerable<SelectListItem>)ViewBag.CurriculumNeedOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+
+                    @Html.LabelFor(model => model.NeedCurriculumUpdatedOn, new { @class = "control-label col-sm-2 " })
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(model => model.NeedCurriculumUpdatedOn, new
+                    {
+                        @class = "form-control ",
+                        @Value = Model.NeedCurriculumUpdatedOn.FormatDateString(),
+                        @readonly = "readonly"
+                    })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CurriculumFundingId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.CurriculumFundingId, (IEnumerable<SelectListItem>)ViewBag.FundingOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="group-bg-y">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DevelopingTalkersKitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.DevelopingTalkersKitId, (IEnumerable<SelectListItem>)ViewBag.KitOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+
+                    @Html.LabelFor(model => model.DevelopingTalkersKitUpdatedOn, new { @class = "control-label col-sm-2 " })
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(model => model.DevelopingTalkersKitUpdatedOn, new
+                    {
+                        @class = "form-control ",
+                        @Value = Model.DevelopingTalkersKitUpdatedOn.FormatDateString(),
+                        @readonly = "readonly"
+                    })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DevelopingTalkersNeedKitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.DevelopingTalkersNeedKitId, (IEnumerable<SelectListItem>)ViewBag.NeedKitOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DevelopingTalkerKitFundingId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.DevelopingTalkerKitFundingId, (IEnumerable<SelectListItem>)ViewBag.FundingOptions,
+                        new { @class = "form-control" })
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="group-bg-b">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FccKitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.FccKitId, (IEnumerable<SelectListItem>)ViewBag.KitOptions, new { @class = "form-control" })
+
+                    </div>
+
+                    @Html.LabelFor(model => model.FccKitUpdatedOn, new { @class = "control-label col-sm-2 " })
+                    <div class="col-sm-2">
+                        @Html.TextBoxFor(model => model.FccKitUpdatedOn, new
+                    {
+                        @class = "form-control ",
+                        @Value = Model.FccKitUpdatedOn.FormatDateString(),
+                        @readonly = "readonly"
+                    })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FccNeedKitId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.FccNeedKitId, (IEnumerable<SelectListItem>)ViewBag.NeedKitOptions,
+                        new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FccKitFundingId, new { @class = "control-label col-sm-6 " })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.FccKitFundingId, (IEnumerable<SelectListItem>)ViewBag.FundingOptions,
+                        new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Internet Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.InternetSpeed, null, new { @class = "col-sm-4 control-label " })
+                <div class="col-sm-2">
+                    @Html.DropDownListFor(model => model.InternetSpeed, (IEnumerable<SelectListItem>)ViewBag.InternetSpeedOptions,
+                        new { @class = "form-control" })
+                </div>
+
+                <div class="col-sm-6">
+                    Speed Test:
+                    <a href="http://www.speedtest.net" class="form-link2" target="_blank">http://www.speedtest.net</a>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.InternetType, null, new { @class = "col-sm-4 control-label required" })
+                <div class="col-sm-2">
+                    @Html.DropDownListFor(model => model.InternetType, (IEnumerable<SelectListItem>)ViewBag.InternetTypeOptions,
+                        new { @class = "form-control", onchange = "InternetTypeChanged2()" })
+                    @Html.ValidationMessageFor(model => model.InternetType)
+                </div>
+                @Html.LabelFor(model => model.WirelessType, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.WirelessType, (IEnumerable<SelectListItem>)ViewBag.WirelessTypeOptions,
+                        new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.WirelessType)
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="col-sm-4"></div>
+                <div class="col-sm-8">
+                    @Html.CheckBoxFor(model => model.IsInteractiveWhiteboard)
+                    @Html.LabelFor(model => model.IsInteractiveWhiteboard, null, new { style = "text-align: left" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-8">
+                    @Html.CheckBoxFor(model => model.IsUsingInClassroom)
+                    @Html.LabelFor(model => model.IsUsingInClassroom, null, new { style = "text-align: left" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ComputerNumber, new { @class = "control-label col-sm-4 _num_4 " })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.ComputerNumber, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.ComputerNumber, "Field must be number (0-999).")
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Other Information</div>
+        <div class="content-body">
+            <div class="form-group">
+
+                <span class="col-sm-4 control-label">Partnership Reference Data</span>
+                <div class="col-sm-8">
+                    Teacher Employed By  @Html.DisplayTextFor(model => model.RefrenceData)<br />
+                    School Type is  @Html.DisplayTextFor(model => model.SchoolType.Name)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.MaterialsNotes, new { @class = "control-label col-sm-4" })
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(model => model.MaterialsNotes, 5, 3, new { @class = "form-control", placeholder = "Limit to 600 characters." })
+                    @Html.ValidationMessageFor(model => model.MaterialsNotes)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TechnologyNotes, new { @class = "control-label col-sm-4" })
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(model => model.TechnologyNotes, 5, 3, new
+                {
+                    @class = "form-control",
+                    placeholder = "Limit to 600 characters."
+                })
+                    @Html.ValidationMessageFor(model => model.TechnologyNotes)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" onclick="return BeforeSubmit()" type="submit">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+    </div>
+
+    
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.CreatedOn)
+    @Html.HiddenFor(model => model.UpdatedOn)
+    @Html.HiddenFor(model => model.ClassroomInternalID)
+}

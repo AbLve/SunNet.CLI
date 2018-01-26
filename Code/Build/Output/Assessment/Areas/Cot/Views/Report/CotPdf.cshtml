@@ -1,0 +1,214 @@
+﻿@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Cot/Views/Shared/_Layout_Report_Chart.cshtml";
+    var isFirstTeacher = true;
+    var models = ViewBag.Models as List<Sunnet.Cli.Business.Cot.Report.CotReportModel>;
+    var index = 0;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@foreach (var model in models)
+{
+    <table class='header @(isFirstTeacher ? "" : "newpager") ' width="100%">
+        @if (model.Type == CotReportType.SingleTeacher || model.Type == CotReportType.AssignedTeachers)
+        {
+            @Html.Partial("_Partial_CotReport_TeacherHead", model)
+        }
+        else
+        {
+            @Html.Partial("_Partial_CotReport_TeacherHead2", model)
+        }
+    </table>
+    <div id="chart@(index++)" style="width: @ReportHelper.GetChartWidth(model.Measures.Count)px;height:520px;">
+    </div>
+    <div class="note" style="color:#000000;">
+        @foreach (var measure in model.Measures)
+        {
+            <b>@measure.ShortName:</b>
+            <span>&nbsp;@(measure.Name);&nbsp;</span>
+        }
+    </div>
+        {
+            isFirstTeacher = false;
+        }
+}
+
+@using (Html.BeginForm("CotPdf_Download", "Report", FormMethod.Post, new { id = formId, target = "_blank" }))
+{
+    @Html.Hidden("teacherId")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("type")
+    @Html.Hidden("SchoolId")
+    @Html.Hidden("CommunityId")
+    @Html.Hidden("measures")
+    @Html.Hidden("yearsInProject")
+    @Html.Hidden("export", true)
+    <button type="submit" class="btn-export" id="btn_Export" onclick="javascript:return exportPdf();">
+        Export
+    </button>
+}
+@section Scripts{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+    <script type="text/javascript">
+    var reports = @Html.Raw(ViewBag.Json);
+    var charts = [];
+    var maxCount = {
+        maxCount: 0,
+        getMaxCount: function(minVlaue) {
+            var value = (Math.floor(this.maxCount / 10) + 1) * 10;
+            if (minVlaue && value < minVlaue) {
+                value = minVlaue;
+            }
+            return value;
+        },
+        getSplitNumber: function() {
+            var count = this.getMaxCount() / 5;
+            return count;
+        },
+        setMaxCount: function(max) {
+            if (max > this.maxCount)
+                this.maxCount = max;
+        }
+    }
+
+    function exportPdf() {
+        var $form = $("#@(formId)");
+            $form.find("input:hidden[name='imgSources']").remove();
+            if (charts && charts.length) {
+                for (var i = 0; i < charts.length; i++) {
+                    var myChart = charts[i];
+                    var options = myChart.getOption();
+                    options.toolbox.feature.magicType.show = false;
+                    options.toolbox.feature.dataZoom.show = false;
+                    options.toolbox.feature.restore.show = false;
+                    myChart.setOption(options);
+                    var $imgSources = $('<input name="imgSources" type="hidden" value="" />').appendTo($form);
+                    $imgSources.val(myChart.getDataURL());
+
+                    options.toolbox.feature.magicType.show = true;
+                    options.toolbox.feature.dataZoom.show = true;
+                    options.toolbox.feature.restore.show = true;
+                    myChart.setOption(options);
+                }
+            }
+            return true;
+        }
+
+        var totalOfMeasure = {};
+        $(function() {
+            function setLegend(option, title, stack) {
+                option.legend.data.push(title);
+                option.series.push({
+                    name: title,
+                    type: 'bar',
+                    stack: stack,
+                    data: [],
+                    barWidth: 30,
+                    itemStyle: {
+                        normal: {
+                            barBorderColor: title == stack ? '#999999' : '#dddddd',
+                            barBorderWidth: 1,
+                            label: {
+                                show: true,
+                                position: title == stack ? "inside" : "top",
+                                textStyle: {
+                                    color: "#000000"
+                                }
+                            }
+                        },
+                        emphasis: {
+                            barBorderColor:'#ffffff',
+                            label: {
+                                show: true,
+                                textStyle: {
+                                    color:  "#000000"
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            for (var i = 0; i < reports.length; i++) {
+                var report = reports[i];
+                var option = new ReportOption();
+                option.title = {
+                    text: "@(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))",
+                    subtext: report.Teacher,
+                    textAlign: "left",
+                    x: 0,
+                    y: 0
+                };
+                option.color = ['#339900', '#ffffff', '#0066FF', '#ffffff'];
+
+                option.toolbox.feature.magicType.type = ['line', 'bar', 'stack'];
+
+                var boy1 = "BOY", boy2 = "Not Observed at BOY", moy1 = "MOY", moy2 = "Not Observed at MOY";
+                setLegend(option, boy1, boy1);
+                setLegend(option, boy2, boy1);
+                setLegend(option, moy1, moy1);
+                setLegend(option, moy2, moy1);
+                option.legend.x = 350;
+
+                option.xAxis = option.xAxis.slice(0, 1);
+                option.xAxis[0].axisLabel.rotate = 0;
+                var xAxis = option.xAxis[0].data;
+                for (var j = 0; j < report.Measures.length; j++) {
+                    var measure = report.Measures[j];
+                    var key = " BOY  MOY\r\n" + measure.ShortName;
+                    xAxis.push(key);
+                    totalOfMeasure[key] = measure.Total;
+                    option.series[0].data.push(measure.CountOfBoy || "");
+                    var left = measure.Total - measure.CountOfBoy;
+                    var totalOfBoy = {
+                        value: left || "",
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    formatter: function(legend, mea, value) {
+                                        return totalOfMeasure[mea];
+                                    },
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    };
+                    option.series[1].data.push(totalOfBoy);
+
+                    option.series[2].data.push(measure.CountOfMoy || "");
+                    left = measure.Total - measure.CountOfMoy;
+                    var totalOfMoy = {
+                        value: left || "",
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    formatter: function(legend, mea, value) {
+                                        return totalOfMeasure[mea];
+                                    },
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    };
+                    option.series[3].data.push(totalOfMoy);
+
+                    maxCount.setMaxCount(measure.Total);
+                }
+                option.yAxis[0].max = maxCount.getMaxCount();
+                option.yAxis[0].splitNumber = maxCount.getSplitNumber();
+                option.yAxis[0].axisLine = {
+                    show: true
+                };
+                option.grid.width = xAxis.length * option.grid.width;
+                option.grid.y = 150;
+                var myChart = echarts.init(document.getElementById('chart' + i), echartsTheme.default);
+                myChart.setOption(option);
+                charts.push(myChart);
+            }
+            setTimeout(function() {
+                $("#btn_Export").slideDown();
+            }, 2000);
+        });
+    </script>
+}

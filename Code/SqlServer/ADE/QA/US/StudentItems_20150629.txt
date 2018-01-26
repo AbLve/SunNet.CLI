@@ -1,0 +1,7 @@
+﻿IF NOT EXISTS (SELECT 1 FROM SYS.all_columns WHERE object_id = object_id('StudentItems') AND NAME = 'Details')
+BEGIN
+
+ALTER TABLE [dbo].[StudentItems] 
+ADD Details NVARCHAR(4000) DEFAULT('')  NOT NULL
+
+END

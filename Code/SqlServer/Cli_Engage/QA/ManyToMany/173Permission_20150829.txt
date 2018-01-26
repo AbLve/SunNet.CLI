@@ -1,0 +1,25 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(3790,'Delegate',1,3700,'',10,1,'Delegate',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+go
+
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3790,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3790,4)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3790,32)
+go
+
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3790,'1;4;32;',GETDATE(),GETDATE())
+go

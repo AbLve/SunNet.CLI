@@ -1,0 +1,71 @@
+﻿DELIMITER $$
+
+
+DROP PROCEDURE IF EXISTS `PDCompletionCourseReport`$$
+
+
+CREATE PROCEDURE `PDCompletionCourseReport`(IN communityIds VARCHAR(100000),IN excludeCommunityIds VARCHAR(100000),IN schoolIds VARCHAR(100000),IN teacher VARCHAR(100),IN teacherStatus INT)
+BEGIN
+DECLARE sqlQuery VARCHAR(100000);
+SET sqlQuery='SELECT DISTINCT
+uset.name AS CommunityDistrict,uset_school.name AS SchoolName,usr.firstname,usr.lastname,usr.username as teacherID,
+usr.email,concat(pgm.name,'' - '',trim(course_sections.name)) AS CircleCourse,course_sections.id as CircleCourse_id,
+(SELECT FROM_UNIXTIME(scorm_track.value) FROM mdl_course_modules course_modules 
+INNER JOIN mdl_scorm scorm ON course_modules.instance=scorm.id 
+INNER JOIN mdl_scorm_scoes_track scorm_track ON scorm_track.scormid=scorm.id 
+WHERE course_modules.module =(SELECT id FROM mdl_modules WHERE NAME=''scorm'') AND course_modules.course=course.id AND 
+course_modules.section =course_sections.id AND scorm_track.element=''x.start.time'' AND scorm_track.userid=usr_mdl.muserid LIMIT 1)AS startdate,
+(SELECT GROUP_CONCAT(scorm_track.value) FROM mdl_course_modules course_modules 
+INNER JOIN mdl_scorm scorm ON course_modules.instance=scorm.id 
+INNER JOIN mdl_scorm_scoes_track scorm_track ON scorm_track.scormid=scorm.id
+WHERE course_modules.module =(SELECT id FROM mdl_modules WHERE NAME=''scorm'') 
+AND course_modules.course=course.id AND course_modules.section =course_sections.id 
+AND scorm_track.element=''cmi.core.lesson_status'' AND scorm_track.userid=usr_mdl.muserid) AS STATUS,
+(SELECT GROUP_CONCAT(scorm_track.value) FROM mdl_course_modules course_modules 
+INNER JOIN mdl_scorm scorm ON course_modules.instance=scorm.id 
+INNER JOIN mdl_scorm_scoes_track scorm_track ON scorm_track.scormid=scorm.id
+WHERE course_modules.module =(SELECT id FROM mdl_modules WHERE NAME=''scorm'')
+AND course_modules.course=course.id AND course_modules.section =course_sections.id 
+AND scorm_track.element=''cmi.core.total_time'' AND scorm_track.userid=usr_mdl.muserid) AS TimeSpentInCourse,
+ 
+ (SELECT COUNT(*) FROM mdl_course_modules course_modules 
+ INNER JOIN mdl_forum forum ON course_modules.instance=forum.id 
+ LEFT JOIN mdl_forum_discussions discussions ON discussions.forum=forum.id 
+INNER JOIN mdl_forum_posts posts ON posts.discussion=discussions.id 
+WHERE course_modules.module =(SELECT id FROM mdl_modules WHERE NAME=''forum'')
+ AND course_modules.course=course.id AND course_modules.section =course_sections.id 
+ AND posts.userid=usr_mdl.muserid) AS CountofPosts,
+ 
+(SELECT COUNT(*) FROM mdl_logstore_standard_log WHERE courseid=course.id AND userid=usr_mdl.muserid AND target=''sco'' AND objecttable=''scorm_scoes'' AND objectid IN (
+SELECT scoes.id FROM mdl_course_modules course_modules INNER JOIN mdl_scorm scorm ON course_modules.instance=scorm.id 
+INNER JOIN mdl_scorm_scoes scoes ON scoes.scorm=scorm.id WHERE course_modules.module =(SELECT id FROM mdl_modules WHERE NAME=''scorm'')
+AND course_modules.course=course.id AND course_modules.section =course_sections.id))AS CourseViewed
+FROM mdl_local_elisprogram_uset uset
+LEFT JOIN mdl_local_elisprogram_uset uset_school ON uset.id=uset_school.parent
+LEFT JOIN mdl_local_elisprogram_uset_asign uset_assign ON uset_assign.clusterid=uset_school.id
+INNER JOIN mdl_local_elisprogram_usr usr ON usr.id=uset_assign.userid 
+LEFT JOIN `mdl_local_elisprogram_usr_mdl` usr_mdl ON usr_mdl.cuserid=usr.id 
+LEFT JOIN mdl_local_elisprogram_uset_pgm uset_pgm ON (uset_school.id=uset_pgm.clusterid OR uset.id=uset_pgm.clusterid) 
+LEFT JOIN mdl_local_elisprogram_pgm pgm ON pgm.id=uset_pgm.curriculumid
+LEFT JOIN mdl_local_elisprogram_pgm_crs curcrs ON uset_pgm.curriculumid = curcrs.curriculumid 
+LEFT JOIN mdl_local_elisprogram_cls cls ON cls.courseid=curcrs.courseid 
+LEFT JOIN mdl_local_elisprogram_cls_mdl cls_mdl ON cls_mdl.classid=cls.id 
+INNER JOIN mdl_course course ON course.id=cls_mdl.moodlecourseid 
+INNER JOIN mdl_course_sections course_sections ON course_sections.course=course.id
+WHERE uset.parent=0
+AND EXISTS (SELECT userid FROM mdl_role_assignments WHERE roleid=(SELECT id FROM mdl_role WHERE NAME=''Learner'') AND contextid=1 AND userid=usr_mdl.muserid)
+AND course_sections.name IS NOT NULL';
+IF communityIds!='' THEN SET sqlQuery=CONCAT(sqlQuery,' AND uset.display IN(',communityIds,')'); END IF;
+IF excludeCommunityIds!='' THEN SET sqlQuery=CONCAT(sqlQuery,' AND uset.display NOT IN(',excludeCommunityIds,')'); END IF;
+IF schoolIds!='' THEN SET sqlQuery=CONCAT(sqlQuery,' AND uset_school.display IN(',schoolIds,')'); END IF;
+IF teacher!='' THEN SET sqlQuery=CONCAT(sqlQuery,' AND CONCAT(firstname,'' '',lastname) like','''','%',teacher,'%','''');END IF;
+IF teacherStatus=1 THEN SET sqlQuery=CONCAT(sqlQuery,' AND usr.inactive=0'); 
+ELSEIF teacherStatus=2 THEN SET sqlQuery=CONCAT(sqlQuery,' AND usr.inactive=1'); END IF;
+SET sqlQuery=CONCAT(sqlQuery,' ORDER BY uset.name,uset_school.name,usr.email');
+SET @sql=sqlQuery;
+PREPARE s1 FROM @sql;
+EXECUTE s1;
+DEALLOCATE PREPARE s1;
+END$$
+
+DELIMITER ;

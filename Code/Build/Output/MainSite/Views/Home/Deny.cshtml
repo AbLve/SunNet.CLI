@@ -1,0 +1,64 @@
+﻿@using Sunnet.Framework.Core.Tool
+@model Sunnet.Framework.Core.Tool.OperationResult
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword" content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>Deny</title>
+    @Styles.Render("~/css/basic")
+</head>
+<body>
+    <div class="warp">
+        <div class="link-main">
+            <div class="link-main-header">
+                <a href="#">
+                    <img src="/images/cli_logo.png" alt="cli_logo"></a>
+            </div>
+            @if (ViewBag.Deny)
+            {
+                <div class="link-main-body">
+                    <h4>You have denied the invitation.</h4>
+                    @*<p>Choose from the following two options.</p>*@
+                </div>
+                <div class="link-main-footer">
+                    <a class="mainbutton logout-main-btn backhome-btn" href="/Home/">Return to the home page</a>
+                    <a class="mainbutton logout-main-btn pass-btn" href="javascript:window.close();">Close</a>
+                </div>
+            }
+            else
+            {
+                <div class="link-main-body">
+                    <h4>I'm Sorry</h4>
+                    <p>Your request link has expired.</p>
+                </div>
+                <div class="link-main-footer">
+                    <a class="mainbutton logout-main-btn backhome-btn" href="/Home/">Return to the home page</a>
+                    <a class="mainbutton logout-main-btn pass-btn" href="javascript:window.close();">Close</a>
+                </div>
+            }
+        </div>
+    </div>
+    @*@Scripts.Render("~/scripts/jquery")
+    @Scripts.Render("~/scripts/bootstrap")
+    @Scripts.Render("~/scripts/cli")
+    <script type="text/javascript">
+        $(function () {
+            var success = "@(Model.ResultType == OperationResultType.Success)" == "True";
+            var msg = "@(Model.Message)";
+            if (success) {
+                $.when(window.showMessage("success")).done(function () {
+                    location.href = "/";
+                });
+            } else {
+                window.showMessage("fail", msg);
+            }
+        });
+    </script>*@
+</body>
+</html>

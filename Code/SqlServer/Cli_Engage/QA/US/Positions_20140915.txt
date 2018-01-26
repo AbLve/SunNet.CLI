@@ -1,0 +1,10 @@
+﻿--建了一个临时表用来转换数据
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'#table1') AND type in (N'U'))
+drop table #table1
+
+select * into #table1 from Positions where UserType=110
+
+update Positions set UserType=110 where UserType=130
+
+update Positions set UserType=130 where ID in (select ID from #table1 )

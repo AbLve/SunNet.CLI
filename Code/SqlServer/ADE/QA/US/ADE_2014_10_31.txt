@@ -1,0 +1,52 @@
+﻿go
+create unique nonclustered index  UN_SA_1 on StudentAssessments ( 
+[SchoolId] Asc,
+StudentId Asc,
+AssessmentId Asc,
+SchoolYear Asc,
+Wave Asc
+) 
+
+go
+create unique nonclustered index  UN_SM_1 on StudentMeasures ( 
+SAId Asc,
+MeasureId Asc 
+) 
+
+Go
+create unique nonclustered index  UN_SI_1 on StudentItems ( 
+SMId Asc,
+ItemId Asc 
+) 
+
+Go
+
+ /*
+select Said,MeasureId,count(sm.ID) 
+from StudentMeasures sm left join StudentAssessments sa on sm.SAId = sa.ID
+--where sa.SchoolId=1087
+group by SAId,MeasureId
+having count(sm.ID)>1
+order by SAId
+
+
+select schoolid,studentid,assessmentid,SchoolYear, wave,dup = count(*) from [dbo].[StudentAssessments] 
+group by schoolid,studentid,assessmentid,SchoolYear,wave having count(*)>1
+--and SchoolId = 1087
+
+ 
+
+
+--select Id into #DeleteSaID
+--from StudentAssessments sa
+--inner join (select schoolid,studentid,assessmentid,SchoolYear, wave,dup = count(*) from [dbo].[StudentAssessments] group by schoolid,studentid,assessmentid,SchoolYear,wave having count(*)>1) dup
+--on sa.SchoolId = dup.SchoolId and sa.StudentId = dup.StudentId and sa.AssessmentId = dup.AssessmentId and sa.SchoolYear = dup.SchoolYear and sa.Wave = dup.Wave
+
+--delete from StudentAssessments where id in(select id from #DeleteSaID)
+
+--delete from StudentItems where SMId in (select ID from StudentMeasures where SAId in (select id from #DeleteSaID))
+
+--delete from StudentMeasures where SAId in (select id from #DeleteSaID)
+
+--drop table #DeleteSaID
+ */

@@ -1,0 +1,105 @@
+﻿ 
+INSERT INTO [dbo].[ClassroomRoles]
+           ([RoleId]
+           ,[RoleName]
+           ,[ClassroomId]
+           ,[CommunityId]
+           ,[SchoolId]
+           ,[Name]
+           ,[Status]
+           ,[StatusDate]
+           ,[SchoolYear]
+           ,[InterventionStatus]
+           ,[InterventionOther]
+           ,[FundingId]
+           ,[KitId]
+           ,[KitUpdatedOn]
+           ,[FcNeedKitId]
+           ,[FcFundingId]
+           ,[Part1KitId]
+           ,[Part1KitUpdatedOn]
+           ,[Part1NeedKitId]
+           ,[Part1FundingId]
+           ,[Part2KitId]
+           ,[Part2KitUpdatedOn]
+           ,[Part2NeedKitId]
+           ,[Part2FundingId]
+           ,[StartupKitId]
+           ,[StartupKitUpdatedOn]
+           ,[StartupNeedKitId]
+           ,[StartupKitFundingId]
+           ,[CurriculumId]
+           ,[CurriculumUpdatedOn]
+           ,[NeedCurriculumId]
+           ,[NeedCurriculumUpdatedOn]
+           ,[CurriculumFundingId]
+           ,[DevelopingTalkersKitId]
+           ,[DevelopingTalkersKitUpdatedOn]
+           ,[DevelopingTalkersNeedKitId]
+           ,[DevelopingTalkerKitFundingId]
+           ,[FccKitId]
+           ,[FccKitUpdatedOn]
+           ,[FccNeedKitId]
+           ,[FccKitFundingId]
+           ,[InternetSpeed]
+           ,[InternetType]
+           ,[WirelessType]
+           ,[IsUsingInClassroom]
+           ,[ComputerNumber]
+           ,[IsInteractiveWhiteboard]
+           ,[MaterialsNotes]
+           ,[TechnologyNotes])
+     VALUES
+           (8--<RoleId, int,>
+           ,'coordinator'--<RoleName, varchar(50),>
+           ,'RW'--<ClassroomId, varchar(10),>
+           ,'RW'--<CommunityId, varchar(10),>
+           ,'RW'--<SchoolId, varchar(10),>
+           ,'RW'--<Name, varchar(10),>
+           ,'RW'--<Status, varchar(10),>
+           ,'R'--<StatusDate, varchar(10),>
+           ,'R'--<SchoolYear, varchar(10),>
+           ,'R'--<InterventionStatus, varchar(10),>
+           ,'R'--<InterventionOther, varchar(10),>
+           ,'R'--<FundingId, varchar(10),>
+           ,'R'--<KitId, varchar(10),>
+           ,'R'--<KitUpdatedOn, varchar(10),>
+           ,'RW'--<FcNeedKitId, varchar(10),>
+           ,'R'--<FcFundingId, varchar(10),>
+           ,'R'--<Part1KitId, varchar(10),>
+           ,'R'--<Part1KitUpdatedOn, varchar(10),>
+           ,'RW'--<Part1NeedKitId, varchar(10),>
+           ,'R'--<Part1FundingId, varchar(10),>
+           ,'R'--<Part2KitId, varchar(10),>
+           ,'R'--<Part2KitUpdatedOn, varchar(10),>
+           ,'RW'--<Part2NeedKitId, varchar(10),>
+           ,'R'--<Part2FundingId, varchar(10),>
+           ,'R'--<StartupKitId, varchar(10),>
+           ,'R'--<StartupKitUpdatedOn, varchar(10),>
+           ,'RW'--<StartupNeedKitId, varchar(10),>
+           ,'R'--<StartupKitFundingId, varchar(10),>
+           ,'R'--<CurriculumId, varchar(10),>
+           ,'R'--<CurriculumUpdatedOn, varchar(10),>
+           ,'RW'--<NeedCurriculumId, varchar(10),>
+           ,'R'--<NeedCurriculumUpdatedOn, varchar(10),>
+           ,'R'--<CurriculumFundingId, varchar(10),>
+           ,'R'--<DevelopingTalkersKitId, varchar(10),>
+           ,'R'--<DevelopingTalkersKitUpdatedOn, varchar(10),>
+           ,'RW'--<DevelopingTalkersNeedKitId, varchar(10),>
+           ,'R'--<DevelopingTalkerKitFundingId, varchar(10),>
+           ,'R'--<FccKitId, varchar(10),>
+           ,'R'--<FccKitUpdatedOn, varchar(10),>
+           ,'RW'--<FccNeedKitId, varchar(10),>
+           ,'R'--<FccKitFundingId, varchar(10),>
+           ,'RW'--<InternetSpeed, varchar(10),>
+           ,'RW'--<InternetType, varchar(10),>
+           ,'RW'--<WirelessType, varchar(10),>
+           ,'RW'--<IsUsingInClassroom, varchar(10),>
+           ,'RW'--<ComputerNumber, varchar(10),>
+           ,'RW'--<IsInteractiveWhiteboard, varchar(10),>
+           ,'RW'--<MaterialsNotes, varchar(10),>
+           ,'RW'--<TechnologyNotes, varchar(10),>
+		   )
+GO
+
+

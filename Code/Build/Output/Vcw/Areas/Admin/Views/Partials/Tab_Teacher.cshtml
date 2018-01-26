@@ -1,0 +1,8 @@
+﻿<div class="form-group"></div>
+<ul class="nav-container" role="tablist">
+    <li class="@(@Model.PageId == 1 ? "active" : "")"><a href="@(Url.Action("Index", "TeacherVIP"))">VIP Assignments</a></li>
+    <li class="@(@Model.PageId == 3 ? "active" : "")"><a href="@(Url.Action("Index", "TeacherAssignment"))">Coaching Assignments</a></li>
+    <li class="@(@Model.PageId == 4 ? "active" : "")"><a href="@(Url.Action("TeacherIndex", "TeacherSendAssignment"))">Send Assignment</a></li>
+    <li class="@(@Model.PageId == 2 ? "active" : "")"><a href="@(Url.Action("Index", "TeacherGeneral"))">General</a></li>
+</ul>
+<div class="form-group"></div>

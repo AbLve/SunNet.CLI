@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Google Account";
+    Layout = "~/Views/Shared/_Layout_LogOut.cshtml";
+}
+<div class="logout-main">
+    <div class="logout-main-header">
+        <a href="#">
+            <img src="/images/cli_logo.png" alt="cli_logo"></a>
+    </div>
+    <div class="logout-main-body">
+        <h4>The Google account <i>@(ViewBag.Email)</i> is not associated with a CLI Engage account. </h4>
+        <p>
+            <br />
+            If you have a CLI Engage account, please click below to try to log in again with a different Google account. Note: your CLI Engage account is linked to the Google account you used at registration.
+        </p>
+        <p style="margin: 10px 0;"></p>
+    </div>
+    <div class="logout-main-footer" style="background-color:#E5AB18">
+        <a class="mainbutton logout-main-btn pass-btn" style="background-color:#E5AB18; color:#000" href="@(DomainHelper.SsoSiteDomain)home/logout"><strong>Try Again with a different Google ID</strong></a>
+    </div>
+
+    <div class="logout-main-body">
+        <p>
+            <br />
+            If you don't remember the Google account you used to register for CLI Engage, please <a href="http://www.texasschoolready.org/help/MainTicketForm.aspx?Section8" class="form-link2" target="_blank">submit a help ticket</a>. We can send you the correct log-in information for your account.
+            <br /><br />
+        </p>
+    </div>
+    <div style="border-top: 2px solid #1b9cc7;"></div>
+
+    <div class="logout-main-body">
+        <p>
+            <br />
+            If you do not currently have a CLI Engage account, but would like to sign up, please click below to sign up for Fall 2015 access.
+            <br />
+        </p>
+    </div>
+    <div class="logout-main-footer">
+        <a class="mainbutton logout-main-btn pass-btn" href="@(DomainHelper.MainSiteDomain)home/signup">Sign Up for Fall 2015 Access</a>
+    </div>
+</div>

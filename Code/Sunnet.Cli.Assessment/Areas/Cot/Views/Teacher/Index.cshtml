@@ -1,0 +1,197 @@
+﻿@using System.Activities.Statements
+@using System.Text.RegularExpressions
+@using Sunnet.Cli.Business.Cot.Models
+@model Sunnet.Cli.Business.Cot.Models.CotTeacherStatus
+@{
+    ViewBag.Title = "Teacher";
+    var teacherId = (int)ViewBag.teacherId;
+    var assessmentId = ViewBag.assessmentId;
+    var reports = ViewBag.Reports as List<CotStgReportModel>;
+    var countOfDate = new Dictionary<DateTime, int>();
+}
+
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a>
+    <i class="icon-angle-right"></i>
+    @Html.ActionLink("Teachers", "All", "Teacher", new { Area = "Cot", id = assessmentId }, new { })
+    <i class="icon-angle-right"></i>
+    @(ViewBag.TeacherName)
+}
+<div class="main-content top-form">
+    <form class="form-horizontal" role="form">
+        <label class="control-label" for="Name">Community/District</label>
+        @Html.Display("CommunityName") @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label" for="Name">School</label>
+        @Html.Display("SchoolName") @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label" for="Name">Teacher Name</label>
+        @Html.Display("TeacherName")
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label" for="Name">School Year</label>
+        @Html.Display("SchoolYear")
+    </form>
+</div>
+
+<div class="right-content-top">
+    @if (Model.HasWavesToDo || Model.HasOldData)
+    {
+        @Html.ActionLink("Perform Assessment", "Assessment", "Index", new
+        {
+            Area = "Cot",
+            id = assessmentId,
+            teacherId = teacherId,
+            year = Request.QueryString["year"]
+        }, new { @class = "mainbutton mainright-btn nav-btn" })
+    }
+    else
+    {
+        <button type="button" class="mainbutton mainright-btn disabled" disabled="">Perform Assessment</button>
+    }
+    @if (Model.HasCotReport || Model.HasOldData)
+    {
+        @Html.ActionLink("Select Goals/Update COT", "Report", "Index", new
+        {
+            Area = "Cot",
+            assessmentId = assessmentId,
+            teacherId = teacherId,
+            year = Request.QueryString["year"]
+        }, new { @class = "mainbutton mainright-btn nav-btn" })
+    }
+    else
+    {
+        <button type="button" class="mainbutton mainright-btn disabled" disabled="">Select Goals/Update COT</button>
+    }
+
+</div>
+<div class="modal-l-b"></div>
+<div class="main-content">
+    <div class="content-title">Reports</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Action
+                    </th>
+                    <th>Teacher PDF Reports</th>
+                    <th class="border-right">Coach PDF Reports</th>
+                    <th>COT PDF Report</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (reports != null && reports.Any())
+                {
+                    countOfDate = reports.GroupBy(x => x.GoalSetDate.Date).ToDictionary(group => group.Key, group => group.Count());
+                    for (var i = 0; i < reports.Count; i++)
+                    {
+                    <tr>
+                        <td>
+                            @if (i == 0 && !Model.StgReportReadOnly)
+                            {    
+                                <a class="table-btn icon-pencil pencil-btn" 
+                                        href='@Url.Action("Edit", "StgReport", new { Area = "Cot", id = reports[0].ID, year = Request.QueryString["year"] })' title="Edit"><span style="display:none;">1</span></a>
+                                <a class="table-btn icon-trash trash-btn" id="btnResetSTG" href="#" title="Reset Short Term Goals"><span style="display:none;">1</span></a>
+                            }
+                        </td>
+                        <td>
+                            @{
+                            var index = "";
+                            if (countOfDate.ContainsKey(reports[i].GoalSetDate.Date))
+                            {
+                                countOfDate[reports[i].GoalSetDate.Date]--;
+                                index = countOfDate[reports[i].GoalSetDate.Date] == 0 ? "" : " (" + countOfDate[reports[i].GoalSetDate.Date] + ")";
+                            }
+                            }
+                            <a class="form-link2"
+                                   href='@(Url.Action("Pdf", "StgReport", new { Area = "Cot", id = reports[i].ID, type = "teacher", fullItemText = reports[i].ShowFullText }))' target="_blank">
+                                @("Teacher STGR " + reports[i].GoalSetDate.FormatDateString() + index)
+                            </a>
+                        </td>
+                        <td class="border-right">
+                            <a class="form-link2"
+                                   href='@(Url.Action("Pdf", "StgReport", new { Area = "Cot", id = reports[i].ID, type = "mentor", fullItemText = reports[i].ShowFullText }))' target="_blank">
+                                @("Coach STGR " + reports[i].GoalSetDate.FormatDateString() + index)
+                            </a>
+                        </td>
+                        @if (i == 0)
+                        {
+                            <td>
+                                @if (Model.CotPdfVerisonVisible || Model.HasOldData)
+                                {
+                                    @Html.ActionLink("COT PDF Report", "Pdf", "Index", new
+                                   {
+                                       assessmentId = assessmentId,
+                                       teacherId = teacherId,
+                                       year = Request.QueryString["year"]
+                                   }, new
+                                   {
+                                       @class = "form-link3",
+                                       target = "_blank"
+                                   })
+                                }
+                                else
+                                {
+                                    <a>COT PDF Report</a>
+                                }
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                    </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td>
+                            @if (Model.CotPdfVerisonVisible)
+                            {
+                                @Html.ActionLink("COT PDF Report", "Pdf", "Index", new
+                           {
+                               assessmentId = assessmentId,
+                               teacherId = teacherId,
+                               year = Request.QueryString["year"]
+                           }, new
+                           {
+                               @class = "form-link2",
+                               target = "_blank"
+                           })
+                            }
+                            else
+                            {
+                                @Html.Raw("COT PDF Report")
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $(function() {
+            $("#btnResetSTG").on("click", function() {
+                $.when(window.waitingConfirm("reset_STG_Confirm", "Delete", "Cancel")).done(function() {
+                    var url = '@Url.Action("ResetStgReport")';
+                    $.post(url, {
+                        assessmentId:@assessmentId,
+                        teacherId:@teacherId,
+                        year:'@(Request.QueryString["year"])'
+                    }, function(response) {
+                        if (response.success) {
+                            window.showMessage("success");
+                            location.reload();
+                        } else {
+                            window.showMessage("fail", response.msg);
+                        }
+                    }, 'json');
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,33 @@
+﻿
+
+  INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    105,--<RoleId, int,>
+           'statewide',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+           
+		   'R',--<ClassId, varchar(2),>
+           'R',--<Name, varchar(2),>
+           'R',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'R',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+ 

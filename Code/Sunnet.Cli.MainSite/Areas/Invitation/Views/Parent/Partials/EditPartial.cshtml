@@ -1,0 +1,183 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.ParentEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Business.Permission.Models
+@{
+    ViewBag.Title = "Open";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.ID)
+@Html.HiddenFor(model => model.UserInfo.ID)
+@Html.HiddenFor(model => model.UserInfo.GoogleId)
+@Html.HiddenFor(model => model.UserInfo.Role)
+@Html.HiddenFor(model => model.UserInfo.StatusDate)
+@Html.HiddenFor(model => model.UserInfo.Sponsor)
+@Html.HiddenFor(model => model.UserInfo.InvitationEmail)
+@Html.HiddenFor(model => model.UserInfo.EmailExpireTime)
+@Html.HiddenFor(model => model.UserInfo.Notes)
+@Html.HiddenFor(model => model.UserInfo.CreatedOn)
+@Html.HiddenFor(model => model.ParentId)
+
+<div class="content-title">Basic Information</div>
+<div class="content-body">
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.FirstName, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.FirstName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.FirstName)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.MiddleName, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.MiddleName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.LastName, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.LastName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.LastName)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.PreviousLastName, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.PreviousLastName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.Status, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(model => model.UserInfo.Status, Model.UserInfo.Status.ToSelectList(), new { @class = "form-control", onchange = "changeInactive(this);" })
+            @Html.ValidationMessageFor(model => model.UserInfo.Status)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.StatusDate, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            <p>@Model.UserInfo.StatusDate.ToShortDateString()</p>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.PrimaryPhoneNumber, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.PrimaryPhoneNumber, new { @class = "form-control _homephone" })
+            @Html.ValidationMessageFor(model => model.UserInfo.PrimaryPhoneNumber)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.PrimaryNumberType, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.UserInfo.PrimaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.PrimaryNumberType)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.PrimaryEmailAddress, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.PrimaryEmailAddress, new { @class = "form-control email" })
+            @Html.ValidationMessageFor(model => model.UserInfo.PrimaryEmailAddress)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.SecondaryEmailAddress, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.SecondaryEmailAddress, new { @class = "form-control email" })
+            @Html.ValidationMessageFor(model => model.UserInfo.SecondaryEmailAddress)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.SchoolYear, null, new {@class = "col-sm-3 control-label"})
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.SchoolYear, new {@class = "form-control", @readonly = true})
+        </div>
+        @Html.LabelFor(model => model.UserInfo.InternalID, null, new {@class = "col-sm-3 control-label"})
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.InternalID, new {@class = "form-control"})
+        </div>
+    </div>
+    <div class="col-sm-12  ">
+        <p class="parent-if">
+            Please tell us about yourself so we can make sure you get the CLI-Engage account you need.
+            Choose the statements below that apply to you (mark all that describe you):
+        </p>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4 "></label>
+        <div class="col-sm-8">
+            <input type="checkbox" id="chk1" name="chkSetting" value="1" class="@(ViewBag.SettingReadOnly?"":"required")"/>
+            <label for="chk1">I am a parent or an unpaid caregiver of a child age 0-5</label>
+            <br /><input type="checkbox" id="chk2" name="chkSetting" value="2" class="@(ViewBag.SettingReadOnly?"":"required")"/>
+            <label for="chk2">I am enrolled in an early childhood-related certificate or degree program</label>
+            <br /><input type="checkbox" id="chk3" name="chkSetting" value="3" class="@(ViewBag.SettingReadOnly?"":"required")" />
+            <label for="chk3">I work in a Head Start program</label>
+            <br /><input type="checkbox" id="chk4" name="chkSetting" value="4" class="@(ViewBag.SettingReadOnly?"":"required")" />
+            <label for="chk4">I work in a public or charter school</label>
+            <br /><input type="checkbox" id="chk5" name="chkSetting" value="5" class="@(ViewBag.SettingReadOnly?"":"required")" />
+            <label for="chk5">I work in a child care center</label>
+            <br /><input type="checkbox" id="chk6" name="chkSetting" value="6" class="@(ViewBag.SettingReadOnly?"":"required")"/>
+            <label for="chk6">I work in a home-based or family child care program</label>
+            <br /><input type="checkbox" id="chk7" name="chkSetting" value="7"  class="@(ViewBag.SettingReadOnly?"":"required")"/>
+            <label for="chk7">I work for an institute of higher education</label>
+            <br /><input type="checkbox" id="chk8" name="chkSetting" value="8" class="@(ViewBag.SettingReadOnly?"":"required")" />
+            <label for="chk8">I work for an early childhood training and support service organization</label>
+            <br /><input type="checkbox" id="chkOther" name="chkSetting" value="9" class="@(ViewBag.SettingReadOnly?"":"required")" onchange="ClickOtherSetting()" />
+            <label for="chkOther">Other, please specify:</label>
+            @Html.TextBoxFor(model => model.OtherSetting, new { id = "txtOtherSetting", style = "display: none; border: 1px solid #dddddd; border-radius: 3px;width:300px" })
+            <br />
+            @Html.ValidationMessage("chkSetting")
+        </div>
+    </div>
+
+    @*<div class="form-group">
+        <label class="col-sm-4 control-label">In what setting do you work? </label>
+        <div class="col-sm-8">
+            <input type="checkbox" id="chk1" name="chkSetting" value="1"/>
+            <label for="chk1">I do not work in or study early childhood (I am a parent or other caregiver of young children)</label>
+            <br/><input type="checkbox" id="chk2" name="chkSetting" value="2"/>
+            <label for="chk2">I am enrolled in an early childhood certificate/degree program (or related field)</label>
+            <br/><input type="checkbox" id="chk3" name="chkSetting" value="3"/>
+            <label for="chk3">Head Start</label>
+            <br/><input type="checkbox" id="chk4" name="chkSetting" value="4"/>
+            <label for="chk4">Public School</label>
+            <br/><input type="checkbox" id="chk5" name="chkSetting" value="5"/>
+            <label for="chk5">Center-based Childcare</label>
+            <br/><input type="checkbox" id="chk6" name="chkSetting" value="6"/>
+            <label for="chk6">Home-based childcare</label>
+            <br/><input type="checkbox" id="chk7" name="chkSetting" value="7"/>
+            <label for="chk7">Institute of higher education</label>
+            <br/><input type="checkbox" id="chk8" name="chkSetting" value="8"/>
+            <label for="chk8">Early Childhood Training and Support Service Organization</label>
+            <br/><input type="checkbox" id="chkOther" name="chkSetting" value="9" onchange="ClickOtherSetting()"/>
+            <label for="chkOther">Other, please specify:</label>
+
+            @Html.TextBoxFor(model => model.OtherSetting, new {id = "txtOtherSetting", style = "display: none; border: 1px solid #dddddd; border-radius: 3px;width:300px"})
+
+
+        </div>
+    </div>*@
+
+
+    <div class="form-group">
+        <span class="col-sm-3 control-label">School List</span>
+        <div class="col-sm-9">
+            <div class="form-group">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Child Name</th>
+                            <th>School Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.StudentList)
+                        {
+                            <tr>
+                                <td>
+                                    <span>@item.StudentName</span>
+                                </td>
+                                <td>
+                                    <span>@item.SchoolName</span>
+                                </td>
+                            </tr>                         
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

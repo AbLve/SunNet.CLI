@@ -1,0 +1,473 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Trs
+@using Sunnet.Cli.Business.Common
+@using Sunnet.Framework
+@using Sunnet.Cli.Business.Trs.Models
+@{
+    ViewBag.Title = "Report - Assessment Results";
+    Layout = "~/Areas/Trs/Views/Shared/_Trs_OfflineReport_Layout.cshtml";
+    TrsResultReportModel reportModel = ViewBag.Model;
+}
+@section Styles
+{
+    @Styles.Render("~/css/trs/offline")
+}
+<table cellpadding="0" cellspacing="0" border="0" style="page-break-after: always;">
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-header">
+                <tr>
+                    <th>TRS Provider Assessment Report
+                        <p class="redtext" style="margin-top: -30px">(Official)</p>
+                    </th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>Date of Report:&nbsp;<label data-bind="datetime: currentAssessment.ApproveDate"></label></td>
+                    <td>
+                        <img class="logo" src="@(SFConfig.AssessmentDomain)Content/images/trs_logo.jpg" alt="trs_logo">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.Name"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>LWDB:&nbsp;<label data-bind="html: currentSchool.CommunityNames"></label></td>
+                </tr>
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.Address"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.City"></label>
+                        <label data-bind="html: currentSchool.State"></label>
+                        <label data-bind="html: currentSchool.Zip"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.FacilityTelephone"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.SecondaryTelephone"></label>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>Owner:&nbsp;<label data-bind="html: currentSchool.Owner"></label></td>
+                </tr>
+                <tr>
+                    <td>Director:&nbsp;<label data-bind="html: currentSchool.Directors"></label></td>
+                </tr>
+                <tr>
+                    <td>Regulating Entity:&nbsp;<label data-bind="html: currentSchool.RegulatingEntity.text"></label></td>
+                </tr>
+                <tr>
+                    <td>Type of Facility:&nbsp;<label data-bind="html: currentSchool.FacilityType.text"></label></td>
+                </tr>
+                <tr>
+                    <td>Type of National Accreditation:&nbsp;<label data-bind="html: currentSchool.NationalAccreditation"></label></td>
+                </tr>
+                <tr>
+                    <td>DFPS License Number/Operator #:&nbsp;<label data-bind="html: currentSchool.DFPS"></label></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>Agreement Effective Date:&nbsp;<label data-bind="datetime: currentAssessment.ApproveDate"></label></td>
+                </tr>
+                <tr>
+                    <td>Agreement Termination Date:&nbsp;<label data-bind="datetime: currentAssessment.RecertificatedBy"></label></td>
+                </tr>
+                <tr>
+                    <td>Age Range(s) Served:<b>From:</b>
+                        <input type="text" onfocus="this.blur()" data-bind="value: currentSchool.MinAgeGroup" />
+                        <b>Through:</b><input type="text" onfocus="this.blur()" data-bind="value: currentSchool.MaxAgeGroup" />
+                    </td>
+
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-result" style="margin: 10px 0px">
+                <tr>
+                    <th colspan="2">ASSESSMENT RESULTS</th>
+                </tr>
+                <tr>
+                    <td colspan="2">Based on the results of this assessment the following action was taken:</td>
+                </tr>
+                <tr>
+                    <td colspan="2">The facility received final approval on
+                            <input type="text" onfocus="this.blur()" data-bind="datetime: currentAssessment.ApproveDate" />
+                        to expire on 
+                        <input type="text" onfocus="this.blur()" data-bind="datetime: currentAssessment.RecertificatedBy" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="trs-report-result-star trs-report-result-star-t">Star-Rating Result:</td>
+                </tr>
+                <tr>
+                    <td class="trs-report-result-star trs-report-result-star-t">Calculated Star Designation:</td>
+                    <td class="trs-report-result-star trs-report-result-star-t">Verified Star Designation:</td>
+                </tr>
+                <!-- ko if:currentAssessment.Star-->
+                <tr>
+                    <!-- ko if:currentAssessment.Star==Star[2]-->
+                    <td class="trs-report-result-star">√<span>&nbsp;&nbsp;★★</span>Certification</td>
+                    <!--/ko-->
+                    <!-- ko ifnot:currentAssessment.Star==Star[2]-->
+                    <td class="trs-report-result-star">□<span>&nbsp;&nbsp;★★</span>Certification</td>
+                    <!--/ko-->
+                    <!-- ko if:currentAssessment.VerifiedStar==Star[2]-->
+                    <td class="trs-report-result-star">√<span>&nbsp;&nbsp;★★</span>Certification</td>
+                    <!--/ko-->
+                    <!-- ko ifnot:currentAssessment.VerifiedStar==Star[2]-->
+                    <td class="trs-report-result-star">□<span>&nbsp;&nbsp;★★</span>Certification</td>
+                    <!--/ko-->
+                </tr>
+                <tr>
+                    <!-- ko if:currentAssessment.Star==Star[3]-->
+                    <td class="trs-report-result-star">√<span>&nbsp;&nbsp;★★★</span>Certification</td>
+                    <!--/ko-->
+                    <!-- ko ifnot:currentAssessment.Star==Star[3]-->
+                    <td class="trs-report-result-star">□<span>&nbsp;&nbsp;★★★</span>Certification</td>
+                    <!--/ko-->
+                    <!-- ko if:currentAssessment.VerifiedStar==Star[3]-->
+                    <td class="trs-report-result-star">√<span>&nbsp;&nbsp;★★★</span>Certification</td>
+                    <!--/ko-->
+                    <!-- ko ifnot:currentAssessment.VerifiedStar==Star[3]-->
+                    <td class="trs-report-result-star">□<span>&nbsp;&nbsp;★★★</span>Certification</td>
+                    <!--/ko-->
+                </tr>
+                <tr>
+                    <!-- ko if:currentAssessment.Star==Star[4]-->
+                    <td class="trs-report-result-star">√<span>&nbsp;&nbsp;★★★★</span>Certification</td>
+                    <!--/ko-->
+                    <!-- ko ifnot:currentAssessment.Star==Star[4]-->
+                    <td class="trs-report-result-star">□<span>&nbsp;&nbsp;★★★★</span>Certification</td>
+                    <!--/ko-->
+                    <!-- ko if:currentAssessment.VerifiedStar==Star[4]-->
+                    <td class="trs-report-result-star">√<span>&nbsp;&nbsp;★★★★</span>Certification</td>
+                    <!--/ko-->
+                    <!-- ko ifnot:currentAssessment.VerifiedStar==Star[4]-->
+                    <td class="trs-report-result-star">□<span>&nbsp;&nbsp;★★★★</span>Certification</td>
+                    <!--/ko-->
+                </tr>
+                <!--/ko-->
+                <!-- ko ifnot:currentAssessment.Star-->
+                <tr>
+                    <td colspan="2">
+                        @(ViewBag.StarNotAvailable)
+                    </td>
+                </tr>
+                <!--/ko-->
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>Assessed by:<input type="text" onfocus="this.blur()"
+                        data-bind="value: currentSchool.Assessor.FirstName + ' ' + currentSchool.Assessor.LastName" /></td>
+                </tr>
+                <tr>
+                    <td>Assessment Visit Completed:<input type="text" onfocus="this.blur()" data-bind="datetime: currentAssessment.VisitDate" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Date discussed with Provider:<input type="text" onfocus="this.blur()" data-bind="datetime: currentAssessment.DiscussDate" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Provider Name and Signature:<input type="text" onfocus="this.blur()" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span style="width: 188px; display: inline-block"></span>
+                        <input type="text" onfocus="this.blur()" />
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<table cellpadding="0" cellspacing="0" border="0" style="page-break-before: always;">
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-header">
+                <tr>
+                    <th>TRS PROVIDER CERTIFICATION SCORES</th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.Name"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.CommunityNames"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.DFPS"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="trs-table-tittle" colspan="3">STRUCTURAL REQUIREMENTS</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+<!-- ko foreach: currentAssessment.StructuralCategories -->
+<table cellpadding="0" cellspacing="0" border="0" class="trs-table-t-con">
+    <thead>
+        <tr style="page-break-inside: avoid;">
+            <td class="trs-table-tittle-t" colspan="10" data-bind="text: $data[1][0].Category.description"></td>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- ko if:$data[0].Category==1||$data[0].Category==5  -->
+        <!-- ko foreach: $data -->
+        <!-- ko if: $index() > 0 -->
+        <tr style="page-break-inside: avoid;">
+            <td colspan="3" style="border-top: 1px solid #333"
+                data-bind="text: subCategories.filter(function (obj) { return obj.Id == $data[0].SubCategoryId })[0].Name"></td>
+        </tr>
+        <!-- ko foreach: $data -->
+        <tr style="page-break-inside: avoid;">
+            <td style="width: 100px" data-bind="text: $data.Item"></td>
+            <td data-bind="html: $data.Description"></td>
+            <td style="width: 100px" data-bind="text: $data.AnswerText"></td>
+        </tr>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+
+
+        <!-- ko if:$data[0].Category!=1&&$data[0].Category!=5  -->
+        <!-- ko foreach: $data -->
+        <!-- ko if: $index() > 0 -->
+        <tr style="page-break-inside: avoid;">
+            <td colspan="2" style="border-top: 1px solid #333"
+                data-bind="text: subCategories.filter(function (obj) { return obj.Id == $data[0].SubCategoryId })[0].Name"></td>
+            <!-- ko if: $data[0].ClassItems.length<=3 -->
+            <!-- ko foreach: $data[0].ClassItems -->
+            <td style="border-top: 1px solid #333" data-bind="text: $data.ClassName"></td>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- ko ifnot: $data[0].ClassItems.length<=3 -->
+            <td style="border-top: 1px solid #333"></td>
+            <!-- /ko -->
+        </tr>
+        <!-- ko foreach: $data -->
+        <tr style="page-break-inside: avoid;">
+            <td style="width: 100px" data-bind="text: $data.Item"></td>
+            <td data-bind="html: $data.Description"></td>
+            <!-- ko if: $data.ClassItems.length<=3 -->
+            <!-- ko foreach: $data.ClassItems -->
+            <td style="width: 100px" data-bind="text: $data.AnswerText ? $data.AnswerText : 'N/A'"></td>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- ko ifnot: $data.ClassItems.length<=3 -->
+            <td style="width: 150px">
+                <!-- ko foreach: $data.ClassItems -->
+                <!-- ko if: $data.AnswerId > 0 -->
+                <label data-bind="html: $data.ClassName + ' : ' + $data.AnswerText"></label>
+                <br />
+                <!-- /ko -->
+                <!-- /ko -->
+            </td>
+            <!-- /ko -->
+        </tr>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <tr style="page-break-inside: avoid;">
+            <td class="trs-table-tittle-t" colspan="10">Structural Requirement Measure Rating for 
+                <span data-bind="html: $data[1][0].Category.text"></span>: 
+                <span data-bind="html: $data[0].IsNotMet ? 'NOT MET' : 'MET'"></span>
+        </tr>
+    </tbody>
+</table>
+<div style="height: 20px;">
+</div>
+<!-- /ko -->
+
+
+<table cellpadding="0" cellspacing="0" border="0" style="page-break-before: always;">
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" class="trs-report-header">
+                <tr>
+                    <th>TRS PROVIDER CERTIFICATION SCORES</th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.Name"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.CommunityNames"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label data-bind="html: currentSchool.DFPS"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="trs-table-tittle" colspan="3">PROCESS MEASURES</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<!-- ko foreach: currentAssessment.ProcessCategories -->
+<table cellpadding="0" cellspacing="0" border="0" class="trs-table-t-con">
+    <thead>
+        <tr style="page-break-inside: avoid;">
+            <td class="trs-table-tittle-t" colspan="10" data-bind="text: $data[1][0].Category.description"></td>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- ko if:$data[0].Category==1||$data[0].Category==5  -->
+        <!-- ko foreach: $data -->
+        <!-- ko if: $index() > 0 -->
+        <tr style="page-break-inside: avoid;">
+            <td colspan="3" style="border-top: 1px solid #333"
+                data-bind="text: subCategories.filter(function (obj) { return obj.Id == $data[0].SubCategoryId })[0].Name"></td>
+        </tr>
+        <!-- ko foreach: $data -->
+        <tr style="page-break-inside: avoid;">
+            <td style="width: 100px" data-bind="text: $data.Item"></td>
+            <td data-bind="html: $data.Description"></td>
+            <td style="width: 100px" data-bind="text: $data.Score < 0 ? 'N/A' : $data.Score"></td>
+        </tr>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+
+
+        <!-- ko if:$data[0].Category!=1&&$data[0].Category!=5  -->
+        <!-- ko foreach: $data -->
+        <!-- ko if: $index() > 0 -->
+        <tr style="page-break-inside: avoid;">
+            <td colspan="2" style="border-top: 1px solid #333"
+                data-bind="text: subCategories.filter(function (obj) { return obj.Id == $data[0].SubCategoryId })[0].Name"></td>
+            <!-- ko if: $data[0].ClassItems.length<=3 -->
+            <!-- ko foreach: $data[0].ClassItems -->
+            <td style="border-top: 1px solid #333" data-bind="text: $data.ClassName"></td>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- ko ifnot: $data[0].ClassItems.length<=3 -->
+            <td style="border-top: 1px solid #333"></td>
+            <!-- /ko -->
+        </tr>
+        <!-- ko foreach: $data -->
+        <tr style="page-break-inside: avoid;">
+            <td style="width: 100px" data-bind="text: $data.Item"></td>
+            <td data-bind="html: $data.Description"></td>
+            <!-- ko if: $data.ClassItems.length<=3 -->
+            <!-- ko foreach: $data.ClassItems -->
+            <td style="width: 100px" data-bind="text: $data.Score < 0 ? 'N/A' : $data.Score"></td>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- ko ifnot: $data.ClassItems.length<=3 -->
+            <td style="width: 150px">
+                <!-- ko foreach: $data.ClassItems -->
+                <!-- ko if: $data.Score >= 0 -->
+                <label data-bind="html: $data.ClassName + ' : ' + $data.Score"></label>
+                <br />
+                <!-- /ko -->
+                <!-- /ko -->
+            </td>
+            <!-- /ko -->
+        </tr>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <tr style="page-break-inside: avoid;">
+            <td class="trs-table-tittle-t" colspan="10">Process Measure Rating for 
+                <span data-bind="html: $data[1][0].Category.text"></span>
+                : 
+                <span data-bind="html: $data[0].Star"></span>
+        </tr>
+    </tbody>
+</table>
+<div style="height: 20px;">
+</div>
+<!-- /ko -->
+
+
+@section Scripts{
+    @System.Web.Optimization.Scripts.Render("~/scripts/jquery/offline")
+    @System.Web.Optimization.Scripts.Render("~/scripts/bootstrap/offline")
+    @System.Web.Optimization.Scripts.Render("~/scripts/knockout/offline")
+    @System.Web.Optimization.Scripts.Render("~/Content/scripts_cliProject/bindingHandlers.js")
+    @System.Web.Optimization.Scripts.Render("~/scripts/trs/offline")
+
+    <script type="text/javascript">
+        var offlineApp;
+        var subCategories;
+        $(function () {
+            offlineApp = getTrsOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.init();
+            offlineApp.preview();
+            subCategories = offlineApp.assessment.SubCategories;
+            ko.applyBindings(offlineApp.viewModel);
+        })
+    </script>
+
+}

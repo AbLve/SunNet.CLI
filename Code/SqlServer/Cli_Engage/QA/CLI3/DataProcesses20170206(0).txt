@@ -1,0 +1,5 @@
+﻿alter table DataProcesses add Action tinyint
+go
+update DataProcesses set Action=1
+go
+alter table DataProcesses alter column Action tinyint not null

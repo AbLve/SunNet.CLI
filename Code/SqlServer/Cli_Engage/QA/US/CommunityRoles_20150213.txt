@@ -1,0 +1,6 @@
+﻿if not exists(select * from syscolumns where id=object_id('CommunityRoles') and name='TexasRisingStar')
+alter table CommunityRoles add  TexasRisingStar varchar(2) not null default ''
+go
+
+update CommunityRoles set TexasRisingStar=TrainingCli
+go

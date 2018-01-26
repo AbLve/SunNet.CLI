@@ -1,0 +1,122 @@
+﻿@using Sunnet.Cli.Business.Cpalls
+
+@{
+    ViewBag.Title = "Average Report";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+
+    var report = ViewBag.report as Dictionary<Wave,List<ReportModel>>;
+    string[] schoolYear = ViewBag.schoolYear;
+}
+
+<h3>Community Comparison Report</h3><br />
+<h4>Community: @ViewBag.communityName</h4>
+
+@foreach (Wave wave in report.Keys)
+{
+    var modelList = report[wave];
+    <table cellpadding="0" cellspacing="0">
+        <caption>
+            Wave&nbsp;@(wave.ToDescription())
+        </caption>
+        <thead style="page-break-inside: avoid">
+            <tr class='fixed-columns-rotate' style="page-break-inside : avoid">
+                <th rowspan="2" colspan="1">
+                    <div style="width: 200px;">
+                        <span>
+                            <!--School-->
+                        </span>
+                    </div>
+                </th>
+                @for (int i = 0; i < modelList.Count(); i++)
+                {
+                    var parent = modelList[i];
+                    var haveChild = parent.Children != null && parent.Children.Any();
+                
+                    <th class='@(haveChild ? "fixed-columns-rotate-super" : "fixed-columns-rotate")'
+                        rowspan="@(haveChild ? 1 : 2)"
+                        colspan="@(haveChild ? parent.Children.Count : 1)">
+                        <div>
+                            <span>
+                                @(parent.MeasureName.CutString((haveChild ? parent.Children.Count : 4) * 6))
+                            </span>
+                        </div>
+                    </th>
+                }
+                <th class="noborder border-l"></th>
+                <th class="noborder"></th>
+            </tr>
+            <tr class='fixed-columns-rotate' style="page-break-inside: avoid">
+                @for (int i = 0; i < modelList.Count(); i++)
+                {
+                    if (modelList[i].Children == null)
+                    {
+                        continue;
+                    }
+                    foreach (var child in modelList[i].Children)
+                    {
+                        <th class='fixed-columns-rotate' rowspan="1" colspan="1">
+                            <div>
+                                <span>@(child.MeasureName.CutString(20))</span>
+                            </div>
+                        </th>
+                    }
+                }
+                <th class="noborder border-l"></th>
+                <th class="noborder"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int k=0;k<schoolYear.Count();k++)
+            {
+                <tr style="page-break-inside: avoid">
+                    <td>@schoolYear[k]</td>
+                    @for (int i = 0; i < modelList.Count; i++)
+                    {
+                        var parent = modelList[i];
+                        var haveChild = parent.Children != null && parent.Children.Any();
+                        if (haveChild)
+                        {
+                            for (var j = 0; j < parent.Children.Count; j++)
+                            {
+                                <td>
+                                    @parent.Children[j].Average[k]
+                                </td>
+                            }
+                        }
+                        else
+                        {
+                            <td>@parent.Average[k]</td>
+                        }
+                    }
+                    <th class="noborder border-l"></th>
+                    <th class="noborder"></th>
+                </tr>
+             }
+
+             
+        </tbody>
+    </table>
+}
+
+
+@if (ViewBag.boyImgSource != null && ViewBag.boyImgSource.ToString() != "")
+{
+    <div style="text-align:left" class="newpager">Wave 1</div>
+    <div id="boyStudentSummaryChart" style="width:100%; page-break-inside : avoid;">
+        <img src="@(ViewBag.boyImgSource)"/>
+    </div>
+}
+@if (ViewBag.moyImgSource != null && ViewBag.boyImgSource.ToString() != "")
+{
+    <div style="text-align:left" class="newpager">Wave 2</div>
+    <div id="moyStudentSummaryChart" style="width:100%; page-break-inside : avoid;">
+        <img src="@(ViewBag.moyImgSource)"/>
+    </div>
+}
+@if (ViewBag.eoyImgSource != null && ViewBag.boyImgSource.ToString() != "")
+{
+    <div style="text-align:left" class="newpager">Wave 3</div>
+    <div id="eoyStudentSummaryChart" style="width:100%; page-break-inside : avoid;">
+        <img src="@(ViewBag.eoyImgSource)"/>
+    </div>
+}

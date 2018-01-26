@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+@{
+    const string siteName = "Cli Engage";
+    var relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    var lastModified = FileHelper.GetFileLastModified(Server.MapPath(relativePath));
+    var moduleTitle = relativePath.IndexOf("Areas/Ade", StringComparison.CurrentCultureIgnoreCase) >= 0 ? "Ade" : "";
+    moduleTitle = relativePath.IndexOf("Areas/Ade", StringComparison.CurrentCultureIgnoreCase) < 0 ? "Assessment" : moduleTitle;
+}
+<html lang="en" manifest="@(Html.Raw(ViewBag.Manifest))">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword"
+          content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>@ViewBag.Title - @moduleTitle - @siteName</title>
+    @Styles.Render("~/css/basic/offline")
+    @Styles.Render("~/css/cpalls/offline")
+    @RenderSection("Styles", false)
+    @Scripts.Render("~/scripts/modernizr/offline")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/scripts/ie68/offline")
+    <![endif]-->
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <div class="warp">
+        <div class="header">
+            <div class="header-container">
+                <div class="header-logo">
+
+                    <img src="/images/cli_logo.png" alt="cli_logo">
+                </div>
+                <div class="help-btn">
+                    <a href="http://www.texasschoolready.org/help/MainTicketForm.aspx?Section8" target="_blank">&nbsp;</a>
+                </div>
+            </div>
+            <div class="nav">
+                <ul>
+                    <li>
+                        <a href="#" class="active">Offline</a>
+                    </li>
+                    <li>
+                        <a href="/" id="hrefOnline">Online</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="container">
+            @RenderSection("Banner", false)
+        </div>
+    </div>
+    <div class="main-container container">
+        <div class="clearfix" style="height:5px;"></div>
+        @RenderBody()
+    </div>
+    <div class="footer">
+        <div class="homelink">
+            <ul>
+                <li class="link-ut">
+                    <a href="https://www.uth.edu/" target="_blank">
+                        <img src="/images/UT.png" alt="UT">
+                    </a>
+                </li>
+                <li class="link-cli">
+                    <a href="http://www.childrenslearninginstitute.org/" target="_blank">
+                        <img src="/images/CLI.png" alt="CLI">
+                    </a>
+                </li>
+                <li class="link-tsr">
+                    <a href="http://www.texasschoolready.org/" target="_blank">
+                        <img src="/images/TSR.png" alt="TSR">
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="copyright">
+            <div class="nav-bottom">
+                <ul>
+                    <li><a href="https://www.uth.edu/index/policies.htm" target="_blank">Site Policies</a></li>
+                    <li><a href="https://www.uth.edu/index/file-viewing-information.htm" target="_blank">Web File Viewing</a></li>
+                    <li>
+                        <a target="_blank" href="@(SFConfig.MainSiteDomain)contact">@(Cli_Menus.ContactUs.ToDescription())</a>
+                    </li>
+                </ul>
+            </div>
+            <p>
+                Copyright © 2013 by <a class="main-a" href="https://www.uth.edu/" target="_blank">The University of Texas Health Science Center</a> at Houston (UTHealth)
+                <br />
+                Webmaster: <a href="mailto:cliengage@uth.tmc.edu">cliengage@@uth.tmc.edu</a> | This document was last modified on: @(lastModified.ToString("MM/dd/yyyy HH:mm:ss"))
+            </p>
+
+        </div>
+    </div>
+    <div id="modalSmall" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-sm">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalLarge" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @Scripts.Render("~/scripts/jquery/offline")
+    @Scripts.Render("~/scripts/bootstrap/offline")
+    @Scripts.Render("~/scripts/knockout/offline")
+    @Scripts.Render("~/scripts/cli/offline")
+    @Scripts.Render("~/scripts/cpalls/offline")
+    @RenderSection("Scripts", false)
+</body>
+</html>

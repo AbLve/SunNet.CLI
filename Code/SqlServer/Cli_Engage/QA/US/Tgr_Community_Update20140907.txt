@@ -1,0 +1,21 @@
+﻿
+
+if OBJECT_ID('tgr_community_update','tr')is not null drop trigger tgr_community_update 
+go
+create trigger [dbo].[tgr_community_update]
+on [dbo].[Communities]
+    after update
+as
+begin
+	 declare @ID int,@oldStatus tinyint,@newStatus tinyint
+	 select @ID=d.ID,@oldStatus=d.[Status] from deleted d
+	 select @newStatus=i.[Status] from inserted i
+	 if(@oldStatus!=@newStatus)
+	 begin
+	      update Communities set StatusDate=GETDATE() where id=@ID
+	 end 
+end	 
+ 
+GO
+
+

@@ -1,0 +1,20 @@
+﻿CREATE TABLE [dbo].[CecHistories](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SchoolYear] [varchar](5) NOT NULL,
+	[Wave] [tinyint] NOT NULL,
+	[AssessmentDate] [datetime] NOT NULL,
+	[TeacherId] [int] NOT NULL,
+	[AssessmentID] [int] NOT NULL,
+	[TotalScore] [decimal](18, 2) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

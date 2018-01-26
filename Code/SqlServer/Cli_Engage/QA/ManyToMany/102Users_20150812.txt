@@ -1,0 +1,5 @@
+﻿alter table Users add [InternalID] varchar(32)
+go
+update Users set [InternalID] = '' 
+go
+alter table Users alter column [InternalID] varchar(32) not null

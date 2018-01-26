@@ -1,0 +1,190 @@
+﻿<style type="text/css">
+    td {
+        position: relative;
+        text-align: center;
+    }
+
+    .color-icon-w {
+        left: 50%;
+        position: absolute;
+        display: inline-block;
+    }
+
+    .color-icon {
+        right: 10px;
+        position: relative;
+        font-size: 8px;
+        line-height: 20px;
+        display: inline-block;
+    }
+
+    .color-icon-b {
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+    .color-icon-r {
+        right: 10px;
+        font-size: 9px;
+        line-height: 15px;
+    }
+
+    .map-description {
+        /*position: absolute;
+        right: 100px;
+        bottom: 50px;*/
+        float: right;
+        border: 1px #333 solid;
+        padding: 0px 10px;
+        width: 202px;
+    }
+
+        .map-description p {
+            height: 26px;
+            line-height: 26px;
+            width: 90px;
+            float: left;
+        }
+
+            .map-description p span {
+                display: inline-block;
+                width: 15px;
+            }
+</style>
+
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    string Green = "◆";
+    string Yellow = "▲";
+    string Blue = "●";
+    string Red = "■";
+}
+<div class="main-content">
+    <div class="color-content-body-tab">
+        <table class="table table-striped table-hover" width="99%">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Title1</th>
+                    <th>Title2</th>
+                    <th>Title3</th>
+                    <th>Title4</th>
+                    <th>Title5</th>
+                    <th>Title6</th>
+                    <th>Title7</th>
+                    <th>Title8</th>
+                    <th>Title9</th>
+                    <th>Title10</th>
+                    <th>Title11</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>st1</td>
+                    <td><span class="color-icon">@(Green)</span><span class="color-icon-w">12</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">6</span></td>
+                    <td><span class="color-icon">@(Green)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">1</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">0</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">1</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">3</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">2</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">4</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">3</span></td>
+                </tr>
+                <tr>
+                    <td>st2</td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">0</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">3</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">4</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">7</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">0</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">3</span></td>
+                </tr>
+                <tr>
+                    <td>st3</td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">15</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">0</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">1</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">0</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">3</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">0</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">0</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">6</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">0</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">25</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">3</span></td>
+                </tr>
+                <tr>
+                    <td>st4</td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">46</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">2</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">3</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">1</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">25</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">7</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">8</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">3</span></td>
+                </tr>
+                <tr>
+                    <td>st5</td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">4</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">2</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">89</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">6</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">6</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">3</span></td>
+                </tr>
+                <tr>
+                    <td>st6</td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">4</span></td>
+                    <td><span class="color-icon color-icon-r">@(Red)</span><span class="color-icon-w">34</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">2</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">89</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">6</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">1</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">25</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">89</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">3</span></td>
+                </tr>
+                <tr>
+                    <td>st7</td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">4</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">2</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">89</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">5</span></td>
+                    <td><span class="color-icon color-icon-b">@(Blue)</span><span class="color-icon-w">6</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon">&nbsp;</span><span class="color-icon-w">-</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">89</span></td>
+                    <td><span class="color-icon">@(Yellow)</span><span class="color-icon-w">3</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div style="height: 100px">&nbsp;</div>
+<div class="map-description">
+    <p><span>@(Green)</span>:&nbsp;Green</p>
+    <p><span>@(Yellow)</span>:&nbsp;Yellow</p>
+    <p><span style="font-size: 18px;">@(Red)</span>:&nbsp;Red</p>
+    <p><span style="font-size: 18px;">@(Blue)</span>:&nbsp;Blue</p>
+</div>

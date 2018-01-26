@@ -1,0 +1,118 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Vcw.Enums
+@using System.Web.Optimization
+@{
+    ViewBag.Title = "ViewAssignment";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Teachers)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Coach Teachers", "Index", "TeacherVIP"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    @(Html.ActionLink("Assignment List", "AssignmentIndex", "TeacherSendAssignment"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    View
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload_file")
+    <script type="text/javascript">         
+
+        $(function () {
+            
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "AssignmentIndex")");
+                }
+            })            
+        });
+
+            function ContextClick(sender) {
+                if ($(sender)[0].checked) {
+                    $("#ContextOther").removeAttr("disabled");
+                } else {
+                    $("#ContextOther").attr("disabled", "disabled");
+                    $("#ContextOther").val('');
+                }
+            }
+
+            function ContentClick(sender) {
+                if ($(sender)[0].checked) {
+                    $("#ContentOther").removeAttr("disabled");
+                } else {
+                    $("#ContentOther").attr("disabled", "disabled");
+                    $("#ContentOther").val('');
+                }
+            }
+
+
+            function getUploaderPrefix() {
+                return "@(ViewBag.EncryptUserID)_";
+            }   
+        
+            var arrStgList; 
+        
+            function receiveStgList(v) {
+                if (v) {
+                    arrStgList = v;
+                    var tmpSelectStgHtml = TemplateEngine(window["template_stg_select"].innerHTML, v);
+                    $("#divStgSelect").html(tmpSelectStgHtml);
+                }
+            }
+
+            function moveStgList(id) {
+                for (var i = 0; i < arrStgList.length; i++) {
+                    if (arrStgList[i].id == id) {
+                        arrStgList.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+    </script>
+}
+
+@using (Ajax.BeginForm("Edit", "TeacherSendAssignment", null, PostFormHelper.DefaultAjaxOptions, new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("AssignmentIndex"))" >Back to Assignment List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Assignment</div>
+        <div class="content-body">
+            @if (Model.Type == AssignmentTypeEnum.TeacherAssignment)
+            {
+                @Html.Partial("/Areas/Coach/Views/TeacherSendAssignment/Partials/TeacherAssignmentEdit.cshtml")
+            }
+            else
+            {
+                @Html.Partial("/Areas/Coach/Views/TeacherSendAssignment/Partials/TeacherVIPAssignmentEdit.cshtml")
+            }
+            <input type="hidden" name="uploadfiles" id="uploadfiles" />
+            <input type="hidden" name="checkuploadedfiles" id="checkuploadedfiles" />
+            <input type="hidden" name="uploadwatchfiles" id="uploadwatchfiles" />
+            <input type="hidden" name="checkuploadedwatchfiles" id="checkuploadedwatchfiles" />
+            <div class="button-content">
+                <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit('Vcw_Files_Inqueue');">
+                <input type="button" class="mainbutton modal-btn cancel-btn" value="Cancel" 
+                    onclick="redirectBack('@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "AssignmentIndex")    ');">
+            </div>
+        </div>
+    </div>  
+}
+
+

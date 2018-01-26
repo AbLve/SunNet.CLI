@@ -1,0 +1,41 @@
+﻿@{
+
+}
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th width="50%">Label</th>
+            <th width="10%">Color</th>
+            <th width="20%">Black & White</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:{data:benchmarks,as:'benchmark'}">
+        <tr data-bind="css:{}">
+            <td style="line-height: 25px;">
+                <input type="hidden" name="ID" data-bind="value:ID" />
+                <label class="hide" data-bind="attr:{for:'LabelText'+$index()}">Label Text</label>
+                <input type="text" width="100%" class="form-control"
+                       readonly="" disabled=""
+                       data-bind="value:LabelText,attr:{id:'LabelText'+$index()}" name="LabelText" />
+            </td>
+            <td>
+                <div class="evo-pointer evo-colorind" data-bind="style:{background:Color}" style="margin:0 auto; float:none"></div>
+            </td>
+            <td>
+                <label class="hide" data-bind="attr:{for:'BlackWhite'+$index()}">Black&White</label>
+                <select class="form-control" readonly="" disabled="" data-bind="value:BlackWhite,attr:{id:'BlackWhite'+$index()}">
+                    <option value="1">Underline</option>
+                    <option value="2">Bold</option>
+                    <option value="3">Italics</option>
+                    <option value="4">Asterisks</option>
+                    <option value="5">Font Increase</option>
+                    <option value="6">Triangle</option>
+                    <option value="7">Rectangle</option>
+                    <option value="8">Square</option>
+                    <option value="9">Hexagon</option>
+                </select>
+            </td>
+        </tr>
+    </tbody>
+</table>

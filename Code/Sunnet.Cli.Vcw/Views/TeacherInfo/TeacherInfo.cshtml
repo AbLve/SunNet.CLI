@@ -1,0 +1,28 @@
+﻿@using Sunnet.Cli.Business.Vcw.Models
+@{
+    ViewBag.Title = "TeacherInfo";
+    TeacherListModel Teacher = ViewBag.Teacher == null ? new TeacherListModel() : ViewBag.Teacher as TeacherListModel;
+}
+<div style="height: 10px">&nbsp;</div>
+<div class="top-form">
+    <span class="control-label" style="font-weight: bold">Community</span>
+    <span class="control-label-text" style="font-weight: bold; word-break: normal">
+        @Teacher.CommunityName
+    </span>
+    <label style="width: 30px">&nbsp;</label>
+    <span class="control-label" style="font-weight: bold">School</span>
+    <span class="control-label-text" style="font-weight: bold; word-break: normal">
+        @Teacher.SchoolName
+    </span>
+    <label style="width: 30px">&nbsp;</label>
+    <span class="control-label" style="font-weight: bold">Coach</span>
+    <span class="control-label-text" style="font-weight: bold; word-break: normal">
+        @Teacher.CoachName
+    </span>
+    <label style="width: 30px">&nbsp;</label>
+    <span class="control-label" style="font-weight: bold">Teacher</span>
+    <span class="control-label-text" style="font-weight: bold; word-break: normal">
+        @Teacher.TeacherName
+    </span>
+</div>
+

@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Layout";
+}
+@*
+只修改 浏览器页面, 弹出页面不需要改动
+*@
+
+@section LeftMenu
+{
+左侧菜单,使用@Html.Partial()方法引入文件
+}
+@section BreadPath
+{
+    @*顶部导航, 注意 > 前后的空格*@
+    @(Html.ActionLink("Home", "Index", "Home")) 
+    <i class="icon-angle-right"></i> Test Layout
+}
+
+body 内容: 原来 &lt;div class="right-content"> 里面的内容

@@ -1,0 +1,21 @@
+﻿alter table TeacherRoles add TeacherTSDSID varchar(2)
+GO
+update TeacherRoles set TeacherTSDSID='RW' where RoleId=1
+update TeacherRoles set TeacherTSDSID='RW' where RoleId=10
+update TeacherRoles set TeacherTSDSID='R' where RoleId=5
+update TeacherRoles set TeacherTSDSID='R' where RoleId=20
+update TeacherRoles set TeacherTSDSID='R' where RoleId=30
+update TeacherRoles set TeacherTSDSID='RW' where RoleId=15
+update TeacherRoles set TeacherTSDSID='R' where RoleId=35
+update TeacherRoles set TeacherTSDSID='R' where RoleId=40
+update TeacherRoles set TeacherTSDSID='R' where RoleId=105
+update TeacherRoles set TeacherTSDSID='R' where RoleId=25
+update TeacherRoles set TeacherTSDSID='RW' where RoleId=110
+update TeacherRoles set TeacherTSDSID='RW' where RoleId=115
+update TeacherRoles set TeacherTSDSID='RW' where RoleId=130
+update TeacherRoles set TeacherTSDSID='RW' where RoleId=125
+update TeacherRoles set TeacherTSDSID='R' where RoleId=145
+update TeacherRoles set TeacherTSDSID='R' where RoleId=101
+update TeacherRoles set TeacherTSDSID='RW' where RoleId=133
+GO
+alter table TeacherRoles alter column TeacherTSDSID varchar(2) not null

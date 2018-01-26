@@ -1,0 +1,236 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.PrincipalEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Users.Entities
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Cli.Core.Users.Enums
+@using Sunnet.Cli.Business.Permission.Models
+@{
+    bool isPrincipal = ViewBag.RoleType == Role.Principal_Delegate;
+    ViewBag.Title = isPrincipal ? "My Delegate Invite" : "Principal/Director Invite";
+    string navigationText = isPrincipal ? "My Delegate" : "Principal/Director";
+    string backtoText = isPrincipal ? "Back to My Delegate List" : "Back to Principal/Director List";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    IEnumerable<GroupPackageModel> GroupPackages = ViewBag.GroupPackages;
+    List<GroupPackageModel> SelectedGroupPagkages = ViewBag.GroupPackageSelected;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    redirectBack("index");
+                }
+            });
+            if ($("#Ethnicity :selected").text() == "Other")
+                $("#EthnicityOther").attr("type", "text");
+            if ($("#PrimaryLanguageId :selected").text() == "Other")
+                $("#PrimaryLanguageOther").attr("type", "text");
+            if ($("#PositionId :selected").text() == "Other")
+                $("#PositionOther").attr("type", "text");
+
+            $("#Ethnicity").change(function() {
+                if ($("#Ethnicity :selected").text() == "Other")
+                    $("#EthnicityOther").attr("type", "text");
+                else {
+                    $("#EthnicityOther").val("");
+                    $("#EthnicityOther").attr("type", "hidden");
+                }
+            });
+            $("#PrimaryLanguageId").change(function() {
+                if ($("#PrimaryLanguageId :selected").text() == "Other")
+                    $("#PrimaryLanguageOther").attr("type", "text");
+                else {
+                    $("#PrimaryLanguageOther").val("");
+                    $("#PrimaryLanguageOther").attr("type", "hidden");
+                }
+            });
+            $("#PositionId").change(function() {
+                if ($("#PositionId :selected").text() == "Other")
+                    $("#PositionOther").attr("type", "text");
+                else {
+                    $("#PositionOther").val("");
+                    $("#PositionOther").attr("type", "hidden");
+                }
+            });
+            if ($("#UserInfo_Status").val() == "@((int) EntityStatus.Inactive)")
+                $("#SaveInvite").hide();
+            $("#UserInfo_Status").change(function() {
+                if ($("#UserInfo_Status").val() == "@((int) EntityStatus.Inactive)")
+                    $("#SaveInvite").hide();
+                else
+                    $("#SaveInvite").show();
+            });
+
+            $("#dvCertificate input[type='radio']").click(function(event) {
+                var $container = $("#txtCers");
+                if ($container.length == 0) {
+                    $container = $("<input type='hidden' name='certificates' id='txtCers'/>").appendTo($("#@(formId)"));
+                }
+                var values = "";
+
+                $("#dvCertificate input[type='radio']").each(function(index, radio) {
+                    var $r = $(radio);
+                    if ($r[0].checked) {
+                        values += $r.val() + ",";
+                    }
+                });
+                $container.val(values);
+            });
+            $("[name='chkPDs']").click(function(event) {
+                if ($(this).attr("pdtext") == "Other") {
+                    if ($(this).is(":checked"))
+                        $("#PDOther").attr("type", "text");
+                    else {
+                        $("#PDOther").attr("type", "hidden");
+                        $("#PDOther").val("");
+                    }
+                }
+            });
+
+            NotSameAddress();
+            $("#SaveInvite").click(function() {
+                $("<input type='hidden' name='isInvite' id='isInvite' value='true' />").appendTo($("#@(formId)"));
+            });
+            $("#ResetInvite").click(function() {
+                jQuery.when(waitingConfirm("Are you sure?", "Yes", "No")).done(function() {
+                    $.post("/Invitation/Public/ReInvite?userId=@(Model.UserInfo.ID)", function(result) {
+                        if (!result) {
+                            showMessage("success", "Email has been sent successfully.");
+                            location.reload();
+                        } else {
+                            showMessage("fail");
+                        }
+                    });
+                });
+            });
+        });
+
+        function NotSameAddress() {
+            $("#Address").val('@Model.Address');
+            $("#Address2").val('@Model.Address2');
+            $("#City").val('@Model.City');
+            viewModel.defaultCounty(@Model.CountyId);
+            viewModel.selectedState(@Model.StateId);
+            $("#Zip").val('@Model.Zip');
+        }
+
+        var viewModel = {
+            defaultCounty: ko.observable(@Model.CountyId),
+            selectedCounty: ko.observable(@Model.CountyId),
+            countiesOptions: ko.observableArray([]),
+            selectedState: ko.observable(@Model.StateId)
+        };
+        viewModel.selectedState.subscribe(function(state) {
+            $.getJSON('/Invitation/Public/GetCountiesByStateId', { stateId: state }, function(data) {
+                viewModel.countiesOptions.removeAll();
+                viewModel.countiesOptions.push.apply(viewModel.countiesOptions, data);
+                viewModel.selectedCounty(viewModel.defaultCounty());
+            });
+        });
+        ko.applyBindings(viewModel);
+
+        function changeInactive(v) {
+            $form = $("#@(formId)");
+            if ($(v).val() == "2") {
+                $.post("/Invitation/Public/Inactive?id=@(Model.UserInfo.ID)", function (result) {
+                    if (result) {
+                        $form.data("_source", $form.serialize());
+                        $.when(showMessage("success", "The user has been inactive.")).done(function () { redirectBack("index"); });
+                    } else {
+                        showMessage("fail");
+                    }
+                });
+            }
+        }
+    </script>
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.User)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("User Management", "Dashboard", "Public"))
+    <i class="icon-angle-right"></i>
+    @if (isPrincipal)
+    {
+        @Html.ActionLink(navigationText, "MyDelegate", "Principal")
+    }
+    else
+    {
+        @Html.ActionLink(navigationText, "Index", "Principal")
+    }
+    <i class="icon-angle-right"></i>
+    @(Model.UserInfo.FirstName + " " + Model.UserInfo.LastName)
+}
+
+@using (Ajax.BeginForm("SaveInvitation", "Principal", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{          
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >@backtoText</a>
+    </div>
+    <div class="main-content">
+        @Html.Partial("~/Areas/Invitation/Views/Principal/Partials/EditPartial.cshtml")
+        <div class="content-title"></div>
+        <div class="content-body">
+            @if (!isPrincipal)
+            {
+                <div class="form-group">
+                    <span class="col-sm-3 control-label">Additional Packages</span>
+                    <div class="col-sm-9">
+                        @foreach (var item in GroupPackages)
+                        {
+                            string strChecked = "";
+                            if (SelectedGroupPagkages.Where(e => e.PackageId == item.PackageId).Count() > 0)
+                            {
+                                strChecked = "checked='checked'";
+                            }
+                            <div class="with50">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" @strChecked name="chkPackages" value="@item.PackageId">
+                                    @item.PackageName
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrincipalNotes, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextAreaFor(model => model.PrincipalNotes, new { @class = "form-control", style = "height:70px; margin:0px; padding:0px;" })
+                    @Html.ValidationMessageFor(model => model.PrincipalNotes)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.InvitationEmail, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(model => model.UserInfo.InvitationEmail, new { @class = "form-control", @readonly = true })
+                </div>
+            </div>
+        </div>
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit">
+            @if (Model.UserInfo.GoogleId == "")
+            {
+                <input type="submit" id="SaveInvite" class="mainbutton mainright-btn submit-btn" value="Submit & Invite"/>
+            }
+            else
+            {
+                <button class="mainbutton mainright-btn submit-btn" type="button" id="ResetInvite">Reset & Send Invitation</button>
+            }
+            <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,8 @@
+﻿@model IEnumerable<string>
+@{
+
+    var list = (IEnumerable<string>)ViewData["Objects"];
+}
+<label class="control-label-text">
+    @string.Join(", ", Model ?? list)
+</label>

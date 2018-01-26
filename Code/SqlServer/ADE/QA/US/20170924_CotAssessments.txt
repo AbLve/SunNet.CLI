@@ -1,0 +1,14 @@
+
+--CotAssessments backup
+--SELECT * INTO CotAssessments_20170924 FROM dbo.COTAssessments AS CA
+
+
+UPDATE  CA
+SET     SchoolYear = '17-18'
+FROM    dbo.COTAssessments AS CA
+WHERE   SchoolYear = '16-17'
+        AND NOT EXISTS ( SELECT CA2.ID
+                         FROM   dbo.COTAssessments AS CA2
+                         WHERE  CA2.TeacherId = CA.TeacherId
+                                AND CA2.AssessmentId = CA.AssessmentId
+                                AND CA2.SchoolYear = '17-18' );

@@ -1,0 +1,574 @@
+﻿@using Sunnet.Cli.Core.Cpalls
+@{
+    ViewBag.Title = "Class Groups";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    ClassModel classModel = ViewBag.ClassModel;
+    string backSchool = Url.Action("Index", "School", new { assessmentId = Request.QueryString["assessmentId"] });
+    string backClass = Url.Action("Index", "Class", new { assessmentId = Request.QueryString["assessmentId"], schoolId = Request.QueryString["schoolId"], year = Request.QueryString["year"], wave = Request.QueryString["wave"] });
+    string backStudent = Url.Action("Index", "Student", new
+    {
+        assessmentId = Request.QueryString["assessmentId"]
+        ,
+        classId = Request.QueryString["classId"],
+        schoolId = Request.QueryString["schoolId"],
+        year = Request.QueryString["year"],
+        wave = Request.QueryString["wave"]
+    });
+
+    string assessmentId = Request.QueryString["assessmentId"];
+    string classId = Request.QueryString["classId"];
+    var parentMeasureList = ViewBag.ParentMeasure as List<MeasureHeaderModel>;
+    var list = ViewBag.List as List<CpallsStudentModel>;
+}
+
+@section Styles{
+    <style type="text/css">
+        .thisStudent {
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /*交换数据用的DIV*/
+
+        #tempBox {
+            position: absolute;
+            z-index: 9999;
+        }
+
+        .tmpLink {
+            margin-left: 10px;
+        }
+    </style>
+}
+
+
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a>
+    @if (@ViewBag.ShowSchoolback)
+    {
+        <i class="icon-angle-right"></i>
+        <a href="@backSchool">School View</a>
+    }
+    <i class="icon-angle-right"></i><a href="@backClass">Class View</a>
+    <i class="icon-angle-right"></i><a href="@backStudent">Student View</a>
+    <i class="icon-angle-right"></i>Class Groups
+}
+<div class="main-content top-form">
+    <form class="form-horizontal" role="form">
+        <label class="control-label">Community/District</label>
+        <label class="control-label-text">@classModel.School.CommunitiesText</label>
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label">School</label>
+        <label class="control-label-text">@classModel.School.Name</label>
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label">Class</label>
+        <label class="control-label-text">@classModel.ClassName</label>
+        @ViewTextHelper.HtmlEmptySeparator
+        @if (!string.IsNullOrEmpty(ViewBag.Teacher.ToString()))
+        {
+            <label class="control-label" for="Name">Teacher</label>
+            <label class="control-label-text">@ViewBag.Teacher</label>
+            @ViewTextHelper.HtmlEmptySeparator
+        }
+        <label class="control-label">School year</label>
+        <label class="control-label-text">@ViewBag.Year</label>
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label">Wave</label>
+        <label class="control-label-text">@ViewBag.WaveString</label>
+    </form>
+</div>
+
+<div class="right-content-top">
+    <a type="button" class="mainbutton mainright-btn nav-btn" href="@backStudent">
+        <i class="icon-list"></i>
+        Student View
+    </a>
+</div>
+
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        <div class="col-sm-6">
+            <div class="measure-btns">
+                <div class="btn-printer nav-btn">
+                    <a href='@Url.Action("MeasureGroupPdf", "Group", new
+                             {
+                                 schoolId = @Request.QueryString["schoolId"],
+                                 classId = @Request.QueryString["classId"],
+                                 year = @Request.QueryString["year"],
+                                 wave = @Request.QueryString["wave"],
+                                 language = @ViewBag.Language,
+                                 assessmentId = @Request.QueryString["assessmentId"]
+                             })' target="_blank">Printer Friendly Page</a>
+                </div>
+                <div class="btn-export nav-btn">
+                    <a href='@Url.Action("MeasureGroupPdf", "Group", new
+                             {
+                                 schoolId = @Request.QueryString["schoolId"],
+                                 classId = @Request.QueryString["classId"],
+                                 year = @Request.QueryString["year"],
+                                 wave = @Request.QueryString["wave"],
+                                 language = @ViewBag.Language,
+                                 assessmentId = @Request.QueryString["assessmentId"],
+                                 export = true
+                             })' target="_blank">Export to PDF</a>
+                </div>
+            </div>
+            <div class="content-con">
+
+                <div class="content-title3">
+                    <span class="content-title3-t">Measure Groups:</span>
+                </div>
+                @foreach (var item in (List<MeasureHeaderModel>)ViewBag.MeasureList)
+                {
+                    <div class="btns-group">
+                        <div class="btns-group-title">
+                            @if (item.ParentId > 1)
+                            {
+                                MeasureHeaderModel tmpP = parentMeasureList.Find(r => r.MeasureId == item.ParentId);
+                                if (tmpP != null)
+                                {
+                                    @tmpP.Name
+                                    @:>
+                                }
+                            }
+                            <strong>
+                                @item.Name
+                            </strong>
+                        </div>
+
+                        @foreach (var studentItem in list)
+                        {
+                            StudentMeasureRecordModel v = studentItem.MeasureList.Find(r => r.MeasureId == item.MeasureId && r.Benchmark >= 0
+                                                                                            && r.Goal < r.Benchmark && r.Status == CpallsStatus.Finished && r.TotalScored);
+                            if (v != null)
+                            {
+
+                                <div class="thisStudent3">
+                                    <div class="btns-group-con thisStudent2 @(v.Color)" vlu="@studentItem.ID" title="@studentItem.FirstName  @studentItem.LastName" style=" border: 1px; color: #fff; cursor: pointer; display: inline-block; float: left; height: 30px; margin-right: 20px; position: relative; width: 170px;">
+                                        <a href="/Cpalls/execute/view?id=@(studentItem.StudentAssessmentId)&measure=@(item.MeasureId)&classId=@(Request.QueryString["classId"])" style="line-height: 0; margin: 0; position: relative; width: 100%;" target="_blank">
+                                            <span style="display: inline-block; line-height: 20px; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 85%;">@studentItem.FirstName  @studentItem.LastName</span>
+                                        </a>
+                                        <i class="icon-move thisStudent" style=" margin: 5px 4px 0px 0px; padding: 3px; position: absolute; right: 0px; top: 0px;"></i>
+
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <div class="col-sm-12">
+                            <p>
+                                Activities:
+                                @foreach (var link in item.Links)
+                                {
+                                    <a href="@link.Link" class="form-link2" target="_blank">@link.DisplayText</a>
+                                }
+                            </p>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+
+
+
+        <div class="col-sm-6">
+            <div class="measure-btns">
+                <div class="btn-printer nav-btn">
+                    <a href='@Url.Action("CustomGroupPdf", "Group", new
+                             {
+                                 schoolId = @Request.QueryString["schoolId"],
+                                 classId = @Request.QueryString["classId"],
+                                 year = @Request.QueryString["year"],
+                                 wave = @Request.QueryString["wave"],
+                                 language = @ViewBag.Language,
+                                 assessmentId = @Request.QueryString["assessmentId"]
+                             })' target="_blank">Printer Friendly Page</a>
+                </div>
+
+                <div class="btn-export nav-btn">
+                    <a href='@Url.Action("CustomGroupPdf", "Group", new
+                             {
+                                 schoolId = @Request.QueryString["schoolId"],
+                                 classId = @Request.QueryString["classId"],
+                                 year = @Request.QueryString["year"],
+                                 wave = @Request.QueryString["wave"],
+                                 language = @ViewBag.Language,
+                                 assessmentId = @Request.QueryString["assessmentId"],
+                                 export = true
+                             })' target="_blank">Export to PDF</a>
+                </div>
+            </div>
+            <div class="content-con">
+                <div class="content-title3">
+                    <span class="content-title3-t">Custom Groups:</span>
+                    <div class="btn-add nav-btn">
+                        <a href='@Url.Action("AddGroup", "Group", new
+                                 {
+                                     schoolId = @Request.QueryString["schoolId"],
+                                     classId = @Request.QueryString["classId"],
+                                     year = @ViewBag.Year,
+                                     wave = @ViewBag.Wave,
+                                     language = @ViewBag.Language
+                                 })' data-target="#modalSmall" data-toggle="modal"><i class="icon-plus"></i>Add Group</a>
+                    </div>
+                </div>
+
+                <div data-bind="foreach: { data: Groups, as: 'Group' }">
+                    <div class="btns-group" data-bind="attr:{ID: 'group_'+ ID}">
+
+                        <div class="btns-group-title">
+                            <span data-bind="text: Name"></span>
+                            <a data-bind="click: $root.deleteGroup" title="Delete Group" href="javascript:void(0);"><i class="icon-trash close-btn-s"></i></a>
+
+                            <a title="Add Student"
+                               data-bind="attr:{href: '/Cpalls/Group/Student?groupId=' + ID + '&schoolId=@(Request.QueryString["schoolId"])&classId=@(Request.QueryString["classId"])&language=@(ViewBag.Language)&r=r' }"
+                               data-target="#modalSmall"
+                               data-toggle="modal">
+                                <i class="icon-plus add-btn-s"></i>
+                            </a>
+
+                            <a title="Edit Group" data-bind="    attr:{href: '/Cpalls/Group/EditGroup?groupId=' + ID}" data-target="#modalSmall" data-toggle="modal"><i class="icon-pencil pencil-btn-s"></i></a>
+                        </div>
+
+                        <div data-bind="foreach: { data: Group.StudentList, as: 'StudentList' }">
+                            <div class="btns-group-con" data-bind="attr:{ID: 's_' + Group.ID + '_' + ID}">
+                                <div class="btns-group-con" data-bind="click:  function(data, event) { $root.deleteGroupStudent(Groups.ID, data, event) }" style="background-color: green; border: 1px; color: #fff; cursor: pointer; display: inline-block; float: left; height: 30px; margin-right: 20px; position: relative; width: 170px;">
+                                    <a style="line-height: 0; margin: 0; position: relative; width: 100%;">
+                                        <span style="display: inline-block; line-height: 20px; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 85%;" data-bind="text: FullName,attr:{title:FullName}"></span>
+                                    </a>
+                                    <i class="icon-remove" title="Delete Student" style="background-color: green; margin: 5px 4px 0px 0px; position: absolute; right: 0px; top: 3px;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btns-group-con thatStudent" data-bind="attr:{vlu: ID}" style="border: 1px dashed #ccc; color: #999; display: inline-block; height: 60px; margin-right: 15px; padding-top: 15px; text-align: center; width: 200px;">
+                            Drop Student Here
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+@section Scripts
+{
+    <script type="text/javascript">
+
+
+        //拖放插件DragDrop
+        $.fn.Drag = function (options) {
+            var defaults = {
+                limit: window, //是否限制拖放范围,默认限制当前窗口内
+                drop: false, //是否drop
+                handle: false, //拖动手柄
+                finish: function () { } //回调函数
+            };
+
+            var options = $.extend(defaults, options);
+            this.X = 0; //初始位置
+            this.Y = 0;
+            this.dx = 0; //位置差值
+            this.dy = 0;
+
+            var This = this;
+            var ThisO = $(this); //被拖目标
+            var thatO;
+            var thatOO; //保持原如的thatO
+            var thatIndex;
+            if (options.drop) {
+                var ThatO = $(options.drop); //可放下位置
+                ThisO.find('.thisStudent').css({});
+                var tempBox = $('<div id="tempBox"></div>');
+            } else {
+                options.handle ? ThisO.find(options.handle).css({ cursor: 'move', '-moz-user-select': 'none' }) : ThisO.css({ cursor: 'move', '-moz-user-select': 'none' });
+            }
+
+            //拖动开始
+            this.dragStart = function (e) {
+
+                var cX = e.pageX;
+                var cY = e.pageY;
+                if (options.drop) {
+                    ThisO = $(this);
+                    This.X = ThisO.closest(".thisStudent2").offset().left + 3;
+                    This.Y = ThisO.closest(".thisStudent2").offset().top - 3;
+                    tempBox.html(ThisO.closest(".thisStudent3").html());
+                    console.log(ThisO.closest(".thisStudent3").html());
+                    $('body').append(tempBox);
+                    tempBox.css({ left: This.X, top: This.Y });
+
+                } else {
+                    This.X = ThisO.offset().left;
+                    This.Y = ThisO.offset().top;
+                    ThisO.css({ margin: 0 });
+                }
+                This.dx = cX - This.X;
+                This.dy = cY - This.Y;
+                if (!options.drop) {
+                    ThisO.css({ position: 'absolute', left: This.X, top: This.Y });
+                }
+                $(document).mousemove(This.dragMove);
+                $(document).mouseup(This.dragStop);
+                //  if ($.support) { ThisO[0].setCapture(); }//IE,鼠标移到窗口外面也能释放
+            }; //拖动中
+            this.dragMove = function (e) {
+                var cX = e.pageX;
+                var cY = e.pageY;
+                if (options.limit) { //限制拖动范围
+                    //容器的尺寸
+                    var L = $(options.limit)[0].offsetLeft ? $(options.limit).offset().left : 0; //0
+                    var T = $(options.limit)[0].offsetTop ? $(options.limit).offset().top : 0; //0
+                    var R = L + $(options.limit).width(); //1903
+                    var B = T + $(options.limit).height(); //835
+
+                    //获取拖动范围
+                    var iLeft = cX - This.dx, iTop = cY - This.dy;
+                    //获取超出长度
+                    var iRight = iLeft + 180 - R;
+                    iBottom = iTop + 30 - B - $(document).scrollTop();
+                    //alert($(window).height())
+                    //先设置右下, 再设置左上
+                    if (iRight > 0) {
+                        iLeft -= iRight;
+                    }
+
+                    if (iBottom > 0) {
+                        iTop -= iBottom;
+                    }
+
+                    if (L > iLeft) iLeft = L;
+                    if (T > iTop) iTop = T;
+
+                    if (options.drop) {
+                        tempBox.css({ left: iLeft, top: iTop });
+                    } else {
+                        ThisO.css({ left: iLeft, top: iTop });
+                    }
+                } else {
+                    //不限制范围
+                    if (options.drop) {
+                        tempBox.css({ left: cX - This.dx, top: cY - This.dy });
+                    } else {
+                        ThisO.css({ left: cX - This.dx, top: cY - This.dy });
+                    }
+                }
+
+            }; //拖动结束
+            this.dragStop = function (e) {
+                var flag = false;
+                if (options.drop) {
+
+                    var cX = e.pageX;
+                    var cY = e.pageY;
+                    var oLf = ThisO.closest(".thisStudent3").offset().left;
+                    var oRt = oLf + ThisO.closest(".thisStudent3").width();
+                    var oTp = ThisO.closest(".thisStudent3").offset().top;
+                    var oBt = oTp + ThisO.closest(".thisStudent3").height();
+                    if (!(cX > oLf && cX < oRt && cY > oTp && cY < oBt)) { //如果不是在原位
+                        for (var i = 0; i < ThatO.length; i++) {
+                            var XL = $(ThatO[i]).offset().left;
+                            var XR = XL + $(ThatO[i]).width();
+                            var YL = $(ThatO[i]).offset().top;
+                            var YR = YL + $(ThatO[i]).height();
+                            if (XL < cX && cX < XR && YL < cY && cY < YR) { //找到拖放目标 交换位置
+                                thatOO = $(ThatO[i]).clone();
+                                thatIndex = i;
+                                $(ThatO[i]).html(tempBox.html());
+                                thatO = $(ThatO[i]);
+                                tempBox.remove();
+                                flag = true;
+                                break; //一旦找到 就终止循环
+                            }
+                        }
+                    }
+                    if (!flag) { //如果找不到拖放位置,归回原位
+                        tempBox.css({ left: This.X, top: This.Y });
+                        ThisO.closest(".thisStudent3").html(tempBox.html());
+                        tempBox.remove();
+                    }
+                }
+                $(document).unbind('mousemove');
+                $(document).unbind('mouseup');
+                if (flag)
+                    options.finish(e, thatOO, ThisO.closest(".thisStudent3"), ThatO, thatIndex);
+                else {
+                    $('.thisStudent').off();
+                    $('.thisStudent').Drag({ drop: '.thatStudent', finish: change });
+                }
+            };
+            //绑定拖动
+            if (options.handle) {
+                ThisO.find(options.handle).mousedown(This.dragStart);
+            } else {
+                ThisO.mousedown(This.dragStart);
+            }
+        };
+        var change = function (e, oldElm, newElm, ThatO, thatIndex) {
+            var tmp_exist = false;
+            var tmp_groupId = $(oldElm).attr("vlu");
+            var tmp_studentId = $(newElm[0].innerHTML).attr("vlu");
+            for (var i = 0; i < list_Group.length; i++) {
+                if (list_Group[i].ID == tmp_groupId) {
+                    for (var j = 0; j < list_Group[i].StudentList.length; j++) {
+                        if (list_Group[i].StudentList[j].ID == tmp_studentId) {
+                            tmp_exist = true;
+                            $(ThatO[thatIndex]).html($(oldElm)[0].innerHTML);
+                            showMessage("hint", "The student is already in this Group.");
+                            break;
+                        }
+                    }
+                }
+            }
+            if (tmp_exist == false) {
+                jQuery.post("/Cpalls/group/MoveToGroup",
+                {
+                    groupId: tmp_groupId,
+                    studentId: tmp_studentId,
+                    language: '@(ViewBag.Language)',
+                    classId: '@(Request.QueryString["classId"])'
+                }, function (msg) {
+                    if (msg.success) {
+                        group_DataEdited(msg);
+                    } else {
+                        window.showMessage("fail", msg.msg);
+                    }
+                }, "json");
+            }
+        };
+        var list_Group;
+        var group_viewModel = {};
+
+        function group_DataAdded(response) {
+            if (typeof response == "string")
+                response = JSON.parse(response);
+            list_Group.unshift(response.data);
+            group_viewModel.Groups(list_Group);
+            $('.thisStudent').off();
+            $('.thisStudent').Drag({ drop: '.thatStudent', finish: change });
+        }
+
+        function group_DataEdited(response) {
+            if (typeof response == "string")
+                response = JSON.parse(response);
+            var isGroup_add = true;
+            for (var i = 0; i < list_Group.length; i++) {
+                if (list_Group[i].ID == response.data.ID) {
+                    isGroup_add = false;
+                    list_Group[i] = jQuery.extend({}, list_Group[i], response.data);
+                    group_viewModel.Groups(list_Group);
+                }
+            }
+            if (isGroup_add) {
+                list_Group.unshift(response.data);
+                group_viewModel.Groups(list_Group);
+            }
+            $('.thisStudent').off();
+            $('.thisStudent').Drag({ drop: '.thatStudent', finish: change });
+        }
+
+        function group_DataNameEdited(response) {
+            if (typeof response == "string")
+                response = JSON.parse(response);
+            for (var i = 0; i < list_Group.length; i++) {
+                if (list_Group[i].ID == response.data.ID) {
+                    var v = list_Group[i];
+                    v.Name = response.data.Name;
+                    list_Group[i] = jQuery.extend({}, list_Group[i], v);
+                    group_viewModel.Groups(list_Group);
+                    break;
+                }
+            }
+            $('.thisStudent').off();
+            $('.thisStudent').Drag({ drop: '.thatStudent', finish: change });
+        }
+
+        $(function () {
+            $.getJSON("@Url.Action("Search", "Group")", { "schoolId": '@Request.QueryString["schoolId"]', "classId": '@Request.QueryString["classId"]', "r": Math.random(), "Wave": '@ViewBag.Wave', "Year": '@ViewBag.Year', "language": '@ViewBag.Language' }, function (result) {
+                list_Group = result.data;
+                group_viewModel = {
+                    Groups: ko.observableArray(result.data),
+                    deleteGroup: function (item, event) {
+                        jQuery.when(waitingConfirm("<p style='text-align:left'> Are you sure you want to delete the group? ", "Yes", "No")).done(function () {
+                            jQuery.post("/Cpalls/group/DeleteGroup",
+                            {
+                                id: item.ID
+                            }, function (msg) {
+                                if (msg.success) {
+                                    $("#group_" + item.ID).remove();
+                                    var tmp_groupIndex;
+                                    for (var i = 0; i < list_Group.length; i++) {
+                                        if (list_Group[i].ID == item.ID) {
+                                            tmp_groupIndex = i;
+                                            break;
+                                        }
+                                    }
+                                    if (tmp_groupIndex >= 0) {
+                                        list_Group.splice(tmp_groupIndex, 1);
+                                    }
+                                    $('.thisStudent').off();
+                                    $('.thisStudent').Drag({ drop: '.thatStudent', finish: change });
+                                } else {
+                                    window.showMessage("fail", msg.msg);
+                                }
+                            }, "json");
+                        }).fail(function () {
+                        });
+
+                    },
+                    deleteGroupStudent: function (groupId, item, event) {
+                        jQuery.when(waitingConfirm("<p style='text-align:left'> Are you sure you want to delete the student? ", "Yes", "No")).done(function () {
+                            jQuery.post("/Cpalls/group/deleteGroupStudent",
+                            {
+                                studentId: item.ID,
+                                groupId: groupId
+                            }, function (msg) {
+                                if (msg.success) {
+                                    var tmp_studentIndex;
+                                    var tmp_groupIndex;
+                                    $("#s_" + groupId + "_" + item.ID).remove();
+                                    for (var i = 0; i < list_Group.length; i++) {
+                                        if (list_Group[i].ID == groupId) {
+                                            for (var j = 0; j < list_Group[i].StudentList.length; j++) {
+                                                if (list_Group[i].StudentList[j].ID == item.ID) {
+                                                    tmp_studentIndex = j;
+                                                    break;
+                                                }
+                                            }
+                                            tmp_groupIndex = i;
+                                            break;
+                                        }
+                                    }
+                                    if (tmp_groupIndex >= 0 && tmp_studentIndex >= 0) {
+                                        list_Group[tmp_groupIndex].StudentList.splice(tmp_studentIndex, 1);
+                                        $('.thisStudent').off();
+                                        $('.thisStudent').Drag({ drop: '.thatStudent', finish: change });
+                                    }
+                                } else {
+                                    window.showMessage("fail", msg.msg);
+                                }
+                            }, "json");
+                        }).fail(function () {
+                        });
+                    }
+                };
+
+                ko.applyBindings(group_viewModel);
+                $('.thisStudent').Drag({ drop: '.thatStudent', finish: change });
+            });
+        });
+
+
+    </script>
+}

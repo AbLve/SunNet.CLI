@@ -1,0 +1,180 @@
+﻿IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TRSAssessments]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+	DROP TABLE [dbo].[TRSAssessments]
+GO
+
+
+
+/****** Object:  Table [dbo].[TRSAssessments]    Script Date: 2015/1/12 14:42:01 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[TRSAssessments](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SchoolId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[Star] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+ CONSTRAINT [PK_TRSAssessments] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+
+IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TRSItems]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+DROP TABLE [dbo].[TRSItems]
+GO
+
+/****** Object:  Table [dbo].[TRSItems]    Script Date: 2015/1/12 15:00:26 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[TRSItems](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Category] [tinyint] NOT NULL,
+	[SubCategory] [tinyint] NOT NULL,
+	[Item] [varchar](50) NOT NULL,
+	[Text] [varchar](500) NOT NULL,
+	[Description] [varchar](2000) NOT NULL,
+	[Filter] [tinyint] NOT NULL,
+	[TAPlanItem] [varchar](200) NOT NULL,
+	[TAPlanItemType] [varchar](200) NOT NULL,
+	[TAItemInstructions] [varchar](200) NOT NULL,
+	[LinkingDocument] [varchar](200) NOT NULL,
+	[IsRequired] [bit] NOT NULL,
+ CONSTRAINT [PK_TRSItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TRSAnswers]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+DROP TABLE [dbo].[TRSAnswers]
+GO
+
+/****** Object:  Table [dbo].[TRSAnswers]    Script Date: 2015/1/12 15:01:00 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[TRSAnswers](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Text] [varchar](100) NOT NULL,
+	[Score] [int] NOT NULL,
+ CONSTRAINT [PK_TRSAnswers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+ IF EXISTS (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TRSAssessmentItems]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+	DROP TABLE [dbo].[TRSAssessmentItems]
+GO
+
+/****** Object:  Table [dbo].[TRSAssessmentItems]    Script Date: 2015/1/12 15:01:41 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[TRSAssessmentItems](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[TRSAssessmentId] [int] NOT NULL,
+	[ClassroomId] [int] NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[Score] [int] NOT NULL,
+	[AnswerId] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+ CONSTRAINT [PK_TRSAssessmentItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+
+ IF EXISTS (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TRSClassroomStars]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+DROP TABLE [dbo].[TRSClassroomStars]
+GO
+
+/****** Object:  Table [dbo].[TRSClassroomStars]    Script Date: 2015/1/12 15:02:28 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[TRSClassroomStars](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[ClassroomId] [int] NOT NULL,
+	[Star] [tinyint] NOT NULL,
+ CONSTRAINT [PK_Table_1] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+
+ IF EXISTS (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TRSItemAnswers]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+DROP TABLE [dbo].[TRSItemAnswers]
+GO
+
+/****** Object:  Table [dbo].[TRSItemAnswers]    Script Date: 2015/1/12 15:02:56 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[TRSItemAnswers](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[AnswerId] [int] NOT NULL,
+ CONSTRAINT [PK_TRSItemAnswers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+

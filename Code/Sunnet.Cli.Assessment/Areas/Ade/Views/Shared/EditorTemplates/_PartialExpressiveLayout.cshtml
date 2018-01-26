@@ -1,0 +1,64 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="main-content" data-bind="visible: step() == 3">
+    <div class="content-body" id="content-body">
+        <div class="item-main-header">
+            <div class="col-sm-6" style="padding-top: 15px;">
+                <div id="divLayoutHead">
+                    Layout: 
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="radioLayout" value="1" id="radioLayout1" checked="checked" onclick="chooseLayout(this)" />
+                    <label for="radioLayout1">Custom</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="radioLayout" value="2" id="radioLayout2" onclick="chooseLayout(this)" />
+                    <label for="radioLayout2">Existing</label>
+                    &nbsp;&nbsp;
+                    <div class="nav-btn" id="divExistLayout" style="display: none;">
+                        <a data-bind="attr: { href: '/Ade/Item/ChooseLayout?images=' + (ImageList().length) }"
+                            data-target="#modalNormal" data-toggle="modal" class="mainbutton mainright-btn nav-btn"
+                            style="height: 24px; padding-top: 4px">Choose Template</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-6 item-fullscreen-head">
+                <a class="item-fullscreen-btn stop-btn" onclick="switchFullscreen('content-body')">
+                    <i class="icon-resize-full"></i>
+                </a>
+            </div>
+        </div>
+        <div class="setSize" id="divShow">
+            <span class="arrow-left-bot"></span>
+            <span class="arrow-left-top"></span>
+            <div class="setSizeCloseDiv">
+                <a class="closeSize icon-remove" onclick="CloseSize()"></a>
+            </div>
+            
+            <div class="setSizeDiv">
+                Left&nbsp;&nbsp;
+                <input type="number" class="setSizeInput" id="txtCanvaLeft"/>
+                <input type="hidden" id="hidCanvaLeft" />
+            </div>
+
+            <div class="setSizeDiv">
+                Top&nbsp;&nbsp;
+                <input type="number" class="setSizeInput" id="txtCanvaTop"/>
+                <input type="hidden" id="hidCanvaTop" />
+            </div>
+
+            <div class="setSizeDiv">
+                <label for="txtCanvaWidth">Width&nbsp;&nbsp;&nbsp;</label>
+                <input type="number" class="setSizeInput" id="txtCanvaWidth"/>
+                <input type="hidden" id="hidCanvaWidth" />
+            </div>
+            <div class="setSizeDiv">
+                <label for="txtCanvaHeight">Height&nbsp;&nbsp;</label>
+                <input type="number" class="setSizeInput" id="txtCanvaHeight"/>
+                <input type="hidden" id="hidCanvaHeight" />
+            </div>
+        </div>
+        <canvas id="cav_layout">(Your browser doesn't support canvas)</canvas>
+    </div>
+</div>

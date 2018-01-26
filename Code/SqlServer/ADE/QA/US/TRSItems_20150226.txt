@@ -1,0 +1,21 @@
+﻿
+update TRSItems set ShowByInfants=1 where Item like 'P-SCR-%'
+go
+
+update TRSAnswers set Text='Valid CCA' where ID=2
+go
+
+update TRSAnswers set Text='Valid CCA w/o CCL waiver' where ID=9
+go
+
+if not exists (select * from TRSAnswers where Text='5 to 9 years as a director in a TRS or currently recognized nationally accredited provider' and Score=1) 
+insert into TRSAnswers values('5 to 9 years as a director in a TRS or currently recognized nationally accredited provider',1)
+go
+
+if not exists (select * from TRSItemAnswers where ItemId=1 and AnswerId=84)
+insert into TRSItemAnswers values(1,84)
+go
+
+if not exists (select * from TRSItemAnswers where ItemId=2 and AnswerId=84)
+insert into TRSItemAnswers values(2,84)
+go

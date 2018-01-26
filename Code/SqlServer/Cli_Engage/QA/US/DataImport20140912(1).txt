@@ -1,0 +1,19 @@
+﻿alter table [BasicCommunities] add 
+[Type] varchar(50)
+,[Address1] varchar(500)
+,[City] varchar(140)
+,[Zip] varchar(20)
+,[Phone] varchar(50)
+
+alter table BasicSchools add
+[Address1] varchar(500)
+,[City] varchar(140)
+,[Zip] varchar(20)
+,[Phone] varchar(50)
+
+
+alter table  [BasicCommunities] add [CountyId] int ,[StateId] int
+alter table  BasicSchools add [CountyId] int ,[StateId] int    
+
+
+ALTER TABLE BasicSchools alter column Name varchar(500)

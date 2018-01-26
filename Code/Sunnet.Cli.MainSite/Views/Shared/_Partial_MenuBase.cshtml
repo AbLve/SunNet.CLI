@@ -1,0 +1,29 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    var currentMenu = Cli_Menus.Home;
+    if (ViewBag.CurrentMenu != null)
+    {
+        currentMenu = (Cli_Menus)ViewBag.CurrentMenu;
+    }
+
+    var menus = Cli_Menus.Home.ToList().Cast<Cli_Menus>().ToDictionary(module => module, module => module == currentMenu ? "active" : "");
+}
+<div class="nav-con">
+    <div class="nav" id="nav">
+        <ul>
+            <li>@Html.ActionLink("Home", "Index", "Home", new { Area = "" },
+                    new { @class = menus[Cli_Menus.Home] })</li>
+            <li>@Html.ActionLink("About Us", "AboutUs", "Home", new { Area = "" },
+                    new { @class = menus[Cli_Menus.AboutUs] })</li>
+            <li>@Html.ActionLink("Engage Overview", "Overview", "Home", new { Area = "" },
+                    new { @class = menus[Cli_Menus.EngageOverview] })</li>
+      <li>@Html.ActionLink("Parents", "Parents", "Home", new { Area = "" },
+                    new { @class = menus[Cli_Menus.EngageParents] })</li>
+            <li>@Html.ActionLink("FAQ", "FAQ", "Home", new { Area = "" },
+                    new { @class = menus[Cli_Menus.Faq] })</li>
+            <li>@Html.ActionLink("Contact Us", "ContactUs", "Home", new { Area = "" },
+                    new { @class = menus[Cli_Menus.ContactUs] })</li>
+        </ul>
+    </div>
+</div>

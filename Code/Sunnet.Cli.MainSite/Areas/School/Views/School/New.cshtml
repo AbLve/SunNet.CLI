@@ -1,0 +1,388 @@
+﻿@using System.Collections.Generic
+@using System.Web.Optimization
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Schools.Models.SchoolModel
+@{
+    ViewBag.Title = "Add School";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Layout_Base.cshtml";
+
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.School)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("School", "Index", "School"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;Add
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/module_school")
+    <script type="text/javascript">
+        var subTypeVal = "";
+        var isSendRequest = false;
+        var viewModel = {
+            defaultCounty: ko.observable(@Model.CountyId),
+            selectedCounty: ko.observable(@Model.CountyId),
+            countiesOptions: ko.observableArray([]),
+            selectedState: ko.observable(@Model.StateId),
+            address1: ko.observable(""),
+            address2: ko.observable(""),
+            city: ko.observable(""),
+            zip: ko.observable(""),
+            defaultMailCounty: ko.observable(@Model.MailingCountyId),
+            mailSelectedCounty: ko.observable(@Model.MailingCountyId),
+            mailCountiesOptions: ko.observableArray([]),
+            mailSelectedState: ko.observable(@Model.MailingStateId),
+            mailAddress1: ko.observable(""),
+            mailAddress2: ko.observable(""),
+            mailCity: ko.observable(""),
+            mailZip: ko.observable(""),
+
+            keepMailSameAsPhysical: ko.observable(false),
+            sync: function() {
+                if (viewModel.keepMailSameAsPhysical()) {
+                    viewModel.mailCountiesOptions.removeAll();
+                    viewModel.mailCountiesOptions.push.apply(viewModel.mailCountiesOptions, viewModel.countiesOptions());
+                    viewModel.mailSelectedState(viewModel.selectedState());
+                    viewModel.mailSelectedCounty(viewModel.selectedCounty());
+                    viewModel.defaultMailCounty(viewModel.selectedCounty());
+
+                    viewModel.mailAddress1(viewModel.address1());
+                    viewModel.mailAddress2(viewModel.address2());
+                    viewModel.mailCity(viewModel.city());
+                    viewModel.mailZip(viewModel.zip());
+                }
+            }
+        };
+
+        function BeforeSubmit() { 
+
+            if ($("#BasicSchoolId").val() != "" && $("#CommunityId").val() != "") 
+            {
+                $.get('@Url.Action("IsSchoolExists")', { basicSchoolId: $("#BasicSchoolId").val(), selectCommunityId: $("#CommunityId").val() }, function(data) {
+                    if (data != "") {
+                        var items = data.split('_');
+                        if (items[1] == "true") {
+                            jQuery.when(waitingConfirm(window.getErrorMessage("SchoolNameExistsAssign"), "Assign", "Cancel")).done(function() {
+                                location.href = "/School/School/AssignCommunity?schoolId=" + items[0];
+                            }).fail(function() {
+
+                            });
+                        } 
+                        else if (items[1] == "false")
+                        {
+                            if (!isSendRequest) 
+                            {
+                                jQuery.when(waitingConfirm(window.getErrorMessage("SchoolNameExistsRequest"), "Send", "Cancel")).done(function() {
+                                    SendRequest(items[0], $("#CommunityId").val());
+                                }).fail(function() {
+                                });
+                            } 
+                            else
+                            {
+                                showMessage("fail", window.getErrorMessage("SchoolRequestHasSent"));
+                            }
+                        } 
+                        else if (items[1] == "exsit") 
+                        {
+                            showMessage("fail", window.getErrorMessage("SchoolRelationshipExistsAlert"));
+                        }
+                        else if (items[1] == "pending") 
+                        {
+                            showMessage("fail", window.getErrorMessage("SchoolRelationshipPendingAlert"));
+                        }
+                        return false;
+                    }
+                    else
+                    {
+                        $("#@formId").submit();
+                    }
+                }, "text");
+                return false;
+            }
+            else 
+            { 
+                //if ($("#txtBasicSchool").val().replace(/(^\s*)|(\s*$)/g, "") != "" ) 
+                //{
+                //    if($("#BasicSchoolId").val() == "")
+                //    $("#BasicSchoolId").val("0");
+                //}
+                //else 
+                //{
+                //    $("#BasicSchoolId").val("");
+                //}
+                return ($("#BasicSchoolId").valid()) ;
+            }
+        }
+
+        viewModel.selectedState.subscribe(function(state) {
+            $.getJSON('@Url.Action("GetCountiesByStateId")',
+                { stateId: state },
+                function(data) {
+                    viewModel.countiesOptions.removeAll();
+                    viewModel.countiesOptions.push.apply(viewModel.countiesOptions, data);
+                    viewModel.selectedCounty(viewModel.defaultCounty());
+
+                    viewModel.sync();
+                });
+        });
+
+        function syncMailAddress() {
+            viewModel.sync();
+        }
+
+        viewModel.address1.subscribe(syncMailAddress);
+        viewModel.address2.subscribe(syncMailAddress);
+        viewModel.city.subscribe(syncMailAddress);
+        viewModel.zip.subscribe(syncMailAddress);
+        viewModel.selectedCounty.subscribe(syncMailAddress);
+        viewModel.keepMailSameAsPhysical.subscribe(syncMailAddress);
+
+        viewModel.mailSelectedState.subscribe(function(state) {
+            $.getJSON('@Url.Action("GetCountiesByStateId")',
+                { stateId: state },
+                function(data) {
+                    viewModel.mailCountiesOptions.removeAll();
+                    viewModel.mailCountiesOptions.push.apply(viewModel.mailCountiesOptions, data);
+                    viewModel.mailSelectedCounty(viewModel.defaultMailCounty());
+                });
+        });
+
+
+        SCHOOL_FourStart = '@(ViewBag.FourStart)';
+        $(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    if (window.opener != null) {
+                        if (window.opener.vertificationName != "") {
+                            window.opener.ReturnSchool(response.data.ID, response.data.SchoolName);
+                            window.close();
+                        }
+                    }
+                    redirectBack("index");
+                }
+            });
+
+            $("#txtBasicSchool").change(function() {
+                if ($("#txtBasicSchool").val().replace(/(^\s*)|(\s*$)/g, "") != "" ) {
+                    $("#BasicSchoolId").val("0");
+                } else {
+                    $("#BasicSchoolId").val("");
+                }
+                $("#BasicSchoolId").valid();
+            });
+
+            $("#txtCommunity").on("selected.sunnet.datalist", function(event) {
+                //  $("#txtBasicSchool").datalist("clear");
+                CheckSchoolExsits();
+                if (event.selected && event.selected.ID) {
+                    $.post("/School/School/GetCoordCoachsByCommunityId?communityId=" + event.selected.ID, function(data) {
+                        if (data) {
+                            var strHtml = "";
+                            for (var i = 0; i < data.length; i++) {
+                                strHtml += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                            }
+                            $("#TrsAssessorId").html("").append(strHtml);
+                        }
+                    }, 'json');
+                    if ($("#divTRS").length > 0) {
+                        $.post("/School/School/IsShowTRS?communityId=" + event.selected.ID, function(data) {
+                            if (data) {
+                                if (data.toLowerCase() == "true") {
+                                    $("#divTRS").show();
+                                } else {
+                                    $("#divTRS").hide();
+                                    if ($("#TrsAssessorId").length > 0) {
+                                        $("#TrsAssessorId").val("0");
+                                        $("#DfpsNumber").val("");
+                                        $("#VSDesignation").val("0");
+                                        $("#OwnerFirstName").val("");
+                                        $("#OwnerLastName").val("");
+                                        $("#OwnerEmail").val("");
+                                        $("#OwnerPhone").val("");
+                                        $("#FacilityType").val("");
+                                        $("#RegulatingEntity").val("");
+
+                                        $("#NAEYC").val("").prop("checked", false);
+                                        $("#CANASA").val("").prop("checked", false);
+                                        $("#NECPA").val("").prop("checked", false);
+                                        $("#NACECCE").val("").prop("checked", false);
+                                        $("#NAFCC").val("").prop("checked", false);
+                                        $("#ACSI").val("").prop("checked", false);
+                                        $("#USMilitary").val("").prop("checked", false);
+                                    }
+                                }
+                            }
+
+                        }, 'text');
+                    }
+                }
+
+            });
+
+
+            $("#txtBasicSchool").on("selected.sunnet.datalist", function(event) {
+                viewModel.address1(event.selected.Address);
+                viewModel.address2("");
+                viewModel.city(event.selected.City);
+                viewModel.zip(event.selected.Zip);
+                CheckSchoolExsits();
+                $("#BasicSchoolId").val(event.selected.ID);
+                $("#SchoolNumber").val(event.selected.SchoolNumber);
+                $("#PhoneNumber").val(event.selected.PhoneNumber);
+
+                viewModel.defaultCounty(event.selected.CountyId);
+                viewModel.selectedState(event.selected.StateId);
+            });
+
+            $.extend(viewModel, new AutoAssign4Star());
+            ko.applyBindings(viewModel);
+        });
+
+        function SendRequest(schoolId, communityId) {
+            $.post("/School/School/SendSchoolRequest?schoolId=" + schoolId + "&communityId=" + communityId,
+                function(data) {
+                    if (data.success == true) {
+                        showMessage("success");
+                        isSendRequest = true;
+                        location.href = '@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))';
+                    } else
+                        showMessage("fail", data.msg);
+                }, "json");
+        }
+
+        function CheckSchoolExsits() {
+            if ($("#BasicSchoolId").val() != "" && $("#CommunityId").val() != "") {
+                $.get('@Url.Action("IsSchoolExists")', { basicSchoolId: $("#BasicSchoolId").val(), selectCommunityId: $("#CommunityId").val() }, function(data) {
+                    if (data != "") {
+                        var items = data.split('_');
+                        if (items[1] == "true") {
+                            jQuery.when(waitingConfirm(window.getErrorMessage("SchoolNameExistsAssign"), "Assign", "Cancel")).done(function() {
+                                location.href = "/School/School/AssignCommunity?schoolId=" + items[0];
+                            }).fail(function() {
+                            });
+                        } else if (items[1] == "false") {
+                            jQuery.when(waitingConfirm(window.getErrorMessage("SchoolNameExistsRequest"), "Send", "Cancel")).done(function() {
+                                SendRequest(items[0], $("#CommunityId").val());
+                            }).fail(function() {
+                            });
+                        } else if (items[1] == "exsit") {
+                            showMessage("fail", window.getErrorMessage("SchoolRelationshipExistsAlert"));
+                        }
+                        else if (items[1] == "pending") 
+                        {
+                            showMessage("fail", window.getErrorMessage("SchoolRelationshipPendingAlert"));
+                        }
+                        return false;
+                    }
+                }, "text");
+            }
+            return false;
+        }
+
+
+    </script>
+}
+@using (Ajax.BeginForm("New", "School", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to School List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-2 control-label required" })
+                @Html.Label("txtCommunity", "txtCommunity", new { @class = "hide" })
+                <div class="col-sm-4">
+                    @Html.TextBox("txtCommunity", "", new
+               {
+                   autocomplete = "off",
+                   @class = "form-control",
+                   data_list = "true",
+                   data_for = "#CommunityId",
+                   data_remote = Url.Action("GetCommunitySelectList", "Community", new { Area = "Community" }),
+                   data_text = "Name",
+                   data_value = "ID",
+                   id = "txtCommunity",
+                   placeholder = "Enter key text to search",
+                   name = "txtCommunity",
+                   @for = "CommunityId",
+                   @Value = Model.CommunityName
+               })
+                    @Html.HiddenFor(model => model.CommunityId, new
+               {
+                   @class = "form-control validate",
+                   placeholder = "Selected Community",
+                   @Value = (Model.CommunityId == 0 ? "" : Model.CommunityId.ToString())
+               })
+                    @Html.ValidationMessageFor(model => model.CommunityId)
+                </div>
+
+                @Html.HiddenFor(model => model.ID)
+ @Html.HiddenFor(model => model.CreateBy)
+ @Html.HiddenFor(model => model.UpdateBy)
+ @Html.HiddenFor(model => model.CreateFrom)
+ @Html.HiddenFor(model => model.UpdateFrom)
+
+                @Html.LabelFor(model => model.SchoolId, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolId, new { @class = "form-control", @readonly = "true" })
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.BasicSchoolId, new { @class = "control-label col-sm-2 required" })
+                @Html.Label("lbtxtBasicSchool", "txtBasicSchool", new { @class = "hide", @for = "txtBasicSchool" })
+                <div class="col-sm-4">
+                    @Html.TextBox("txtBasicSchool", "", new
+               {
+                   autocomplete = "off",
+                   @class = "form-control ",
+                   data_list = "true",
+                   data_for = "#BasicSchoolId",
+                   placeholder = "Enter key text to search",
+                   data_remote = Url.Action("GetBasicSchoolSelectList", "School", new { Area = "School" }),
+                   data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+                   data_text = "Name",
+                   data_value = "ID",
+                   id = "txtBasicSchool",
+                   name = "txtBasicSchool",
+                   @for = "BasicSchoolId" , data_required = "true",
+                   data_autoload="1"
+               })
+                    @Html.HiddenFor(model => model.BasicSchoolId, new
+               {
+                   @class = "form-control ",
+                   placeholder = "Selected School",
+                   @Value = ""
+               }) 
+                @Html.ValidationMessageFor(model => model.BasicSchoolId)
+                </div>
+                @Html.LabelFor(model => model.SchoolYear, null, new { @class = "col-sm-2 control-label " })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            @Html.Partial((string)ViewBag.partialUrl)
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" onclick="return BeforeSubmit()" type="submit">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+    </div>
+}
+

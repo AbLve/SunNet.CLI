@@ -1,0 +1,114 @@
+﻿@using Sunnet.Cli.Business.Cot.Cumulative
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Cot/Views/Shared/_Layout_Report_Chart.cshtml";
+    var models = ViewBag.Model as List<ReportModel>;
+    var isFirstTeacher = true;
+    var index = 0;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@foreach (var model in models)
+{
+    foreach (var measure in model.Measures)
+    {
+        <table class='header @(isFirstTeacher ? "" : "newpager") ' width="100%">
+            <thead>
+                <tr>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        &nbsp;
+                    </td>
+                    <th class="title" style="vertical-align: middle;" colspan="4">
+                        @(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))<br />
+                        @(model.Type.ToDescription())
+                    </th>
+                    <td colspan="4" style="text-align:right;" rowspan="2">
+                        <img src="@(SFConfig.AssessmentDomain)/Resources/cli_logo.png" alt="CLI logo" style="width:150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">&nbsp;</td>
+                    <th class="title" colspan="4">
+                        @(measure.Name)
+                        <br />
+                        @(model.Type.GetDisplayName())
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        @Html.DisplayNameFor(x => model.Community):
+                        &nbsp;@(model.Community)
+                    </td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.Teacher):
+                        &nbsp;@(model.Teacher)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.School):
+                        &nbsp;@(model.School)
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.Mentor):
+                        &nbsp;@(model.Mentor)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.SchoolYear):
+                        &nbsp;@(model.FullSchoolYear)
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.BoyDate):
+                        &nbsp;@(model.BoyDate.FormatDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.MoyDate):
+                        &nbsp;@(model.MoyDate.FormatDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.MetDate):
+                        &nbsp;@(model.MetDate.FormatDateString())
+                    </td>
+                </tr>
+            </thead>
+        </table>
+        <div style="width: @ReportHelper.GetChartWidth(measure.Items.Count() + 2, 50, 100, 1200)px;height:520px;text-align: center; page-break-inside: avoid; margin: 0 auto;">
+            <img src='@(ViewData["Image" + index++])' />
+        </div>
+        {
+            isFirstTeacher = false;
+        }
+    }
+}

@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Sunnet.Cli.Business.Ade.Models.ItemListModel>
+
+@{
+    ViewBag.Title = "Adjust Order";
+    var measure = Model.First().Measure;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Detail", "Measure", new { id = measure.ID });
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Assessment", "Index", "Assessment"))<i class="icon-angle-right"></i>
+    @Html.ActionLink(measure.AssessmentLabel, "Detail", "Assessment", new { id = measure.AssessmentId }, null)
+    <i class="icon-angle-right"></i>@Html.ActionLink(measure.Label, "Detail", "Measure", new { id = measure.AssessmentId }, null)
+    <i class="icon-angle-right"></i>Items
+    <i class="icon-angle-right"></i>Adjust Order
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#tblItems").sortable({
+                items: ':not(:first)'
+            });
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@Html.Raw(backUrl)");
+                }
+            });
+
+            $("#btnSubmit").click(function () {
+                jQuery.when(waitingConfirm("AdeChangeOrder", "Continue", "Cancel")).done(function () {
+                    $("form").submit();
+                }).fail(function () {
+                });
+            });
+        });
+    </script>
+}
+@using (Ajax.BeginForm("AdjustOrder", "Item", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    @role = "form",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("assessmentId", measure.AssessmentId)
+    @Html.Hidden("measureId", measure.ID)
+
+    <div class="main-content">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back to Item List</a>
+        @if (!ViewBag.IsBranching)
+        {
+            <button class="mainbutton mainright-btn submit-btn" type="submit" value="Save">Save</button>
+        }
+        else
+        {
+            <a class="mainbutton mainright-btn submit-btn" href="#" id="btnSubmit">Save</a>
+        }
+
+    </div>
+    <div class="main-content">
+        <ul id="tblItems" class="sortable list">
+            <li class="disabled">
+                <div class="form-group">
+                    <div class="col-sm-3">@Html.DisplayNameFor(model => model.Label)</div>
+
+                    <div class="col-sm-3">Area</div>
+                    <div class="col-sm-2">@Html.DisplayNameFor(model => model.CreatedByName)</div>
+                    <div class="col-sm-2">@Html.DisplayNameFor(model => model.UpdatedOn)</div>
+                    <div class="col-sm-2">@Html.DisplayNameFor(model => model.Status)</div>
+                </div>
+            </li>
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    <li>
+                        <div class="form-group">
+                            <input name="itemIds" value="@item.ID" type="hidden" />
+                            <div class="col-sm-3" title="@item.Label">@item.Label.CutString(30)</div>
+                            <div class="col-sm-3" title="@item.Description">@item.Description.CutString(30)</div>
+                            <div class="col-sm-2">@item.CreatedByName</div>
+                            <div class="col-sm-2">@item.UpdatedOn.ToString("MM/dd/yyyy")</div>
+                            <div class="col-sm-2">@item.Status.ToDescription()</div>
+                        </div>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+}
+

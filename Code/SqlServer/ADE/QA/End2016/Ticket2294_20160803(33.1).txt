@@ -1,0 +1,11 @@
+--item 33.1 P-SR-01
+GO 
+UPDATE  dbo.TRSItems
+SET     Item = 'P-GSSR-01'
+WHERE   Item = 'P-SR-01';
+GO 
+ALTER TABLE dbo.TRSAssessmentItems ADD AgeGroup TINYINT DEFAULT 0 NOT NULL;
+GO 
+ALTER TABLE dbo.TRSAssessmentItems ADD GroupSize INT DEFAULT 0 NOT NULL;
+GO 
+ALTER TABLE dbo.TRSAssessmentItems ADD CaregiversNo INT DEFAULT 0 NOT NULL;

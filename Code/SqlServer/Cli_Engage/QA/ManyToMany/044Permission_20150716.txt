@@ -1,0 +1,8 @@
+﻿insert into Permission_Authority 
+values(262144,'Notes','Notes',GETDATE(),GETDATE())
+go
+
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3200,262144)
+go

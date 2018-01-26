@@ -1,0 +1,7 @@
+﻿
+alter table parents drop column CreatedOn
+
+alter table parents drop column UpdatedOn
+
+-- 这条语名执行要注意
+alter table parents add RelationOther varchar(100) not null

@@ -1,0 +1,170 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@{
+    ViewBag.Title = "Assessment Reports";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<AssessmentReportEntity> list = ViewBag.AssesmentReports;
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    closeModal($("#@(formId)"));
+                }
+            });
+        })();
+    </script>
+}
+@using (Ajax.BeginForm("AssignReport", "Assessment", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="assessmentId" value="@(Request.QueryString["assessmentId"])"/>
+    <div class="form-group">
+        <div class="col-sm-3">
+            <div class="col-sm-12">
+                Community
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="col-sm-12">
+                School
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="col-sm-12">
+                Class
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="col-sm-12">
+                Student
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3">
+            <div class="col-sm-12">
+                <input id="chkCommunityCompletion" name="communityReports" type="checkbox" value="1" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Community && e.Report == ReportEnum.Completion) ? "checked" : "")>
+                <label for="chkCommunityCompletion">Completion </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkCommunitySummary" name="communityReports" type="checkbox" value="2" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Community && e.Report == ReportEnum.Summary) ? "checked" : "")>
+                <label for="chkCommunitySummary">Summary </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkCommunityGrowth" name="communityReports" type="checkbox" value="3" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Community && e.Report == ReportEnum.Growth) ? "checked" : "")>
+                <label for="chkCommunityGrowth">Growth </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkCommunityPercentileRank" name="communityReports" type="checkbox" value="4" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Community && e.Report == ReportEnum.PercentileRank) ? "checked" : "")>
+                <label for="chkCommunityPercentileRank">Percentile Rank </label>
+            </div>
+            <div class="col-sm-12" style="padding-right: 0;">
+                <input id="chkCommunityComparisionofGrowth" name="communityReports" type="checkbox" value="5" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Community && e.Report == ReportEnum.ComparisionofGrowth) ? "checked" : "")>
+                <label for="chkCommunityComparisionofGrowth">Comparision of Growth </label>
+            </div>
+            <div class="col-sm-12" style="padding-right: 0;">
+                <input id="chkCommunityCustomScoreReport" name="communityReports" type="checkbox" value="9" style="cursor: pointer;"
+                       @(list.Any(e => e.ReportType == ReportTypeEnum.Community && e.Report == ReportEnum.CommunityCustomScoreReport) ? "checked" : "")>
+                <label for="chkCommunityCustomScoreReport">Custom Score Report</label>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="col-sm-12">
+                <input id="chkSchoolCompletion" name="schoolReports" type="checkbox" value="1" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.School && e.Report == ReportEnum.Completion) ? "checked" : "")>
+                <label for="chkSchoolCompletion">Completion </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkSchoolSummary" name="schoolReports" type="checkbox" value="2" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.School && e.Report == ReportEnum.Summary) ? "checked" : "")>
+                <label for="chkSchoolSummary">Summary </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkSchoolGrowth" name="schoolReports" type="checkbox" value="3" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.School && e.Report == ReportEnum.Growth) ? "checked" : "")>
+                <label for="chkSchoolGrowth">Growth </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkSchoolPercentileRank" name="schoolReports" type="checkbox" value="4" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.School && e.Report == ReportEnum.PercentileRank) ? "checked" : "")>
+                <label for="chkSchoolPercentileRank">Percentile Rank </label>
+            </div>
+            <div class="col-sm-12" style="padding-right: 0;">
+                <input id="chkSchoolComparisionofGrowth" name="schoolReports" type="checkbox" value="5" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.School && e.Report == ReportEnum.ComparisionofGrowth) ? "checked" : "")>
+                <label for="chkSchoolComparisionofGrowth">Comparision of Growth </label>
+            </div>
+            <div class="col-sm-12" style="padding-right: 0;">
+                <input id="chkSchoolCustomScoreReport" name="schoolReports" type="checkbox" value="8" style="cursor: pointer;"
+                       @(list.Any(e => e.ReportType == ReportTypeEnum.School && e.Report == ReportEnum.SchoolCustomScoreReport) ? "checked" : "")>
+                <label for="chkSchoolCustomScoreReport">Custom Score Report</label>
+            </div>
+        </div>
+        <div class="col-sm-3" style="padding-right: 0px;">
+            <div class="col-sm-12">
+                <input id="chkClassCompletion" name="classReports" type="checkbox" value="1" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Class && e.Report == ReportEnum.Completion) ? "checked" : "")>
+                <label for="chkClassCompletion">Completion </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkClassSummary" name="classReports" type="checkbox" value="2" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Class && e.Report == ReportEnum.Summary) ? "checked" : "")>
+                <label for="chkClassSummary">Summary </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkClassGrowth" name="classReports" type="checkbox" value="3" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Class && e.Report == ReportEnum.Growth) ? "checked" : "")>
+                <label for="chkClassGrowth">Growth </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkClassPercentileRank" name="classReports" type="checkbox" value="4" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Class && e.Report == ReportEnum.PercentileRank) ? "checked" : "")>
+                <label for="chkClassPercentileRank">Percentile Rank </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkClassParent" name="classReports" type="checkbox" value="6" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Class && e.Report == ReportEnum.Parent) ? "checked" : "")>
+                <label for="chkClassParent">Parent </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkClassCostomScoreReport" name="classReports" type="checkbox" value="7" style="cursor: pointer;"
+                       @(list.Any(e => e.ReportType == ReportTypeEnum.Class && e.Report == ReportEnum.CustomScoreReport) ? "checked" : "")>
+                <label for="chkClassCostomScoreReport">Custom Score Report </label>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="col-sm-12">
+                <input id="chkStudentSummary" name="studentReports" type="checkbox" value="2" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Student && e.Report == ReportEnum.Summary) ? "checked" : "")>
+                <label for="chkStudentSummary">Summary </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkStudentPercentileRank" name="studentReports" type="checkbox" value="4" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Student && e.Report == ReportEnum.PercentileRank) ? "checked" : "")>
+                <label for="chkStudentPercentileRank">Percentile Rank </label>
+            </div>
+            <div class="col-sm-12">
+                <input id="chkStudentParent" name="studentReports" type="checkbox" value="6" style="cursor: pointer;"
+                     @(list.Any(e => e.ReportType == ReportTypeEnum.Student && e.Report == ReportEnum.Parent) ? "checked" : "")>
+                <label for="chkStudentParent">Parent </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="submit" data-bind="">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

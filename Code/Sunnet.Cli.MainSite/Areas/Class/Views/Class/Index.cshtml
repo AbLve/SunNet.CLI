@@ -1,0 +1,316 @@
+﻿@model Sunnet.Cli.Business.Classes.Models.ClassIndexModel
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Classes";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Class)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Class", "Index", "Class"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Class List
+}
+@if (ViewBag.accessAdd)
+{
+    <div class="right-content-top">
+        <button type="button"  href='@Url.Action("New")' class="mainbutton mainright-btn create-btn" data-bind="click: addData" >Add Class</button>
+    </div>
+}
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch" novalidate="novalidate">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="txtCommunity">Community/District</label>
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#CommunityId",
+                data_remote = Url.Action("GetCommunitySelectListForSearch", "Community", new { Area = "Community" }),
+                data_text = "Name",
+                data_value = "ID",
+                placeholder = "Enter key text to search",
+                id = "txtCommunity",
+                name = "txtCommunity",
+                @for = "CommunityId",
+                data_required = "false",
+                data_bind = "value: searchCriteria.communityName",
+                data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+                @Value = ""
+            })
+            @Html.HiddenFor(model => model.CommunityId, new
+       {
+           @class = "form-control",
+           placeholder = "Selected Community",
+           @Value = "",
+           data_bind = "value: searchCriteria.communityId"
+       })
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        <label class="control-label col-sm-2" for="txtSchool">School Name</label>
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#SchoolId",
+                data_remote = Url.Action("GetSchoolSelectList", "School", new { Area = "School" }),
+                data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+                data_bind = "value: searchCriteria.schoolName",
+                data_text = "Name",
+                data_value = "ID",
+                data_required = false,
+                placeholder = "Enter key text to search",
+                id = "txtSchool",
+                name = "txtSchool",
+                @for = "SchoolId",
+                data_extraParams = "{\"communityId\":\"#CommunityId\",\"isActive\":\"#isActive\"}",
+                onchange = "SchoolChanged()",
+                @Value = ""
+            })
+            @Html.HiddenFor(model => model.SchoolId, new
+       {
+           @class = "form-control validate",
+           placeholder = "Selected School",
+           data_bind = "value: searchCriteria.schoolId",
+          @* onchange = "SchoolChanged()",*@
+           @Value = ""
+       })
+            @Html.Hidden("isActive", false)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("selClassroom", "Classroom Name", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            <select id="selClassroom" name="selClassroom" class="form-control"
+                data-bind="options: classroomOptions, optionsText: 'Text', optionsValue: 'Value',
+    value: searchCriteria.classroomId">
+            </select>
+
+        </div>
+        <label class="control-label col-sm-2" for="ClassId">Class ID</label>
+        <div class="col-sm-3">
+            @Html.TextBox("ClassId", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_remote = Url.Action("GetClassId", "Class", new { Area = "Class" }),
+                data_text = "Name",
+                placeholder = "Enter key text to search",
+                @for = "ClassId",
+                data_value = "ID",
+                data_required = "false",
+                data_bind = "value: searchCriteria.classId",
+                data_extraParams = "{\"communityId\":\"#CommunityId\",\"schoolId\":\"#SchoolId\",\"classroomId\":\"#selClassroom\"}",
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="ClassName">Class Name</label>
+        <div class="col-sm-3">
+            @Html.TextBox("ClassName", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_remote = Url.Action("GetClassName", "Class", new { Area = "Class" }),
+                data_text = "Name",
+                data_value = "ID",
+                placeholder = "Enter key text to search",
+                @for = "ClassName",
+                data_required = "false",
+                data_bind = "value: searchCriteria.className",
+                data_extraParams = "{\"communityId\":\"#CommunityId\",\"schoolId\":\"#SchoolId\",\"classroomId\":\"#selClassroom\"}",
+            })
+        </div>
+        <label class="control-label col-sm-2" for="Status">Status</label>
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(m => m.Status, "All", "-1", new { @class = "form-control", data_bind = "value: searchCriteria.status" })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">Classes</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.ClassId"></td>
+                    <td data-bind="text: item.ClassName"></td>
+                    <td data-bind="text: item.ClassroomName"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td>
+                        @if (ViewBag.accessView)
+                        {
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                               
+                        }
+                        @if (ViewBag.accessEdit)
+                        {
+                            <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                        }
+                        @if (ViewBag.accessAssign)
+                        {
+                            <a class="table-btn icon-user-md teacher-btn" data-bind='attr: { href: $root.teacherData(item) }'
+                                data-toggle="modal" data-target="#modalNormal" title="Teachers"></a>
+                            <a class="table-btn icon-tags assign3-btn" data-bind='attr: { href: $root.AssignClassroom(item) }' title="Assign Classrooms"></a>
+                            <a class="table-btn icon-cogs assign2-btn" data-bind='attr: { href: $root.AssignStudents(item) }' title="Assign Students"></a>
+                            if (ViewBag.AssignUserAccess)
+                            {
+                                <a class="table-btn icon-random assign-btn" data-bind='attr: { href: $root.AssignUsers(item) }' title="Assign Users"></a>
+                            }
+                            
+                        }
+                    </td>
+                </tr>
+            </tbody>
+            @Html.Display("e", "NoData", new { Colspan = 5 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Class = {};
+
+        function SchoolChanged() {
+            var schoolId = $("#SchoolId").val();
+            var communityId = $("#CommunityId").val();
+            $.getJSON(
+                '@Url.Action("GetClassroomSelectList")',
+                { schoolId: schoolId, communityId: communityId },
+                function (data) {
+                    list_Class.classroomOptions(data);
+                });
+            $("#ClassId").datalist("clear");
+            $("#ClassName").datalist("clear");
+        }
+
+        function changeStatus() {
+            $("#txtCommunity").change(function () {
+                $("#CommunityId").val("");
+                $("#ClassId").val("");
+                $("#ClassName").val("");
+            });
+            $("#txtCommunity").on("selected.sunnet.datalist", function (obj) {
+                $("#txtSchool").datalist("clear");
+                SchoolChanged();
+            });
+            $("#txtSchool").on("selected.sunnet.datalist", function (obj) {
+                SchoolChanged();
+            });
+            $("#selClassroom").change(function () {
+                $("#ClassId").datalist("clear");
+                $("#ClassName").datalist("clear");
+            });
+        }
+
+        $(function () {
+
+            list_Class = new ViewModel(
+                {
+                    instanceName: "list_Class",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: "Redirect",
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: "Redirect",
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: "Redirect",
+                    orderBy: "ClassId",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("Class ID")",
+                            field: "@Html.NameFor(model => model.ClassId)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayName("Class Name")",
+                            field: "@Html.NameFor(model => model.ClassName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Classroom")',
+                            field: "@Html.NameFor(model => model.ClassroomName)",
+                            order: false,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                        { text: "Action", width: '15%' }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("communityId")),
+                        communityName: ko.observable(window.queryString("communityName")),
+                        schoolId: ko.observable(window.queryString("schoolId")),
+                        schoolName: ko.observable(window.queryString("schoolName")),
+                        classroomId: ko.observable(window.queryString("classroomId", -1)),
+                        classId: ko.observable(window.queryString("classId")),
+                        className: ko.observable(window.queryString("className")),
+                        status: ko.observable(window.queryString("status", -1))
+                    }
+                },
+                {
+                    classroomOptions: ko.observableArray([]),
+                    teacherData: function (data) {
+                        var param = { schoolId: data.SchoolId, classId: data.ID };
+                        return list_Class.appendQueryString('@Html.Raw(Url.Action("AssignTeacher"))', param);
+                    },
+                    AssignClassroom: function (item) {
+                        return '@Url.Action("AssignClassroom")' + "?classId=" + item.ID + "&returnurl=" + list_Class.getLocation();
+                    },
+                   
+                    AssignUsers: function (item) {
+                        return '@Url.Action("AssignUsersToClass", "Assigne")' + "?classId=" + item.ID + "&returnurl=" + list_Class.getLocation();
+                    },
+                    AssignStudents: function (item) {
+                        return '@Url.Action("ClassStudents", "Assigne")' + "?classId=" + item.ID + "&returnurl=" + list_Class.getLocation();
+                    }
+                }
+            );
+
+            list_Class.search();
+            ko.applyBindings(list_Class);
+            changeStatus();
+            SchoolChanged();
+        });
+    </script>
+}
+

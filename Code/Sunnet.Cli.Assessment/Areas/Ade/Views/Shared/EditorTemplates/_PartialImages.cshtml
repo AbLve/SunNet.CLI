@@ -1,0 +1,134 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="main-content" data-bind="visible: step() == 2">
+    <div class="content-body" data-bind="foreach: { data: ImageList, as: 'anser' }">
+        <!--ko if:IsDeleted == false -->
+        <div style="height: 5px; background-color: #ffffff"></div>
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr style="background-color: #bfbfbf">
+                    <th colspan="8">
+                        <span width="80px" style="float: left" data-bind="text: 'Image ' + Index "></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2">
+                        <div class="webuploader-preview" style="width: 0px; height: 0px; border: 1px;">
+                            <!--ko if:TargetImage() != "" -->
+                            <a class=""
+                                data-bind="attr: { href: $root.BasePath + TargetImage() }"
+                                target="_blank">
+                                <img data-bind="    attr: { src: $root.BasePath + TargetImage() }" style="width: 60px; height: 60px;" alt="TargetImage" />
+                            </a>
+                            <!--/ko-->
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+                    </td>
+                    <td width="20%" style="text-align: left;">Target Image
+                    </td>
+                    <td width="15%">Image Time delay (ms)</td>
+                    <td width="*"></td>
+                    <td width="20%" style="text-align: right;">Target Audio</td>
+                    <td width="40px">&nbsp;</td>
+                    <td width="15%">Audio Time delay (ms)</td>
+                    <td width="15%">Same as Image Delay</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <div data-bind="attr: { id: 'btnPickAnswer' + $index() + 'TargetImage' }">Browse</div>
+                        <div class="clearfix"></div>
+                        <div data-bind="attr: { id: 'Answer' + $index() + 'PictureFilelist' }" class="uploader-list"></div>
+                        <input type="hidden" class="validate"
+                            data-submitbutton="#btnSubmit"
+                            data-accept='{"title":"Image","extensions":"gif,jpg,jpeg,bmp,png",
+                                "mimeTypes":"image/gif,image/jpeg,image/bmp,image/png"}'
+                            data-autoupload="true"
+                            data-showprogress="true"
+                            data-filesinglesizelimit="2097152"
+                            data-filedequeued='fileDequeuedTargetImage'
+                            data-uploadsuccess='uploadSuccessTargetImage'
+                            data-bind="attr: {
+    id: 'Answer' + $index() + 'TargetImage', name: 'Answer' + $index() + 'TargetImage',
+    'data-pick': '#btnPickAnswer' + $index() + 'TargetImage',
+    'data-container': '#Answer' + $index() + 'PictureFilelist',
+    'data-targetfield': '#Answer' + $index() + 'TargetImage'
+},
+    upload: true,
+    value: TargetImage" />
+                        <div class="field-validation-valid" data-valmsg-replace="true"
+                            data-bind="attr: { 'data-valmsg-for': 'Answer' + $index() + 'TargetImage' }">
+                        </div>
+                    </td>
+                    <td>
+                        <label class="hide" data-bind="attr: { for: 'ImageTimeDelay' + $index() }">Picture Timeout</label>
+                        <input type="number" class="form-control input-sm  uint timeout" max="30000" data-bind="
+    value: ImageTimeDelay,
+    number: true,
+    enable: TargetImage(),
+    attr: { name: 'ImageTimeDelay' + $index(), id: 'ImageTimeDelay' + $index() }"
+                            style="width: 80px; display: inline-block;">
+                        <div class="field-validation-valid" data-valmsg-replace="true"
+                            data-bind="attr: { 'data-valmsg-for': 'ImageTimeDelay' + $index() }">
+                        </div>
+                    </td>
+                    <td width="*"></td>
+                    <td style="text-align: center;">
+                        <div data-bind="attr: { id: 'btnPickAnswer' + $index() + 'TargetAudio' }" style="float: right;">Browse</div>
+
+                        <div class="clearfix"></div>
+                        <div data-bind="attr: { id: 'Answer' + $index() + 'AudioFilelist' }" class="uploader-list"></div>
+                        <input type="hidden" class="validate"
+                            data-submitbutton="#btnSubmit"
+                            data-accept='{"title":"Audio","extensions":"mp3","mimeTypes":"audio/mpeg"}'
+                            data-autoupload="true"
+                            data-showprogress="true"
+                            data-filesinglesizelimit="2097152"
+                            data-filedequeued='fileDequeuedTargetAudio'
+                            data-uploadsuccess='uploadSuccessTargetAudio'
+                            data-bind="attr: {
+    id: 'Answer' + $index() + 'TargetAudio', name: 'Answer' + $index() + 'TargetAudio',
+    'data-pick': '#btnPickAnswer' + $index() + 'TargetAudio',
+    'data-container': '#Answer' + $index() + 'AudioFilelist',
+    'data-targetfield': '#Answer' + $index() + 'TargetAudio'
+}, upload: true, value: TargetAudio" />
+                        <div class="field-validation-valid" data-valmsg-replace="true"
+                            data-bind="attr: { 'data-valmsg-for': 'Answer' + $index() + 'TargetAudio' }">
+                        </div>
+                    </td>
+                    <td width="40px">
+                        <div class="webuploader-preview" data-bind="visible: TargetAudio().length > 4">
+                            <a class="table-btn icon-zoom-in preview-btn"
+                                data-bind="attr: { href: $root.BasePath + TargetAudio() }"
+                                target="_blank"><span style="display:none;">1</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <label class="hide" data-bind="attr: { for: 'AudioTimeDelay' + $index() }">Audio Timeout</label>
+                        <input type="number" class="form-control input-sm  uint timeout" max="30000" data-bind="
+    value: AudioTimeDelay,
+    number: true,
+    enable: (!SameasImageDelay() && TargetAudio()),
+    attr: { name: 'AudioTimeDelay' + $index(), id: 'AudioTimeDelay' + $index() }"
+                            style="width: 80px; display: inline-block;">
+                        <div class="field-validation-valid" data-valmsg-replace="true"
+                            data-bind="attr: { 'data-valmsg-for': 'AudioTimeDelay' + $index() }">
+                        </div>
+                    </td>
+                    <td>
+                        <label class="hide" data-bind="attr: { for: 'SameasImageDelay' + $index() }">Same as Image Delay</label>
+                        <input type="checkbox" data-bind="checked: SameasImageDelay, enable: TargetAudio(), attr: { id: 'SameasImageDelay' + $index() }" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!--/ko-->
+
+
+    </div>
+</div>
+
+

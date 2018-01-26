@@ -1,0 +1,26 @@
+﻿truncate table Permission_UserRole
+truncate table Permission_UserAuthorities
+
+
+
+insert into Permission_UserRole(UserId,RoleId)
+select a.ID as 'UserId',b.ID as 'RoleId' from Users a
+inner join 
+Permission_Roles b 
+on a.Role=b.UserType
+and b.IsDefault=1
+
+insert into Permission_UserRole(UserId,RoleId)
+select ID, 12 from Users where Role=120
+
+insert into Permission_UserRole(UserId,RoleId)
+select ID,13 from Users where Role=140
+
+insert into Permission_UserRole(UserId,RoleId)
+select ID,16 from Users where Role=142
+
+insert into Permission_UserRole(UserId,RoleId)
+select ID,15 from Users where Role=135
+
+
+engage 登陆主站点 并访问 /Permission/page/AddUserAuthority

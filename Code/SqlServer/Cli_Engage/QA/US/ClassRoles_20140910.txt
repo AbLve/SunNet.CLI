@@ -1,0 +1,36 @@
+﻿ 
+if	OBJECT_ID('ClassRoles','u')is not null drop table ClassRoles
+go
+CREATE TABLE [dbo].[ClassRoles](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[RoleName] [varchar](50) NOT NULL,
+	[CommunityId] [varchar](2) NOT NULL,
+	[SchoolId] [varchar](2) NOT NULL,
+	[ClassroomId] [varchar](2) NOT NULL,
+	[ClassId] [varchar](2) NOT NULL,
+	[Name] [varchar](2) NOT NULL,
+	[Status] [varchar](2) NOT NULL,
+	[StatusDate] [varchar](2) NOT NULL,
+	[SchoolYear] [varchar](2) NOT NULL,
+	[AtRiskPercent] [varchar](2) NOT NULL,
+	[DayType] [varchar](2) NOT NULL,
+	[LanguageOfInstruction] [varchar](2) NOT NULL,
+	[CurriculumId] [varchar](2) NOT NULL,
+	[SupplementalCurriculumId] [varchar](2) NOT NULL,
+	[MonitoringToolId] [varchar](2) NOT NULL,
+	[UsedEquipment] [varchar](2) NOT NULL,
+	[ClassType] [varchar](2) NOT NULL,
+	[ClassCount] [varchar](2) NOT NULL,
+	[ReferenceData] [varchar](2) NOT NULL,
+	[Notes] [varchar](2) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

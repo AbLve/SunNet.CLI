@@ -1,0 +1,220 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.AuditorEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Business.Permission.Models
+@{
+    ViewBag.Title = "Auditor Invite";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<GroupPackageModel> GroupPackages = ViewBag.GroupPackages;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("index");
+                }
+            });
+            $("#PrimaryLanguageId").change(function () {
+                if ($("#PrimaryLanguageId :selected").text() == "Other")
+                    $("#PrimaryLanguageOther").attr("type", "text");
+                else {
+                    $("#PrimaryLanguageOther").val("");
+                    $("#PrimaryLanguageOther").attr("type", "hidden");
+                }
+            })
+            $("#PositionId").change(function () {
+                if ($("#PositionId :selected").text() == "Other")
+                    $("#PositionOther").attr("type", "text");
+                else {
+                    $("#PositionOther").val("");
+                    $("#PositionOther").attr("type", "hidden");
+                }
+            })
+            $("#AffiliationId").change(function () {
+                if ($("#AffiliationId :selected").text() == "Other")
+                    $("#AffiliationOther").attr("type", "text");
+                else {
+                    $("#AffiliationOther").val("");
+                    $("#AffiliationOther").attr("type", "hidden");
+                }
+            })
+            $("#UserInfo_Status").change(function () {
+                if ($("#UserInfo_Status").val() == "@((int)Sunnet.Cli.Core.Common.Enums.EntityStatus.Inactive)")
+                    $("#SaveInvite").hide();
+                else
+                    $("#SaveInvite").show();
+            })
+            $("#SaveInvite").click(function () {
+                $("<input type='hidden' name='isInvite' id='isInvite' value='true' />").appendTo($("#@(formId)"));
+            })
+        })();
+    </script>
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.User)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("User Management", "Dashboard", "Public"))
+    <i class="icon-angle-right"></i>
+    @(Html.ActionLink("Auditor", "Index", "Auditor"))
+    <i class="icon-angle-right"></i>New
+}
+
+@using (Ajax.BeginForm("SaveInvitation", "Auditor", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()  
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Auditor List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PositionId, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(e => e.PositionId, (IEnumerable<SelectListItem>)ViewBag.PositionOptions, new { @class = "form-control" })
+                    @Html.LabelFor(model => model.PositionOther, new { @class = "control-label hide" })
+                    @Html.TextBoxFor(model => model.PositionOther, new { @class = "form-control", type = "hidden" })
+                    @Html.ValidationMessageFor(model => model.PositionId)
+                </div>
+                @Html.LabelFor(model => model.SchoolYear, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", @readonly = true })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.AffiliationId, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(e => e.AffiliationId, (IEnumerable<SelectListItem>)ViewBag.AffiliationOptions, new { @class = "form-control" })
+                    @Html.LabelFor(model => model.AffiliationOther, new { @class = "control-label hide" })
+                    @Html.TextBoxFor(model => model.AffiliationOther, new { @class = "form-control", type = "hidden" })
+                    @Html.ValidationMessageFor(model => model.AffiliationId)
+                </div>
+                @Html.LabelFor(model => model.AuditorId, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.AuditorId, new { @class = "form-control", @readonly = true })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.FirstName, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.FirstName)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.MiddleName, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.MiddleName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.LastName, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.LastName)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.PreviousLastName, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.PreviousLastName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.Status, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.UserInfo.Status, Model.UserInfo.Status.ToSelectList(), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.Status)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.InternalID, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserInfo.InternalID, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="content-title">Contact Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.PrimaryPhoneNumber, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.PrimaryPhoneNumber, new { @class = "form-control _homephone" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.PrimaryPhoneNumber)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.PrimaryNumberType, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.EnumDropDownListFor(model => model.UserInfo.PrimaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.PrimaryNumberType)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.SecondaryPhoneNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.SecondaryPhoneNumber, new { @class = "form-control _homephone" })
+                </div>
+                @Html.LabelFor(model => model.UserInfo.SecondaryNumberType, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.EnumDropDownListFor(model => model.UserInfo.SecondaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.FaxNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.FaxNumber, new { @class = "_phone form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.PrimaryEmailAddress, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.PrimaryEmailAddress, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.PrimaryEmailAddress)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.SecondaryEmailAddress, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.SecondaryEmailAddress, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.SecondaryEmailAddress)
+                </div>
+            </div>
+        </div>
+
+        <div class="content-title"></div>
+        <div class="content-body">
+            <div class="form-group">
+                <span class="col-sm-3 control-label">Additional Packages</span>
+                <div class="col-sm-9">
+                    @foreach (var item in GroupPackages)
+                    {
+                        <div class="with50">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="chkPackages" value="@item.PackageId">
+                                @item.PackageName
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.AuditorNotes, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextAreaFor(model => model.AuditorNotes, new { @class = "form-control", style = "height:70px; margin:0px; padding:0px;" })
+                    @Html.ValidationMessageFor(model => model.AuditorNotes)
+                </div>
+            </div>
+        </div>
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit">
+            <input type="submit" id="SaveInvite" class="mainbutton mainright-btn submit-btn" value="Submit & Invite">
+            <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+        </div>
+    </div>
+}
+

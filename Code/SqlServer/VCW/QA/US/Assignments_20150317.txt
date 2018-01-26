@@ -1,0 +1,11 @@
+﻿alter table [dbo].[Assignments]
+alter column [Session] int not null
+
+EXEC sp_rename 'Assignments.[Session]','SessionId','COLUMN'; 
+
+
+
+alter table [dbo].[Assignments]
+alter column [Wave] int not null
+
+EXEC sp_rename 'Assignments.[Wave]','WaveId','COLUMN'; 

@@ -1,0 +1,7 @@
+﻿    
+	添加下面的配置到 connectionStrings 数据库的地址暂时可以不配置
+  <add name="VcwDbContext" connectionString="Data Source=192.168.1.88;Initial Catalog=Cli_Video;Persist Security Info=True;User ID=sa;Password=sunneT2009" providerName="System.Data.SqlClient" />
+
+
+ 将下面的配置加入到 appsettings 
+      <add key="VcwDomain" value="http://vcw.sunnet.cc/" />

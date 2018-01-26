@@ -1,0 +1,2 @@
+﻿if not exists(select * from syscolumns where id=object_id('Teachers') and name='Batch')
+	alter table Teachers add  Batch tinyint default(1) not null

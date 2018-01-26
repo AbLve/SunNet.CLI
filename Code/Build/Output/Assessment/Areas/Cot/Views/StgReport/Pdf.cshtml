@@ -1,0 +1,355 @@
+﻿@using Sunnet.Cli.Business.Cot.Models
+@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.Core.Ade
+@using Sunnet.Framework
+@{
+    ViewBag.Title = "Pdf";
+    Layout = "~/Areas/Cot/Views/Shared/_Layout_Report.cshtml";
+    var assessmentModel = ViewBag.Model as CotAssessmentModel;
+    var isTeacher = ViewBag.isTeacher;
+}
+
+<style type="text/css">
+
+    .report-tab-ul tr td ul,.report-tab-ul tr td ol { margin-left:20px; }
+
+    .report-tab-ol ul,.report-tab-ol ol { margin-left:20px; }
+</style>
+
+
+<table border="0" cellpadding="0" cellspacing="0" style="width:100%">
+    <thead>
+        <tr>
+            <td>
+                <table class="header " width="100%">
+                    <thead>
+                        <tr>
+                            <td>
+                                &nbsp;
+                            </td>
+                            <td class="title" colspan="3" style="font-size: 14px; font-weight: bold;text-align:center">
+                                @(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))<br />
+                                @(isTeacher ? "Teacher" : "Mentor") Short Term Goal Report
+                            </td>
+                            <td style="text-align:right;">
+                                <img src="@(SFConfig.AssessmentDomain)/Resources/cli_logo.png" alt="CLI logo" style="width: 150px; height: 60px; vertical-align: middle;" />
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td colspan="2">
+                                @Html.DisplayNameFor(x => assessmentModel.Teacher.Communities):
+                                &nbsp;@(assessmentModel.Teacher.CommunityNameText)
+                            </td>
+                            <td></td>
+                            <td colspan="2" style="text-align:right;">
+                                @Html.DisplayNameFor(x => assessmentModel.Teacher):
+                                &nbsp;@(assessmentModel.Teacher.FullName)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.DisplayNameFor(x => assessmentModel.Teacher.Schools):
+                                &nbsp;@(assessmentModel.Teacher.SchoolNameText)
+                            </td>
+                            <td></td>
+                            <td colspan="2" style="text-align:right;">
+                                @Html.DisplayNameFor(x => assessmentModel.Teacher.Coach):
+                                &nbsp;@(assessmentModel.Teacher.Coach.FullName)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.DisplayNameFor(x => assessmentModel.SchoolYear):
+                                &nbsp;@(assessmentModel.FullSchoolYear)
+                            </td>
+                            <td></td>
+                            <td colspan="2" style="text-align:right;">
+                                Date:
+                                &nbsp;@(assessmentModel.Report.GoalSetDate.FormatDateString())
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+                <br />
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <table class="report-data" cellpadding="0" cellspacing="0" style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Selected Goals</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var measure in assessmentModel.Measures)
+                        {
+                            if (measure.Visible)
+                            {
+                                <tr>
+                                    <th style="text-align: left;" colspan="2">
+                                        @(measure.Name)
+                                    </th>
+                                </tr>
+                                if (measure.Children != null && measure.Children.Any())
+                                {
+                                    foreach (var child in measure.Children)
+                                    {
+                                        if (child.Visible)
+                                        {
+                                            <tr>
+                                                <th style="text-align: left;" colspan="2">
+                                                    @ViewTextHelper.HtmlEmptySeparator@(child.Name)
+                                                </th>
+                                            </tr>
+                                            foreach (var item in child.Items)
+                                            {
+
+                                                <tr class="onerow">
+                                                    <td width="40px"></td>
+                                                    <td width="*" style="text-align: left;">
+                                                        <ul><li class="report-tab-ol">
+                                                        @Html.Raw(item.FullTargetText)
+                                                        <span class="note">@item.CotItemId</span>
+                                                            </li></ul>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                                if (measure.Items != null && measure.Items.Any())
+                                {
+                                    foreach (var item in measure.Items)
+                                    {
+
+                                        <tr class="onerow">
+                                            <td width="40"></td>
+                                            <td width="*" style="text-align: left;">
+                                                @ViewTextHelper.HtmlEmptySeparator
+                                                @Html.Raw(item.FullTargetText)
+                                                <span class="note">@item.CotItemId</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+                <br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+                <table class="report-data " cellpadding="0" cellspacing="0" style="text-align:left;width: 100%">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="text-align: center;">
+                                Action Plan
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="onerow">
+                        <tr>
+                            <th colspan="2" class="left">
+                                <i>On My Own:</i>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td width="30"></td>
+                            <td class="">
+                                @Html.Raw(assessmentModel.Report.OnMyOwn)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody class="onerow">
+                        <tr>
+                            <th colspan="2" class="left">
+                                <i>With Support:</i>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="">
+                                @Html.Raw(assessmentModel.Report.WithSupport)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody class="onerow">
+                        <tr>
+                            <th colspan="2" class="left">
+                                <i>Additional Comments:</i>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="">
+                                @Html.Raw(assessmentModel.Report.AdditionalComments)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="report-data table_border onerow report-tab-ul" cellpadding="0" cellspacing="0" style="text-align:left;width: 100%">
+                    <caption>
+                        References
+                    </caption>
+                    <thead class="onerow" style="page-break-inside: avoid;">
+                        <tr>
+                            <th width="2">
+                                Item
+                            </th>
+                            @if (isTeacher)
+                            {
+                                <th width="40%">
+                                    CIRCLE Manual
+                                </th>
+                            }
+                            else
+                            {
+                                <th width="40%">
+                                    Mentoring Guide
+                                </th>
+                            }
+                            <th width="40%">
+                                Prekindergarten Guidelines
+                            </th>
+                            <th>
+                                Resources
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var measure in assessmentModel.Measures)
+                        {
+                            if (measure.Visible)
+                            {
+                                <tr class="onerow">
+                                    <th style="text-align: left;" colspan="3">
+                                        @(measure.Name)
+                                    </th>
+                                    <td>
+                                        @if (measure.Links != null)
+                                        {
+                                            foreach (var link in measure.Links)
+                                            {
+                                                <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                                <br />
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+
+                                if (measure.Children != null && measure.Children.Any())
+                                {
+                                    foreach (var child in measure.Children)
+                                    {
+                                        if (child.Visible)
+                                        {
+                                            <tr class="onerow">
+                                                <th style="text-align: left;" colspan="3">
+                                                    @ViewTextHelper.HtmlEmptySeparator@(child.Name)
+                                                </th>
+                                                <td>
+                                                    @if (child.Links != null)
+                                                    {
+                                                        foreach (var link in child.Links)
+                                                        {
+                                                            <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                                            <br />
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                            foreach (var item in child.Items)
+                                            {
+                                                <tr class="onerow">
+                                                    <td style="text-align: left;">
+                                                        @item.CotItemId
+                                                    </td>
+                                                    @if (isTeacher)
+                                                    {
+                                                        <td style="text-align: left;">
+                                                            @Html.Raw(item.CircleManual)
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td style="text-align: left;">
+                                                            @Html.Raw(item.MentoringGuide)
+                                                        </td>
+                                                    }
+                                                    <td style="text-align: left;">
+                                                        @Html.Raw(item.PrekindergartenGuidelines)
+                                                    </td>
+                                                    <td>
+                                                        @if (item.Links != null)
+                                                        {
+                                                            foreach (var link in item.Links)
+                                                            {
+                                                                <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                                                <br />
+                                                            }
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                                if (measure.Items != null && measure.Items.Any())
+                                {
+                                    foreach (var item in measure.Items)
+                                    {
+
+                                        <tr class="onerow">
+                                            <td style="text-align: left;">
+                                                @item.CotItemId
+                                            </td>
+                                            @if (isTeacher)
+                                            {
+                                                <td style="text-align: left;">
+                                                    @Html.Raw(item.CircleManual)
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td style="text-align: left;">
+                                                    @Html.Raw(item.MentoringGuide)
+                                                </td>
+                                            }
+                                            <td style="text-align: left;">
+                                                @Html.Raw(item.PrekindergartenGuidelines)
+                                            </td>
+                                            <td>
+                                                @if (item.Links != null)
+                                                {
+                                                    foreach (var link in item.Links)
+                                                    {
+                                                        <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                                        <br />
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+

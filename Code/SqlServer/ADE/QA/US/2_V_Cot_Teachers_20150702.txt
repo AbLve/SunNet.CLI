@@ -1,0 +1,40 @@
+﻿GO
+
+/****** Object:  View [dbo].[V_Cot_Teachers]    Script Date: 7/2/2015 15:32:39 ******/
+IF EXISTS(SELECT 1 FROM sys.objects WHERE object_id = object_id('V_Cot_Teachers'))
+DROP VIEW [dbo].[V_Cot_Teachers]
+GO
+
+/****** Object:  View [dbo].[V_Cot_Teachers]    Script Date: 7/2/2015 15:32:39 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+/*
+
+Wave 
+	BOY:1,MOY:2,EOY:3
+Status
+	Initialised = 1,
+	Saved = 10,
+	Finalized = 20,
+	Completed = 30
+*/
+CREATE VIEW [dbo].[V_Cot_Teachers]
+AS
+
+SELECT T.*,AssessmentID = CA.AssessmentId,SchoolYear = CA.SchoolYear,
+CotWave1 = (SELECT TOP 1 CW.VisitDate FROM [dbo].[CotWaves] CW WHERE CW.CotAssessmentId = CA.ID AND CW.Wave = 1 AND CW.[Status] > 10),
+CotWave2 = (SELECT TOP 1 CW.VisitDate FROM [dbo].[CotWaves] CW WHERE CW.CotAssessmentId = CA.ID AND CW.Wave = 2 AND CW.[Status] > 10)
+
+FROM DBO.V_Teachers T
+INNER JOIN [dbo].[COTAssessments] CA ON T.ID = CA.TeacherId 
+
+GO
+
+

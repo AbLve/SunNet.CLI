@@ -1,0 +1,351 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Schools.Models.SchoolModel
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Status, null, new { @class = "col-sm-2 control-label " })
+    <div class="col-sm-4">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+    @Html.LabelFor(o => o.StatusDate, null, new { @class = "col-sm-2 control-label " })
+    <div class="col-sm-4">
+        @Html.DisplayFor(model => model.StatusDate)
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.EscName, null, new { @class = "col-sm-2 control-label" })
+    <div class="col-sm-4">
+        @if (Model.EscName != 0)
+        {
+            @Html.DisplayFor(model => model.EscName)
+        }
+        else
+        {
+            @Html.Display(" ")
+        }
+    </div>
+    @Html.LabelFor(model => model.ParentAgencyId, null, new { @class = "col-sm-2 control-label" })
+    <div class="col-sm-4">
+        @Html.Display("ParentAgencyName")
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.SchoolTypeId, null, new { @class = "col-sm-2 control-label required" })
+    <div class="col-sm-4">
+        @Html.Display("SchoolTypeName")
+
+        @if (ViewBag.SubSchoolTypeName != "" && ViewBag.SubSchoolTypeName != null)
+        {    
+            @Html.Display("SubSchoolTypeName")
+        }
+    </div>
+    <label class="col-sm-2 control-label ">
+        School Size
+        <i class="icon-question-sign question-tip" id="tooltip1" data-toggle="tooltip" data-placement="top"
+            title="Approximate number of students enrolled for all ages and grade levels."></i>
+    </label>
+    <div class="col-sm-4">
+        @Html.DisplayFor(model => model.SchoolSize)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.FundingId, null, new { @class = "col-sm-2 control-label " })
+    <div class="col-sm-4">
+        @Html.Display("fundingName")
+    </div>
+    @Html.LabelFor(model => model.AtRiskPercent, null, new { @class = "col-sm-2 control-label required" })
+    <div class="col-sm-4">
+        @Html.DisplayFor(model => model.AtRiskPercent)
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.SchoolNumber, null, new { @class = "col-sm-2 control-label" })
+    <div class="col-sm-4">
+
+        @Html.DisplayFor(model => model.SchoolNumber)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.StarDate, null, new { @class = "col-sm-2 control-label" })
+    <div class="col-sm-4">
+        @Html.DisplayFor(model => model.StarDate, new
+            {
+                @Value = Model.StarDate.FormatDateString()
+            })
+    </div>
+    @Html.LabelFor(model => model.TrsLastStatusChange, null, new { @class = "col-sm-2 control-label" })
+    <div class="col-sm-4">
+        @Html.DisplayFor(model => model.TrsLastStatusChange, new
+            {
+                @Value = Model.TrsLastStatusChange.FormatDateString()
+            })
+    </div>
+</div>
+
+
+</div></div>
+<!--cannot delete-->
+<div class="main-content">
+    <div class="content-title">Internet Information</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.IspId, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+
+                @Html.Display("IspName")
+            </div>
+            @Html.LabelFor(model => model.InternetType, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.InternetType)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.InternetSpeed, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.InternetSpeed)
+
+            </div>
+            @if (Model.InternetType == InternetType.Wireless)
+            {
+                @Html.LabelFor(model => model.WirelessType, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.WirelessType)
+                </div>    
+            }
+        </div>
+    </div>
+</div>
+
+<div class="main-content" id="divClassroomCount" style="display: none">
+    <div class="content-title">Classroom Count</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCount3Years, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCount3Years)
+            </div>
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCount4Years, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCount4Years)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCount34Years, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCount34Years)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountKinder, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCountKinder)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountgrade, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCountgrade)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountOther, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCountOther)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountEarly, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCountEarly)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountInfant, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCountInfant)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountToddler, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCountToddler)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountPreSchool, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.DisplayFor(model => model.ClassroomCountPreSchool)
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="content-title">Primary Contact</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrimarySalutation, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.PrimarySalutation)
+            </div>
+            @Html.LabelFor(model => model.PrimaryTitleId, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.Display("primaryTitle")
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrimaryName, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.PrimaryName)
+            </div>
+            @Html.LabelFor(model => model.PrimaryEmail, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.PrimaryEmail)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrimaryPhone, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.PrimaryPhone)
+            </div>
+            @Html.LabelFor(model => model.PrimaryPhoneType, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.PrimaryPhoneType)
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="content-title">Secondary Contact</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.SecondarySalutation, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SecondarySalutation)
+            </div>
+            @Html.LabelFor(model => model.SecondaryTitleId, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.Display("secondaryTitle")
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SecondaryName, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SecondaryName)
+            </div>
+            @Html.LabelFor(model => model.SecondaryEmail, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SecondaryEmail)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SecondaryPhoneNumber, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SecondaryPhoneNumber)
+            </div>
+            @Html.LabelFor(model => model.SecondaryPhoneType, null, new { @class = "col-sm-2 control-label " })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.SecondaryPhoneType)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main-content">
+    <div class="content-title">School Physical Address (No P.O. Boxes)</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.Label("lbtemp", " ", new { @class = "col-sm-2 " })
+            <div class="col-sm-10">
+                @Html.DisplayFor(model => model.PhysicalAddress1)
+            </div>
+        </div>
+        @if (Model.PhysicalAddress2.Trim() != "")
+        {
+            <div class="form-group">
+                @Html.Label("lbtemp", " ", new { @class = "col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.DisplayFor(model => model.PhysicalAddress2)
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.Label("lbtemp", " ", new { @class = "col-sm-2 " })
+            <div class="col-sm-10">
+                @Html.Display("FullAddr")
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.PhoneNumber, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.PhoneNumber)
+            </div>
+            @Html.LabelFor(model => model.PhoneType, null, new { @class = "col-sm-2 control-label required" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.PhoneType)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Latitude, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.Latitude)
+            </div>
+            @Html.LabelFor(model => model.Longitude, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-4">
+                @Html.DisplayFor(model => model.Longitude)
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="content-title">School Mailing Address (Can be a P.O. Box)</div>
+    <div class="content-body">
+
+
+        <div class="form-group">
+            @Html.Label("lbtemp", " ", new { @class = "col-sm-2 " })
+            <div class="col-sm-10">
+                @Html.DisplayFor(model => model.MailingAddress1)
+            </div>
+        </div>
+        @if (Model.MailingAddress2.Trim() != "")
+        {
+            <div class="form-group">
+                @Html.Label("lbtemp", " ", new { @class = "col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.DisplayFor(model => model.MailingAddress2)
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.Label("lbtemp", " ", new { @class = "col-sm-2 " })
+            <div class="col-sm-10">
+                @Html.Display("FullMailAddr")
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main-content">
+    <div class="content-title">School Notes</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Notes, null, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-10">
+                @Html.DisplayFor(model => model.Notes)
+            </div>
+
+        </div>
+@Html.HiddenFor(model => model.VSDesignation)

@@ -1,0 +1,315 @@
+﻿
+/****** Object:  StoredProcedure [dbo].[ImportData]    Script Date: 2014/10/10 23:56:51 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ImportData]'))
+DROP PROCEDURE [dbo].[ImportData]
+GO
+
+/****** Object:  StoredProcedure [dbo].[ImportData]    Script Date: 2014/10/10 23:56:51 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+CREATE PROCEDURE [dbo].[ImportData]
+    @DataSchoolId INT,
+	@District_TEA_ID VARCHAR(100),
+	@GroupId INT,
+    @InvitationEmail bit
+AS
+
+BEGIN
+
+	BEGIN TRANSACTION;
+	BEGIN TRY
+
+	--school
+    DECLARE @CommunityId		   INT
+    DECLARE @School_TEA_ID		   VARCHAR(9)
+    DECLARE @School_Name		   VARCHAR(500)
+    DECLARE @School_Physical_Address1         VARCHAR(500)
+    DECLARE @School_Physical_Address2     VARCHAR(500)
+
+    DECLARE @School_City		   VARCHAR(100)
+	DECLARE @School_County		   VARCHAR(100)
+	DECLARE @School_State	       VARCHAR(100)
+	DECLARE @School_ZIP		       VARCHAR(10)
+    DECLARE @School_Phone_Number   VARCHAR(50)
+
+    DECLARE @School_Phone_Number_Type       TINYINT
+	DECLARE @School_Type		   VARCHAR(100)
+    DECLARE @School_Percent_At_Risk       INT
+    DECLARE @School_Size     INT
+    DECLARE @School_Primary_Contact_Salutation      TINYINT
+    DECLARE @School_Primary_Contact_Name       VARCHAR(50)
+
+    DECLARE @School_Primary_Contact_Title      VARCHAR(100)
+    DECLARE @School_Primary_Contact_Phone    VARCHAR(50)   
+    DECLARE @School_Primary_Contact_Phone_Type        TINYINT
+    DECLARE @School_Primary_Contact_Email_Address     VARCHAR(50)   
+    DECLARE @School_Secondary_Contact_Salutation      TINYINT
+	 
+    DECLARE @School_Secondary_Contact_Name      VARCHAR(50)   
+    DECLARE @School_Secondary_Contact_Title     VARCHAR(100)
+    DECLARE @School_Secondary_Contact_Phone     VARCHAR(100)
+    DECLARE @School_Secondary_Contact_Phone_Type    TINYINT
+    DECLARE @School_Secondary_Contact_Email_Address   VARCHAR(50)   
+	
+	
+	--By Sam begin
+	DECLARE @schoolYear varchar(10)
+	DECLARE @schoolCode varchar(50)
+
+	SET @schoolYear = dbo.GetSchoolYear()
+	SET @schoolCode = dbo.GetSchoolCode(@schoolYear)
+	--Sam end
+
+		SELECT @CommunityId=[CommunityId]
+		  ,@School_TEA_ID=[School_TEA_ID]
+		  ,@School_Name = [School_Name]
+		  ,@School_Physical_Address1 = [School_Physical_Address1]
+		  ,@School_Physical_Address2 = ISNULL([School_Physical_Address2],'')
+		  ,@School_City = [School_City]
+		  ,@School_County = [School_County]
+		  ,@School_State = [School_State]
+		  ,@School_ZIP = [School_ZIP]
+		  ,@School_Phone_Number = [School_Phone_Number]
+		  ,@School_Phone_Number_Type = [School_Phone_Number_Type]
+		  ,@School_Percent_At_Risk = [School_Percent_At_Risk]
+		  ,@School_Size = ISNULL([School_Size],0)
+		  ,@School_Primary_Contact_Salutation = ISNULL([School_Primary_Contact_Salutation],0)
+		  ,@School_Primary_Contact_Name = ISNULL([School_Primary_Contact_Name],'')
+		  ,@School_Primary_Contact_Title = [School_Primary_Contact_Title]
+		  ,@School_Primary_Contact_Phone = [School_Primary_Contact_Phone_Number]
+		  ,@School_Primary_Contact_Phone_Type = [School_Primary_Contact_Phone_Type]
+		  ,@School_Primary_Contact_Email_Address = [School_Primary_Contact_Email_Address]
+		  ,@School_Secondary_Contact_Salutation = ISNULL([School_Secondary_Contact_Salutation],0)
+		  ,@School_Secondary_Contact_Name = ISNULL([School_Secondary_Contact_Name],'')
+		  ,@School_Secondary_Contact_Title = ISNULL([School_Secondary_Contact_Title],0)
+		  ,@School_Secondary_Contact_Phone = ISNULL([School_Secondary_Contact_Phone_Number],'')
+		  ,@School_Secondary_Contact_Phone_Type = ISNULL([School_Secondary_Contact_Phone_Type],0)
+		  ,@School_Secondary_Contact_Email_Address = ISNULL([School_Secondary_Contact_Email_Address],'')
+		  FROM DataSchools WHERE ID = @DataSchoolId
+
+	---School
+
+	DECLARE @SchoolId INT
+	IF NOT EXISTS (SELECT * FROM Schools WHERE SchoolNumber = @School_TEA_ID) 
+		SELECT @SchoolId=0 
+	ELSE SELECT @SchoolId = Id FROM Schools WHERE SchoolNumber = @School_TEA_ID
+
+		BEGIN --School
+		IF(@SchoolId = 0)
+		  BEGIN  		
+		  DECLARE @stypeId int
+		  DECLARE @SubStypeId int 
+
+		  DECLARE @tempId int
+		  DECLARE @tempId2 int 
+		
+		  IF NOT EXISTS (SELECT * FROM SchoolTypes WHERE ID =  @School_Type) 
+			SELECT @tempId2=0 ,@tempId=0
+		  ELSE SELECT @tempId2 = Id  , @tempId =parentID  FROM SchoolTypes WHERE ID =  @School_Type
+
+		  IF(@tempId = 0)
+		    BEGIN
+		      SET @stypeId = @tempId2 SET @SubStypeId = 0
+		    END
+		  ELSE
+		     BEGIN
+			    SET @stypeId = @tempId SET @SubStypeId = @tempId2 
+			 END
+
+	      IF (EXISTS (SELECT * FROM BasicSchools WHERE Name =  @School_Name))
+		    BEGIN
+			   IF( EXISTS (SELECT * FROM BasicSchools  A JOIN BasicCommunities B  ON A.CommunityId = B.ID JOIN Communities C ON C.BasicCommunityId = B.ID
+			               WHERE A.Name =  @School_Name AND C.ID = @CommunityId)
+			      )
+			    BEGIN
+			      INSERT INTO [dbo].[Schools]
+			   ([SchoolId]
+			   ,[BasicSchoolId]
+			   ,[CommunityId]
+			   ,[Status]
+			   ,[StatusDate]
+			   ,[SchoolYear]
+			   ,[ESCName]
+			   ,[ParentAgencyId]
+			   ,[PhysicalAddress1]
+			   ,[PhysicalAddress2]
+			   ,[City]
+			   ,[CountyId]
+			   ,[StateId]
+			   ,[Zip]
+			   ,[PhoneNumber]
+			   ,[PhoneType]
+			   ,[SchoolTypeId]
+			   ,[SubTypeId]
+			   ,[ClassroomCount3Years]
+			   ,[ClassroomCount4Years]
+			   ,[ClassroomCount34Years]
+			   ,[ClassroomCountKinder]
+			   ,[ClassroomCountgrade]
+			   ,[ClassroomCountOther]
+			   ,[ClassroomCountEarly]
+			   ,[ClassroomCountInfant]
+			   ,[ClassroomCountToddler]
+			   ,[ClassroomCountPreSchool]
+			   ,[AtRiskPercent]
+			   ,[FundingId]
+			   ,[TrsProviderId]
+			   ,[TrsLastStatusChange]
+			   ,[TrsReviewDate]
+			   ,[PrimarySalutation]
+			   ,[PrimaryName]
+			   ,[PrimaryTitleId]
+			   ,[PrimaryPhone]
+			   ,[PrimaryPhoneType]
+			   ,[PrimaryEmail]
+			   ,[SecondarySalutation]
+			   ,[SecondaryName]
+			   ,[SecondaryTitleId]
+			   ,[SecondaryPhoneNumber]
+			   ,[SecondaryPhoneType]
+			   ,[SecondaryEmail]
+			   ,[Latitude]
+			   ,[Longitude]
+			   ,[IsSamePhysicalAddress]
+			   ,[MailingAddress1]
+			   ,[MailingAddress2]
+			   ,[MailingCity]
+			   ,[MailingCountyId]
+			   ,[MailingStateId]
+			   ,[MailingZip]
+			   ,[SchoolSize]
+			   ,[IspId]
+			   ,[ISPOther]
+			   ,[InternetSpeed]
+			   ,[InternetType]
+			   ,[WirelessType]
+			   ,[Notes]
+			   ,[CreatedOn]
+			   ,[UpdatedOn]
+			   ,[SchoolNumber])
+		 VALUES
+			   (@schoolCode
+			   ,(select top 1 ID from BasicSchools where Name = @School_Name)
+			   ,@CommunityId
+			   ,1
+			   ,GETDATE()
+			   ,@schoolYear
+			   ,0
+			   ,0
+			   ,@School_Physical_Address1
+			   ,@School_Physical_Address2
+			   ,@School_City
+			   ,@School_County
+			   ,@School_State
+			   ,@School_ZIP
+			   ,@School_Phone_Number
+			   ,@School_Phone_Number_Type
+			    ,@stypeId
+			   ,@SubStypeId
+			   ,0
+			   ,0
+			   ,0
+			   ,0
+			   ,0
+			   ,0
+			   ,0
+			   ,0
+			   ,0
+			   ,0
+			   ,@School_Percent_At_Risk
+			   ,0
+			   ,0
+			   ,'1753-01-01'
+			   ,'1753-01-01'
+			   ,@School_Primary_Contact_Salutation
+			   ,@School_Primary_Contact_Name
+			   ,@School_Primary_Contact_Title
+			   ,@School_Primary_Contact_Phone
+			   ,@School_Primary_Contact_Phone_Type
+			   ,@School_Primary_Contact_Email_Address
+			   ,@School_Secondary_Contact_Salutation
+			   ,@School_Secondary_Contact_Name
+			   ,@School_Secondary_Contact_Title
+			   ,@School_Secondary_Contact_Phone
+			   ,@School_Secondary_Contact_Phone_Type
+			   ,@School_Secondary_Contact_Email_Address
+			   ,0
+			   ,0
+			   ,0
+			   ,''
+			   ,''
+			   ,''
+			   ,0
+			   ,0
+			   ,''
+			   ,@School_Size
+			   ,0
+			   ,''
+			   ,0
+			   ,0
+			   ,0
+			   ,''
+			   ,GETDATE()
+			   ,GETDATE()
+			   ,@School_TEA_ID)
+			      SELECT @SchoolId = SCOPE_IDENTITY() 
+				END
+			  ELSE
+			     BEGIN
+				      UPDATE DataSchools SET Remark = 'School community info is not matched with the selected one.',[Status] =4  WHERE ID= @DataSchoolId 
+		              UPDATE DataStudents SET Remark = 'School community info is not matched with the selected one.',[Status] =4  WHERE School_TEA_ID= @School_TEA_ID
+				 END
+			END
+		 ELSE
+		     BEGIN
+			        UPDATE DataSchools SET Remark = 'School Name error.',[Status] =4  WHERE ID= @DataSchoolId 
+		            UPDATE DataStudents SET Remark = 'School Name error.',[Status] =4  WHERE School_TEA_ID= @School_TEA_ID
+			 END
+		  END ----SchoolID = 0
+		
+		---DataStudents
+		    DECLARE @DataStudentID INT
+
+			DECLARE curS CURSOR LOCAL FAST_FORWARD FOR 
+			SELECT ID FROM dbo.DataStudents 
+			WHERE GroupId = @GroupId AND [Status] = 1 AND School_TEA_ID=@School_TEA_ID
+		
+			OPEN curS FETCH NEXT FROM curS INTO @DataStudentID
+	
+			WHILE @@FETCH_STATUS=0
+			BEGIN
+				EXEC ImportDataStudents @DataStudentID ,@School_TEA_ID,   @GroupId ,@InvitationEmail, @CommunityId, @SchoolId
+
+			FETCH NEXT FROM curS INTO @DataStudentID
+			END
+	
+			CLOSE curS
+			DEALLOCATE curS
+
+		---End DataSudents	
+
+		END --School	
+
+
+	COMMIT TRANSACTION;   
+		UPDATE DataSchools SET Status = 3 WHERE  ID= @DataSchoolId 
+    END TRY
+		
+	BEGIN CATCH
+    ROLLBACK TRANSACTION
+		UPDATE DataSchools SET Status = 4 ,Remark = ERROR_MESSAGE() WHERE  ID= @DataSchoolId 
+    END CATCH
+
+END
+
+
+
+GO
+
+

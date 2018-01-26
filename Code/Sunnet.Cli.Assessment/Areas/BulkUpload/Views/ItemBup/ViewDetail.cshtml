@@ -1,0 +1,52 @@
+﻿@model Sunnet.Cli.Business.Ade.Models.TxkeaBupTaskModel
+@using Sunnet.Cli.Core.Ade.Enums
+@using Sunnet.Cli.Core.Ade.Entities
+
+@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    ViewBag.Title = "View Details";
+}
+
+@if (Model != null && Model.Status == TxkeaBupStatus.Completed)
+{
+    <div class="form-group" style="border-bottom:1px solid #e5e5e5">
+        @Html.DisplayFor(model => model.OriginFileName)<br />
+        <div>
+            <label style="font-style:italic">@(Model.SubmitedTime)</label>
+            <a id="btnPrint" class="icon-print" title="Print" href="javascript:;" onclick="doPrint()"
+               style="float:right;font-size:23px">&nbsp;Print Info</a>
+        </div>
+    </div>
+    <div class="form-group">
+        <i class="icon-ok-sign" style="padding-right:10px"></i>
+        <label style="font-weight:bold">Completed</label><br /><br />
+        <label style="font-weight:bold">Items successfully created on:</label>
+        @(Model.ProcessedTime)<br />
+        <label style="font-weight:bold">Total number of items created:</label>
+        @(Model.NumberOfItems)
+    </div>
+}
+
+@if (Model != null && Model.Status == TxkeaBupStatus.Error)
+{
+    <div class="form-group" style="border-bottom:1px solid #e5e5e5">
+        @Html.DisplayFor(model => model.OriginFileName)<br />
+        <div>
+            <label style="font-style:italic">@(Model.SubmitedTime)</label>
+            <a id="btnPrint" class="icon-print" title="Print" href="javascript:;" onclick="doPrint()"
+               style="float:right;font-size:23px">&nbsp;Print Info</a>
+        </div>
+    </div>
+    <div class="form-group">
+        <i class="icon-warning-sign" style="padding-right:10px"></i>
+        <label style="font-weight:bold">Process Incomplete</label><br />
+    </div>
+    foreach (TxkeaBupLogEntity item in Model.Logs)
+    {
+        <div class="form-group">
+            <label style="font-weight:bold">Row #:&nbsp;</label>@(item.RowNumber)<br />
+            <label style="font-weight:bold">Item Name:&nbsp;</label>@(item.ItemName)<br />
+            <label style="font-weight:bold">Error Description:&nbsp;</label>@(item.Remark)<br />
+        </div>
+    }
+}

@@ -1,0 +1,54 @@
+﻿
+GO
+
+/****** Object:  Table [dbo].[PracticeStudentItems]    Script Date: 2017/2/23 13:47:18 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[PracticeStudentItems](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SMId] [int] NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[IsCorrect] [bit] NOT NULL,
+	[SelectedAnswers] [varchar](100) NOT NULL,
+	[PauseTime] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[Goal] [decimal](18, 2) NOT NULL,
+	[Scored] [bit] NOT NULL,
+	[Score] [decimal](18, 2) NOT NULL,
+	[Details] [nvarchar](4000) NOT NULL,
+	[Executed] [bit] NOT NULL,
+	[LastItemIndex] [int] NOT NULL,
+	[ResultIndex] [int] NOT NULL,
+ CONSTRAINT [PK_PracticeStudentItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[PracticeStudentItems] ADD  CONSTRAINT [DF__PracticeStudentIte__Goal__5AB9788F]  DEFAULT ((0)) FOR [Goal]
+GO
+
+ALTER TABLE [dbo].[PracticeStudentItems] ADD  CONSTRAINT [DF__PracticeStudentIt__Score__5F7E2DAC]  DEFAULT ((0)) FOR [Scored]
+GO
+
+ALTER TABLE [dbo].[PracticeStudentItems] ADD  CONSTRAINT [DF_PracticeStudentItems_Score]  DEFAULT ((0)) FOR [Score]
+GO
+
+ALTER TABLE [dbo].[PracticeStudentItems] ADD  DEFAULT ('') FOR [Details]
+GO
+
+

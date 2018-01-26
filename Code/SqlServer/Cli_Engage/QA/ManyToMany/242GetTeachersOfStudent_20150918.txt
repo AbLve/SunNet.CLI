@@ -1,0 +1,32 @@
+﻿ALTER FUNCTION [dbo].[GetTeachersOfStudent]
+(
+	-- Add the parameters for the function here
+	@StudetnId int
+)
+RETURNS VARCHAR(1000)
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @Teachers VARCHAR(1000)
+
+	SELECT @Teachers = (
+		SELECT DISTINCT  
+			USR.FirstName + ',' , 
+			USR.LastName + ',', 
+			TEA.TeacherId + ',', 
+			USR.InternalID + ',', 
+			USR.PrimaryEmailAddress + ',', 
+			CAST((CASE CLS.LeadTeacherId WHEN TCR.TeacherId THEN 1 ELSE 0 END) AS VARCHAR) + ';'
+			FROM [dbo].[TeacherClassRelations] TCR 
+			INNER JOIN [dbo].[Teachers] TEA ON TCR.TeacherId = TEA.ID
+			INNER JOIN [dbo].[Users] USR ON TEA.UserId = USR.ID 
+			INNER JOIN [dbo].[Classes] CLS ON TCR.ClassId = CLS.ID
+			WHERE EXISTS (SELECT 1 FROM [dbo].[StudentClassRelations] SCR WHERE SCR.StudentId = @StudetnId AND SCR.ClassId = TCR.ClassId) 
+			FOR XML PATH('') 
+	)
+	-- Return the result of the function
+	RETURN @Teachers
+
+END
+
+

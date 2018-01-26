@@ -1,0 +1,22 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<script type="text/javascript">
+    
+</script>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body onload="form.submit();">
+    <form name="form" method="post" action="/Home/PostMoodleGlobalCookie">
+        <div>
+            @Html.Hidden("returnurl", Request.QueryString["returnurl"])
+        </div>
+    </form>
+</body>
+</html>

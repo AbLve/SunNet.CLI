@@ -1,0 +1,249 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.AssignmentListModel
+@using Sunnet.Cli.Business.Vcw.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.Core.Vcw.Entities;
+@using Sunnet.Cli.UIBase;
+@using System.Web.Optimization;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@{
+    ViewBag.Title = "LinktoAssignment";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    bool isSummary = !string.IsNullOrEmpty(ViewBag.Redirect);
+}
+
+@if (isSummary)
+{
+    @section LeftMenu
+    {
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Summary)
+    }
+}
+else
+{
+    @section LeftMenu
+    {
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Teachers)
+    }
+}
+
+
+@if (isSummary)
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Coach Summary", "Index", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("Teacher Files", "TeacherFiles", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("File", "View", "TeacherGeneral", new { id = ViewBag.FileId == null ? 0 : int.Parse((string)ViewBag.FileId), redirect = "Summary" }, null))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        Link to Assignment
+    }
+}
+else
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Coach Teachers", "Index", "TeacherVIP"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("General", "Index", "TeacherGeneral"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+         @(Html.ActionLink("File", "View", "TeacherGeneral", new { id = ViewBag.FileId == null ? 0 : int.Parse((string)ViewBag.FileId) }, null))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        Link to Assignment
+    }
+}
+
+
+@using (Ajax.BeginForm("LinkToAssignment", "TeacherVIP", new { videotype = FileTypeEnum.TeacherAssignment }, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()  
+    @Html.Hidden("fileId", ViewBag.FileId == null ? "0" : (string)ViewBag.FileId)
+    if (isSummary)
+    {
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("View", "TeacherGeneral", new { id = ViewBag.FileId == null ? 0 : int.Parse(ViewBag.FileId), redirect = "Summary" }, ""))" >Back to File</a>
+    </div>
+    }
+    else
+    {
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("View", "TeacherGeneral", new { id = ViewBag.FileId == null ? 0 : int.Parse(ViewBag.FileId) }, ""))" >Back to File</a>
+    </div>
+    }
+    <div class="main-content">
+        <div class="content-title">Teacher Assignment</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr>
+                        <td>
+                            <label>
+                                <input name="assignment_select" type="checkbox" data-bind="value: item.ID" />
+                            </label>
+                        </td>
+                        <td data-bind="text: item.CommunityName"></td>
+                        <td data-bind="text: item.SchoolName"></td>
+                        <td data-bind="text: item.TeacherName"></td>
+                        <td data-bind="text: item.DueDate == minDate ? '' : item.DueDate"></td>
+                        <td data-bind="text: item.FeedbackCalllDate == minDate ? '' : item.FeedbackCalllDate"></td>
+                        <td data-bind="text: item.Session.text == '0' ? '' : item.Session.text"></td>
+                        <td data-bind="text: item.Content"></td>
+                        <td data-bind="text: item.UploadType"></td>
+                        <td data-bind="text: item.Status.text"></td>
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+            </table>
+            @Html.Partial("_Partial_Pager")
+        </div>
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return selectdata(this);">
+            @if (isSummary)
+            {
+                <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+            Url.Action("View", "TeacherGeneral", new { id = ViewBag.FileId == null ? 0 : int.Parse(ViewBag.FileId), redirect = "Summary" }, ""))">Cancel</a>
+            }
+            else
+            {
+                <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+            Url.Action("View", "TeacherGeneral", new { id = ViewBag.FileId == null ? 0 : int.Parse(ViewBag.FileId) }, ""))">Cancel</a>
+            }
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/javascript">
+        var list_Assignment = {};
+
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var backurl = "@(ViewBag.Redirect)";
+                    if (backurl != "") {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                        Url.Action("View", "TeacherGeneral", new { id = ViewBag.FileId == null ? 0 : int.Parse((string)ViewBag.FileId), redirect = "Summary" }, ""))");
+                    }
+                    else {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                        Url.Action("View", "TeacherGeneral", new { id = ViewBag.FileId == null ? 0 : int.Parse((string)ViewBag.FileId) }, ""))");
+                    }
+                }
+            })
+
+            list_Assignment = new ViewModel(
+                {
+                    instanceName: "list_Assignment",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchAssignment", "TeacherAssignment", new { teacher = (int)ViewBag.TeacherId })))',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "Select",
+                            width: "2%"
+                        },
+                        {
+                            text: "@Html.DisplayName("Community")",
+                            field: "@Html.NameFor(model => model.CommunityName)",
+                            width: "10%"
+                        },
+                        {
+                            text: "@Html.DisplayName("School")",
+                            field: "@Html.NameFor(model => model.SchoolName)",
+                            width: "10%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Teacher")',
+                            field: "@Html.NameFor(model => model.TeacherName)",
+                            width: "10%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Due Date")',
+                            field: "@Html.NameFor(model => model.DueDate)",
+                            order: true,
+                            width: "11%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Call Date")',
+                            field: "@Html.NameFor(model => model.FeedbackCalllDate)",
+                            order: true,
+                            width: "11%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Session")',
+                            field: "@Html.NameFor(model => model.Session)",
+                            order: true,
+                            width: "11%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Content")',
+                            field: "@Html.NameFor(model => model.Content)",
+                            width: "*"
+                        },
+                        {
+                            text: '@Html.DisplayName("Upload Type")',
+                            field: "@Html.NameFor(model => model.UploadType)",
+                            width: "14%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Status")',
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: "10%"
+                        }
+                    ],
+                    searchCriteria: {
+                        community: ko.observable(window.queryString("community", -1)),
+                        school: ko.observable(window.queryString("school", -1)),
+                        teacher: ko.observable(window.queryString("teacher", -1)),
+                        status: ko.observable(window.queryString("status", -1))
+                    }
+                }
+            );
+
+            list_Assignment.search();
+            ko.applyBindings(list_Assignment);
+        });
+
+            function selectdata() {
+                var assignment_select = $("input[name=assignment_select]:checked");
+                if (assignment_select.length == 0) {
+                    showMessage("hint", "Vcw_Assignments_Noselect")
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+    </script>
+}
+

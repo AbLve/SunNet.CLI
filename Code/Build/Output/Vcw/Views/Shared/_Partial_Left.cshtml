@@ -1,0 +1,89 @@
+﻿@model Sunnet.Cli.Vcw.Models.LeftmenuModel
+@using Sunnet.Cli.Core.Users.Enums
+@{
+    var menuClasses = LeftmenuModel.Teacher_Summary.ToList().Cast<LeftmenuModel>()
+        .ToDictionary(module => module, module => module == Model ? "active" : "");
+    Role userrole = (Role)ViewBag.UserRoleType;
+}
+<h4>
+    <a class="main-ade-left-active" href="@(DomainHelper.MainSiteDomain)Home/Dashboard">
+        <i class="icon-dashboard"></i>Dashboard
+    </a>
+</h4>
+<ul>
+    @if (userrole == Role.Teacher)
+    {
+        <li>
+            <a href="/Teacher/VIP/" class="@menuClasses[LeftmenuModel.Teacher_VIP]">@LeftmenuModel.Teacher_VIP.ToDescription()</a>
+        </li>
+        <li>
+            <a href="/Teacher/Assignment/" class="@menuClasses[LeftmenuModel.Teacher_Assignment]">@LeftmenuModel.Teacher_Assignment.ToDescription()</a>
+        </li>        
+        <li>
+            <a href="/Teacher/General/" class="@menuClasses[LeftmenuModel.Teacher_General]">@LeftmenuModel.Teacher_General.ToDescription()</a>
+        </li>        
+        <li>
+            <a href="/Teacher/Summary/" class="@menuClasses[LeftmenuModel.Teacher_Summary]">@LeftmenuModel.Teacher_Summary.ToDescription()</a>
+        </li>
+        <li>
+            <a href="/Teacher/Summary/STG" class="@menuClasses[LeftmenuModel.STG_Reports]">@LeftmenuModel.STG_Reports.ToDescription()</a>
+        </li>
+    }
+
+
+    @if (userrole == Role.Coordinator || userrole == Role.Mentor_coach)
+    {
+        <li>
+            <a href="/Coach/CoachAssignment/Index" class="@menuClasses[LeftmenuModel.Coach_Assignment]">@LeftmenuModel.Coach_Assignment.ToDescription()</a>
+        </li>
+        <li>
+            <a href="/Coach/General/Index" class="@menuClasses[LeftmenuModel.Coach_General]">@LeftmenuModel.Coach_General.ToDescription()</a>
+        </li>
+        <li>
+            <a href="/Coach/TeacherVIP/Index" class="@menuClasses[LeftmenuModel.Coach_Teachers]">@LeftmenuModel.Coach_Teachers.ToDescription()</a>
+        </li>
+        <li>
+            <a href="/Coach/Summary/Index" class="@menuClasses[LeftmenuModel.Coach_Summary]">@LeftmenuModel.Coach_Summary.ToDescription()</a>
+        </li>
+    }
+
+    @if (userrole == Role.Intervention_manager)
+    {    
+        <li>
+            <a href="/PM/TeacherVIP/Index" class="@menuClasses[LeftmenuModel.PM_Teachers]">@LeftmenuModel.PM_Teachers.ToDescription()</a>
+        </li>
+        <li>
+            <a href="/PM/CoachAssignment/Index" class="@menuClasses[LeftmenuModel.PM_Coaches]">@LeftmenuModel.PM_Coaches.ToDescription()</a>
+        </li>
+        <li>
+            <a href="/PM/Summary/Index" class="@menuClasses[LeftmenuModel.PM_Summary]">@LeftmenuModel.PM_Summary.ToDescription()</a>
+        </li>
+    }
+
+    @if (userrole == Role.Super_admin)
+    {    
+        <li>
+            <a href="/Admin/TeacherVIP/Index" class="@menuClasses[LeftmenuModel.Admin_Teachers]">@LeftmenuModel.Admin_Teachers.ToDescription()</a>
+        </li>
+        <li>
+            <a href="/Admin/CoachAssignment/Index" class="@menuClasses[LeftmenuModel.Admin_Coaches]">@LeftmenuModel.Admin_Coaches.ToDescription()</a>
+        </li>
+        <li>
+            <a href="/Admin/Summary/Index" class="@menuClasses[LeftmenuModel.Admin_Summary]">@LeftmenuModel.Admin_Summary.ToDescription()</a>
+        </li>
+    }
+
+
+@*<li>
+            @Html.ActionLink(Leftmenu_Cpalls.Cot.ToDescription(), "Index", "Home", new { Area = "Cot" }, new
+            {
+                @class = menuClasses[Leftmenu_Cpalls.Cot]
+            })
+        </li>
+        <li>
+            @Html.ActionLink(Leftmenu_Cpalls.Cec.ToDescription(), "Index", "Home", new { Area = "Cec" }, new
+            {
+                @class = menuClasses[Leftmenu_Cpalls.Cec]
+            })
+        </li>*@
+</ul>

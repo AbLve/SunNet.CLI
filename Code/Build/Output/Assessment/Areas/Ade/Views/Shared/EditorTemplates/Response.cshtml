@@ -1,0 +1,201 @@
+﻿@model IEnumerable<TypedResopnseModel>
+@{
+    Layout = null;
+}
+
+<div class="nav-tab">
+    <ul id="responseEditor" class="nav-container" role="tablist">
+        <!--ko foreach:{data:activeResponses(),as:'Response'}-->
+        <!--ko ifnot:IsDeleted()-->
+        <li data-bind="css:{active:$index() === 0}">
+            <a data-bind="text:'Response ' + ($index() + 1),attr:{href:'#'+uuid}"
+               role="tab" data-toggle="tab"></a>
+        </li>
+        <!--/ko-->
+        <!--/ko-->
+        <li>
+            <a href="#" data-bind="click:newResponse">
+                <i class="icon-plus"></i>
+                New
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="tab-content" data-bind="foreach:{data:activeResponses(),as:'Response'}">
+    <!--ko ifnot:IsDeleted()-->
+    <!-- need to show elements before uploader created, then hide elements from page-->
+    <div class="tab-pane fade active in" data-bind="attr:{id:uuid}">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th width="5"></th>
+                    <th width="160">Response Picture</th>
+                    <th width="120">Time in (ms)</th>
+                    <th width="*">Text</th>
+                    <th width="120">Time in (ms)</th>
+                    <th width="100">Required</th>
+                    <th width="200">Type of Field</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-bind="ifnot:IsDeleted()">
+                    <td>
+                        &nbsp;<input type="hidden" name="Id" data-bind="value:Id" />
+                    </td>
+                    <td>
+                        <div data-bind="attr:{id:uuid+'Picker'}">Browse</div>
+                        <div class="webuploader-preview" data-bind="visible:Id > 0">
+                            <a class="table-btn icon-zoom-in preview-btn"
+                               data-bind="attr:{href:$root.BasePath + Picture}"
+                               target="_blank"></a>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div data-bind="attr:{id:uuid+'container'}" class="uploader-list"></div>
+                        <input type="hidden" class="validate"
+                               data-submitbutton="#btnSubmit"
+                               data-accept='{"title":"Image","extensions":"gif,jpg,jpeg,bmp,png",
+                                "mimeTypes":"image/gif,image/jpeg,image/bmp,image/png"}'
+                               data-bind="attr:{
+                                        id: uuid+'Picture',
+                                        name: uuid+'Picture',
+                                        'data-pick': '#' + uuid +'Picker',
+                                        'data-container':'#' + uuid +'container',
+                                        'data-targetfield':'#' + uuid +'Picture'
+                                    },
+                                value:Picture,
+                                required:true,
+                                upload:true" />
+                        <div class="field-validation-valid" data-valmsg-replace="true"
+                             data-bind="attr:{'data-valmsg-for':uuid+'Picture'}">
+                        </div>
+                    </td>
+                    <td>
+                        <label class="hide" data-bind="attr:{for:uuid+'PictureTimeIn'}"></label>
+                        <input type="text" class="form-control input-sm  uint timeout" maxlength="5" data-bind="
+    value:PictureTimeIn,
+    number:true,
+    attr:{name:uuid+'PictureTimeIn',id:uuid+'PictureTimeIn'}"
+                               style="width: 50px;" />
+
+                    </td>
+                    <td>
+                        <label class="hide" data-bind="attr:{for:uuid+'Text'}"></label>
+                        <input type="text" class="form-control input-sm validate" maxlength="1000"
+                               data-bind="value:Text,attr:{id:uuid+'Text',name:uuid+'Text'},required:true" style="display: inline-block;" />
+                        <div class="field-validation-valid" data-valmsg-replace="true"
+                             data-bind="attr:{'data-valmsg-for':uuid+'Text'}">
+                        </div>
+                    </td>
+                    <td>
+                        <label class="hide" data-bind="attr:{for:uuid+'TextTimeIn'}"></label>
+                        <input type="text" class="form-control input-sm  uint timeout" maxlength="5" data-bind="
+    value:TextTimeIn,
+    number:true,
+    attr:{name:uuid+'TextTimeIn',id:uuid+'TextTimeIn'}"
+                               style="width: 50px;" />
+                    </td>
+                    <td>
+                        <label data-bind="attr:{for:uuid+'Required'}">
+                            <input type="checkbox" data-bind="
+                    checked:Required,
+                    attr:{name:uuid+'Required',id:uuid+'Required'}" />
+                            &nbsp;Required
+                        </label>
+                    </td>
+                    <td style="text-align: left">
+                        <label data-bind="attr:{for:uuid+'Type'+'1'}">
+                            <input type="radio" data-bind="checked:Type, attr:{name:uuid+'Type',id:uuid+'Type'+'1'}" value="1" />
+                            &nbsp;Text
+                        </label> &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label data-bind="attr:{for:uuid+'Type'+'2'}">
+                            <input type="radio" data-bind="checked:Type, attr:{name:uuid+'Type',id:uuid+'Type'+'2'}" value="2" />
+                            &nbsp;Numerical
+                        </label><br />
+                        <span data-bind="text:LengthText"></span>
+                        <input type="text" class="form-control input-sm uint validate" maxlength="5" data-bind="
+    value:Length,
+    attr:{name:uuid+'Length',id:uuid+'Length'},
+    number:true,required:true"
+                               style="width: 50px;" />
+                        <label class="field-validation-valid" data-valmsg-replace="true"
+                               data-bind="attr:{'data-valmsg-for':uuid+'Length'}">
+                        </label>
+                    </td>
+
+                </tr>
+                <tr data-bind="ifnot:IsDeleted">
+                    <td colspan="2">&nbsp;</td>
+                    <td colspan="5">
+                        <table class="table table-hover table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th colspan="2">Response</th>
+                                    <th></th>
+                                    <th>Score</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach:{data:Options,as:'Option'}">
+                                <tr data-bind="ifnot:IsDeleted">
+                                    <td>
+                                        &nbsp;<input type="hidden" name="Id" data-bind="value:Id" />
+                                    </td>
+                                    <!--ko if: Type() == TypedResponseType.Text-->
+                                    <td class="editting-td">
+                                        If response contains:
+                                        <br />(separate words with <strong>,</strong> or <strong>;</strong>)
+                                    </td>
+                                    <td class="editting-td">
+                                        <input type="text" class="form-control input-sm validate" maxlength="100"
+                                               data-bind="value:Keyword,attr:{id:uuid+'Keyword',name:uuid+'Keyword'},required:true" />
+                                        <div class="field-validation-valid" data-valmsg-replace="true"
+                                             data-bind="attr:{'data-valmsg-for':uuid+'Keyword'}">
+                                        </div>
+                                    </td>
+                                    <!--/ko-->
+                                    <!--ko if: Type() == TypedResponseType.Numerical-->
+                                    <td colspan="2" class="editting-td">
+                                        From
+                                        <input type="text" name="From" class="form-control input-sm uint validate"  maxlength="3"
+                                               data-bind="value:From,attr:{id:uuid+'From',name:uuid+'From'},required:true" style="display: inline-block; width: 50px;" />
+
+                                        To
+                                        <input type="text" name="To" class="form-control input-sm uint  validate" maxlength="3"
+                                               data-bind="value:To,attr:{id:uuid+'To',name:uuid+'To'},required:true" style="display: inline-block; width: 50px;" />
+                                        <div class="field-validation-valid" data-valmsg-replace="true"
+                                             data-bind="attr:{'data-valmsg-for':uuid+'From'}">
+                                        </div>
+                                        <div class="field-validation-valid" data-valmsg-replace="true"
+                                             data-bind="attr:{'data-valmsg-for':uuid+'To'}">
+                                        </div>
+                                    </td>
+                                    <!--/ko-->
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm _number validate" float="2" maxlength="5"
+                                               data-bind="value:Score,attr:{id:uuid+'Score',name:uuid+'Score'},required:true"
+                                               style="display: inline-block; width: 50px;" />
+                                        <div class="field-validation-valid" data-valmsg-replace="true"
+                                             data-bind="attr:{'data-valmsg-for':uuid+'Score'}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="table-btn icon-plus plus-btn" data-bind="click:$parent.newOption" href="#" title="New"></a>
+                                        <a class="table-btn icon-minus minus-btn" data-bind="click:$parent.deleteOption" href="#" title="Delete"></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <button class="mainbutton mainright-btn cancel-btn" type="button"
+                data-bind="click:$parent.deleteResponse, text:'Delete Response ' + ($index() + 1)">
+            Delete Response
+        </button>
+    </div>
+    <!--/ko-->
+</div>

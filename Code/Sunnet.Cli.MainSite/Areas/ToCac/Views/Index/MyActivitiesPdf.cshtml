@@ -1,0 +1,352 @@
+﻿@using System.Web.Util
+@using Sunnet.Cli.Business.CAC.Models
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Framework
+@model Sunnet.Cli.Business.CAC.Models.MyActivityViewModel
+@{
+    ViewBag.Title = "My Activity";
+    Layout = null;
+    List<MyActivityViewModel> list = ViewBag.MyActivities;
+}
+
+<div class="activity-content" id="dvMyActivities">
+    <div class="activity-content-tab-content-right" style="width: 100%;">
+        <div class="parent-dashboard-logo">
+            <img src="@(SFConfig.StaticDomain)/Content/images/logo.png" alt="CLI Logo" style="width: 265px; height: 51px; vertical-align: middle;">
+            <span style="font-size: 26px;font-weight: bold;color: #000;vertical-align: middle;margin-left: 7px;">MY ACTIVITIES &nbsp;|&nbsp; MIS ACTIVIDADES</span>
+        </div>
+        @{
+            var i = 1;
+        }
+        @foreach (var myActivity in list)
+        {
+            i++;
+            <div class="right-con">
+                <div class="@((i%2 == 0 && i != 2) ? "newpager" : "")" style="page-break-inside: avoid">
+                    <div class="right-content-tit clearfix">
+                        <a href="@(SFConfig.CACDomain + myActivity.Url)">
+                            <h2>@(myActivity.ActivityName)</h2>
+                        </a>
+                    </div>
+                    <div class="right-content-con clearfix">
+                        <div class="clearfix">
+                            <div class="right-content-con-div right-content-con-div1">
+                                <b>@(ViewBag.DomainField):</b>
+                                <span>@(myActivity.Domain)</span>
+                            </div>
+                            <div class="right-content-con-div">
+                                <b>@(ViewBag.SubDomainField):</b>
+                                <span>@(myActivity.SubDomain)</span>
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            @if (!myActivity.CollectionType.Contains("Pre-K English") && !myActivity.CollectionType.Contains("Pre-K Spanish"))
+                            {
+                                <p><b>AGE GROUPS:</b> <span>@(myActivity.AgeGroup)</span></p>
+                            }
+                            <p><b>@(ViewBag.IsEnglish ? "OBJECTIVE" : "OBJETIVO"):</b> <span>@(Html.Raw(HttpUtility.HtmlDecode(myActivity.Objective)))</span></p>
+                            <p>
+                                <b>@(ViewBag.IsEnglish ? "MY NOTES" : "MIS NOTAS"):</b>
+                            </p>
+                            <p class="right-content-con-p">@(Html.Raw(myActivity.Note))</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<style>
+    * {
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    }
+
+    .main-container {
+        padding: 20px 20px 0;
+    }
+
+    .main-con-right {
+        margin: 0;
+        width: 100%;
+        padding-top: 20px;
+    }
+
+    .main-con-right {
+        min-width: 950px;
+    }
+
+
+
+    .activity-content-tab ul {
+        margin: 0;
+        padding: 0 20px;
+    }
+
+    .activity-content-tab li {
+        width: 16.6666%;
+        float: left;
+        padding: 0 3px;
+    }
+
+        .activity-content-tab li a {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4D4D4D;
+            display: block;
+            text-align: center;
+            background: #F0F0F0;
+            border-radius: 10px 10px 0 0;
+            height: 55px;
+            padding-top: 18px;
+        }
+
+            .activity-content-tab li a:hover, .activity-content-tab li a.cur {
+                background: #0077B8;
+                color: #fff;
+            }
+
+    .activity-content-tab-content {
+        border: 3px solid #0077B8;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .activity-content-tab-content-left {
+        width: 30%;
+        float: left;
+        text-align: right;
+    }
+
+    .activity-content-tab-content-right {
+        width: 70%;
+        float: left;
+        padding: 0 20px;
+    }
+
+    .left-title {
+        text-align: right;
+        padding: 0 20px;
+    }
+
+        .left-title h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0077B8;
+        }
+
+        .left-title h5 {
+            font-size: 28px;
+            font-weight: normal;
+            margin-bottom: 25px;
+        }
+
+        .left-title p {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding: 0 10px;
+        }
+
+    .activity-content-tab-content-left ul {
+        padding: 0 20px;
+        font-size: 16px;
+        border-right: 1px solid #848484;
+    }
+
+    .activity-content-tab-content-left li {
+        border-bottom: 1px solid #848484;
+        padding: 10px 0;
+    }
+
+        .activity-content-tab-content-left li a {
+            padding: 5px 10px;
+            display: inline-block;
+            color: #333;
+        }
+
+            .activity-content-tab-content-left li a:hover, .activity-content-tab-content-left li a.cur {
+                font-weight: 600;
+                background: #E1F5FF;
+            }
+
+    .right-title {
+        font-size: 16px;
+    }
+
+        .right-title h3 {
+            font-size: 17px;
+            color: #006CA5;
+            font-weight: 700;
+        }
+
+        .right-title * {
+            float: left;
+        }
+
+        .right-title div {
+            margin-left: 20px;
+            padding-top: 10px;
+        }
+
+            .right-title div.fanye {
+                float: right;
+            }
+
+                .right-title div.fanye * {
+                    float: inherit;
+                }
+
+                .right-title div.fanye p span {
+                    margin: 0 2px;
+                }
+
+        .right-title select {
+            padding: 6px 5px;
+            vertical-align: middle;
+            border: 1px solid #C8C8C8;
+            background: #E9E9E9;
+            cursor: pointer;
+        }
+
+        .right-title p {
+            padding-top: 7px;
+            margin-right: 5px;
+        }
+
+        .right-title a {
+            padding: 6px 5px;
+            border: 1px solid #C8C8C8;
+            background: #E9E9E9;
+            color: #333;
+            text-decoration: none;
+            margin: 0 4px;
+        }
+
+            .right-title a:hover {
+                background: #bbb;
+            }
+
+    .right-content-tit {
+        margin: 30px 0 10px;
+    }
+
+    .clearfix:before,
+    .clearfix:after,
+    .dl-horizontal dd:before,
+    .dl-horizontal dd:after,
+    .container:before,
+    .container:after,
+    .container-fluid:before,
+    .container-fluid:after,
+    .row:before,
+    .row:after,
+    .form-horizontal .form-group:before,
+    .form-horizontal .form-group:after,
+    .btn-toolbar:before,
+    .btn-toolbar:after,
+    .btn-group-vertical > .btn-group:before,
+    .btn-group-vertical > .btn-group:after,
+    .nav:before,
+    .nav:after,
+    .navbar:before,
+    .navbar:after,
+    .navbar-header:before,
+    .navbar-header:after,
+    .navbar-collapse:before,
+    .navbar-collapse:after,
+    .pager:before,
+    .pager:after,
+    .panel-body:before,
+    .panel-body:after,
+    .modal-footer:before,
+    .modal-footer:after {
+        display: table;
+        content: " ";
+    }
+
+    .clearfix:after,
+    .dl-horizontal dd:after,
+    .container:after,
+    .container-fluid:after,
+    .row:after,
+    .form-horizontal .form-group:after,
+    .btn-toolbar:after,
+    .btn-group-vertical > .btn-group:after,
+    .nav:after,
+    .navbar:after,
+    .navbar-header:after,
+    .navbar-collapse:after,
+    .pager:after,
+    .panel-body:after,
+    .modal-footer:after {
+        clear: both;
+    }
+
+    .right-content-tit h2 {
+        margin: 0;
+        text-decoration: underline;
+        font-size: 26px;
+        font-weight: 600;
+        color: #000;
+    }
+
+    .right-content-tit button {
+        float: right;
+        background: #0077B8;
+        color: #fff;
+        padding: 6px 30px;
+        border-radius: 30px;
+    }
+
+    .right-content-con-div {
+        width: 50%;
+        float: left;
+        padding: 5px 20px;
+        margin-bottom: 5px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+    .right-content-con-div1 {
+        background: #E1F5FF;
+    }
+
+    .right-content-con p {
+        margin-bottom: 0;
+        padding: 2px 0;
+        margin-top: 3px;
+        font-size: 14px;
+    }
+
+    .right-content-con .right-content-con-p {
+        padding: 15px 40px;
+        background: #F0F0F0;
+        box-sizing: border-box;
+    }
+
+    .right-content-con a {
+        color: #006CA5;
+        font-weight: 700;
+        text-decoration: underline;
+        margin-top: 20px;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .right-con {
+        padding-bottom: 40px;
+        border-bottom: 1px solid #848484;
+        margin-bottom: 40px;
+    }
+
+        .right-con:last-child {
+            border-bottom: 0;
+        }
+
+    .newpager {
+        page-break-before: always;
+    }
+</style>

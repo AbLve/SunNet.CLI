@@ -1,0 +1,90 @@
+﻿@model Sunnet.Cli.Business.Ade.Models.ScoreModel
+@using Sunnet.Cli.Core.Ade.Entities
+
+@{
+    ViewBag.Title = " Final Score ";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+<script type="text/javascript">
+    debugger;
+    (function () {
+        $("input[data-list][data-remote]").each(function (index, input) {
+            $(this).datalist();
+        });
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function (response) {
+                if (response.success) {
+                    $("#finalScore").html(response.data);
+                }
+            }
+        });
+    })();
+</script>
+
+@using (Ajax.BeginForm("GetFinalScore", "Assessment", null, PostFormHelper.DefaultAjaxOptions,
+                                                                                                                                                    new
+                                                                                                                                                    {
+                                                                                                                                                        @class = "form-horizontal",
+                                                                                                                                                        id = formId
+                                                                                                                                                    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID, new { @class = "validate", @Value = "0" })
+    @Html.ValidationMessageFor(model => model.ID)
+    @Html.Hidden("assessmentId", new { @Value = ViewBag.AssessmentId })
+    @Html.Hidden("scoreId", new { @Value = ViewBag.ScoreId })
+
+    <div id="">
+
+        <div class="form-group">
+            <label class="control-label col-sm-2 required" for="txtStudent" style="text-align:left;" aria-required="true">Student</label>
+            <div class="col-sm-4">
+                @Html.TextBox("txtStudent", "", new
+           {
+               autocomplete = "off",
+               @class = "form-control",
+               data_list = "true",
+               data_for = "#studentId",
+               data_remote = Url.Action("GetStudentSelectList", "Assessment", new { Area = "Ade" }),
+               data_text = "Name",
+               data_value = "ID",
+               data_required = false,
+               id = "txtStudent",
+               name = "txtStudent",
+               placeholder = "Enter key text to search",
+               @for = "studentId",
+           })
+                <input id="studentId" name="studentId" type="text" style="width: 0px;height:0px" class="required validate" value="" />
+                @Html.ValidationMessage("studentId")
+            </div>
+
+            <label class="control-label col-sm-2 required" for="Wave" style="text-align:left;" aria-required="true">Wave</label>
+            <div class="col-sm-4">
+                <select class="form-control" name="wave">
+                    <option value="1">Wave 1</option>
+                    <option value="2">Wave 2</option>
+                    <option value="3">Wave 3</option>
+                </select>
+                @Html.ValidationMessage("wave")
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2">
+                Final Score:
+            </div>
+            <div class="col-sm-4">
+                <span id="finalScore"></span>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="mainbutton modal-btn submit-btn" type="submit">Search Final Score</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+}
+
+
+

@@ -1,0 +1,29 @@
+﻿判断 表是否存在  IF NOT EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[CpallsStudentGroups]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+判断 列是否存在  if not exists(select * from syscolumns where id=object_id('CpallsStudentGroups') and name='SchoolYear')
+判断 存储过程是否存在 if exists(select * from sysobjects where id=object_id('[dbo].[TeacherEmployed]') and xtype='P') 
+http://blog.csdn.net/tercel99/article/details/3377900
+
+select  
+  o.name as 表名,  
+  i.name as 索引名,  
+  c.name as 列名,  
+  i.type_desc as 类型描述,  
+  is_primary_key as 主键约束,  
+  is_unique_constraint as 唯一约束,  
+  is_disabled as 禁用  
+from sys.objects o   
+inner join sys.indexes i on i.object_id=o.object_id  
+inner join sys.index_columns ic on ic.index_id=i.index_id and ic.object_id=i.object_id  
+inner join sys.columns c on ic.column_id=c.column_id and ic.object_id=c.object_id  
+where o.name='Schools'
+
+
+---删除带有默认值的字段
+
+declare @name varchar(50) 
+select @name=b.name from syscolumns a,sysobjects b where a.id=object_id('[Communities]') 
+and b.id=a.cdefault and a.name='TexasRisingStar' 
+and b.name like 'DF%' 
+exec('alter table Communities drop constraint '+@name) 
+go
+alter table Communities drop column TexasRisingStar

@@ -1,0 +1,24 @@
+﻿if exists(select * from syscolumns where id=object_id('TxkeaReceptiveItems') and name='Stop')
+ALTER TABLE TxkeaReceptiveItems 
+DROP COLUMN Stop
+GO
+
+
+if exists(select * from syscolumns where id=object_id('TxkeaReceptiveItems') and name='NextButton')
+ALTER TABLE TxkeaReceptiveItems 
+DROP COLUMN NextButton
+GO
+
+
+UPDATE dbo.ItemBases SET Scored=1 WHERE type IN (12,13) AND Scored=0
+GO
+
+
+if not exists(select * from syscolumns where id=object_id('TxkeaReceptiveItems') and name='GrayedOutDelay')
+alter table TxkeaReceptiveItems  add GrayedOutDelay bit
+go
+update TxkeaReceptiveItems set GrayedOutDelay = 0 where GrayedOutDelay is null
+go
+alter table TxkeaReceptiveItems  alter column  GrayedOutDelay bit not NULL
+GO
+

@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = "Assessment";
+    //ViewBag.Manifest = Url.Action("Manifest");
+    Layout = "~/Views/Shared/_Layout_Offline.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section Styles{
+    <style type="text/css">
+        .tooltip-inner {
+            max-width: 450px;
+            text-align: left;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-sm-6 col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Basic Information</div>
+            <div class="panel-body ">
+                <form class="form-horizontal" role="form">
+                    <label class="control-label">Teacher Name</label>
+                    <label class="control-label-text" data-bind="html:teacher.firstname + ' ' + teacher.lastname"><span style="display:none;">1</span>
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">School Year</label>
+                    <label class="control-label-text" data-bind="html:assessment.SchoolYear"><span style="display:none;">1</span>
+                    </label>
+                </form>
+                <div class="right-content-top">
+                    <a href="/Cot/Offline" class="mainbutton mainright-btn nav-btn">Back to Teacher List</a>
+                    <button type="button" class="mainbutton mainright-btn create-btn"
+                            data-bind="click:gotoCotReport,visible:teacher.hasCotReport">
+                        Select Goals/Update COT
+                    </button>
+                    <button type="button" class="mainbutton mainright-btn create-btn"
+                            data-bind="click:gotoTeacherFolder">
+                        Teacher Folder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("_Partial_Log")
+</div>
+<div class="clearfix" style="height:5px;"></div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">COT Assessment</div>
+            <div class="panel-body ">
+                <form class="form-horizontal" id="@(formId)" method="post" novalidate="novalidate">
+                    <div class="main-content">
+                        <div class="content-body">
+                            <div class="form-group">
+                                <label class="control-label col-sm-2 required" for="Wave" aria-required="true">Wave</label>
+                                <div class="col-sm-2">
+                                    <input type="hidden" class="validate" id="waveSelected" name="waveSelected" data-val="true" data-val-required="The Wave field is required." data-val-range="The Wave field is required." data-val-range-max="10" data-val-range-min="1" data-bind="value:teacher.choosedWave().value" />
+                                    <select class="form-control" data-bind="options: teacher.availableWaves,optionsText:'text', value: teacher.choosedWave" 
+                                            for="waveSelected" id="Wave" name="Wave"></select>
+                                    <span class="field-validation-valid" data-valmsg-for="waveSelected" data-valmsg-replace="true"></span>
+                                </div>
+                                <label class="control-label col-sm-2 required" for="VisitDate" aria-required="true">Date of Visit</label>
+                                <div class="col-sm-2">
+                                    <input class="form-control date" data-bind="value:teacher.choosedWaveAssessment().visitDate"
+                                           data-val="true" data-val-date="The field Date of Visit must be a date." data-val-required="The Date of Visit field is required." id="VisitDate" name="VisitDate" type="text" placeholder="" title=" ">
+                                    <span class="field-validation-valid" data-valmsg-for="VisitDate" data-valmsg-replace="true"></span>
+                                </div>
+                                <label class="control-label col-sm-2 required" for="SpentTime" aria-required="true">Length of Visit ( hours )</label>
+                                <div class="col-sm-2">
+                                    <select class="form-control" data-bind="options:spentTimeOptions,optionsText:'text',optionsValue:'value',value:teacher.choosedWaveAssessment().spentTime"
+                                            data-val="true" data-val-required="The Length of Visit ( hours ) field is required." id="SpentTime" name="SpentTime"></select>
+                                    <span class="field-validation-valid" data-valmsg-for="SpentTime" data-valmsg-replace="true"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-3 col-sm-offset-2">
+                                    <button type="button" class="mainbutton mainright-btn create-btn" data-bind="text:$root.showFullTargetText()?'Show Short Text':'Show Full Text' , click:toggleFullTargetText"><span style="display:none;">1</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false" data-bind="foreach:{data:teacher.choosedWaveAssessment().measures,as:'measure'}">
+                        <!-- ko if:measure.visible -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" data-bind="attr:{id:'head'+$index()}">
+                                <h4 class="panel-title"><span style="display:none;">1</span>
+                                    <a data-toggle="collapse" data-parent="#accordion" aria-expanded="true" data-bind="attr:{'aria-controls':'content'+$index(),href:'#content'+$index()},html:name">
+                                    </a>
+                                </h4>
+                            </div>
+                            <div class="panel-collapse collapse" role="tabpanel" data-bind="attr:{'aria-labelledby':'head'+$index(),id:'content'+$index()},css:{in:$index() == 0}">
+                                <div class="panel-body">
+                                    <div class="content-body-tab">
+                                        <table class="table table-hover table-striped table-condensed">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 50px;">Obs</th>
+                                                    <th style="width: 50px;">NS</th>
+                                                    <th>Item</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- ko if:items-->
+                                                <!-- ko template:{name:'_tmp_item',foreach:items,as:'item'}-->
+                                                <!-- /ko-->
+                                                <!-- /ko-->
+                                                <!-- ko if:children && children.length-->
+                                                <!-- ko foreach:{data:children,as:'childMeasure'}-->
+                                                <!-- ko if: childMeasure.visible-->
+                                                <!-- ko template:{name:'_tmp_measure',data:childMeasure}-->
+                                                <!-- /ko-->
+                                                <!-- ko template:{name:'_tmp_item',foreach:childMeasure.items,as:'childItem'}-->
+                                                <!-- /ko-->
+                                                <!-- /ko-->
+                                                <!-- /ko-->
+                                                <!-- /ko-->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /ko-->
+                    </div>
+                    <div class="button-content">
+                        <input type="button" class="mainbutton mainright-btn submit-btn" data-bind="click:saveAssessment" value="Save">
+                        <input type="button" class="mainbutton mainright-btn submit-btn" data-bind="click:finalizeAssessment" value="Finalize">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="_tmp_item">
+    <tr>
+        <td>
+            <input type="checkbox" data-bind="checked:observed" title=" "/>
+        </td>
+        <td>
+            <input type="checkbox" data-bind="checked:needSupport,enable:observed()" title=" "/>
+        </td>
+        <td style="text-align: left;" >
+            <span data-html="true"  data-bind="html:shortTargetText,visible:$root.showFullTargetText()==false,tooltip:fullTargetText"></span>
+            <div data-bind="html:fullTargetText,visible:$root.showFullTargetText()"></div>
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_measure">
+    <tr class="info">
+        <td colspan="3" style="text-align: left;">
+            <b data-bind="text:name"></b>
+        </td>
+    </tr>
+</script>
+@section Scripts
+{
+    @Scripts.Render("~/scripts/jquery_val/offline")
+    @Scripts.Render("~/scripts/format/offline")
+    @Scripts.Render("~/scripts/cot/offline")
+
+    <script type="text/javascript" src="/Content/Scripts/datetime/lang/en.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/datetime/calendar.js?"></script>
+
+    <script type="text/javascript">
+        function log(type, message) {
+            var log = '<div class="alert alert-' + type + ' alert-log" role="alert" title="' + message + '">' + message + '</div>';
+            $(log).appendTo($log);
+            $log.scrollTop($log[0].scrollHeight);
+        }
+
+        var offlineApp;
+        var $log;
+
+        $(function () {
+            $log = $("#log_Container");
+            offlineApp = getCotOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.writeLog = log;
+            offlineApp.init();
+
+            offlineApp.viewModel.showFullTargetText = ko.observable(false);
+            offlineApp.viewModel.toggleFullTargetText = function () {
+                offlineApp.viewModel.showFullTargetText(!offlineApp.viewModel.showFullTargetText());
+            }
+
+            ko.applyBindings(offlineApp.viewModel);
+        });
+    </script>
+}

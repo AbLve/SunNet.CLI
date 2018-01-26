@@ -1,0 +1,44 @@
+﻿@using Sunnet.Cli.Business.Vcw.Models;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.Business.Common;
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "pdf";
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+}
+<div class="main-content main-content">
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover" width="99%">
+            <thead>
+                <th>Community</th>
+                <th>School</th>
+                <th>Teacher</th>
+                <th>Sender</th>
+                <th>Due Date</th>
+                <th>Call Date</th>
+                <th>Session</th>
+                <th>Content</th>
+                <th>Upload Type</th>
+                <th>Status</th>
+            </thead>
+            <tbody>
+                @foreach (AssignmentListModel item in (List<AssignmentListModel>)ViewBag.List)
+                {
+                    <tr>
+                        <td style="width: 130px; text-align: center">@item.CommunityName</td>
+                        <td style="width: 10%; text-align: center">@item.SchoolName</td>
+                        <td style="width: 10%; text-align: center">@item.TeacherName</td>
+                        <td style="width: 10%; text-align: center">@item.SendUserName</td>
+                        <td style="width: 8%; text-align: center">@(item.DueDate.FormatDateString())</td>
+                        <td style="width: 8%; text-align: center">@(item.FeedbackCalllDate.FormatDateString())</td>
+                        <td style="width: 6%; text-align: center">@(item.SessionText)</td>
+                        <td style="width: 12%; text-align: center">@item.Content</td>
+                        <td style="width: 10%; text-align: center">@item.UploadType</td>
+                        <td style="width: 6%; text-align: center">@item.Status.ToDescription()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

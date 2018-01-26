@@ -1,0 +1,397 @@
+﻿@model Sunnet.Cli.Assessment.Areas.Cpalls.Models.SchoolViewModel
+@{
+    ViewBag.Title = "School View";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    int leftWidth = 210;
+    ViewBag.LeftWidth = leftWidth;// Partial
+    ViewBag.Target = "School";
+    var childrenMeasures = ViewBag.MeasureList as List<MeasureHeaderModel>;
+    var topHeight = childrenMeasures != null && childrenMeasures.Any(x => x.ParentId > 1) ? 160 : 130;
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a><i class="icon-angle-right"></i>School View
+}
+@section Styles{
+    <style type="text/css">
+        .fixed-header {
+            margin-left: 224px;
+        }
+        .fixed-column-title div {
+            top: @(topHeight - 25)px;
+        }
+        .main-content, .right-content-top {
+            margin-top: 5px;
+        }
+        .modal-l-b {
+            margin: 5px 0;
+        }
+        .form-horizontal .control-label {
+            padding-right: 5px;
+        }
+        .form-group > div{
+            padding-left: 5px;
+        }
+    </style>
+}
+<div class="right-content-top">
+    <div class="btn-group">
+        <button type="button" class="mainbutton mainright-btn create-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="icon-bar-chart"></i>
+            Reports <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="javascript:void(0);" data-bind="click:completion_report">Community Completion Report</a></li>
+            <li><a href="javascript:void(0);" data-bind="click:summary_report">Community Summary Report</a></li>
+            <li><a href="javascript:void(0);" data-bind="click:growth_report">Community Growth Report</a></li>
+            @if (ViewBag.Debug)
+            {
+                <li><a href="javascript:void(0);" data-bind="click:growth_report">Community Comparison of Growth</a></li>
+            }
+            else
+            {
+                <li><a href="javascript:void(0);" onclick=" alert('Coming soon.'); ">Community Comparison of Growth</a></li>
+            }
+        </ul>
+
+    </div><div class="btn-group">
+        @if (ViewBag.HasAnotherVersion)
+        {
+            <a class="mainbutton mainright-btn nav-btn "
+               href='@(Html.Raw(Url.Action("Index", "School", new
+                       {
+                           assessmentId = ViewBag.OtherAssessmentId,
+                           year = Request.QueryString["year"],
+                           wave = Request.QueryString["wave"]
+                       })))'>
+                <i class="icon-exchange"></i>
+                @(ViewData["OtherVersion"].ToString())
+            </a>
+        }
+    </div>
+</div>
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        @Html.Label("txtCommunity", "Community/District", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-2">
+            @Html.TextBox("txtCommunity", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#CommunityId",
+                data_remote = Url.Action("GetCommunitySelectListForSearch"),
+                data_text = "Name",
+                data_value = "ID",
+                id = "txtCommunity",
+                name = "txtCommunity",
+                placeholder = "Enter key text to search",
+                @for = "CommunityId",
+                data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+                data_bind = "value: searchCriteria.communityName"
+            })
+            @Html.HiddenFor(model => model.CommunityId, new
+            {
+                @class = "form-control ",
+                placeholder = "Selected Community",
+                data_bind = "value: searchCriteria.communityId"
+            })
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        @Html.Label("txtSchool", Html.DisplayNameFor(m => m.SchoolName).ToString(), new { @class = "control-label col-sm-1" })
+        <div class="col-sm-2">
+            @Html.TextBox("txtSchool", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#SchoolId",
+                data_remote = Url.Action("GetSchoolSelectList"),
+                data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+                data_text = "Name",
+                data_value = "ID",
+                id = "txtSchool",
+                placeholder = "Enter key text to search",
+                @for = "SchoolId",
+                data_extraParams = "{\"communityId\":\"#CommunityId\",\"isActive\":\"#isActive\"}",
+                data_bind = "value: searchCriteria.schoolName"
+            })
+            @Html.HiddenFor(model => model.SchoolId, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.schoolId"
+            })
+            @Html.Hidden("isActive", false)
+        </div>
+        @Html.LabelFor(m => m.Year, new { @class = "control-label col-sm-1" })
+        <div class="col-sm-1">
+            @Html.DropDownListFor(m => m.Year, (IEnumerable<SelectListItem>)ViewBag.YearOptions, new { @class = "form-control", data_bind = "value: searchCriteria.year" })
+        </div>
+        @Html.LabelFor(m => m.Wave, new { @class = "control-label col-sm-1" })
+        <div class="col-sm-1">
+            @Html.DropDownListFor(m => m.Wave, (IEnumerable<SelectListItem>)ViewBag.WaveOptions, new { @class = "form-control", data_bind = "value: searchCriteria.wave" })
+        </div>
+        <div class="col-sm-1">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: customSearch }">Search</button>
+        </div>
+    </div>
+
+</form>
+<div class="modal-l-b"></div>
+
+<div class="main-content">
+    <div class="content-body-tab" id="div_tableWidth" style="overflow-y: auto;">
+        @if (ViewBag.HaveMeasure)
+        {
+            <div id="fixed_header_container" class="fixed-header-container">
+                <div class="fixed-header">
+                    <table class="table table-striped table-hover">
+                        @Html.Partial("_Partial_Measure_Header")
+                    </table>
+                </div>
+            </div>
+            <div class=" fixed-columns-container">
+                <div class="fixed-columns-overflow" id="fixed_container" style="margin-left: @(leftWidth)px">
+                    <table class="table table-striped table-hover">
+                        @Html.Partial("_Partial_Measure_Header")
+                        <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                            <tr>
+                                <td class="fixed-column">
+                                    <div style="width: @(leftWidth)px;" data-bind="style:{top:@(topHeight)+$index()*35 + 'px'}">
+                                        <a data-title-length="20" href="#" data-bind="click:$root.viewSchool, title:item.Name" class="form-link"></a>
+                                    </div>
+                                </td>
+                                <!--ko template:{foreach:$root.measures,as:'measure',name:'_td_average'}-->
+                                <!--/ko-->
+                                <td style="width: 100%;">&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @Html.Partial("_Partial_Pager")
+        }
+        else
+        {
+            <h2>@ViewTextHelper.NoRecordFound</h2>
+        }
+    </div>
+</div>
+<script type="text/html" id="_td_average">
+    <!-- ko if: (measure.ParentId == 1 || $root.parentMeasure[measure.ParentId].visible()) && measure.MeasureId >0 && measure.ParentId != measure.MeasureId-->
+    <td data-bind="text: $parent.DicMeasure != null && $parent.DicMeasure[measure.MeasureId] ? $parent.DicMeasure[measure.MeasureId].Average : '-',css:{'measure-split-line-left':measure.IsFirstOfParent,'measure-split-line-bottom':measure.ParentId>1 }"></td>
+    <!-- /ko -->
+    <!-- ko if: measure.ParentId == measure.MeasureId && measure.MeasureId >0 -->
+    <td class="measure-split-line-right" data-bind="text: $parent.DicMeasure != null && $parent.DicMeasure[measure.MeasureId] ? $parent.DicMeasure[measure.MeasureId].Average : '-',css:{'measure-split-line-left': (measure.IsLastOfParent && $root.parentMeasure[measure.ParentId].visible() == false),'measure-split-line-bottom':measure.ParentId>1}"></td>
+    <!-- /ko -->
+</script>
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @if (ViewBag.Mobile)
+    {
+        @Scripts.Render("~/scripts/hammer")
+    }
+    <script type="text/javascript">
+        var list_Assessment = {};
+        jQuery(function() {
+            var $fixedHeaderContainer = $("#fixed_header_container");
+            var $container = $("#div_tableWidth");
+            var adjustHeight = 0;
+            $(window).on("scroll", function(event) {
+                // show float header when scroll to bottom
+                var limit = $container[0].getBoundingClientRect().top;
+                var top = limit + adjustHeight;
+                if (top <= 0) {
+                    $fixedHeaderContainer.show();
+                } else {
+                    $fixedHeaderContainer.hide();
+                }
+            }).trigger("scroll");
+            var $fixed_container = $("#fixed_container");
+            var $fixed_header = $fixedHeaderContainer.find("table");
+            var initLeftMargin = 0 - parseInt($fixed_header.css("margin-left"));
+            $fixed_container.on("scroll", function() {
+                // sync float header when scroll table body
+                var newLeftMargin = initLeftMargin - $fixed_container.scrollLeft();
+                $fixed_header.css("margin-left", newLeftMargin);
+            });
+
+            $(window).resize(function() {
+                var adjust = 0;
+                $fixedHeaderContainer.width($container.width() + adjust);
+            }).trigger("resize");
+
+            var startX;
+            var newX;
+            if (typeof Hammer === "function" && $.fn.hammer) {
+                $fixedHeaderContainer.hammer().bind("panstart", function() {
+                    startX = parseInt("" + $fixed_header.css("margin-left"), 10);
+                }).bind("panleft panright", function(event) {
+                    newX = startX + event.gesture.deltaX;
+                    var hammer = $fixedHeaderContainer.data("hammer");
+                    if (newX > 0) {
+                        newX = 0;
+                        hammer && hammer.stop();
+                    }
+                    $fixed_container.scrollLeft(Math.abs(newX));
+                    var realNewX = $fixed_container.scrollLeft();
+                    if (realNewX < Math.abs(newX)) {
+                        newX = 0 - realNewX;
+                        hammer && hammer.stop();
+                    }
+                    $fixed_header.css("margin-left", newX);
+                }).bind("panend", function(event) {
+                    startX = newX;
+                });
+            }
+
+            var tipsNoCommunties = "@(Html.Raw(ViewBag.Message))";
+            if (tipsNoCommunties) {
+                window.showMessage("fail", tipsNoCommunties);
+            }
+
+            list_Assessment = new ViewModel(
+            {
+                instanceName: "list_Assessment",
+                modalId: "modalNormal",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                orderBy: "Name",
+                orderDirection: "ASC",
+                pageSize: 10,
+                searchCriteria: {
+                    assessmentId: ko.observable(window.queryString("assessmentId", @ViewBag.AssessmentId)),
+                    year: ko.observable(window.queryString("year", @ViewBag.Year)),
+                    wave: ko.observable(window.queryString("wave", @ViewBag.Wave)),
+                    communityId: ko.observable(window.queryString("communityId", -1)),
+                    communityName: ko.observable(window.queryString("communityName", "")),
+                    schoolId: ko.observable(window.queryString("schoolId", -1)),
+                    schoolName: ko.observable(window.queryString("schoolName", ""))
+                }
+            },
+            {
+                dataProcessor: function(items) {
+                    setTimeout(function() {
+                        //fixTable();
+                    }, 200);
+                    return items;
+                },
+                getCreateUrl: function(item) {
+                    return "@Url.Action("index", "class")?schoolId=" + item.ID + "&assessmentId=@(ViewBag.AssessmentId)&year=" + list_Assessment.searchCriteria.year()
+                            + "&wave=" + list_Assessment.searchCriteria.wave();
+                },
+                viewSchool: function(school) {
+                    var url = "@Url.Action("index", "class")?schoolId=" + school.ID
+                        + "&assessmentId=@(ViewBag.AssessmentId)"
+                        + "&year=" + list_Assessment.searchCriteria.year()
+                        + "&wave=" + list_Assessment.searchCriteria.wave()
+                        + "&communityId=" + list_Assessment.searchCriteria.communityId()
+                        + "&communityName=" + list_Assessment.searchCriteria.communityName();
+                    location.href = url;
+                },
+                customSearch: function() {
+                    if ('@(ViewBag.Year)' == list_Assessment.searchCriteria.year()
+                    && '@(ViewBag.Wave)' == list_Assessment.searchCriteria.wave())
+                        list_Assessment.search();
+                    else {
+                        location.href = "?assessmentId=@(ViewBag.AssessmentId)" +
+                            "&year=" + list_Assessment.searchCriteria.year() +
+                            "&wave=" + list_Assessment.searchCriteria.wave() +
+                            "&communityId=" + list_Assessment.searchCriteria.communityId() +
+                            "&communityName=" + list_Assessment.searchCriteria.communityName();
+                    }
+                },
+                collapse: function(measureId) {
+                    if (list_Assessment.parentMeasure[measureId]) {
+                        if (list_Assessment.parentMeasure[measureId].visible()) {
+                            list_Assessment.parentMeasure[measureId].visible(false);
+                            list_Assessment.parentMeasure[measureId].colspan(1);
+                        } else {
+                            list_Assessment.parentMeasure[measureId].visible(true);
+                            list_Assessment.parentMeasure[measureId].colspan(list_Assessment.parentMeasure[measureId]._colspan);
+                        }
+                        list_Assessment.parentMeasure[measureId].name(list_Assessment.parentMeasure[measureId].name());
+
+                        //fixTable();//fix column
+                    }
+                },
+
+                summary_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        var url = '@Html.Raw(Url.Action("Summary", "School", new {Area = "Report", assessmentId = ViewBag.AssessmentId, year = ViewBag.Year}))';
+                        url += '&districtId=' + list_Assessment.searchCriteria.communityId();
+                        url += '&district=' + encodeURIComponent(list_Assessment.searchCriteria.communityName());
+                        $("#modalNormal").modal({
+                            remote: url,
+                            confirm: false
+                        });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                },
+                growth_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        var url = '@Html.Raw(Url.Action("Growth", "School", new {Area = "Report", assessmentId = ViewBag.AssessmentId, year = ViewBag.Year}))';
+                        url += '&districtId=' + list_Assessment.searchCriteria.communityId();
+                        url += '&district=' + encodeURIComponent(list_Assessment.searchCriteria.communityName());
+                        $("#modalNormal").modal({ confirm: false, remote: url });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                },
+                completion_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        $("#modalNormal").modal({
+                            remote: '@Url.Action("Completion", "School", new {Area = "Report", assessmentId = ViewBag.AssessmentId})'
+                                + '&year=' + $("#Year").val()
+                                + "&communityId=" + list_Assessment.searchCriteria.communityId(),
+                            confirm: false
+                        });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                },
+                comparison_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        $("#modalNormal").modal({
+                            remote: '@Url.Action("Comparison", "School", new {Area = "Report", assessmentId = ViewBag.AssessmentId})'
+                                + "&communityId=" + list_Assessment.searchCriteria.communityId(),
+                            confirm: false
+                        });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                }
+            });
+            list_Assessment["measures"] = @(Html.Raw(ViewBag.Measures));
+            list_Assessment.parentMeasure = ParentMeasures(@Html.Raw(ViewBag.Parents));
+            list_Assessment.search();
+            ko.applyBindings(list_Assessment);
+
+            $("th[isparent]").each(function() {
+                var $this = $(this);
+                var $table = $this.closest("table");
+                $this.addClass("tab-td-b-l").next().addClass("tab-td-b-l");
+                //tab-td-b-l
+                var $childMeasures = $table.find("th[parent=" + $this.attr("val") + "]");
+                $childMeasures.first().addClass("tab-td-b-l");
+                $childMeasures.last().next().addClass("tab-td-b-l");
+            });
+        });
+    </script>
+}

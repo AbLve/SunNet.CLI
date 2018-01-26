@@ -1,0 +1,444 @@
+﻿@model TxkeaReceptiveItemModel
+@using Sunnet.Cli.Core.Ade.Enums
+@{
+    Layout = "~/Views/Shared/_Layout_KeaItem.cshtml";
+    ViewBag.Title = "View " + Model.Label;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Detail", "Measure", new { id = Model.MeasureId });
+}
+
+@section Styles
+{
+    @Styles.Render("~/css/cpalls")
+    @Styles.Render("~/css/txkea")
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @Html.Partial("NEV_Item_BreadPath", Model)
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/ckeditor")
+    @Scripts.Render("~/scripts/fabric")
+    @Scripts.Render("~/scripts/fullscreen")
+    @Scripts.Render("~/scripts/TxkeaReceptive")
+
+    <script type="text/javascript">
+        var itemModel;
+        var canvas;
+        var preLayoutScreenWidth;
+        var curLayoutScreenWidth;
+        var layout;
+        var canvasElement = "cav_layout";
+        var selectedObj;
+        var jsonModel;
+        var isHasInstruction = false;
+        jQuery(function () {
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@Html.Raw(backUrl)");
+                }
+            });
+
+            jsonModel = @Html.Raw(ViewBag.ModelJson);
+            var formEle = document.getElementById("@formId");
+            itemModel = getKeaReceptiveItemModel(jsonModel);
+            itemModel.Answers = jsonModel.Answers;
+            itemModel.step = ko.observable(1);
+            itemModel.previousView = function (viewModel) {
+                var curStep = viewModel.step();
+                if (curStep >= 1) {
+                    viewModel.step(Number(curStep - 1));
+                }
+            };
+            itemModel.nextView = function (viewModel) {
+                var curStep = viewModel.step();
+                if (curStep <= 4) {
+                    viewModel.step(Number(curStep + 1));
+                }
+            };
+            if (jsonModel.BranchingScores && jsonModel.BranchingScores.length > 0) {
+                itemModel.pushBranchingScore(jsonModel.BranchingScores);
+            }
+            else {
+                itemModel.branchingScores = [];
+            }
+            ko.applyBindings(itemModel, formEle);
+
+            initChooseLayout();
+            curLayoutScreenWidth = $("#content-body-cav").innerWidth() - 20;
+            canvas = new fabric.Canvas('cav_layout', {
+                width: curLayoutScreenWidth,  //#modal-content.width - padding
+                height: 600
+            });
+
+            preLayoutScreenWidth = "@(Model.ScreenWidth)";
+            layout = jsonModel.ItemLayout ? JSON.parse(jsonModel.ItemLayout) : JSON.parse('{\"objects\":null}');
+
+            if (layout.objects != null) {
+                layout.objects = layout.objects.filter(function (obj)
+                { return obj.type == "image" || obj.type == "text" });// remove lines
+            }
+
+            if (layout.backgroundImage && layout.backgroundImage.width) {
+                layout.backgroundImage.width = curLayoutScreenWidth;
+            }
+
+            if (layout.objects) {
+                layout.objects.sort(function (a, b) {
+                    return a.sort - b.sort;
+                }); // order by sort
+
+                for (var i = 0; i < layout.objects.length; i++) {
+                    var preLayout = layout.objects[i];
+                    if (preLayoutScreenWidth != curLayoutScreenWidth && preLayoutScreenWidth > 0)
+                        //If the screen before and now is not the same as the screen size, recalculate the left margin
+                    {
+                        var width = preLayout.width * preLayout.scaleX;
+                        //If on the left, then calculate the left margin, opposite to calculate the right margin
+                        if (preLayout.left < (preLayoutScreenWidth / 2))
+                            preLayout.left = (preLayout.left / preLayoutScreenWidth) * curLayoutScreenWidth;
+                        else
+                            preLayout.left = curLayoutScreenWidth -
+                            ((preLayoutScreenWidth - preLayout.left - width) / preLayoutScreenWidth) * curLayoutScreenWidth - width;
+                        preLayout.selectable = false;
+                    }
+                    if (preLayout.type == "text") {  // ensure InstructionText is the latest
+                        isHasInstruction = true;
+                        preLayout.text = jsonModel.InstructionTextNoHtml;
+                    }
+                    preLayout.selectable = false;
+                }
+                canvas.loadFromDatalessJSON(JSON.stringify(layout), function () {
+                    if (!isHasInstruction)
+                        addInstructionText(canvas, true);
+                    InitLines();
+                    canvas.renderAll();
+                });
+            }
+            else {
+                addInstructionText(canvas, true);
+                canvas.renderAll();
+            }
+        });
+    </script>
+}
+
+@Html.HiddenFor(model => model.LayoutId)
+<form id="@formId" class="form-horizontal">
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+        <a class="mainbutton mainright-btn nav-btn" target="_blank"
+           data-bind="visible:step()==4,attr:{href:'/Cpalls/Execute/Preview?itemid=@(Model.ID)&measureId=@(Model.MeasureId)'}">Preview</a>
+    </div>
+
+    <div class="main-content">
+        <div class="content-body" id="content-body-cav">
+            <div data-bind="visible: step() == 1" id="divStep1">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Label, "Item Label", new {@class = "control-label col-sm-2 required"})
+                    <div class="col-sm-3">
+                        @Html.DisplayFor(model => model.Label, baseClassObj)
+                    </div>
+                    <div class="col-sm-1">
+                        @Html.LabelFor(model => model.Status, new {@class = "hide"})
+                        @Html.DisplayFor(model => model.Status)
+                    </div>
+                    @Html.LabelFor(model => model.IsPractice, new {@class = "control-label col-sm-2 "})
+                    <div class="col-sm-1">
+                        @Html.DisplayFor(model => model.IsPractice)
+                    </div>
+                    @Html.LabelFor(model => model.GrayedOutDelay, new {@class = "control-label col-sm-2 "})
+                    <div class="col-sm-1">
+                        @Html.DisplayFor(model => model.GrayedOutDelay)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-8">
+                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 3, disabled = "true" })
+                    </div>
+                </div>
+                <div class="form-group ">
+                    @Html.Label("Choose background color fill", new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(model => model.BackgroundFill)
+                    </div>
+                    @Html.Label("Choose background image", new { @class = "control-label col-sm-3" })
+                    <div class="col-sm-4">
+                        @if (Model.BackgroundFillType == BackgroundFillType.Image && !string.IsNullOrEmpty(Model.BackgroundImage))
+                        {
+                            <div class="webuploader-preview" id="divBackgroundFill">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="@Sunnet.Cli.UIBase.FileHelper.GetPreviewPathofUploadFile(Model.BackgroundImage)" width="60" height="60" alt="BackgroundImage" />
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.InstructionText, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-8">
+                        @Html.TextAreaFor(model => model.InstructionText, new { @class = "form-control", rows = 3, disabled = "true" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.InstructionAudio, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4">
+                        @if (!string.IsNullOrEmpty(Model.InstructionAudio))
+                        {
+                            <div class="webuploader-preview" id="divInstructionAudio">
+                                <a href="@FileHelper.GetPreviewPathofUploadFile(Model.InstructionAudio)"
+                                   class="table-btn icon-zoom-in preview-btn" target="_blank"></a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NumberOfImages, new { @class = "control-label col-sm-2 required" })
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(model => model.NumberOfImages)
+                    </div>
+                    @Html.LabelFor(model => model.SelectionType, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4">
+                        @Html.DisplayFor(model => model.SelectionType)
+                    </div>
+                </div>
+                <div class="modal-l-b"></div>
+                <div class="form-group">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-11">
+                        Branching/Skip Logic:
+                    </div>
+                </div>
+                @if (Model.BranchingItems != null && Model.BranchingItems.Count > 0)
+                {
+                    <div class="form-group">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-10">
+                            @Html.Display("", "BranchingScore", new { selectItems = Model.BranchingItems })
+                        </div>
+                        <div class="col-sm-1">&nbsp;</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-10">
+                            <p style="color:red">*In order for branching to be enabled, you must have an <span style="text-decoration:underline">ACTIVE</span> item following this current item.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div data-bind="visible: step() == 2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ImageSequence, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @if (Model.ImageSequence == OrderType.Random)
+                        {
+                            <label class="control-label-text">Random</label>
+                        }
+
+                        @if (Model.ImageSequence == OrderType.Sequenced)
+                        {
+                            <label class="control-label-text">Fixed</label>
+                        }
+                    </div>
+                    @Html.LabelFor(model => model.OverallTimeOut, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(model => model.OverallTimeOut)
+                    </div>
+                    <!--ko if:(OverallTimeOut()==true) -->
+                    @Html.LabelFor(model => model.TimeoutValue, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(model => model.TimeoutValue, new { format = "{0} ms" })
+                    </div>
+                    <!--/ko-->
+                </div>
+                <div class="form-group ">
+                    @Html.LabelFor(model => model.WaitTime, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(model => model.WaitTime, new { format = "{0} ms" })
+                    </div>
+                </div>
+                <!--ko if:(SelectionType()==2) -->
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BreakCondition, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(model => model.BreakCondition)
+                    </div>
+                    <div data-bind="visible:BreakCondition()==1">
+                        <label class="control-label col-sm-2">
+                            Stop Condition
+                            <i class="icon-question-sign question-tip" data-toggle="tooltip" data-placement="top" data-html="true"
+                               title="Numerator: number of incorrect responses<br>Denominator: number of attempts"></i>
+                        </label>
+                        <div class="col-sm-1">
+                            @Html.DisplayFor(model => model.StopConditionX)
+                        </div>
+                        <div class="col-sm-2 ">
+                            <span style="float:left;padding-right:35px">/</span>
+                            <label class="control-label-text" style="float:left;padding-left:35px;width:50%">@(Model.StopConditionY)</label>
+                        </div>
+                    </div>
+                </div>
+                <!--/ko-->
+                <div class="form-group">
+                    <!--ko if:(SelectionType()==2) -->
+                    @Html.LabelFor(model => model.Scoring, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-2">
+                        @Html.DisplayFor(model => model.Scoring)
+                    </div>
+                    <!--/ko-->
+                </div>
+            </div>
+
+            <div data-bind="visible: step() == 3,foreach: { data: Answers, as:'answer' }">
+                <div style="height: 5px; background-color: #ffffff"></div>
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr style="background-color: #bfbfbf">
+                            <th width="80px" data-bind="text: 'Image '+($index()+1)"></th>
+                            <th colspan="8"><span style="display:none;">1</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2">
+                                <div class="webuploader-preview" style="width: 70px; height: 70px; border: 1px;">
+                                    <!--ko if:(Picture.length>0) -->
+                                    <a class=""
+                                       data-bind="attr: { href: $root.BasePath + Picture }"
+                                       target="_blank">
+                                        <img data-bind="attr: { src: $root.BasePath + Picture }" style="width: 60px; height: 60px;" alt="BasePathPicture" />
+                                    </a>
+                                    <!--/ko-->
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                            </td>
+                            <td width="15%" style="min-width: 250px">Image type</td>
+                            <td width="*"><span style="display:none;">1</span></td>
+                            <td width="20%">Target Image</td>
+                            <td width="12%">Image Time delay (ms)</td>
+                            <td width="20%">Target Audio</td>
+                            <td width="12%">Audio Time delay (ms)</td>
+                            <td width="12%">Same as Image Delay</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div data-bind="html:ImageType.text">
+                                </div>
+                            </td>
+                            <td width="*"></td>
+                            <td>
+                                <a class="table-btn icon-zoom-in preview-btn"
+                                   data-bind="attr:{href:$root.BasePath + Picture},visible:Picture" target="_blank"><span style="display:none;">1</span></a>
+                            </td>
+                            <td>
+                                <input type="number" title=" " class="form-control input-sm  uint timeout"
+                                       data-bind="value: PictureTime,enable:false"
+                                       style="width: 80px; display: inline-block;">
+                            </td>
+                            <td>
+                                <a class="table-btn icon-zoom-in preview-btn"
+                                   data-bind="attr:{href:$root.BasePath + Audio},visible:Audio"
+                                   target="_blank"><span style="display:none;">1</span></a>
+                            </td>
+                            <td>
+                                <input type="number" title=" " class="form-control input-sm  uint timeout"
+                                       data-bind="value: AudioTime,enable:false"
+                                       style="width: 80px; display: inline-block;">
+                            </td>
+                            <td>
+                                <input type="checkbox" title=" " data-bind="checked: (PictureTime == AudioTime && PictureTime > 0), enable: false" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td colspan="2">
+                                <div>
+                                    <span style="float: left; padding-top: 5px; padding-right: 7px">Response Audio: </span>
+                                    <div class="webuploader-preview" data-bind="visible:ResponseAudio">
+                                        <a class="table-btn icon-zoom-in preview-btn"
+                                           data-bind="attr:{href:$root.BasePath + ResponseAudio}"
+                                           target="_blank"><span style="display:none;">1</span></a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td colspan="6" style="text-align: left">
+                                <!--ko if:(ImageType.value==1) -->
+                                <label class="lbl_hidden">
+                                    <input type="checkbox" data-bind="checked:IsCorrect,enable:false" />
+                                    Correct Response
+                                </label>
+                                <label style="width: 20px"><span style="display:none;">1</span></label>
+                                <label class="control-label">Correct Score</label>
+                                @Html.TextBoxFor(model => model.Score, new { @style = "width:50px;border:1px solid #dddddd;", title = " ", min = 0, data_bind = "value:Score,enable:false" })
+                                <label style="width: 20px"><span style="display:none;">1</span></label>
+                                <!--ko if:(ImageType.value==1 && $root.SelectionType()==2 && IsCorrect==true) -->
+                                <label class="control-label">Correct Grouping</label>
+                                <input type="number" title=" " style="width: 80px; display: inline" class="form-control" name="SequenceNumber"
+                                       data-bind="value:SequenceNumber,required:true,enable:false" />
+                                <!--/ko-->
+                                <!--/ko-->
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="content-body" class="div-canvas" data-bind="visible: step() == 4">
+                <div class="item-main-header">
+                    <div class="col-sm-6" style="padding-top: 15px">
+                        <div id="divLayoutHead">
+                            Layout:
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="radioLayout" value="1" id="radioLayout1" checked="checked" data-bind="enable:false" />
+                            <label for="radioLayout1">Custom</label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="radioLayout" value="2" id="radioLayout2" data-bind="enable:false" />
+                            <label for="radioLayout2">Existing</label>
+                            &nbsp;&nbsp;
+                            <div class="nav-btn" id="divExistLayout" style="display: none;">
+                                <a data-bind="attr:{href:'/Ade/Item/ChooseLayout?images='+(Answers.length)+'&isView=true'}"
+                                   data-target="#modalSmall" data-toggle="modal" class="mainbutton mainright-btn nav-btn"
+                                   style="height: 24px; padding-top: 4px">Choose Template</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-fullscreen-head">
+                        <a class="item-fullscreen-btn stop-btn" onclick="switchFullscreen('content-body-cav')">
+                            <i class="icon-resize-full"></i>
+                        </a>
+                    </div>
+                </div>
+                <canvas id="cav_layout">(Your browser doesn't support canvas)</canvas>
+            </div>
+        </div>
+        <div class="button-content">
+            <button class="mainbutton mainright-btn submit-btn" id="btnPrevious" type="button"
+                    data-bind="event:{click:previousView},visible:step() > 1">
+                Previous
+            </button>
+            <button class="mainbutton mainright-btn submit-btn" id="btnNext" type="button"
+                    data-bind="event:{click:nextView},visible:step() < 4">
+                Next
+            </button>
+        </div>
+    </div>
+</form>

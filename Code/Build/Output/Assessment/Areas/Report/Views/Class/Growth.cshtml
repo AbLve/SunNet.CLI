@@ -1,0 +1,161 @@
+﻿@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Cpalls
+@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.UIBase.Models
+@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var language = (int)ViewBag.language;
+    var theOtherLanguage = (int)ViewBag.TheOtherLanguage;
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var models = {};
+        +(function() {
+            var $form = $("#@(formId)");
+            var tmpWave = 1;
+            var groups = @(Html.Raw(ViewBag.MeasureJson));
+            var waveMeasure = new WaveMeasures(groups, false);
+
+            var groups2 = @(Html.Raw(ViewBag.MeasureJson2));
+            var vaveMeasure2;
+            if (groups2) {
+                vaveMeasure2 = new WaveMeasures(groups2, false);
+            }
+
+            models.languages = {};
+            models.languages[@(language)] = waveMeasure;
+            if (vaveMeasure2) {
+                models.languages[@(theOtherLanguage)] = vaveMeasure2;
+            } else {
+                models.languages[@(theOtherLanguage)] = false;
+            }
+            models.selectedLanguage = ko.observable(@(language));
+            models.assessment = ko.computed(function() {
+                return models.languages[models.selectedLanguage()];
+            }, models);
+            models.type = ko.observable("");
+            models.submit = function() {
+                var waves = [];
+                for (var i = 0; i < models.languages[1].wavesArr.length; i++) {
+                    var wave = models.languages[tmpWave].wavesArr[i];
+                    if (wave.selected()) {
+                        waves.push(wave.id);
+                    }
+                }
+                if (waves.length == 0) {
+                    window.showMessage("hint", "Export_Select_Wave");
+                    return false;
+                }
+                $form.find("#waves").val(JSON.stringify(waves));
+
+                var measures = models.assessment().waves[1].selectedMeasures().slice(0);
+                if (measures.length == 0) {
+                    window.showMessage("hint", "Export_Select_Measure");
+                    return false;
+                }
+                $.each(models.assessment().groups, function(index, group) {
+                    if (group.parent && group.allSelected[tmpWave]()) {
+                        measures.push(group.parent.id);
+                    }
+                });
+                $form.find("#measures").val(JSON.stringify(measures));
+
+                var type = models.type();
+                if (!type) {
+                    window.showMessage("hint", "Growth_Report_Type");
+                    return false;
+                }
+                $form.find("#type").val(type);
+
+                $form.submit();
+                setTimeout(function() { $form.cliForm("loaded"); }, 3000);
+            };
+
+            models.all = ko.observable(false);
+            models.communities = @Html.Raw(ViewBag.CommunityJson);
+            models.choosedCommunity = ko.observable(models.communities[0]);
+            ko.applyBindings(models, document.getElementById("@(formId)"));
+            $("#languages").find("label.active").find("input").prop("checked", true);
+        })();
+    </script>
+}
+<form class="form-horizontal" role="form" method="POST" id="@(formId)"
+      action='@Url.Action("Growth_Pdf", null, new { Area = "Report" })' target="_blank">
+    <div class="form-group">
+
+        <div class="btn-group" data-toggle="buttons" style="position: absolute; top: -47px; left: 200px;">
+            <button type="button" class="btn btn-default " data-bind="css:{active:!all()},click:function(){$root.all(false);}" data-toggle="button" aria-pressed="false" autocomplete="off">
+                For @(ViewBag.Source) Only
+            </button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-bind="css:{active:all()},click:function(){$root.all(true);}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    For All @(ViewBag.AllSourceType)&nbsp;<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" data-bind="foreach:{data:communities,as:'community'}">
+                    <li>
+                        <a href="javascript:void(0);" data-bind="text:Name,click:function(){$root.choosedCommunity(community);}"></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="btn-group" data-bind="visible:all()">
+                <span class="help-block">
+                    &nbsp;in <strong data-bind="text:choosedCommunity().Name"></strong>
+                </span>
+            </div>
+        </div>
+
+        <div class="btn-group term-chose-l" data-toggle="buttons" id="languages">
+            <label class="btn  nav-btn" data-bind="css:{active:selectedLanguage()=='1','submit-btn':selectedLanguage()=='1'},attr:{disabled:languages[1]==false},click:function(){$root.selectedLanguage(1);}" for="language1">
+                <input autocomplete="off" id="language1" name="language" type="radio" value="1">
+                English Only
+            </label>
+            <label class="btn  nav-btn" data-bind="css:{active:selectedLanguage()=='2','submit-btn':selectedLanguage()=='2'},attr:{disabled:languages[2]==false},click:function(){$root.selectedLanguage(2);}" for="language2">
+                <input autocomplete="off" id="language2" name="language" type="radio" value="2">
+                Spanish Only
+            </label>
+        </div>
+        <div class="btn-group term-chose-l" data-toggle="buttons" data-bind="foreach:{data:models.languages[1].wavesArr,as:'wave'}">
+            <label class="btn nav-btn" data-bind="css:{'submit-btn':selected},click:function(){wave.selected(!wave.selected());}">
+                <input type="checkbox" autocomplete="off">
+                <span data-bind="text:text"></span>
+            </label>
+        </div>
+        <div class="btn-group term-chose-l" data-toggle="buttons">
+            <label class="btn nav-btn" data-bind="css:{'submit-btn':type() == '@(GrowthReportType.Average)'},click:function(){$root.type('@(GrowthReportType.Average)');}">
+                <input type="radio" autocomplete="off" name="chooseType">Average Scores
+            </label>
+            <label class="btn nav-btn" data-bind="css:{'submit-btn':type() == '@(GrowthReportType.MeetingBenchmark)'},click:function(){$root.type('@(GrowthReportType.MeetingBenchmark)');}">
+                <input type="radio" autocomplete="off" name="chooseType">% Meeting Benchmarks
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="startdate">Time period</label>
+        <div class="col-sm-3">
+            <input type="text" class="date form-control" id="StartDate" name="StartDate" placeholder="Start date: @(((DateTime)ViewBag.StartDate).FormatDateString())" />
+        </div>
+        <div class="col-sm-3">
+            <input type="text" class="date form-control" id="EndDate" name="EndDate" placeholder="End date: @(((DateTime)ViewBag.EndDate).FormatDateString())" />
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    @Html.Partial("_Partial_Select_Measure")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("schoolId")
+    <input type="hidden" id="all" name="all" data-bind="value:all" />
+    <input type="hidden" id="districtId" name="districtId" data-bind="value:choosedCommunity().ID" />
+    @Html.Hidden("type")
+    @Html.Hidden("waves")
+    @Html.Hidden("measures")
+    @Html.Hidden("export", true)
+    <div class="modal-footer">
+        <button type="button" class="mainbutton mainright-btn submit-btn"
+                data-bind="click:submit">
+            @(ViewBag.Title)
+        </button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Close</button>
+    </div>
+</form>

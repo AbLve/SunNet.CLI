@@ -1,0 +1,29 @@
+﻿
+/****** Object:  StoredProcedure [dbo].[STGR_Completion_Report]    Script Date: 2015/4/13 10:51:11 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[STGR_Completion_Report]
+	@AssessmentId int
+AS
+BEGIN
+with stg as(
+select TeacherId from CotStgReports stg 
+inner join [COTAssessments] cot on stg.CotAssessmentId = cot.ID
+where stg.Status = 20 and AssessmentId = @AssessmentId
+group by cot.TeacherId
+)
+select teacher.CommunityId,teacher.CoachId,count(0) as Total  from stg inner join   [dbo].[Cli_Engage__Teachers] teacher on stg.TeacherId = teacher.id
+inner join [dbo].[Cli_Engage__Users] uTeacher on teacher.UserId =uTeacher.ID and uTeacher.Status = 1
+inner join [dbo].[Cli_Engage__Communities] c on  teacher.CommunityId = c.ID
+where teacher.CoachId > 0
+group by teacher.CommunityId,teacher.CoachId
+order by CommunityId ,CoachId ,Total ;
+
+END

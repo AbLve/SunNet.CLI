@@ -1,0 +1,25 @@
+﻿if exists(select * from sys.default_constraints  where [parent_object_id] =object_id('Measures') and name ='DF__Measures__ApplyT__35BCFE0A')
+alter table Measures
+drop constraint DF__Measures__ApplyT__35BCFE0A
+
+if exists(select * from syscolumns where id=object_id('Measures') and name='ApplyToBoy') 
+alter table Measures drop column ApplyToBoy
+
+--------------------------------------------------------------------------------------
+
+if exists(select * from sys.default_constraints  where [parent_object_id] =object_id('Measures') and name ='DF__Measures__ApplyT__37A5467C')
+alter table Measures
+drop constraint DF__Measures__ApplyT__37A5467C
+
+if exists(select * from syscolumns where id=object_id('Measures') and name='ApplyToEoy') 
+alter table Measures drop column ApplyToEoy
+
+--------------------------------------------------------------------------------------
+
+if exists(select * from sys.default_constraints  where [parent_object_id] =object_id('Measures') and name ='DF__Measures__ApplyT__36B12243')
+alter table Measures
+drop constraint DF__Measures__ApplyT__36B12243
+
+if exists(select * from syscolumns where id=object_id('Measures') and name='ApplyToMoy') 
+alter table Measures drop column ApplyToMoy
+ 

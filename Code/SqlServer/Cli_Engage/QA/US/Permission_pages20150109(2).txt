@@ -1,0 +1,9 @@
+﻿
+
+SET IDENTITY_INSERT Permission_Pages ON
+IF not EXISTS (SELECT * FROM Permission_Pages WHERE ID=6000)
+begin
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(6000,'TRS',0,0,'',6,1,'TRS',GETDATE(),GETDATE())
+end
+SET IDENTITY_INSERT Permission_Pages OFF

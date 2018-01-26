@@ -1,0 +1,132 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.MainSite.Areas.Demo.Models.Products
+
+@{
+    ViewBag.Title = "AutoComplete";
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var testRange = {
+            price: ko.observable(0)
+        };
+        $(function () {
+            ko.applyBindings(testRange);
+
+            $("#txtDesc").on("selected.sunnet.datalist", function (event) {
+                console.log("Selected:", event.selected);
+            });
+            $("#btnClear").click(function () {
+                $("#txtDesc").datalist("clear");
+                return false;
+            });
+        });
+    </script>
+}
+<h2>AutoComplete</h2>
+
+@using (Ajax.BeginForm("AutoComplete", "Demo", null, PostFormHelper.DefaultAjaxOptions))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Products</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Name, new
+                {
+                    list = "names",
+                    autocomplete = "off",
+                    @class = "form-control"
+                })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <button class="mainbutton mainright-btn create-btn" id="btnClear" type="button">Clear Cache</button>
+                @Html.TextBox("txtDesc", "", new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#Description",
+                    data_remote = "/demo/demo/GetDataItems",
+                    data_text = "Text",
+                    data_value = "Value",
+                    data_template = "Name:<strong><% this[i].Text %></strong> <br>Other1:<% this[i].Other1 %>, Other2:<% this[i].Other2 %>",
+                    data_searchfields="Other1,Other2,O3",
+                    id = "txtDesc",
+                    name = "txtDesc",
+                    @for = "Description",
+                    data_required = "false",
+                    data_extraParams = "{\"commuId\":\"#Name\"}"
+                })
+                @Html.TextBoxFor(model => model.Description, new { @class = "form-control validate", placeholder = "selected from autocomplete" })
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Logo, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Logo, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Logo)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Price, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Price, new
+                {
+                    type = "range",
+                    list = "price",
+                    step = "100",
+                    min = "0",
+                    max = "30000",
+                    @class = "form-control",
+                    data_bind = "value:price,tooltip:price"
+                })
+
+                @Html.ValidationMessageFor(model => model.Price)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreatedOn, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.CreatedOn, new { @class = "form-control", @Value = Model.CreatedOn.FormatDateString() })
+                @Html.ValidationMessageFor(model => model.CreatedOn)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreatedOnTime, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.CreatedOnTime, new { @class = "form-control", @Value = Model.CreatedOnTime.FormatDateString() })
+                @Html.ValidationMessageFor(model => model.CreatedOnTime)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreatedOnDateTime, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.CreatedOnDateTime, new { @class = "form-control", @Value = Model.CreatedOnDateTime.FormatDateString() })
+                @Html.ValidationMessageFor(model => model.CreatedOnDateTime)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

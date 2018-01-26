@@ -1,0 +1,172 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.UserBaseEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.MainSite.Models
+@{
+    ViewBag.Title = "My Profile";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+
+            if ($("#VideoCoding_PrimaryLanguageId :selected").text() == "Other")
+                $("#VideoCoding_PrimaryLanguageOther").attr("type", "text");
+            if ($("#VideoCoding_SecondaryLanguageId :selected").text() == "Other")
+                $("#VideoCoding_SecondaryLanguageOther").attr("type", "text");
+
+            $("#VideoCoding_PrimaryLanguageId").change(function () {
+                if ($("#VideoCoding_PrimaryLanguageId :selected").text() == "Other")
+                    $("#VideoCoding_PrimaryLanguageOther").attr("type", "text");
+                else {
+                    $("#VideoCoding_PrimaryLanguageOther").val("");
+                    $("#VideoCoding_PrimaryLanguageOther").attr("type", "hidden");
+                }
+            })
+
+            $("#VideoCoding_SecondaryLanguageId").change(function () {
+                if ($("#VideoCoding_SecondaryLanguageId :selected").text() == "Other")
+                    $("#VideoCoding_SecondaryLanguageOther").attr("type", "text");
+                else {
+                    $("#VideoCoding_SecondaryLanguageOther").val("");
+                    $("#VideoCoding_SecondaryLanguageOther").attr("type", "hidden");
+                }
+            })
+        });
+
+    </script>
+}
+
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.My_Profile)
+}
+
+@section BreadPath
+{
+    @(Model.FirstName + " " + Model.LastName)
+}
+
+@using (Ajax.BeginForm("SaveVideoCoding", "MyProfile", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()  
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.StatusDate)   
+    @Html.HiddenFor(model => model.VideoCoding.ID)    
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Role, null, new { @class = "col-sm-3 control-label required", @for = "usertype" })
+                <div class="col-sm-3">
+                    <input type="text" id="usertype" class="form-control" value="@Model.Role.ToDescription()" readonly="true" />
+                    @Html.HiddenFor(model => model.Role, new { @class = "form-control" })
+                </div>
+                @Html.Label("User Name", null, new { @class = "col-sm-3 control-label required", @for = "GoogleId" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.GoogleId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.GoogleId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.FirstName)
+                </div>
+                @Html.LabelFor(model => model.MiddleName, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.MiddleName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.LastName)
+                </div>
+                @Html.LabelFor(model => model.PreviousLastName, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.PreviousLastName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(model => model.Status, Model.Status.ToSelectList(), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+                @Html.LabelFor(model => model.StatusDate, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    <p>@DateTime.Now.ToString("MM/dd/yyyy")</p>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimaryEmailAddress, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.PrimaryEmailAddress, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.PrimaryEmailAddress)
+                </div>
+                @Html.LabelFor(model => model.SecondaryEmailAddress, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.SecondaryEmailAddress, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.SecondaryEmailAddress)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimaryPhoneNumber, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.PrimaryPhoneNumber, new { @class = "form-control _homephone" })
+                    @Html.ValidationMessageFor(model => model.PrimaryPhoneNumber)
+                </div>
+                @Html.LabelFor(model => model.PrimaryNumberType, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.EnumDropDownListFor(model => model.PrimaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PrimaryNumberType)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SecondaryPhoneNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.SecondaryPhoneNumber, new { @class = "form-control _homephone" })
+                </div>
+                @Html.LabelFor(model => model.SecondaryNumberType, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.EnumDropDownListFor(model => model.SecondaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.VideoCoding.PrimaryLanguageId, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(e => e.VideoCoding.PrimaryLanguageId, (IEnumerable<SelectListItem>)ViewBag.LanguagePrimaryOptions, new { @class = "form-control" })
+                    <label for="VideoCoding_PrimaryLanguageOther" class="hide">&nbsp;</label>
+                    @Html.TextBoxFor(model => model.VideoCoding.PrimaryLanguageOther, new { @class = "form-control", type = "hidden" })
+                </div>
+                @Html.LabelFor(model => model.VideoCoding.SecondaryLanguageId, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(e => e.VideoCoding.SecondaryLanguageId, (IEnumerable<SelectListItem>)ViewBag.LanguageOptions, new { @class = "form-control" })
+                    <label for="VideoCoding_SecondaryLanguageOther" class="hide">&nbsp;</label>
+                    @Html.TextBoxFor(model => model.VideoCoding.SecondaryLanguageOther, new { @class = "form-control", type = "hidden" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.FaxNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.FaxNumber, new { @class = "_phone form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit">
+        </div>
+    </div>
+}
+

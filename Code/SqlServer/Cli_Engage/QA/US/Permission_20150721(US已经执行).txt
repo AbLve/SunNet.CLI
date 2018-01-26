@@ -1,0 +1,61 @@
+﻿
+SET IDENTITY_INSERT Permission_Pages ON
+
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(7000,'CAC',0,0,'',7,1,'CAC',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+go
+
+
+
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(2,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(3,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(4,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(5,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(6,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(7,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(8,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(9,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(10,7000,'128;',GETDATE(),GETDATE())
+go
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(11,7000,'128;',GETDATE(),GETDATE())
+go
+
+
+
+
+
+

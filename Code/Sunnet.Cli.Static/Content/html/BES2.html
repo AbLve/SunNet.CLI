@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="zh-en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>assessment</title>
+
+    <!-- Bootstrap -->
+    <link href="/Content/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Content/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/Content/lib/Font-Awesome-3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/Content/style/layout.css" rel="stylesheet">
+    <link href="/Content/style/module.css" rel="stylesheet">
+    <script src="/Content/Scripts/jquery-1.10.2.js"></script>
+    <script src="/Content/Scripts/bootstrap.js"></script>
+</head>
+<body>
+
+
+    <div class="warp">
+        <div class="header">
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="#">
+                        <img src="/Content/images/cli_logo.png"></a>
+                </div>
+
+            </div>
+            <div class="nav">
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="demos.html">Engage Demos</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+
+        <div class="main-con-left menu-side">
+            <h4><i class="icon-dashboard"></i>Dashboard</h4>
+            <ul>
+                <li><a href="dashboard.html" class="active">ssss</a></li>
+                <li><a href="#">Manage Assessment</a>
+                    <ul>
+                        <li><a href="#">Assessment</a></li>
+                        <li><a href="#">Manage Assessment</a></li>
+                        <li><a href="#">Assessment</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="main-con-right">
+            <h4 class="backlink"><a href="ade.html">Teacher Management</a><i class="icon-angle-right"></i>Bulk Add/Update Teachers</h4>
+            <div class="right-content">
+                <!---编辑行--->
+                <div class="main-content">
+                    <form class="form-horizontal" role="form">
+                        <div class="content-body-tab">
+                            <table class="table table-striped table-hover p-table-list">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 90%;"></th>
+                                        <th style="width: 10%;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Community/District</label>
+                                                <div class="col-sm-2">
+                                                     <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">School</label>
+                                                <div class="col-sm-2 ">
+                                                   <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher ID</label>
+                                                <div class="col-sm-2 ">
+                                                   ETE00008
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">School Year</label>
+                                                <div class="col-sm-2">
+                                                15-16
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">First Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text1" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Middle Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text2" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Last Name</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Previous Last Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text4" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Birth Date</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text5" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Gender</label>
+                                                <div class="col-sm-2">
+                                                   <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Ethnicity Vendor Code</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text6" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Lanuage</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                            </div>
+                                              <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                                <div class="col-sm-2">
+                                                   <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                              </div>  
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Status</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text11" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Home Mailing Address</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Phone Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text12" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Phone Number</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Fax Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text15" placeholder="">
+                                                </div>
+                                            </div>
+                                                    <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Email</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Email</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text16" placeholder="">
+                                                </div>
+                                               
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event: { click: $root.newData }" title="New"></a>
+                                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.delete }" title="Delete"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Community/District</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">School</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher ID</label>
+                                                <div class="col-sm-2 ">
+                                                    ETE00008
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">School Year</label>
+                                                <div class="col-sm-2">
+                                                    15-16
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">First Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text3" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Middle Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text7" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Last Name</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Previous Last Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text8" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Birth Date</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text9" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Gender</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Ethnicity Vendor Code</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text10" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Lanuage</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                            </div>  
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Status</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text13" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Home Mailing Address</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Phone Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text14" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Phone Number</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Fax Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text17" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Email</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Email</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text18" placeholder="">
+                                                </div>
+                                               
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event: { click: $root.newData }" title="New"></a>
+                                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.delete }" title="Delete"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Community/District</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">School</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher ID</label>
+                                                <div class="col-sm-2 ">
+                                                    ETE00008
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">School Year</label>
+                                                <div class="col-sm-2">
+                                                    15-16
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">First Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text19" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Middle Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text20" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Last Name</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Previous Last Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text21" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Birth Date</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text22" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Gender</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Ethnicity Vendor Code</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text23" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Lanuage</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                            </div>  
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Status</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text24" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Home Mailing Address</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Phone Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text25" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Phone Number</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Fax Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text26" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Email</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Email</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text27" placeholder="">
+                                                </div>
+                                               
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event: { click: $root.newData }" title="New"></a>
+                                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.delete }" title="Delete"></a>
+                                        </td>
+                                    </tr>
+                                            <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Community/District</label>
+                                                <div class="col-sm-2">
+                                                     <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">School</label>
+                                                <div class="col-sm-2 ">
+                                                   <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher ID</label>
+                                                <div class="col-sm-2 ">
+                                                   ETE00008
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">School Year</label>
+                                                <div class="col-sm-2">
+                                                15-16
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">First Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text28" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Middle Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text29" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Last Name</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Previous Last Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text30" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Birth Date</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text31" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Gender</label>
+                                                <div class="col-sm-2">
+                                                   <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Ethnicity Vendor Code</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text32" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Lanuage</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                            </div>
+                                              <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                                <div class="col-sm-2">
+                                                   <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                              </div>  
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Status</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text33" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Home Mailing Address</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Phone Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text34" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Phone Number</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Fax Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text35" placeholder="">
+                                                </div>
+                                            </div>
+                                                    <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Email</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Email</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text36" placeholder="">
+                                                </div>
+                                               
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event: { click: $root.newData }" title="New"></a>
+                                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.delete }" title="Delete"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Community/District</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">School</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher ID</label>
+                                                <div class="col-sm-2 ">
+                                                    ETE00008
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">School Year</label>
+                                                <div class="col-sm-2">
+                                                    15-16
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">First Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text37" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Middle Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text38" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Last Name</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Previous Last Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text39" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Birth Date</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text40" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Gender</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Ethnicity Vendor Code</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text41" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Lanuage</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                            </div>  
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Status</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text42" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Home Mailing Address</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Phone Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text43" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Phone Number</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                            name="Status" placeholder="Enter Name"
+                                                            aria-required="true" aria-invalid="false" 
+                                                            aria-describedby="Status_Search-error">
+                                                        <option value="-1">Select...</option>
+                                               
+                                                    </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Fax Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text44" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Email</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Email</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text45" placeholder="">
+                                                </div>
+                                               
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event: { click: $root.newData }" title="New"></a>
+                                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.delete }" title="Delete"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Community/District</label>
+                                                <div class="col-sm-2">
+                                                     <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">School</label>
+                                                <div class="col-sm-2 ">
+                                                   <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher ID</label>
+                                                <div class="col-sm-2 ">
+                                                   ETE00008
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">School Year</label>
+                                                <div class="col-sm-2">
+                                                15-16
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">First Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text46" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Middle Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text47" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Last Name</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Previous Last Name</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text48" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Birth Date</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text49" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Gender</label>
+                                                <div class="col-sm-2">
+                                                   <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Ethnicity Vendor Code</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text50" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Lanuage</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                            </div>
+                                              <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Language</label>
+                                                <div class="col-sm-2">
+                                                   <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Employed By</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">CLI Funding</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                              </div>  
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Media Release</label>
+                                                <div class="col-sm-2">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Status</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Teacher Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text51" placeholder="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Home Mailing Address</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Phone Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text52" placeholder="">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Phone Number</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Number Type</label>
+                                                <div class="col-sm-2 ">
+                                                    <select class="form-control valid" 
+                                                    name="Status" placeholder="Enter Name"
+                                                    aria-required="true" aria-invalid="false" 
+                                                    aria-describedby="Status_Search-error">
+                                                <option value="-1">Select...</option>
+                                               
+                                            </select>
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Fax Number</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text53" placeholder="">
+                                                </div>
+                                            </div>
+                                                    <div class="form-group">
+                                                <label for="inputPassword" class="col-sm-2 control-label">Primary Email</label>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" placeholder="" list="firstnameItems">
+                                                </div>
+                                                <label for="inputPassword" class="col-sm-2 control-label">Secondary Email</label>
+                                                <div class="col-sm-2 ">
+                                                    <input type="text" class="form-control" id="Text54" placeholder="">
+                                                </div>
+                                               
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event: { click: $root.newData }" title="New"></a>
+                                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.delete }" title="Delete"></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,378 @@
+﻿@using System.Web.Optimization
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+
+    var reportModels = ViewBag.Models as List<GrowthReportModel>;
+    bool isFirst = true;
+    int index = 0;
+}
+@foreach (GrowthReportModel reportModel in reportModels)
+{
+    for (int i = 2; i < reportModel.Report.Count; )
+    {
+        <table cellpadding="0" cellspacing="0" class="noborder header  @(isFirst ? "" : "newpager") ">
+            <thead>
+                <tr>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                </tr>
+                <tr>
+                    <th colspan="4"></th>
+                    <th colspan="4" class="title">
+                        @(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+                        @(reportModel.Title)<br />
+                        @(reportModel.Report[i][0].Text)<br />
+                        @(reportModel.Type.ToDescription())
+                    </th>
+                    <th colspan="4">
+                        <img src="@(DomainHelper.PracticeDomain)images/cli_logo.png" style="height: 60px; vertical-align: middle; width: 150px;" />
+                    </th>
+                </tr>
+            <tr>
+                <th colspan="6" class="heading">
+                    @(Html.DisplayNameFor(x => reportModel.Language)):&nbsp;@(reportModel.Language.ToDescription())
+                </th>
+                <th colspan="3">&nbsp;</th>
+                <th colspan="3" class="heading">
+                    @(Html.DisplayNameFor(x => reportModel.SchoolYear)):&nbsp;@(reportModel.SchoolYear)
+                </th>
+            </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                        <p>Practice Class</p>
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @(ViewBag.UserName)
+                    </th>
+                </tr>
+                @if (reportModel.Wave1 > DateTime.MinValue)
+                {
+                    <tr>
+                        <th colspan="6" class="heading">
+                        </th>
+                        <th colspan="3">&nbsp;</th>
+                        <th colspan="3" class="heading">
+                            @(Html.DisplayNameFor(x => reportModel.Wave1))
+                            @Html.Raw(": ")
+                            @(reportModel.Wave1.FormatDateString())
+                        </th>
+                    </tr>
+                }
+                @if (reportModel.Wave2 > DateTime.MinValue)
+                {
+                    <tr>
+                        <th colspan="6" class="heading">
+                        </th>
+                        <th colspan="3">&nbsp;</th>
+                        <th colspan="3" class="heading">
+                            @(Html.DisplayNameFor(x => reportModel.Wave2))
+                            @Html.Raw(": ")
+                            @(reportModel.Wave2.FormatDateString())
+                        </th>
+                    </tr>
+                }
+                @if (reportModel.Wave3 > DateTime.MinValue)
+                {
+                    <tr>
+                        <th colspan="6" class="heading">
+                        </th>
+                        <th colspan="3">&nbsp;</th>
+                        <th colspan="3" class="heading">
+                            @(Html.DisplayNameFor(x => reportModel.Wave3))
+                            @Html.Raw(": ")
+                            @(reportModel.Wave3.FormatDateString())
+                        </th>
+                    </tr>
+                }
+             
+            </thead>
+
+        </table>
+        <div id="chart@(index++)" style="margin-top:50px; height: 520px; width: @ReportHelper.GetChartWidth(reportModel.Report[i][0].Rowspan + 1, 210)px;">
+        </div>
+        {
+            isFirst = false;
+            i += reportModel.Report[i][0].Rowspan;
+        }
+    }
+}
+@using (Html.BeginForm("Growth_Pdf_Download", null, FormMethod.Post, new { id = formId, target = "_blank" }))
+{
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("language")
+    @Html.Hidden("year")
+    @Html.Hidden("districtId")
+    @Html.Hidden("type")
+    @Html.Hidden("waves")
+    @Html.Hidden("measures")
+    @Html.Hidden("startDate")
+    @Html.Hidden("endDate")
+    @Html.Hidden("dobStartDate")
+    @Html.Hidden("dobEndDate")
+    @Html.Hidden("export", true)
+    <button type="submit" class="btn-export" id="btn_Export" onclick=" javascript:return exportPdf(); ">
+        Export
+    </button>
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+    <script type="text/javascript">
+        var dataSources = @Html.Raw(ViewBag.JData);
+
+        var index = 0;
+        var charts = [];
+        var options = [];
+        var currentIndex = 0;
+        var lengndHight=0;
+        var allMeasure = new ParentMeasuresModel();
+
+        function startGenerateReport() {
+            if (options.length > currentIndex) {
+                window.scrollTo(0, $("#chart" + currentIndex).offset().top);
+
+                document.getElementById('chart' + currentIndex).style.height=lengndHight+550+'px';
+
+                var option = options[currentIndex];
+                var myChart = echarts.init(document.getElementById('chart' + index++), echartsTheme.default);
+                myChart.setOption(option);
+                charts.push(myChart);
+                currentIndex++;
+                setTimeout(function() {
+                    startGenerateReport();
+                }, 1000);
+            } else {
+                setTimeout(function() {
+                    $("#btn_Export").slideDown();
+                }, 1000);
+            }
+        }
+
+        function exportPdf() {
+            var $form = $("#@(formId)");
+            $form.find("input:hidden[name='imgSources']").remove();
+            if (charts && charts.length) {
+                for (var i = 0; i < charts.length; i++) {
+                    var myChart = charts[i];
+                    var options = myChart.getOption();
+                    options.toolbox.feature.magicType.show = false;
+                    options.toolbox.feature.dataZoom.show = false;
+                    options.toolbox.feature.restore.show = false;
+                    myChart.setOption(options);
+                    var $imgSources = $('<input name="imgSources" type="hidden" value="" />').appendTo($form);
+                    $imgSources.val(myChart.getDataURL());
+
+                    options.toolbox.feature.magicType.show = true;
+                    options.toolbox.feature.dataZoom.show = true;
+                    options.toolbox.feature.restore.show = true;
+                    myChart.setOption(options);
+                }
+            }
+            return true;
+        }
+
+        $(function() {
+            for (var d = 0; d < dataSources.length; d++) {
+                var dataSource = dataSources[d];
+                var rows = dataSource.Report;
+
+                // Row 0: Source Title
+                var sourceRow = rows[0];
+                var waveArr=sourceRow.Cells[0].AlertText.split(',');
+                var waveCount = waveArr.length;
+                // Row 1:Measure,Maximum Score, (Wave1), (Wave2), (Wave3)
+                var header = rows[1];
+
+                // from Row 2: Measure and scores
+                for (var measureIndex = 2; measureIndex < rows.length;) {
+                    var row = rows[measureIndex];
+                    var cells = row.Cells;
+                    var parentMeasure = cells[0];
+                    var option = new ReportOption();
+
+                    option.xAxis[1].axisLabel.formatter = function(label) {
+                        //return label;
+                        return allMeasure.getTextForGrouth(label).replace("|<--",'').replace("-->|",'');
+                    }
+                    option.xAxis[0].position = "top";
+                    option.xAxis[1].position = "bottom";
+                    option.xAxis[0].axisLabel.rotate=45;
+                    option.xAxis[1].axisLabel.rotate=45;
+                    option.xAxis[0].splitArea={
+                        show: true,
+                        areaStyle: {
+                            color:["#dddddd","#dddddd"]
+                        }
+                    };
+                    //for (var w = 0; w < waveCount; w++) {
+                    //    option.xAxis[0].splitArea.areaStyle.color.push("#dddddd");
+                    //}
+                    //for (var w = 0; w < waveCount; w++) {
+                    //    option.xAxis[0].splitArea.areaStyle.color.push("#eeeeee");
+                    //}
+                    option.xAxis[0].axisTick={
+                        show:false
+                    };
+                    option.xAxis[1].axisTick={
+                        show:false
+                    };
+
+                    option.title = {
+                        text: dataSource.Title,
+                        subtext: sourceRow.Cells[0].Text + ": " + parentMeasure.Text,
+                        textAlign: "left",
+                        x: 0,
+                        y: 0
+                    };
+                    //option.color = ["#ffffff", "#C1232B", "#ffffff", "#B5C334", "#ffffff", "#FCCE10"];
+                    option.toolbox.feature.magicType.type = ['line', 'bar', 'stack'];
+                    option.xAxis = option.xAxis.slice(0, 2);
+                    var xAxis = option.xAxis[0].data;
+                    var xAxis1 = option.xAxis[1].data;
+                    option.legend.itemGap = 20;
+                    option.legend.x = 250;
+                    option.legend.formatter = function(name) {
+                        if (name.indexOf("_") >= 0)
+                            return "";
+                        return name + "    ";
+                    };
+                    for (var h = 1; h < header.Cells.length; h++) {
+                        var title = header.Cells[h].Text;
+                        option.legend.data.push(title + "$" + header.Cells[h].AlertText);
+                        option.series.push({
+                            name: title + "$" + header.Cells[h].AlertText,
+                            type: "bar",
+                            stack: "wave",
+                            data: [],
+                            barGap: 1,
+                            barWidth:30,
+                            itemStyle: {
+                                normal: {
+                                    color: header.Cells[h].Color,
+                                    barBorderColor: header.Cells[h].Color,
+                                    barBorderWidth: 1,
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    for (var i = 0; i < parentMeasure.Rowspan; i++) {
+
+                        var tmpMeasureRow = rows[measureIndex + i];
+                        var tmpCells = tmpMeasureRow.Cells;
+                        //var tmpMeasure = tmpCells[tmpCells.length - (waveCount + 1)];
+                        var tmpMeasure = tmpCells[0];
+                        if (tmpCells[0].IsParent == true) {
+                            tmpMeasure = tmpCells[1];
+                        }
+
+                        if(i>0){
+                            xAxis.push("");
+                            xAxis1.push("");
+                        }
+                        for (var w = 0; w < waveCount; w++) {
+                            xAxis.push("Wave "+(waveArr[w]));
+                            allMeasure.add(tmpMeasure.Text);
+                            xAxis1.push(tmpMeasure.Text);
+                        }
+
+                        for (var z = 0; z < tmpCells.length; z++) {
+                            var labelText = tmpCells[z].AlertText;
+                            for (var s = 0; s < option.series.length; s++) {
+                                var subName = option.series[s].name.substring(0, option.series[s].name.indexOf("$"));
+                                if (option.series[s].name == (subName+"$"+labelText)) {
+                                    var percentage = GetNumber(tmpCells[z].Text.replace("%", ""));
+                                    if (tmpCells[z].Text == "√"||tmpCells[z].Text == "*")
+                                        percentage = 0;
+                                    option.series[s].data.push(percentage);
+                                }
+                            }
+                        }
+                    }
+
+                    for (var s = 0; s < option.series.length; s++) {
+                        var newData=[];
+                        var oldData=option.series[s].data;
+                        for(var d=0;d<oldData.length;d++){
+                            if(waveCount>1){
+                                newData.push(oldData[d]);
+                                if(d>0 && (d+1)%waveCount==0){
+                                    newData.push(0);
+                                }
+                            }
+                            if(waveCount==1){
+                                if(d>0 && (d+1)%waveCount==0){
+                                    newData.push(0);
+                                }
+                                newData.push(oldData[d]);
+                            }
+                        }
+                        option.series[s].data=newData;
+                    }
+
+                    option.legend.formatter=function(name){
+                        var res="% at "+name.substring(0,name.indexOf("$"));
+                        return res;
+                    };
+                    option.tooltip = {
+                        trigger: 'axis',
+                        formatter:function(params,ticket,callback){
+                            var res="";
+                            for(var i=0;i<params.length;i++){
+                                if(i==0){
+                                    res+=params[i][1]+'<br/>';
+                                }
+                                if(params[i][2] != 0){
+                                    var subName="% of Students Meeting "+params[i][0].substring(0,params[i][0].indexOf("$"));
+                                    res+=subName+' : '+params[i][2]+'<br/>';
+                                }
+                            }
+                            return res;
+                        }
+                    };
+
+                    option.yAxis[0].max = 100;
+                    option.yAxis[0].axisLabel.formatter = '{value}%';
+                    option.yAxis[0].min = 0;
+                    option.yAxis[0].splitNumber = 10;
+                    option.yAxis[0].axisLine = {
+                        show: true
+                    };
+                    //xAxis.axisLine
+
+                    var labelNum= option.legend.data.length;
+                    var lengndRow=parseInt(labelNum/3)+1;
+                    lengndHight=lengndRow*20;
+                    option.legend.x = 0;
+                    option.legend.y = 0;
+                    option.grid.y=lengndHight+100;
+                    option.toolbox.y=lengndHight+100;
+                    option.title.y=lengndHight;
+
+                    option.grid.width = xAxis.length * 35;
+                    options.push(option);
+                    measureIndex += parentMeasure.Rowspan;
+                }
+            }
+            startGenerateReport();
+        });
+</script>
+}

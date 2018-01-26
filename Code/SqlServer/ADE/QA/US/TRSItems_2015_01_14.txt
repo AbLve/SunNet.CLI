@@ -1,0 +1,5 @@
+﻿if not exists(select * from syscolumns where id=object_id('TRSItems') and name='Type')
+begin
+alter table dbo.TRSItems
+add [Type] tinyint not null default 0
+end

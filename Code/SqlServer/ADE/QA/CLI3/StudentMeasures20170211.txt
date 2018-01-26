@@ -1,0 +1,5 @@
+﻿alter table StudentMeasures add PercentileRank int
+go
+update StudentMeasures set PercentileRank=0
+go
+alter table StudentMeasures alter column PercentileRank int not null

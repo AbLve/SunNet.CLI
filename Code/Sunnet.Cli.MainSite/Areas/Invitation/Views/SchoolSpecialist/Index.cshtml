@@ -1,0 +1,303 @@
+﻿@model Sunnet.Cli.Business.Users.Models.UserModel
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Users.Enums
+@{                            
+    bool isSchoolSpecialist = ViewBag.RoleType == Role.Principal_Delegate;
+    string titleText = isSchoolSpecialist ? "School Specialist Delegate" : "School Specialist";
+    string navigationText = isSchoolSpecialist ? " School Specialist Delegate List" : "School Specialist List";
+    string addText = isSchoolSpecialist ? "Add School Specialist Delegate" : "Add School Specialist";
+    string listTitleText = isSchoolSpecialist ? "School Specialist Delegates" : "School Specialists";
+    ViewBag.Title = isSchoolSpecialist ? "School Specialist Delegate Invite" : "School Specialist Invite";
+    string idText = isSchoolSpecialist ? "School Specialist Delegate ID" : "School Specialist ID";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.User)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("User Management", "Dashboard", "Public")) <i class="icon-angle-right"></i>@navigationText
+}
+<div class="right-content-top">
+    @if (ViewBag.accessAdd)
+    {
+        <button type="button" class="mainbutton mainright-btn create-btn" data-bind="click: $root.addData">@addText</button>
+    }
+    @if (ViewBag.accessBES)
+    {
+ <button type="button" class="mainbutton mainright-btn create-btn" data-bind="click: $root.BESData">Bulk Add/Update School Specialists</button> 
+    }
+</div>
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <input type="hidden" value="@ViewBag.RoleType" data_bind = "value: searchCriteria.roleType" />
+    <div class="form-group">
+        @Html.LabelFor(m => m.CommunityName, new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+        {
+            autocomplete = "off",
+            @class = "form-control",
+            data_list = "true",
+            data_for = "#communityId",
+            data_remote = "/Community/Community/GetCommunitySelectList",
+            data_text = "Name",
+            data_value = "ID",
+            id = "txtCommunity",
+            name = "txtCommunity",
+            @for = "communityId",
+            placeholder = "Enter key text to search",
+            data_bind = "value: searchCriteria.txtCommunity",
+            data_required = "false"
+        })
+            @Html.Hidden("communityId", "", new
+        {
+            @class = "form-control ",
+            placeholder = "selected from autocomplete",
+            data_bind = "value: searchCriteria.communityId"
+        })
+        </div>
+        @Html.LabelFor(m => m.SchoolName, new
+       {
+           @class = "control-label col-sm-2",
+           @for = "txtSchool"
+       })
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", "", new
+        {
+            autocomplete = "off",
+            @class = "form-control",
+            data_list = "true",
+            data_for = "#schoolId",
+            data_remote = "/School/School/GetSchoolSelectList",
+            data_text = "Name",
+            data_value = "ID",
+            id = "txtSchool",
+            name = "txtSchool",
+            @for = "schoolId",
+            placeholder = "Enter key text to search",
+            data_extraParams = "{\"communityId\":\"#communityId\"}",
+            data_bind = "value: searchCriteria.txtSchool",
+            data_required = "false"
+        })
+            @Html.Hidden("schoolId", "", new
+        {
+            @class = "form-control",
+            placeholder = "selected from autocomplete",
+            data_bind = "value: searchCriteria.schoolId"
+        })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Status, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultAllText, "-1", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.status"
+            })
+        </div>
+        @Html.Label("Code", idText, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Code, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.principalCode"
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.FirstName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.FirstName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.firstName"
+            })
+        </div>
+        @Html.LabelFor(m => m.LastName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.LastName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.lastName"
+            })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">@listTitleText</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.FirstName"></td>
+                    <td data-bind="text: item.LastName"></td>
+                    <td data-bind="text: item.SchoolNameText"></td>
+                    @*<td data-bind="text: item.GoogleId == '' ? 'False' : 'True'"></td>*@
+                    <td data-bind="text: item.Gmail"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td align="left" style="padding-left: 5px;">
+                        @if (ViewBag.accessView)
+                        {
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a> 
+                        }
+                        @if (ViewBag.accessEdit)
+                        {     
+                            <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                        }
+                        @if (ViewBag.accessPermission)
+                        { 
+                            <a class="table-btn icon-lock permission-btn" data-bind='attr: { href: $root.permissionData(item) }' data-toggle="modal" data-target="#modalNormal" title="Permission"></a>
+                        }
+                        @if (ViewBag.accessAssignSchool)
+                        {
+                            <a class="table-btn icon-tags assign-btn" data-bind='attr: { href: $root.AssignSchoolUrl(item) }' title="Assign Schools"></a>
+                        }
+                        @if (ViewBag.accessAssignClass)
+                        {
+                            <a class="table-btn icon-random assign2-btn" data-bind='attr: { href: $root.AssignClassUrl(item) }' title="Assign Classes"></a>   
+                        }
+                        @if (ViewBag.accessAdd || ViewBag.accessEdit)
+                        {
+                            <a class="table-btn icon-share-alt message-btn" data-bind=" event: { click: $root.reInvite }" href="#" title="Reset and Send Invitation"></a>
+                        }
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 6 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_SchoolSpecialistInvitation = {};
+
+        jQuery(function () {
+            $(".table.table-striped.table-hover td").css("word-break", "break-all");
+            list_SchoolSpecialistInvitation = new ViewModel(
+                {
+                    instanceName: "list_SchoolSpecialistInvitation",
+                    modalId: "modalNormal",
+                    addDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("New", new { roleType = (int)ViewBag.RoleType })))',
+                    addType: "Redirect",
+                    editDataUrl: '@Html.Raw(Url.Action("Edit", new { roleType = (int)ViewBag.RoleType }))',
+                    editType: "Redirect",
+                    viewDataUrl: '@Html.Raw(Url.Action("View", new { roleType = (int)ViewBag.RoleType }))',
+                    viewType: "Redirect",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    orderBy: "LastName",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayNameFor(model => model.FirstName)",
+                            field: "@Html.NameFor(model => model.FirstName)",
+                            order: true,
+                            width: '16%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.LastName)",
+                            field: "@Html.NameFor(model => model.LastName)",
+                            order: true,
+                            width: '16%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.SchoolName)",
+                            field: "@Html.NameFor(model => model.SchoolName)",
+                            order: false,
+                            width: '*'
+                        },
+                        @*{
+                            text: "@Html.DisplayNameFor(model => model.GoogleId)",
+                            field: "@Html.NameFor(model => model.GoogleId)",
+                            order: true,
+                            width: '13%'
+                        },*@
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Gmail)",
+                            field: "@Html.NameFor(model => model.Gmail)",
+                            order: true,
+                            width: '20%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                        { text: "Action", width: '190px' }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("communityId")),
+                        txtCommunity: ko.observable(window.queryString("txtCommunity")),
+                        schoolId: ko.observable(window.queryString("schoolId")),
+                        txtSchool: ko.observable(window.queryString("txtSchool")),
+                        principalCode: ko.observable(window.queryString("principalCode")),
+                        firstName: ko.observable(window.queryString("firstName")),
+                        lastName: ko.observable(window.queryString("lastName")),
+                        status: ko.observable(window.queryString("status", -1)),
+                        roleType: ko.observable(window.queryString("roleType", '@((int)Role.School_Specialist)'))
+                    }
+                }
+                , {
+                    permissionData: function (schoolSpecialist) {
+                        return '@Url.Action("AssignPermission", "Public")' + "?userId=" + schoolSpecialist.UserId;
+                    },
+                    reInvite: function (schoolSpecialist) {
+                        jQuery.when(waitingConfirm("Are you sure?", "Yes", "No")).done(function () {
+                            $.post("/Invitation/Public/ReInvite?userId=" + schoolSpecialist.UserId, function (result) {
+                                if (!result) {
+                                    showMessage("success", "Email has been sent successfully.");
+                                    list_SchoolSpecialistInvitation.search();
+                                } else {
+                                    showMessage("fail");
+                                }
+                            });
+                        });
+                    },
+                    AssignSchoolUrl: function (schoolSpecialist) {
+                        return '@Url.Action("AssignSchool", "Public")' + "?userId=" + schoolSpecialist.UserId + "&returnurl=" + list_SchoolSpecialistInvitation.getLocation();
+                    },
+                    AssignClassUrl: function (schoolSpecialist) {
+                        return '@Url.Action("AssignClass", "Public")' + "?userId=" + schoolSpecialist.UserId + "&returnurl=" + list_SchoolSpecialistInvitation.getLocation();
+                    },
+                    BESData: function () {
+                        window.location = '@Url.Action("SchoolSpecialistBES")'+ "?returnurl=" + list_SchoolSpecialistInvitation.getLocation();
+                    }
+                });
+
+            list_SchoolSpecialistInvitation.search();
+            ko.applyBindings(list_SchoolSpecialistInvitation);
+
+            $("#txtCommunity").on("selected.sunnet.datalist", function () {
+                $("#txtSchool").datalist("clear");
+            });
+        });
+    </script>
+}

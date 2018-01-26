@@ -1,0 +1,26 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(2100,'CPALLS+',1,2000,'',1,1,'CPALLS+',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(2200,'CEC',1,2000,'',2,1,'CEC',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(2300,'COT',1,2000,'',3,1,'COT',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+
+
+
+insert into Permission_PageAuthorities values(2100,1)
+insert into Permission_PageAuthorities values(2200,1)
+insert into Permission_PageAuthorities values(2300,1)
+
+
+insert into Permission_RolePageAuthorities
+select RoleId,2100,'1;',GETDATE(),GETDATE() from Permission_RolePageAuthorities where PageId=2000
+
+
+
+--重启IIS

@@ -1,0 +1,13 @@
+﻿ALTER TRIGGER [dbo].[UpdateStudentCode] ON [dbo].[Students] 
+FOR INSERT
+AS
+  declare @ID int
+  declare @TSDSId varchar(100)
+  declare @NewStudentId varchar(100) 
+  select @ID = ID from Inserted
+  
+  if(@ID is not null)
+     begin
+		select @NewStudentId = 'ESU'+ left(SchoolYear,2)+RIGHT('0000000'+CONVERT(VARCHAR(50),next value for SeqStudentCode ),'7') from Inserted   where id = @ID  
+        update Students set StudentId = @NewStudentId   where id = @ID 
+     end

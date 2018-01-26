@@ -1,0 +1,5 @@
+﻿alter table DataGroups add CreateClassroom bit
+go
+update DataGroups set CreateClassroom=1
+go
+alter table DataGroups alter column CreateClassroom bit not null

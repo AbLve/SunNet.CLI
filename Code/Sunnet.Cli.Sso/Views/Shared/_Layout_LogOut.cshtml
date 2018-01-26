@@ -1,0 +1,42 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+
+<!DOCTYPE html>
+@{
+    const string siteName = "Cli Engage";
+    var relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    var lastModified = FileHelper.GetFileLastModified(Server.MapPath(relativePath));
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword" content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>@ViewBag.Title - @siteName</title>
+    @Styles.Render("~/css/basic")
+    @RenderSection("Styles", false)
+    @Scripts.Render("~/scripts/modernizr")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/scripts/ie68")
+    <![endif]-->
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <div class="warp">
+        @RenderBody()
+    </div>
+    @RenderSection("Scripts", false)
+</body>
+</html>

@@ -1,0 +1,8 @@
+﻿@model DateTime
+@{
+    var format = ViewData["format"] ?? "MM/dd/yyyy";
+}
+
+<label class="control-label-text">
+    @(Model.FormatDateString(format.ToString()))
+</label>

@@ -1,0 +1,11 @@
+﻿IF NOT EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('TRSItems') AND name = 'IsDeleted' )
+BEGIN
+ALTER TABLE [dbo].[TRSItems] 
+ADD IsDeleted BIT NULL
+END
+
+GO
+UPDATE  [dbo].[TRSItems] SET IsDeleted = 0
+GO
+ALTER TABLE [dbo].[TRSItems] 
+ALTER COLUMN IsDeleted BIT NOT NULL

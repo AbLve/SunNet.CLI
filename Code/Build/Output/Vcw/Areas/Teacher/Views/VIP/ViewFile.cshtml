@@ -1,0 +1,118 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherVIPFileModel
+@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@{
+    ViewBag.Title = "Video Information";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    bool isSummary = !string.IsNullOrEmpty(ViewBag.Redirect);
+}
+
+@if (isSummary)
+{
+    @section LeftMenu
+{
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Teacher_Summary)
+    }
+}
+else
+{
+    @section LeftMenu
+{
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Teacher_VIP)
+    }
+}
+
+@if (isSummary)
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Teacher Summary", "Index", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        File
+    }
+}
+else
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Teacher VIP", "Index", "VIP"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("VIP", "View", "VIP", new { id = Model.AssignmentID }, null))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        View
+    }
+}
+
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("View", "VIP"))" >Back to VIP Assignment</a>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            setPlayerVideo("700", "350", "@(Sunnet.Cli.UIBase.FileHelper.GetPreviewPathofUploadFile(Model.FilePath).Replace("\\", "/"))", "div_sunnet", '@(DomainHelper.StaticSiteDomain)');
+        });       
+    </script>
+}
+
+<div class="right-content-top">
+    @if (isSummary)
+    {
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("Index", "Summary"))" >Back to Files</a>
+    }
+    else
+    {
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("View", "VIP", new { id = Model.AssignmentID }, ""))" >Back to VIP</a>
+    }
+</div>
+<div class="main-content">
+    <div class="content-title">Selected Video Information</div>
+    +
+    <div class="content-body">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <span class="col-sm-6 control-label">Date Video Recorded</span>
+                    <div class="col-sm-6">
+                        <span class="control-label-text">
+                            @Model.UploadDate.FormatDateString()
+                        </span>
+                    </div>
+
+                    <span class="col-sm-6 control-label">Video Language</span>
+                    <div class="col-sm-6">
+                        <span class="control-label-text">
+                            @(Model.Language == LanguageEnum.None ? "" : Model.Language.ToDescription())
+                        </span>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <span class="control-label">Teacher Comments</span>
+                            </div>
+                            <div class="textarea-con">
+                                @Model.Description
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div id='div_sunnet'>
+                            <div style='width:100%;height:450px; text-align:center; background:#333333 url(@(Sunnet.Framework.SFConfig.AssessmentDomain)/images/not-played.jpg) no-repeat center center; line-height:450px;'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

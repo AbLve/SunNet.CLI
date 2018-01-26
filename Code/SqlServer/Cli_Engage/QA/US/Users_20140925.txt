@@ -1,0 +1,13 @@
+﻿if not exists(select * from syscolumns where id=object_id('Users') and name='Sponsor')
+	alter table Users add  Sponsor int default(1) not null
+
+if not exists(select * from syscolumns where id=object_id('Users') and name='InvitationEmail')
+	alter table Users add  InvitationEmail tinyint default(1) not null
+
+if not exists(select * from syscolumns where id=object_id('Users') and name='EmailExpireTime')
+	alter table Users add  EmailExpireTime datetime default(getdate()) not null
+
+if not exists(select * from syscolumns where id=object_id('Users') and name='Notes')
+	alter table Users add  Notes varchar(100) default('') not null
+
+

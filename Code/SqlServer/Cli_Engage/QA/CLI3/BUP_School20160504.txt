@@ -1,0 +1,429 @@
+﻿ALTER PROCEDURE [dbo].[BUP_School]
+	@BUPSchoolID int,
+	@CreatedBy int
+AS
+BEGIN
+		SET XACT_ABORT ON;
+
+		DECLARE @Action tinyint ;
+		DECLARE @CommunityName varchar(500) 
+		DECLARE @CommunityEngageID varchar(150) 
+		DECLARE @EngageID varchar(150) --SchoolID
+		DECLARE @InternalID varchar(150) --@SchoolNumber
+
+		DECLARE @BasicSchoolId  int  
+		DECLARE @PhysicalAddress1  varchar(500)  
+		DECLARE @PhysicalAddress2  varchar(500)  
+		DECLARE @City  varchar(50)  
+		DECLARE @CountyId  int  
+		DECLARE @StateId  int  
+		DECLARE @Zip  varchar(10)  
+		DECLARE @PhoneNumber  varchar(15)  
+		DECLARE @PhoneType  tinyint  
+		DECLARE @SchoolTypeId  int  
+		DECLARE @AtRiskPercent  int  
+
+		DECLARE @PrimarySalutation  tinyint  
+		DECLARE @PrimaryName  varchar(150)  
+		DECLARE @PrimaryTitleId  int  
+		DECLARE @PrimaryPhone  varchar(50)  
+		DECLARE @PrimaryPhoneType  tinyint  
+		DECLARE @PrimaryEmail  varchar(150)  
+		DECLARE @SecondarySalutation  tinyint  
+		DECLARE @SecondaryName  varchar(150)  
+		DECLARE @SecondaryTitleId  int  
+		DECLARE @SecondaryPhoneNumber  varchar(15)  
+		DECLARE @SecondaryPhoneType  tinyint  
+		DECLARE @SecondaryEmail  varchar(150)  
+		DECLARE @Latitude  varchar(50)  
+		DECLARE @Longitude  varchar(50)  
+
+		DECLARE @MailingAddress1  varchar(500)  
+		DECLARE @MailingAddress2  varchar(500)  
+		DECLARE @MailingCity  varchar(500)  
+		DECLARE @MailingCountyId  int  
+		DECLARE @MailingStateId  int  
+		DECLARE @MailingZip  varchar(15)  
+
+		DECLARE @SchoolSize  int  
+		DECLARE @Name  varchar(500) 
+		
+		DECLARE @CommunityId INT
+		DECLARE @SchoolId INT
+		DECLARE @SchoolStatus tinyint
+
+	BEGIN TRY
+	  BEGIN TRANSACTION;
+
+		SELECT @Action=  Action  ,@CommunityName= CommunityName , @CommunityEngageID= CommunityEngageID , @Name=Name , @EngageID=EngageID 
+      , @InternalID=InternalID , @PhysicalAddress1=PhysicalAddress1 , @PhysicalAddress2=PhysicalAddress2 , @City=City , @CountyId=CountyId 
+      , @StateId=StateId , @Zip=Zip , @MailingAddress1=MailingAddress1 , @MailingAddress2=MailingAddress2 , @MailingCity=MailingCity 
+      , @MailingCountyId=MailingCountyId , @MailingStateId=MailingStateId , @MailingZip=MailingZip , @PhoneNumber=PhoneNumber , @PhoneType=PhoneType 
+      , @SchoolTypeId=SchoolTypeId , @AtRiskPercent=AtRiskPercent , @SchoolSize=SchoolSize , @PrimarySalutation=PrimarySalutation , @PrimaryName=PrimaryName 
+      , @PrimaryTitleId=PrimaryTitleId , @PrimaryPhone=PrimaryPhone , @PrimaryPhoneType=PrimaryPhoneType , @PrimaryEmail=PrimaryEmail , @SecondarySalutation=SecondarySalutation 
+      , @SecondaryName=SecondaryName , @SecondaryTitleId=SecondaryTitleId , @SecondaryPhoneNumber=SecondaryPhoneNumber , @SecondaryPhoneType=SecondaryPhoneType 
+      , @SecondaryEmail=SecondaryEmail , @Latitude=Latitude , @Longitude=Longitude 
+  FROM  dbo.BUP_Schools WHERE ID =@BUPSchoolID
+	  
+		IF EXISTS (select * from BUP_Schools where Status=5 and Remark!='' and Remark is not null and ID=@BUPSchoolID)
+		begin
+			UPDATE BUP_Schools SET Status = 4 WHERE ID = @BUPSchoolID
+			return
+		end
+
+	--Insert
+		IF(@Action = 1)BEGIN
+			SELECT @CommunityId=ID FROM Communities WHERE  CommunityId=@CommunityEngageID  AND Status=1
+			IF(@CommunityId IS NULL) 
+				UPDATE BUP_Schools SET Status = 5 ,Remark='Community Engage ID is not in Communities'  WHERE ID=@BUPSchoolID
+			ELSE BEGIN
+				SELECT @SchoolId=ID FROM Schools WHERE Name=@Name 
+				IF(@SchoolId IS NOT NULL)
+					UPDATE BUP_Schools SET Status = 5 ,Remark='Duplicate school found'  WHERE ID=@BUPSchoolID
+				ELSE BEGIN
+					SELECT @BasicSchoolId = ID FROM BasicSchools WHERE Status=1 AND Name=@Name
+					IF(@BasicSchoolId IS NULL)
+						UPDATE BUP_Schools SET Status = 5 ,Remark='School Name is not in BasicSchools'  WHERE ID=@BUPSchoolID
+					ELSE BEGIN										
+						INSERT INTO [dbo].[Schools]
+								   (SchoolId
+								   ,[BasicSchoolId]
+								   ,[Status]
+								   ,[StatusDate]
+								   ,[SchoolYear]
+								   ,[ESCName]
+								   ,[ParentAgencyId]
+								   ,[PhysicalAddress1]
+								   ,[PhysicalAddress2]
+								   ,[City]
+								   ,[CountyId]
+								   ,[StateId]
+								   ,[Zip]
+								   ,[PhoneNumber]
+								   ,[PhoneType]
+								   ,[SchoolTypeId]
+								   ,[SubTypeId]
+								   ,[ClassroomCount3Years]
+								   ,[ClassroomCount4Years]
+								   ,[ClassroomCount34Years]
+								   ,[ClassroomCountKinder]
+								   ,[ClassroomCountgrade]
+								   ,[ClassroomCountOther]
+								   ,[ClassroomCountEarly]
+								   ,[ClassroomCountInfant]
+								   ,[ClassroomCountToddler]
+								   ,[ClassroomCountPreSchool]
+								   ,[AtRiskPercent]
+								   ,[FundingId]
+								   ,[TrsLastStatusChange]
+								   ,[PrimarySalutation]
+								   ,[PrimaryName]
+								   ,[PrimaryTitleId]
+								   ,[PrimaryPhone]
+								   ,[PrimaryPhoneType]
+								   ,[PrimaryEmail]
+								   ,[SecondarySalutation]
+								   ,[SecondaryName]
+								   ,[SecondaryTitleId]
+								   ,[SecondaryPhoneNumber]
+								   ,[SecondaryPhoneType]
+								   ,[SecondaryEmail]
+								   ,[Latitude]
+								   ,[Longitude]
+								   ,[IsSamePhysicalAddress]
+								   ,[MailingAddress1]
+								   ,[MailingAddress2]
+								   ,[MailingCity]
+								   ,[MailingCountyId]
+								   ,[MailingStateId]
+								   ,[MailingZip]
+								   ,[SchoolSize]
+								   ,[IspId]
+								   ,[ISPOther]
+								   ,[InternetSpeed]
+								   ,[InternetType]
+								   ,[WirelessType]
+								   ,[Notes]
+								   ,[CreatedOn]
+								   ,[UpdatedOn]
+								   ,[SchoolNumber]
+								   ,[FacilityType]
+								   ,[TrsAssessorId]
+								   ,[TrsTaStatus]
+								   ,[StarStatus]
+								   ,[DfpsNumber]
+								   ,[OwnerFirstName]
+								   ,[OwnerLastName]
+								   ,[OwnerEmail]
+								   ,[OwnerPhone]
+								   ,[NAEYC]
+								   ,[CANASA]
+								   ,[NECPA]
+								   ,[NACECCE]
+								   ,[NAFCC]
+								   ,[ACSI]
+								   ,[RegulatingEntity]
+								   ,[USMilitary]
+								   ,[VSDesignation]
+								   ,[StarDate]
+								   ,[RecertificatedBy]
+								   ,[EnableAutoAssign4Star]
+								   ,[Name]
+								   ,CreateBy
+								   ,UpdateBy
+								   ,CreateFrom
+								   ,UpdateFrom)
+							 VALUES
+								   (''
+								   ,@BasicSchoolId 
+								   ,1--<Status, tinyint,>
+								   ,getdate() --<StatusDate, datetime,>
+								   ,dbo.GetSchoolYear() --<SchoolYear, varchar(10),>
+								   ,0 --<ESCName, int,>
+								   ,0--<ParentAgencyId, int,>
+								   ,@PhysicalAddress1 
+								   ,@PhysicalAddress2
+								   ,@City
+								   ,@CountyId
+								   ,@StateId
+								   ,@Zip 
+								   ,@PhoneNumber 
+								   ,@PhoneType 
+								   ,@SchoolTypeId 
+								   ,0--SubTypeId, int,>
+								   ,0--@ClassroomCount3Years, int,>
+								   ,0--@ClassroomCount4Years, int,>
+								   ,0--@ClassroomCount34Years, int,>
+								   ,0--@ClassroomCountKinder, int,>
+								   ,0--@ClassroomCountgrade, int,>
+								   ,0--@ClassroomCountOther, int,>
+								   ,0--@ClassroomCountEarly, int,>
+								   ,0--@ClassroomCountInfant, int,>
+								   ,0--@ClassroomCountToddler, int,>
+								   ,0--@ClassroomCountPreSchool, int,>
+								   ,@AtRiskPercent 
+								   ,0--@FundingId, int,>
+								   ,'1753/1/1' ----- @TrsLastStatusChange, datetime,>
+								   ,@PrimarySalutation 
+								   ,@PrimaryName 
+								   ,@PrimaryTitleId 
+								   ,@PrimaryPhone 
+								   ,@PrimaryPhoneType 
+								   ,@PrimaryEmail 
+								   ,@SecondarySalutation 
+								   ,@SecondaryName 
+								   ,@SecondaryTitleId 
+								   ,@SecondaryPhoneNumber 
+								   ,@SecondaryPhoneType 
+								   ,@SecondaryEmail 
+								   ,@Latitude 
+								   ,@Longitude 
+								   ,0 --IsSamePhysicalAddress, bit,>
+								   ,@MailingAddress1 
+								   ,@MailingAddress2 
+								   ,@MailingCity 
+								   ,@MailingCountyId 
+								   ,@MailingStateId 
+								   ,@MailingZip 
+								   ,@SchoolSize 
+								   ,0--@IspId, int,>
+								   ,''--@ISPOther, varchar(50),>
+								   ,0--@InternetSpeed, tinyint,>
+								   ,0--@InternetType, tinyint,>
+								   ,0--@WirelessType, tinyint,>
+								   ,''--@Notes, varchar(600),>
+								   , getdate()--@CreatedOn, datetime,>
+								   , getdate()--@UpdatedOn, datetime,>
+								   ,@InternalID
+								   ,0--@FacilityType, tinyint,>
+								   ,0--@TrsAssessorId, int,>
+								   ,''--@TrsTaStatus, varchar(500),>
+								   ,0--@StarStatus, tinyint,>
+								   ,''--@DfpsNumber, varchar(100),>
+								   ,''--@OwnerFirstName, varchar(100),>
+								   ,''--@OwnerLastName, varchar(100),>
+								   ,''--@OwnerEmail, varchar(100),>
+								   ,''--@OwnerPhone, varchar(20),>
+								   ,0--@NAEYC, bit,>
+								   ,0--@CANASA, bit,>
+								   ,0--@NECPA, bit,>
+								   ,0--@NACECCE, bit,>
+								   ,0--@NAFCC, bit,>
+								   ,0--@ACSI, bit,>
+								   ,0--@RegulatingEntity, tinyint,>
+								   ,0--@USMilitary, bit,>
+								   ,0--@VSDesignation, tinyint,>
+								   ,'1753/1/1'--@StarDate, datetime,>
+								   ,'1753/1/1'--@RecertificatedBy, datetime,>
+								   ,0--@EnableAutoAssign4Star, bit,>
+								   ,@Name
+								   ,@CreatedBy
+								   ,@CreatedBy
+								   ,'BUP'
+								   ,''
+								   )
+						SELECT @SchoolId = SCOPE_IDENTITY();
+
+						INSERT INTO [dbo].[CommunitySchoolRelations]
+						([CommunityId]
+						,[SchoolId]
+						,[Status]
+						,[CreatedBy]
+						,[CreatedOn]
+						,[UpdatedOn]
+						,[UpdatedBy])
+						VALUES
+						(@CommunityId
+						,@SchoolId
+						,1
+						,@CreatedBy
+						,getdate()
+						,getdate()
+						,@CreatedBy)
+
+						UPDATE dbo.BasicSchools SET
+						Status =2
+						,[UpdatedOn] =GETDATE()
+						,[Address1] =  CASE WHEN @PhysicalAddress1 != '' THEN @PhysicalAddress1 ELSE [Address1] END
+						,[City] = CASE WHEN @City != '' THEN @City ELSE [City] END
+						,[Zip] = CASE WHEN @Zip !='' THEN @Zip ELSE [Zip] END
+						,[Phone] = CASE WHEN @PhoneNumber != '' THEN @PhoneNumber ELSE [Phone] END
+						,[CountyId] =  CASE WHEN @CountyId >0 THEN @CountyId ELSE [CountyId] END
+						,[StateId] =  CASE WHEN @StateId >0 THEN @StateId ELSE [StateId] END
+						,[SchoolNumber] = CASE WHEN @InternalID='*CLEAR*' THEN '' WHEN @InternalID != '' THEN @InternalID ELSE [SchoolNumber] END
+						WHERE ID=@BasicSchoolId
+					END
+				END
+			END
+		END
+
+		--update
+		IF(@Action = 2)BEGIN
+		    SELECT @BasicSchoolId=S.BasicSchoolId FROM dbo.Schools AS S WHERE S.SchoolId = @EngageID
+			SELECT  @CommunityId=ID FROM Communities WHERE  CommunityId=@CommunityEngageID
+			IF(@CommunityId IS NULL) BEGIN
+				UPDATE BUP_Schools SET Status = 5 ,Remark='Community Engage ID is not in Communities'  WHERE ID=@BUPSchoolID
+			END
+			ELSE BEGIN
+				SELECT @SchoolId=s.Id FROM Schools s INNER JOIN CommunitySchoolRelations r ON r.SchoolId=s.id
+				WHERE s.SchoolId = @EngageID AND r.CommunityId = @CommunityId
+				IF(@SchoolId IS NULL)BEGIN
+						UPDATE BUP_Schools SET Status = 5 ,Remark='School Engage ID is not in Schools'  WHERE ID=@BUPSchoolID
+				END
+				ELSE BEGIN
+					DECLARE @NameDuplicate BIT = 0										
+					IF(@Name != '')BEGIN
+						IF(EXISTS(SELECT ID FROM dbo.Schools WHERE SchoolId != @EngageID AND Name = @Name)
+						 OR EXISTS(SELECT ID FROM dbo.BasicSchools WHERE Name=@Name AND Status=1))  --school name can not duplicate
+							BEGIN
+								UPDATE BUP_Schools SET Status = 5 ,Remark='Duplicate school found'  WHERE ID=@BUPSchoolID
+								SET @NameDuplicate = 1;
+							END
+						ELSE
+							BEGIN
+								SELECT @BasicSchoolId = BasicSchoolId , @SchoolId=ID, @SchoolStatus=Status FROM Schools WHERE SchoolId=@EngageID AND Name != @Name
+								IF @BasicSchoolId IS NOT NULL BEGIN
+									UPDATE BasicSchools SET Name=@Name WHERE ID = @BasicSchoolId
+								END
+							END
+					END
+
+					IF(@NameDuplicate =0 )
+					BEGIN
+						UPDATE [dbo].[Schools]
+						SET SchoolNumber = CASE WHEN @InternalID='*CLEAR*' THEN '' WHEN @InternalID != '' THEN @InternalID ELSE SchoolNumber END
+						--,[Status] = 1--<Status, tinyint,>
+						--,[StatusDate] = <StatusDate, datetime,>
+						,[PhysicalAddress1] =  CASE WHEN @PhysicalAddress1 != '' THEN @PhysicalAddress1 ELSE [PhysicalAddress1] END
+						,[PhysicalAddress2] =  CASE WHEN @PhysicalAddress2='*CLEAR*' THEN '' WHEN @PhysicalAddress2 != '' THEN @PhysicalAddress2 ELSE [PhysicalAddress2] END
+						,[City] = CASE WHEN @City != '' THEN @City ELSE [City] END
+						,[CountyId] =  CASE WHEN @CountyId >0 THEN @CountyId ELSE [CountyId] END 
+						,[StateId] =  CASE WHEN @StateId >0 THEN @StateId ELSE [StateId] END 
+						,[Zip] =	CASE WHEN @zip != '' THEN @zip ELSE [Zip] END
+						,[PhoneNumber] = CASE WHEN @PhoneNumber != '' THEN @PhoneNumber ELSE [PhoneNumber] END
+						,[PhoneType] = CASE WHEN @PhoneType = 127 THEN 0 WHEN @PhoneType>0 THEN @PhoneType ELSE [PhoneType] END 
+						,[SchoolTypeId] =  CASE WHEN @SchoolTypeId >0 THEN @SchoolTypeId ELSE [SchoolTypeId] END 
+						,[AtRiskPercent] =  CASE WHEN @AtRiskPercent >0 THEN @AtRiskPercent ELSE [AtRiskPercent] END 
+						, PrimarySalutation = CASE WHEN @PrimarySalutation = 127 THEN 0 WHEN @PrimarySalutation>0 THEN @PrimarySalutation ELSE PrimarySalutation END 
+						,[PrimaryName] = CASE WHEN @PrimaryName != '' THEN @PrimaryName ELSE [PrimaryName] END
+						,[PrimaryTitleId] =  CASE WHEN @PrimaryTitleId = -1 THEN 0 WHEN @PrimaryTitleId>0 THEN @PrimaryTitleId ELSE [PrimaryTitleId] END
+						,[PrimaryPhone] = CASE WHEN @PrimaryPhone != '' THEN @PrimaryPhone ELSE [PrimaryPhone] END
+						,[PrimaryPhoneType] = CASE WHEN @PrimaryPhoneType = 127 THEN 0 WHEN @PrimaryPhoneType>0 THEN @PrimaryPhoneType ELSE [PrimaryPhoneType] END 
+						,[PrimaryEmail] = CASE WHEN @PrimaryEmail != '' THEN @PrimaryEmail ELSE [PrimaryEmail] END
+						,[SecondarySalutation] =CASE WHEN @SecondarySalutation = 127 THEN 0 WHEN @SecondarySalutation>0 THEN @SecondarySalutation ELSE [SecondarySalutation] END 
+						,[SecondaryName] =  CASE WHEN @SecondaryName='*CLEAR*' THEN '' WHEN @SecondaryName != '' THEN @SecondaryName ELSE [SecondaryName] END
+						,[SecondaryTitleId] =  CASE WHEN @SecondaryTitleId = -1 THEN 0 WHEN @SecondaryTitleId>0 THEN @SecondaryTitleId ELSE [SecondaryTitleId] END
+						,[SecondaryPhoneNumber] = CASE WHEN @SecondaryPhoneNumber='*CLEAR*' THEN '' WHEN @SecondaryPhoneNumber != '' THEN @SecondaryPhoneNumber ELSE [SecondaryPhoneNumber] END
+						,[SecondaryPhoneType] = CASE WHEN @SecondaryPhoneType = 127 THEN 0 WHEN @SecondaryPhoneType>0 THEN @SecondaryPhoneType ELSE [SecondaryPhoneType] END 
+						,[SecondaryEmail] =  CASE WHEN @SecondaryName='*CLEAR*' THEN '' WHEN @SecondaryName != '' THEN @SecondaryName ELSE [SecondaryName] END
+						,[Latitude] = CASE WHEN @SecondaryEmail='*CLEAR*' THEN '' WHEN @SecondaryEmail != '' THEN @SecondaryEmail ELSE [SecondaryEmail] END
+						,[Longitude] = CASE WHEN @Longitude='*CLEAR*' THEN '' WHEN @Longitude != '' THEN @Longitude ELSE [Longitude] END
+
+						,[MailingAddress1] = CASE WHEN @MailingAddress1 != '' THEN @MailingAddress1 ELSE [MailingAddress1] END
+						,[MailingAddress2] =CASE WHEN @MailingAddress2='*CLEAR*' THEN '' WHEN @MailingAddress2 != '' THEN @MailingAddress2 ELSE [MailingAddress2] END
+						,[MailingCity] = CASE WHEN @MailingCity != '' THEN @MailingCity ELSE [MailingCity] END
+						,[MailingCountyId] =  CASE WHEN @MailingCountyId >0 THEN @MailingCountyId ELSE [MailingCountyId] END 
+						,[MailingStateId] =  CASE WHEN @MailingStateId >0 THEN @MailingStateId ELSE [MailingStateId] END 
+						,[MailingZip] = CASE WHEN @MailingZip != '' THEN @MailingZip ELSE [MailingZip] END
+						,[SchoolSize] =  CASE WHEN @SchoolSize >0 THEN @SchoolSize ELSE [SchoolSize] END 
+						,[UpdatedOn] = getdate()
+						,[UpdateBy] = @CreatedBy
+						,[Name] = CASE WHEN  @Name != '' THEN @Name ELSE [Name] END 
+						,[UpdateFrom]='BUP'    
+						WHERE id=@SchoolId	
+
+						--update BasicSchools
+						UPDATE dbo.BasicSchools SET
+						[UpdatedOn] =GETDATE()
+						,[Address1] =  CASE WHEN @PhysicalAddress1 != '' THEN @PhysicalAddress1 ELSE [Address1] END
+						,[City] = CASE WHEN @City != '' THEN @City ELSE [City] END
+						,[Zip] = CASE WHEN @Zip !='' THEN @Zip ELSE [Zip] END
+						,[Phone] = CASE WHEN @PhoneNumber != '' THEN @PhoneNumber ELSE [Phone] END
+						,[CountyId] =  CASE WHEN @CountyId >0 THEN @CountyId ELSE [CountyId] END
+						,[StateId] =  CASE WHEN @StateId >0 THEN @StateId ELSE [StateId] END
+						,[SchoolNumber] = CASE WHEN @InternalID='*CLEAR*' THEN '' WHEN @InternalID != '' THEN @InternalID ELSE [SchoolNumber] END
+						,[Name] = CASE WHEN  @Name != '' THEN @Name ELSE [Name] END
+						WHERE ID=@BasicSchoolId
+					END				
+				END
+			END
+
+		END
+
+		--delete
+		IF(@Action = 3)BEGIN
+			SELECT  @CommunityId=ID FROM Communities WHERE  CommunityId=@CommunityEngageID
+			IF(@CommunityId IS NULL) BEGIN
+				UPDATE BUP_Schools SET Status = 5 ,Remark='Community Engage ID is not in Communities'  WHERE ID=@BUPSchoolID
+			END
+			ELSE BEGIN
+			SELECT @SchoolId=s.Id FROM Schools s INNER JOIN CommunitySchoolRelations r ON r.SchoolId=s.id
+			WHERE s.SchoolId = @EngageID AND r.CommunityId = @CommunityId	
+				IF(@SchoolId IS NULL)BEGIN
+						UPDATE BUP_Schools SET Status = 5 ,Remark='School Engage ID is not in Schools'  WHERE ID=@BUPSchoolID
+				END
+				ELSE 
+					BEGIN
+						UPDATE Schools SET Status = 2 , StatusDate=GETDATE(),
+						UpdatedOn=GETDATE(),UpdateBy=@CreatedBy,UpdateFrom='BUP' WHERE ID= @SchoolId
+					END
+			END
+		END
+
+		UPDATE BUP_Schools SET Status = 3 WHERE ID = @BUPSchoolID AND Status = 1;
+	  COMMIT TRANSACTION ;
+	END TRY
+
+	BEGIN CATCH
+		IF (XACT_STATE()) = -1
+		BEGIN			
+			ROLLBACK TRANSACTION;
+			UPDATE BUP_Schools SET Remark = ERROR_MESSAGE() ,Status = 4 WHERE ID = @BUPSchoolID
+		END;
+
+		IF (XACT_STATE()) = 1
+		BEGIN
+			COMMIT TRANSACTION;   
+		END;
+	END CATCH 
+END

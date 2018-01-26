@@ -1,0 +1,592 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using System.Collections
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Export.Entities
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Business.Export.Models
+@using Sunnet.Cli.Core.Export.Enums
+@model Sunnet.Cli.Business.Export.Models.ExportInfoModel
+
+@{
+    ViewBag.Title = "Objects Export";
+    var formId1 = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Export)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Export", "Index", "Export"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Objects And Users Data Export
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $(function () {
+            $.post(
+                 "GetAllFields",
+                 function (result) {
+                     var commFields = [];
+                     var schoolFields = [];
+                     var classroomFields = [];
+                     var classFields = [];
+                     var studentFields = [];
+                     var userBaseFields = [];
+                     var communityUserFields = [];
+                     var stateWideUserFields = [];
+                     var principalUserFields = [];
+                     var teacherUserFields = [];
+                     var parentsUserFields = [];
+                     var auditorUserFields = [];
+                     var coordCoachUserFields = [];
+                     var videoCodingUserFields = [];
+                     for (var i = 0; i < result.length; i++) {
+                         if (result[i].ID <= 100) {
+                             commFields.push(result[i]);
+                         }
+                         else if (result[i].ID > 100 && result[i].ID <= 200) {
+                             schoolFields.push(result[i])
+                         }
+                         else if (result[i].ID > 200 && result[i].ID <= 300) {
+                             classroomFields.push(result[i])
+                         }
+                         else if (result[i].ID > 300 && result[i].ID <= 400) {
+                             classFields.push(result[i])
+                         }
+                         else if (result[i].ID > 400 && result[i].ID <= 500) {
+                             studentFields.push(result[i])
+                         }
+                         else if (result[i].ID > 500 && result[i].ID <= 600) {
+                             userBaseFields.push(result[i])
+                         }
+                         else if (result[i].ID > 600 && result[i].ID <= 700) {
+                             communityUserFields.push(result[i])
+                         }
+                         else if (result[i].ID > 700 && result[i].ID <= 800) {
+                             stateWideUserFields.push(result[i])
+                         }
+                         else if (result[i].ID > 800 && result[i].ID <= 900) {
+                             principalUserFields.push(result[i])
+                         }
+                         else if (result[i].ID > 900 && result[i].ID <= 1000) {
+                             teacherUserFields.push(result[i])
+                         }
+                         else if (result[i].ID > 1000 && result[i].ID <= 1100) {
+                             parentsUserFields.push(result[i])
+                         }
+                         else if (result[i].ID > 1100 && result[i].ID <= 1200) {
+                             auditorUserFields.push(result[i])
+                         }
+                         else if (result[i].ID > 1200 && result[i].ID <= 1300) {
+                             coordCoachUserFields.push(result[i])
+                         }
+                         else if (result[i].ID > 1300 && result[i].ID <= 1400) {
+                             videoCodingUserFields.push(result[i])
+                         }
+                     }
+                     list_Fields.CommunityFields(commFields);
+                     list_Fields.SchoolFields(schoolFields);
+                     list_Fields.ClassroomFields(classroomFields);
+                     list_Fields.ClassFields(classFields);
+                     list_Fields.StudentFields(studentFields);
+                     list_Fields.UserBaseFields(userBaseFields);
+                     list_Fields.CommunityUserFields(communityUserFields);
+                     list_Fields.StateWideUserFields(stateWideUserFields);
+                     list_Fields.PrincipalUserFields(principalUserFields);
+                     list_Fields.TeacherUserFields(teacherUserFields);
+                     list_Fields.ParentsUserFields(parentsUserFields);
+                     list_Fields.AuditorUserFields(auditorUserFields);
+                     list_Fields.CoordCoachUserFields(coordCoachUserFields);
+                     list_Fields.VideoCodingUserFields(videoCodingUserFields);
+                 }, 'json'
+                );
+            ko.applyBindings(list_Fields);
+
+            registerFormCallbacks("@(formId1)", {
+                onPosted: function (response) {
+                    if (response.msg == "saveTemp") {
+                        SaveTemp(response.data);
+                    }
+                    else {
+                        redirectBack("index");
+                    }
+                }
+            });
+
+            $.validator.addMethod("compareDate", function (value, element) {
+                var starttime = $("#StartDate").val();
+                var stoptime = $("#StopDate").val();
+                var reg = new RegExp('-', 'g');
+                starttime = starttime.replace(reg, '/');
+                stoptime = stoptime.replace(reg, '/');
+                starttime = new Date(parseInt(Date.parse(starttime), 10));
+                stoptime = new Date(parseInt(Date.parse(stoptime), 10));
+                if (starttime > stoptime) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }, window.getErrorMessage('stopGreaterStart'));
+        });
+        var list_Fields = {
+            CommunityFields: ko.observable(),
+            SchoolFields: ko.observable(),
+            ClassroomFields: ko.observable(),
+            ClassFields: ko.observable(),
+            StudentFields: ko.observable(),
+            UserBaseFields: ko.observable(),
+            CommunityUserFields: ko.observable(),
+            StateWideUserFields: ko.observable(),
+            PrincipalUserFields: ko.observable(),
+            TeacherUserFields: ko.observable(),
+            ParentsUserFields: ko.observable(),
+            AuditorUserFields: ko.observable(),
+            CoordCoachUserFields: ko.observable(),
+            VideoCodingUserFields: ko.observable(),
+            FileNameUrl: ko.observable("")
+        };
+
+        function SaveTemp(chks) {
+            $.when(waitingConfirm(getErrorMessage("export_SaveTemp"), "Yes", "No")).done(function () {
+                if (chks.length > 0) {
+                    list_Fields.FileNameUrl('@Url.Action("FillTempName")' + "?fields=" + chks);
+                $("#FillName").click();
+            }
+            }).fail(function () {
+                redirectBack("index");
+            });
+    }
+
+    function CheckAll(obj, chkName) {
+        if ($(obj).is(":checked")) {
+            $("#" + chkName + " input[name='chk']").prop("checked", true);
+        }
+        else {
+            $("#" + chkName + " input[name='chk']").prop("checked", false);
+        }
+    }
+
+    function ReportTempChange() {
+        var tempId = $("#ReportTemps").val();
+        if (tempId == "0") {
+            tempId = -1;
+        }
+        $(":checkbox").prop("checked", false);
+        $.ajax({
+            url: "BindTemp",
+            data: { tempId: tempId },
+            success: function (result) {
+                var bindFields = result.split(',');
+                $.each(bindFields, function (i, val) {
+                    $("#chk" + val).prop("checked", true);
+                });
+            }
+        });
+    }
+    function BeforeSubmit(sender) {
+        if ($("#@(formId1)").valid()) {
+            var chks = $("input[name='chk']:checked");
+            if (chks.length == 0) {
+                window.showMessage("hint", window.getErrorMessage("Export_NoSelect"));
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    }
+
+    function ResetForm1() {
+        $("#CommunityId").val('');
+        $("#@(formId1)")[0].reset();
+    }
+    </script>
+}
+
+@using (Ajax.BeginForm("NewExportInfo", "Export", null, PostFormHelper.DefaultAjaxOptions,
+    new { @class = "form-horizontal", id = formId1 }))
+{
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CommunityId, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.TextBox("txtCommunity", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control validate",
+                data_list = "true",
+                data_for = "#CommunityId",
+                data_remote = Url.Action("GetCommunitySelectListForSearch", "Community", new { Area = "Community" }),
+                data_text = "Name",
+                placeholder = "Enter key text to search",
+                data_value = "ID",
+                id = "txtCommunity",
+                name = "txtCommunity",
+                @for = "CommunityId",
+                data_required = "true",
+                data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+            })
+                    @Html.HiddenFor(model => model.CommunityId, new
+               {
+                   @class = "form-control validate",
+                   @Value = ""
+               })
+                    @Html.ValidationMessageFor(model => model.CommunityId)
+                    @Html.Hidden("isActiveCommunity", false)
+                </div>
+                @Html.LabelFor(model => model.FileType, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.FileType, (IEnumerable<SelectListItem>)ViewBag.FileTypeOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.FileType)
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="ID">Report Template</label>
+                <div class="col-sm-4">
+                    @Html.DropDownList("ReportTemps", (IEnumerable<SelectListItem>)ViewBag.temps,
+                new { @class = "form-control", @onchange = "ReportTempChange()" })
+                </div>
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-4">
+                    <a class="mainbutton mainright-btn nav-btn" href="@Url.Action("ReportTempList")" >Report Template List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Schedule</div>
+        <div class="content-body">
+            <div class="form-group">
+
+                @Html.LabelFor(model => model.StartDate, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control date", @Value = Model.StartDate.FormatDateString() })
+                    @Html.ValidationMessageFor(model => model.StartDate)
+                </div>
+                @Html.LabelFor(model => model.StopDate, new { @class = "col-sm-2 control-label required " })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.StopDate, new { @class = "form-control date compareDate", @Value = Model.StopDate.FormatDateString() })
+                    @Html.ValidationMessageFor(model => model.StopDate)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Frequency, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Frequency, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Frequency)
+                </div>
+                @Html.LabelFor(model => model.FrequencyUnit, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.RadioButtonFor(model => model.FrequencyUnit, FrequencyUnitType.Day, new { id = "FreqyencyUnit1" })
+                    @Html.Label("", FrequencyUnitType.Day.ToDescription(), new { @for = "FreqyencyUnit1" })
+                    @Html.RadioButtonFor(model => model.FrequencyUnit, FrequencyUnitType.Week, new { id = "FreqyencyUnit2" })
+                    @Html.Label("", FrequencyUnitType.Week.ToDescription(), new { @for = "FreqyencyUnit2" })
+                    @Html.RadioButtonFor(model => model.FrequencyUnit, FrequencyUnitType.Month, new { id = "FreqyencyUnit3" })
+                    @Html.Label("", FrequencyUnitType.Month.ToDescription(), new { @for = "FreqyencyUnit3" })
+                    @Html.ValidationMessageFor(model => model.FrequencyUnit)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Object</div>
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <div class="panel panel-info">Community</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'Community')" id="CommunitySelectAll" />
+                        <label for="CommunitySelectAll">All Community Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="Community">
+                        <table>
+                            <tbody data-bind="foreach: { data: CommunityFields, as: 'item' }">
+                                <tr data-bind="visible: IsShow">
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">School</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'School')" id="SchoolSelectAll" />
+                        <label for="SchoolSelectAll">All School Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="School">
+                        <table>
+                            <tbody data-bind="foreach: { data: SchoolFields, as: 'item' }">
+                                <tr data-bind="visible: IsShow">
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">Classroom</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'Classroom')" id="ClassroomSelectAll" />
+                        <label for="ClassroomSelectAll">All Classroom Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="Classroom">
+                        <table>
+                            <tbody data-bind="foreach: { data: ClassroomFields, as: 'item' }">
+                                <tr data-bind="visible: IsShow">
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <div class="panel panel-info">Class</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'Class')" id="ClassSelectAll" />
+                        <label for="ClassSelectAll">All Class Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="Class">
+                        <table>
+                            <tbody data-bind="foreach: { data: ClassFields, as: 'item' }">
+                                <tr data-bind="visible: IsShow">
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">Student</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'Student')" id="StudentSelectAll" />
+                        <label for="StudentSelectAll">All Student Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="Student">
+                        <table>
+                            <tbody data-bind="foreach: { data: StudentFields, as: 'item' }">
+                                <tr data-bind="visible: IsShow">
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Users</div>
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <div class="panel panel-info">User Base Information</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'UserBase')" id="UserBaseSelectAll" />
+                        <label for="UserBaseSelectAll">All User Base Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="UserBase">
+                        <table>
+                            <tbody data-bind="foreach: { data: UserBaseFields, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">Community User/Specialist,Community User/Specialist Delegate</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'CommunityUser')" id="CommunityUserSelectAll" />
+                        <label for="CommunityUserSelectAll">All Community User Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="CommunityUser">
+                        <table>
+                            <tbody data-bind="foreach: { data: CommunityUserFields, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">StateWide</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'StateWideUser')" id="StateWideUserSelectAll" />
+                        <label for="StateWideUserSelectAll">All StateWide User Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="StateWideUser">
+                        <table>
+                            <tbody data-bind="foreach: { data: StateWideUserFields, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <div class="panel panel-info">School Principal/Specialist,School Principal/Specialist Delegate</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'PrincipalUser')" id="PrincipalUserSelectAll" />
+                        <label for="PrincipalUserSelectAll">All Principal User Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="PrincipalUser">
+                        <table>
+                            <tbody data-bind="foreach: { data: PrincipalUserFields, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">Teacher</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'TeacherUser')" id="TeacherUserSelectAll" />
+                        <label for="TeacherUserSelectAll">All Teacher User Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="TeacherUser">
+                        <table>
+                            <tbody data-bind="foreach: { data: TeacherUserFields, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">Parents</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'ParentsUser')" id="ParentsUserSelectAll" />
+                        <label for="ParentsUserSelectAll">All Parents User Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="ParentsUser">
+                        <table>
+                            <tbody data-bind="foreach: { data: ParentsUserFields, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <div class="panel panel-info">Auditor</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'AuditorUser')" id="AuditorUserSelectAll" />
+                        <label for="AuditorUserSelectAll">All StateWide User Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="AuditorUser">
+                        <table>
+                            <tbody data-bind="foreach: { data: AuditorUserFields, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">Coodinator,Coach</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'CoordCoachUser')" id="CoordCoachUserSelectAll" />
+                        <label for="CoordCoachUserSelectAll">All CoordCoach User Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="CoordCoachUser">
+                        <table>
+                            <tbody data-bind="foreach: { data: CoordCoachUserFields, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">VideoCoding</div>
+                    <div>
+                        <input type="checkbox" onclick="CheckAll(this, 'VideoCodingUser')" id="VideoCodingUserSelectAll" />
+                        <label for="VideoCodingUserSelectAll">All VideoCoding User Fields</label>
+                    </div>
+                    <div style="height: 200px; overflow-y: auto" id="VideoCodingUser">
+                        <table>
+                            <tbody data-bind="foreach: { data: VideoCodingUserFields, as: 'item' }">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" data-bind="value: ID, attr: { id: 'chk' + ID }" name="chk" />
+                                        <label data-bind="text: DisplayName, attr: { for: 'chk' + ID }"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" onclick="return BeforeSubmit(this);" type="submit">Submit</button>
+        <a id="FillName" class="table-btn icon-comment-alt viewcomment-btn hidden" data-bind='attr: { href: FileNameUrl }' data-toggle="modal" data-target="#modalNormal"></a>
+    </div>
+}

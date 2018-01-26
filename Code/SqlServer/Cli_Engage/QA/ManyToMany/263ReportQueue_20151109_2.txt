@@ -1,0 +1,12 @@
+GO
+IF NOT EXISTS ( SELECT  *
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID('ReportQueue')
+                        AND name = 'FileType' )
+    ALTER TABLE ReportQueue ADD FileType TINYINT;
+GO
+UPDATE  ReportQueue
+SET     FileType = 1
+WHERE   FileType IS NULL;
+GO
+ALTER TABLE ReportQueue ALTER COLUMN FileType TINYINT NOT NULL;

@@ -1,0 +1,6 @@
+﻿
+alter table Assessments add DisplayPercentileRank bit
+go
+update Assessments set DisplayPercentileRank=0
+go
+alter table Assessments alter column DisplayPercentileRank bit not null

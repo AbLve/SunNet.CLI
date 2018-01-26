@@ -1,0 +1,6 @@
+﻿select * into Permission_AssignedPackages_20150729 from Permission_AssignedPackages
+go
+
+alter table Permission_AssignedPackages
+drop column ScopeName
+go

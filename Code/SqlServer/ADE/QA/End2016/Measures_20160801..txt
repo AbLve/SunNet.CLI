@@ -1,0 +1,4 @@
+EXEC sp_rename 'Measures.[ShowLunchPage]','ShowLaunchPage','COLUMN'
+go
+update Measures set ShowLaunchPage = 0
+update Measures set ShowFinalizePage =1

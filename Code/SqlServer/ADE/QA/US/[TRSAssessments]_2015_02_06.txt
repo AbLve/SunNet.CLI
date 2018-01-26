@@ -1,0 +1,6 @@
+﻿IF NOT EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('TRSAssessments') AND name = 'IsDeleted' )
+ALTER TABLE [dbo].[TRSAssessments] ADD IsDeleted BIT NULL
+GO
+UPDATE  [dbo].[TRSAssessments] SET IsDeleted = 0;
+GO
+ALTER TABLE [dbo].[TRSAssessments] ALTER COLUMN IsDeleted BIT NOT NULL

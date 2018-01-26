@@ -1,0 +1,40 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Trs.Models.TrsAssessmentModel
+@{
+    ViewBag.Title = "Verified Star";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+}
+<form class="form-horizontal" id="form_Star">
+    <div class="form-group">
+        @Html.LabelFor(model => model.Star, new { @class = "control-label col-sm-5 required" })
+        <div class="col-sm-5">
+            <label class="control-label-text" id="lbl_star"></label>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.VerifiedStar, new { @class = "control-label col-sm-5 required" })
+        <div class="col-sm-5">
+            @Html.EnumDropDownListFor(model => model.VerifiedStar, ViewTextHelper.DefaultPleaseSelectText, "", new { id = "VerifiedStar", @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Status)
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="button" class="mainbutton modal-btn submit-btn" value="Submit" id="btn_submit">
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+</form>
+@section Scripts{
+    <script type="text/javascript">
+        +($(function () {
+            $("#lbl_star").html($("#starvalue").val());
+            $("#btn_submit").click(function () {
+                if ($("#form_Star").valid()) {
+                    offlineApp.updateVerifiedStar($("#VerifiedStar").val());
+                    window.showMessage("success");
+                    setTimeout(
+                        function () {location.href = offlineApp.values.Url.school;}, 800);
+                }
+            });
+        }))
+    </script>
+}

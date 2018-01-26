@@ -1,0 +1,204 @@
+﻿@using Sunnet.Cli.Core.Ade
+@{
+    //ViewBag.Manifest = Url.Action("Manifest");
+    ViewBag.Title = "Report";
+    Layout = "~/Views/Shared/_Layout_Offline.cshtml";
+}
+@section Styles{
+    <style type="text/css">
+        i.level1 {
+            color: @(CotLevel.Level1.ToDescription());
+            vertical-align: middle;
+        }
+        i.level2 {
+            color: @(CotLevel.Level2.ToDescription());
+            vertical-align: middle;
+        }
+        i.level3 {
+            color: @(CotLevel.Level3.ToDescription());
+            vertical-align: middle;
+        }
+        td.level1 {
+            background-color: @(CotLevel.Level1.ToDescription());
+        }
+        td.level2 {
+            background-color: @(CotLevel.Level2.ToDescription());
+        }
+        td.level3 {
+            background-color: @(CotLevel.Level3.ToDescription());
+        }
+        tr.done td.content {
+            background-color: #b8e1e3;
+        }
+        tr.saved td.content {
+            background-color: #42b357;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-sm-6 col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Basic Information</div>
+            <div class="panel-body ">
+                <form class="form-horizontal" role="form">
+                    <label class="control-label">Community/District</label>
+                    <label class="control-label-text" data-bind="html:teacher.communityName"><span style="display:none;">1</span>
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">School Name</label>
+                    <label class="control-label-text" data-bind="html:teacher.schoolName"><span style="display:none;">1</span>
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">Teacher Name</label>
+                    <label class="control-label-text" data-bind="html:teacher.firstname + ' ' + teacher.lastname"><span style="display:none;">1</span>
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">School Year</label>
+                    <label class="control-label-text" data-bind="html:assessment.SchoolYear"><span style="display:none;">1</span>
+                    </label>
+                </form>
+                <div class="right-content-top">
+                    <a href="/Cot/Offline" class="mainbutton mainright-btn nav-btn">Back to Teacher List</a>
+                    <button type="button" class="mainbutton mainright-btn create-btn"
+                            data-bind="click:gotoTeacherFolder">
+                        Teacher Folder
+                    </button>
+                    <button class="mainbutton mainright-btn nav-btn" data-bind="text:teacher.showActiveGoalsOnly()?'Show all COT Items':'Show Active Goals Only',click:teacher.toggleActiveGoals"><span style="display:none;">1</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("_Partial_Log")
+</div>
+<div class="clearfix" style="height:5px;"></div>
+<div class="right-content-top">
+    <span><i class="icon-stop icon-2x level1"></i> = Level 1</span>
+    @ViewTextHelper.HtmlEmptySeparator
+    <span><i class="icon-stop icon-2x level2"></i> = Level 2</span>
+    @ViewTextHelper.HtmlEmptySeparator
+    <span><i class="icon-stop icon-2x level3"></i> = Level 3</span>
+    @ViewTextHelper.HtmlEmptySeparator
+
+</div>
+<div class="modal-l-b"></div>
+<div class="main-content main-content">
+    <div class="content-body-tab">
+        <table class="table   table-condensed">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">Select as Goal</th>
+                    <th>Goal Item</th>
+                    <th style="width: 100px;">Observed at BOY</th>
+                    <th style="width: 100px;">Observed at MOY</th>
+                    <th style="width: 100px;">COT Updates</th>
+                    <th style="width: 50px;">NS</th>
+                    <th style="width: 100px;">Goal Set Date</th>
+                    <th style="width: 100px;">Goal Met Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ko foreach:{data:teacher.measures,as:'measure'}-->
+                <!-- ko if: measure.visible-->
+                <!-- ko template:{name:'_tmp_measure',data:measure}-->
+                <!-- /ko-->
+                <!-- ko if:items && items.length -->
+                <!-- ko template:{name:'_tmp_item',foreach:items,as:'item'}-->
+                <!-- /ko-->
+                <!-- /ko-->
+                <!-- ko if:children && children.length-->
+                <!-- ko foreach:{data:children,as:'childMeasure'}-->
+                <!-- ko if: childMeasure.visible-->
+                <!-- ko template:{name:'_tmp_measure2',data:childMeasure}-->
+                <!-- /ko-->
+                <!-- ko template:{name:'_tmp_item',foreach:childMeasure.items,as:'childItem'}-->
+                <!-- /ko-->
+                <!-- /ko-->
+                <!-- /ko-->
+                <!-- /ko-->
+                <!-- /ko-->
+                <!-- /ko-->
+            </tbody>
+        </table>
+
+        <div class="button-content">
+            <button type="button" class="mainbutton mainright-btn submit-btn" data-bind="click:createStgReport,visible:!teacher.showActiveGoalsOnly()">
+                Create New Short Term Goal Report
+            </button>
+            <button type="button" class="mainbutton mainright-btn submit-btn" data-bind="click:saveCotItems">
+                Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="_tmp_item">
+    <!-- ko if:$root.teacher.showActiveGoalsOnly() && isActive() || $root.teacher.showActiveGoalsOnly() === false-->
+    <tr data-bind="css:{done:highlight,saved:highlightAfterSave()}">
+        <td data-bind="css:{'level1':level.value == 1,'level2':level.value == 2,'level3':level.value == 3}">
+            <input type="checkbox" data-bind="checked:waitingGoalMet" title=" "/>
+        </td>
+        <td style="text-align: left;" data-bind="html:fullTargetText" class="content"></td>
+        <td class="content">
+            <input type="text" title=" " class="form-control input-sm" data-bind="value:boyObsDate,enable:false" style="width: 80px" />
+        </td>
+        <td class="content">
+            <input type="text" title=" " class="form-control input-sm" data-bind="value:moyObsDate,enable:false" style="width: 80px" />
+        </td>
+        <td class="content">
+            <input type="text" title=" " class="form-control input-sm date" data-bind="value:cotUpdatedOn,valueUpdate:'input'" style="width: 80px" />
+        </td>
+        <td class="content">
+            <input type="checkbox" class="input-sm" data-bind="enable:needSupportEnabled,checked:needSupport" title=" "/>
+        </td>
+        <td data-bind="text:goalSetDate" class="content"></td>
+        <td class="content">
+            <!-- ko if:showMetDateBox()-->
+            <input type="text" class="form-control input-sm date" data-bind="value: goalMetDate, valueUpdate: 'input', attr: { 'data-mindate': goalSetDate }" style="width: 80px" title=" "/>
+            <!--/ko-->
+            <!-- ko ifnot:showMetDateBox()-->
+            <span data-bind="text: goalMetDate"></span>
+            <!--/ko-->
+        </td>
+    </tr>
+    <!--/ko-->
+</script>
+<script type="text/html" id="_tmp_measure">
+    <!-- ko if:$root.teacher.showActiveGoalsOnly() && isActive() || $root.teacher.showActiveGoalsOnly() === false-->
+    <tr class="success">
+        <td></td>
+        <td colspan="7" style="text-align: left;font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+    <!--/ko-->
+</script>
+<script type="text/html" id="_tmp_measure2">
+    <!-- ko if:$root.teacher.showActiveGoalsOnly() && isActive() || $root.teacher.showActiveGoalsOnly() === false-->
+    <tr class="info">
+        <td></td>
+        <td colspan="7" style="text-align: left;padding-left: 40px;font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+    <!--/ko-->
+</script>
+@section Scripts
+{
+    @Scripts.Render("~/scripts/jquery_val/offline")
+    @Scripts.Render("~/scripts/format/offline")
+    @Scripts.Render("~/scripts/cot/offline")
+    <script type="text/javascript">
+        function log(type, message) {
+            var log = '<div class="alert alert-' + type + ' alert-log" role="alert" title="' + message + '">' + message + '</div>';
+            $(log).appendTo($log);
+            $log.scrollTop($log[0].scrollHeight);
+        }
+
+        var offlineApp;
+        var $log;
+
+        $(function () {
+            $log = $("#log_Container");
+            offlineApp = getCotOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.writeLog = log;
+            offlineApp.init();
+
+            ko.applyBindings(offlineApp.viewModel);
+        });
+    </script>
+}

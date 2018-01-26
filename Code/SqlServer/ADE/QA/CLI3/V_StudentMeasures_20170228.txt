@@ -1,0 +1,11 @@
+
+
+ALTER VIEW [dbo].[V_StudentMeasures]
+AS
+SELECT   SM.ID, SM.SAId, SM.MeasureId, SM.Status, SM.PauseTime, SM.CreatedOn, SM.UpdatedOn, SM.TotalScore, 
+                SM.Benchmark, (CASE SM.Goal WHEN - 1 THEN 0 ELSE SM.Goal END) AS Goal, SM.TotalScored, SM.Comment,SM.PercentileRank,SM.BenchmarkId,SM.LowerScore,SM.HigherScore
+FROM      (SELECT   ID AS StudentId, Status, AssessmentLanguage AS Language
+                 FROM      dbo.Cli_Engage__Students
+                 WHERE   (Status = 1) AND (IsDeleted = 0)) AS STU INNER JOIN
+                dbo.StudentAssessments AS SA ON SA.StudentId = STU.StudentId INNER JOIN
+                dbo.StudentMeasures AS SM ON SA.ID = SM.SAId

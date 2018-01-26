@@ -1,0 +1,188 @@
+﻿@using System.Collections.Generic 
+@using System.Web.Optimization
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework
+@model Sunnet.Cli.Core.Practices.Entites.DemoStudentEntity
+@{
+    ViewBag.Title = "Practice Class";
+}
+@section LeftMenu
+{
+@Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    <a href="/Ade">Assessment</a><i class="icon-angle-right"></i>Practice Class
+}
+@using (Ajax.BeginForm("UploadDemoRoster", "Practice", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    role = "form",
+    id = "DemoRecordConfigurationUpload"
+}))
+{  @Html.AntiForgeryToken()
+    @Html.Hidden("confirm", false)
+    <div class="form-group">
+        <label class="control-label col-sm-4 required" for="dataFile">Data file (Excel)</label>
+        <div class="col-sm-5">
+            <input type="file" id="dataFile" name="dataFile" class="required form-control" />
+            @Html.ValidationMessage("dataFile")
+            <a class="form-link2" href="/resources/XLSX/Practice_Class_Template.xlsx" target="_blank">Practice_Class_Template.xlsx</a>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <input type="hidden" value="@ViewBag.assessmentId" id="assessmentId" name="assessmentId" />
+        <button class="mainbutton modal-btn submit-btn" onclick="BeforeSubmit()" type="button">Submit</button>
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "/Ade")">Back to Assessment List</a>
+    </div>
+
+}
+
+<div class="modal-l-b"></div>
+ 
+<div class="main-content main-content">
+    <div class="content-title">
+        Students
+    </div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.StudentName"></td>
+                    <td data-bind="text: item.StudentAgeYear"></td>
+                    <td data-bind="text: item.StudentAgeMonth"></td>
+                    <td data-bind="text: item.AssessmentLanguage.text"></td>
+                    <td ><a style="color: blue" data-bind="text: item.FileName,attr:{href:'DownloadDemoStudents?studentId='+item.ID}"></a></td>
+                    <td data-bind="text: item.Status.text"></td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+@section Scripts
+{
+@Scripts.Render("~/scripts/jquery_form")
+<script type="text/javascript" language="javascript">
+
+        function BeforeSubmit() {
+            if ("@ViewBag.assessmentId" <= 0) {
+                window.showMessage("fail", "Assessment is required.");
+                return false;
+            }
+            $.when(window.waitingConfirm("Uploading this file will delete any existing Demo class, including ALL the results that might have been created by ANY Users.", "Continue", "Cancel")).done(function () {
+                $("#DemoRecordConfigurationUpload").find("#confirm").val(true);
+                subForm();
+            }).fail(function () {
+                $("#DemoRecordConfigurationUpload").find("#confirm").val(false);
+            });
+         }
+
+         function subForm()
+         {
+             $("#DemoRecordConfigurationUpload").ajaxSubmit({
+                 success: function (data)
+                 {
+                     var res = JSON.parse(data);
+                     if (res.success == true)
+                     {
+                         showMessage("success");
+                         list_Students.search();
+
+                     } else
+                     {
+                         showMessage("fail", res.msg);
+                     }
+                 }
+             });
+         }
+</script>
+    <script type="text/javascript">
+        var list_Students = {};
+        
+        $(function () {
+            list_Students = new ViewModel(
+                {
+                    instanceName: "list_Students",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: 'Redirect',
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: 'Redirect',
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: 'Redirect',
+                    deleteDataUrl: '@Html.Raw(Url.Action(""))',
+                    orderBy: "StudentName",
+                    orderDirection: "ASC",
+                    pageSize: 100,
+                    headers: [
+                        {
+                            text: "@Html.DisplayNameFor(model => model.StudentName)",
+                            field: "@Html.NameFor(model => model.StudentName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.StudentAgeYear)",
+                            field: "@Html.NameFor(model => model.StudentAgeYear)",
+                            order: true,
+                            width: '15%'
+                        },
+                       {
+                           text: "@Html.DisplayNameFor(model => model.StudentAgeMonth)",
+                           field: "@Html.NameFor(model => model.StudentAgeMonth)",
+                           order: true,
+                           width: '15%'
+                       },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.AssessmentLanguage)",
+                            field: "@Html.NameFor(model => model.AssessmentLanguage)",
+                            order: true,
+                            width: '15%'
+                        },
+                          {
+                              text: "@Html.DisplayNameFor(model => model.FileName)",
+                              field: "@Html.NameFor(model => model.FileName)",
+                              order: true,
+                              width: '10%'
+                          },
+                            {
+                                text: "@Html.DisplayNameFor(model => model.Status)",
+                                field: "@Html.NameFor(model => model.Status)",
+                                order: true,
+                                width: '10%'
+                            }
+                        
+                    ],
+                    searchCriteria: {
+                        assessmentId: ko.observable(@ViewBag.assessmentId),
+                        studentName: ko.observable(window.queryString("studentName"))
+                    }
+                } 
+            );
+            list_Students.search();
+            ko.applyBindings(list_Students); 
+        });
+    </script>
+}

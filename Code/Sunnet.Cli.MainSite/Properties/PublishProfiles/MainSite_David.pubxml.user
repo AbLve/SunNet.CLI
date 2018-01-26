@@ -1,0 +1,1566 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+您 Web 项目的发布/打包进程将使用此文件。您可以通过编辑此 MSBuild 文件
+来自定义该进程的行为。若要了解与此相关的详细信息，请访问 http://go.microsoft.com/fwlink/?LinkID=208121。
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Engage\Publish\MainSite</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="404.html">
+      <publishTime>04/01/2017 21:55:50</publishTime>
+    </File>
+    <File Include="Areas/BUP/Models/BUP.txt">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Auditor/Index.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Automation/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Automation/Index.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Automation/New.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Automation/ViewInfo.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/BUP/Community.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/BUP/Index.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Class/Index.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Classroom/Index.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/CommunityUser/Index.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Parent/Index.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Principal/Index.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Auditor.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Class.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Classroom.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Community.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/CommunityUser.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Error.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Parent.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Principal.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/School.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Statewide.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Student.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Public/Teacher.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/School/Index.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Statewide/Index.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Student/Index.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/Teacher/Index.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/web.config">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/BUP/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:55:52</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/Assigne/AssignUsersToClass.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/Assigne/ClassStudents.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/Assigne/CommunitySpecialist.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/Class/AssignClassroom.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/Class/AssignTeacher.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/Class/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/Class/Index.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/Class/New.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/Class/View.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/web.config">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Class/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:55:53</publishTime>
+    </File>
+    <File Include="Areas/Classroom/Views/Classroom/AssignClasses.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Classroom/Views/Classroom/AssignedClasses.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Classroom/Views/Classroom/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Classroom/Views/Classroom/Index.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Classroom/Views/Classroom/New.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Classroom/Views/Classroom/View.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Classroom/Views/Shared/_Layout.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Classroom/Views/web.config">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Classroom/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/AssignSchools.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/CommunityNotes.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/CommunityProfile.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/EditNote.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/EditNotes.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/Features.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/FeaturesCli.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/Index.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/New.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/NewNote.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/View.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/Community/ViewNotes.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/web.config">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/Community/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:55:54</publishTime>
+    </File>
+    <File Include="Areas/DataProcess/Views/DataProcess/Index.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/DataProcess/Views/DataProcess/ViewLog.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/DataProcess/Views/web.config">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/DataProcess/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/AutoComplete.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Confirm.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Email.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Enum.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Files.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Format.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Index.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Layout.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Slide.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/TestNull.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Twitter.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Demo/Validate.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Products/Create.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Products/Delete.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Products/Details.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Products/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/Products/Index.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/web.config">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Demo/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:55:55</publishTime>
+    </File>
+    <File Include="Areas/Export/Views/Export/DowloadFile.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Export/Views/Export/FillTempName.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Export/Views/Export/Index.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Export/Views/Export/ReportTempList.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Export/Views/web.config">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Export/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Help/Views/Assessment/Offline.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Help/Views/Index/Index.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Help/Views/web.config">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Help/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:55:56</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Auditor/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Auditor/Index.cshtml">
+      <publishTime>04/20/2017 20:38:40</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Auditor/New.cshtml">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Auditor/Partials/EditPartial.cshtml">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Auditor/View.cshtml">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Community/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Community/Index.cshtml">
+      <publishTime>04/20/2017 20:38:40</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Community/MyDelegate.cshtml">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Community/New.cshtml">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Community/Partials/EditPartial.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Community/View.cshtml">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/CommunitySpecialist/CommunitySpecialistBES.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/CommunitySpecialist/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/CommunitySpecialist/Index.cshtml">
+      <publishTime>04/20/2017 20:38:40</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/CommunitySpecialist/MyDelegate.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/CommunitySpecialist/New.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/CommunitySpecialist/Partials/EditPartial.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/CommunitySpecialist/View.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/InternalUser/AssignCoaches.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/InternalUser/AssignCommunity.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/InternalUser/CoordCoachEquipment.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/InternalUser/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/InternalUser/Index.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/InternalUser/New.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/InternalUser/View.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Parent/Edit.cshtml">
+      <publishTime>04/27/2017 21:52:28</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Parent/Index.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Parent/New.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Parent/Partials/EditPartial.cshtml">
+      <publishTime>04/27/2017 21:52:28</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Parent/View.cshtml">
+      <publishTime>04/01/2017 21:55:58</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Principal/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Principal/Index.cshtml">
+      <publishTime>04/20/2017 20:38:40</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Principal/MyDelegate.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Principal/New.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Principal/Partials/EditPartial.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Principal/PrincipalBES.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Principal/View.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Public/AssignClass.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Public/AssignCommunity.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Public/AssignPermission.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Public/AssignSchool.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Public/AssignTrsSpecialistSchool.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Public/Dashboard.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Public/Delegate.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Public/TeacherAssignSchool.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/SchoolSpecialist/Edit.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/SchoolSpecialist/Index.cshtml">
+      <publishTime>04/20/2017 20:38:40</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/SchoolSpecialist/MyDelegate.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/SchoolSpecialist/New.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/SchoolSpecialist/Partials/EditPartial.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/SchoolSpecialist/SchoolSpecialistBES.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/SchoolSpecialist/View.cshtml">
+      <publishTime>04/01/2017 21:55:59</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/StateWide/AssignCommunity.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/StateWide/Edit.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/StateWide/Index.cshtml">
+      <publishTime>04/20/2017 20:38:40</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/StateWide/New.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/StateWide/Partials/EditPartial.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/StateWide/View.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Teacher/AssignClass.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Teacher/Edit.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Teacher/Equipment.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Teacher/Index.cshtml">
+      <publishTime>04/20/2017 20:38:40</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Teacher/New.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Teacher/Partials/EditPartial.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Teacher/TeacherBES.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Teacher/Transaction.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/Teacher/View.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/TRSSpecialist/Edit.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/TRSSpecialist/Index.cshtml">
+      <publishTime>04/20/2017 20:38:40</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/TRSSpecialist/MyDelegate.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/TRSSpecialist/New.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/TRSSpecialist/Partials/EditPartial.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/TRSSpecialist/View.cshtml">
+      <publishTime>04/01/2017 21:56:00</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/web.config">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Invitation/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:55:57</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/Index/AddChild.cshtml">
+      <publishTime>04/01/2017 21:56:01</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/Index/AddParents.cshtml">
+      <publishTime>04/01/2017 21:56:01</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/Index/EditChild.cshtml">
+      <publishTime>04/01/2017 21:56:01</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/Index/Index.cshtml">
+      <publishTime>04/01/2017 21:56:01</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/Index/MyConnections.cshtml">
+      <publishTime>06/06/2017 11:21:39</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/Index/ViewChild.cshtml">
+      <publishTime>04/01/2017 21:56:01</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/Parent/FindChildReport.cshtml">
+      <publishTime>04/01/2017 21:56:01</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/Parent/Index.cshtml">
+      <publishTime>08/01/2017 09:45:11</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/Parent/SchoolReport.cshtml">
+      <publishTime>06/06/2017 11:21:39</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/web.config">
+      <publishTime>04/01/2017 21:56:01</publishTime>
+    </File>
+    <File Include="Areas/Parent/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:01</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/AssignedPackage/Assign.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/AssignedPermission/Assign.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/Package/Custom.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/Package/Default.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/Package/Edit.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/Package/Index.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/Package/New.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/Page/Edit.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/Page/Index.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/Page/New.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/web.config">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Permission/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/AuditorEdit.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/CommunityEdit.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/CommunitySpecialistEdit.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/CoordCoachEdit.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/EditInternalUser.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/MySchool.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/ParentEdit.cshtml">
+      <publishTime>04/27/2017 21:52:28</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/PrincipalEdit.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/SaveInternalUser.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/SchoolSpecialistEdit.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/StatewideEdit.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/TeacherEdit.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/TRSSpecialistEdit.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/MyProfile/VideoCodingEdit.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/web.config">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Profile/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:02</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/DataExport/AssReportTempList.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/DataExport/Circle.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/DataExport/Export_Report.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/DataExport/FillTempName.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/DataExport/Index.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/DataExport/SelectMeasures.cshtml">
+      <publishTime>09/12/2017 09:33:41</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/BeechReport.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/CoachReport.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/DataExport.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/FieldsCustom.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/Index.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/MediaConsentReport.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/PDReport.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/QuarterlyReport.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/SelectDate.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/Index/ServiceReport.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/web.config">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Report/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:03</publishTime>
+    </File>
+    <File Include="Areas/Roster/Views/Index/Index.cshtml">
+      <publishTime>10/17/2017 13:55:12</publishTime>
+    </File>
+    <File Include="Areas/Roster/Views/Index/UploadStudents.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/Roster/Views/Shared/_Layout.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/Roster/Views/web.config">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/Roster/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/AssignCommunity.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/AssignUsersToSchool.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Edit.cshtml">
+      <publishTime>09/12/2017 09:33:41</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/EditSchoolName.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Index.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/New.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/CommunitySpecialist.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/CommunityUser.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/Coordinator.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/FullAccess.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/Mentor.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/Principal.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/ReadOnly.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/ReadOnlyNotNotes.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/SecondaryCommunityEditTrs.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/Specialist.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/Teacher.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/CommunitySpecialist.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/CommunityUser.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/Coordinator.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/FullAccess.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/Mentor.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/Principal.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/ReadOnly.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/ReadOnlyNotNotes.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/Specialist.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Partials/views/Teacher.cshtml">
+      <publishTime>09/12/2017 09:33:42</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/PlaygroundPopup.cshtml">
+      <publishTime>04/01/2017 21:56:05</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/PlaygroundPopupView.cshtml">
+      <publishTime>04/01/2017 21:56:05</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/Playgrounds.cshtml">
+      <publishTime>04/01/2017 21:56:05</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/SchoolProfile.cshtml">
+      <publishTime>04/01/2017 21:56:05</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/SchoolTypePartial.cshtml">
+      <publishTime>04/01/2017 21:56:05</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/VerifyBasicSchool.cshtml">
+      <publishTime>04/01/2017 21:56:05</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/VerifySelectedSchool.cshtml">
+      <publishTime>04/01/2017 21:56:05</publishTime>
+    </File>
+    <File Include="Areas/School/Views/School/View.cshtml">
+      <publishTime>04/01/2017 21:56:05</publishTime>
+    </File>
+    <File Include="Areas/School/Views/web.config">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/School/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:04</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Community/Confirmation.cshtml">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Community/Index.cshtml">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Parent/Index.cshtml">
+      <publishTime>04/27/2017 21:52:28</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Principal/CommunityInvitedRegister.cshtml">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Principal/Index.cshtml">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/SelectRole/Index.cshtml">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Specialist/CommunityInvitedRegister.cshtml">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Specialist/Index.cshtml">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Teacher/Confirmation.cshtml">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Teacher/Index.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Teacher/PrincipalInvitedRegister.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/Teacher/TestSendEmailView.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/web.config">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/Signup/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:06</publishTime>
+    </File>
+    <File Include="Areas/StatusTracking/Views/StatusTracking/DetailView.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/StatusTracking/Views/StatusTracking/Index.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/StatusTracking/Views/web.config">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/StatusTracking/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Shared/NoData.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Shared/_Layout_Report.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Student/AddChild.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Student/Edit.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Student/Index.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Student/New.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Student/ParentInvitations.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Student/ProfileIndex.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Student/ProfileView.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Student/StudentSummaryReport.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/Student/View.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/web.config">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/Student/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:07</publishTime>
+    </File>
+    <File Include="Areas/ToCac/Views/Index/Index.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/ToCac/Views/Index/MyActivities.cshtml">
+      <publishTime>10/03/2017 11:47:31</publishTime>
+    </File>
+    <File Include="Areas/ToCac/Views/Index/MyActivitiesPdf.cshtml">
+      <publishTime>10/03/2017 11:47:30</publishTime>
+    </File>
+    <File Include="Areas/ToCac/Views/Index/MyActivityIndex.cshtml">
+      <publishTime>08/24/2017 09:50:20</publishTime>
+    </File>
+    <File Include="Areas/ToCac/Views/Shared/_Layout.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/ToCac/Views/web.config">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/ToCac/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Toolbox/Views/Toolbox/DropDownList.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Toolbox/Views/Toolbox/DropDownListOther.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Toolbox/Views/Toolbox/Index.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Toolbox/Views/web.config">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/Toolbox/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/TRSClass/Views/TRSClass/Edit.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/TRSClass/Views/TRSClass/Index.cshtml">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Areas/TRSClass/Views/TRSClass/New.cshtml">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Areas/TRSClass/Views/TRSClass/View.cshtml">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Areas/TRSClass/Views/web.config">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/TRSClass/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:08</publishTime>
+    </File>
+    <File Include="Areas/UserVerification/Views/VerificationRequest/CommunityVerification.cshtml">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Areas/UserVerification/Views/VerificationRequest/Index.cshtml">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Areas/UserVerification/Views/VerificationRequest/PrincipalVerification.cshtml">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Areas/UserVerification/Views/VerificationRequest/TeacherVerification.cshtml">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Areas/UserVerification/Views/VerificationRequest/TRSSchoolVerification.cshtml">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Areas/UserVerification/Views/web.config">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Areas/UserVerification/Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>04/01/2017 21:39:19</publishTime>
+    </File>
+    <File Include="bin/DiffieHellman.dll">
+      <publishTime>04/01/2017 21:58:46</publishTime>
+    </File>
+    <File Include="bin/DocumentFormat.OpenXml.dll">
+      <publishTime>04/01/2017 21:58:49</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.dll">
+      <publishTime>04/01/2017 21:58:40</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.SqlServer.dll">
+      <publishTime>04/01/2017 21:58:34</publishTime>
+    </File>
+    <File Include="bin/evohtmltopdf.dll">
+      <publishTime>04/20/2017 20:38:46</publishTime>
+    </File>
+    <File Include="bin/evointernal.dat">
+      <publishTime>04/20/2017 20:39:56</publishTime>
+    </File>
+    <File Include="bin/ICSharpCode.SharpZipLib.dll">
+      <publishTime>04/01/2017 21:58:33</publishTime>
+    </File>
+    <File Include="bin/LinqKit.dll">
+      <publishTime>04/01/2017 21:58:33</publishTime>
+    </File>
+    <File Include="bin/log4net.dll">
+      <publishTime>04/01/2017 21:58:36</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>04/01/2017 21:40:57</publishTime>
+    </File>
+    <File Include="bin/MySql.Data.dll">
+      <publishTime>04/01/2017 21:58:39</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>04/01/2017 21:41:04</publishTime>
+    </File>
+    <File Include="bin/Org.Mentalis.Security.dll">
+      <publishTime>04/01/2017 21:58:46</publishTime>
+    </File>
+    <File Include="bin/StructureMap.dll">
+      <publishTime>04/01/2017 21:58:35</publishTime>
+    </File>
+    <File Include="bin/Sunnet.Cli.Business.dll">
+      <publishTime>10/26/2017 14:48:10</publishTime>
+    </File>
+    <File Include="bin/Sunnet.Cli.Core.dll">
+      <publishTime>10/05/2017 09:53:11</publishTime>
+    </File>
+    <File Include="bin/Sunnet.Cli.Impl.dll">
+      <publishTime>10/19/2017 15:24:06</publishTime>
+    </File>
+    <File Include="bin/Sunnet.Cli.MainSite.dll">
+      <publishTime>10/26/2017 14:48:36</publishTime>
+    </File>
+    <File Include="bin/Sunnet.Cli.UIBase.dll">
+      <publishTime>10/26/2017 14:48:10</publishTime>
+    </File>
+    <File Include="bin/Sunnet.Framework.dll">
+      <publishTime>10/03/2017 11:45:23</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>04/01/2017 21:40:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>04/01/2017 21:40:40</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>04/01/2017 21:40:39</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>04/01/2017 21:40:39</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>04/01/2017 21:40:33</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>04/01/2017 21:40:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>04/01/2017 21:40:36</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>04/01/2017 21:40:40</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>04/01/2017 21:40:40</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>04/01/2017 21:40:40</publishTime>
+    </File>
+    <File Include="bin/Tamir.SharpSSH.dll">
+      <publishTime>04/01/2017 21:58:46</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>04/01/2017 21:41:12</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Helpers.resources.dll">
+      <publishTime>04/01/2017 21:40:41</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Mvc.resources.dll">
+      <publishTime>04/01/2017 21:40:32</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Optimization.resources.dll">
+      <publishTime>04/01/2017 21:40:37</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Razor.resources.dll">
+      <publishTime>04/01/2017 21:40:35</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.WebPages.Deployment.resources.dll">
+      <publishTime>04/01/2017 21:40:41</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.WebPages.Razor.resources.dll">
+      <publishTime>04/01/2017 21:40:41</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.WebPages.resources.dll">
+      <publishTime>04/01/2017 21:40:41</publishTime>
+    </File>
+    <File Include="Content/Site.css">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="David.aspx">
+      <publishTime>04/01/2017 21:55:50</publishTime>
+    </File>
+    <File Include="error.html">
+      <publishTime>04/01/2017 21:55:51</publishTime>
+    </File>
+    <File Include="favicon.ico">
+      <publishTime>04/01/2017 21:55:51</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.eot">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.svg">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>04/01/2017 21:55:50</publishTime>
+    </File>
+    <File Include="launch/index.html">
+      <publishTime>04/01/2017 21:56:09</publishTime>
+    </File>
+    <File Include="log4net.config">
+      <publishTime>04/01/2017 21:55:51</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>04/01/2017 21:55:51</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/AddSchoolRelation_To_InternalUser.xml">
+      <publishTime>04/01/2017 21:56:10</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/AddSchool_Notification_Creator.xml">
+      <publishTime>04/01/2017 21:56:10</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/AddSchool_To_InternalUser.xml">
+      <publishTime>04/01/2017 21:56:10</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/CLI_Template.xml">
+      <publishTime>04/01/2017 21:56:10</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/CommunityFeature_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/ContactUS_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/NoPermission_Invite_Result_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/NoPermission_Invite_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/ParentInvitationPDF_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/ParentInvitation_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/PrincipalApplicant_5A_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/PrincipalApplicant_5B_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/TeacherApplicant_1A_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/TeacherApplicant_1B_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/TeacherApplicant_2A_Template.xml">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/TeacherApplicant_2B_Template.xml">
+      <publishTime>04/01/2017 21:56:11</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/TeacherApplicant_4A_Template.xml">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/TeacherApplicant_4B_Template.xml">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/TeacherApplicant_TBD_Template.xml">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/TeacherInvitation_Template.xml">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/EmailTemplate/UserVerification_3A_Template.xml">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/Pdf/Parent_Report_English.pdf">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/Pdf/Parent_Report_SPA.pdf">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/XLSX/Auditor_Template.xlsx">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/XLSX/Class Roster Template.xlsx">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/XLSX/Classroom_Template.xlsx">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/XLSX/Class_Template.xlsx">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/XLSX/CommunitySpecialist_Template.xlsx">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/XLSX/CommunityUser_Template.xlsx">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/XLSX/Community_Template.xlsx">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/XLSX/Parent_Template.xlsx">
+      <publishTime>04/01/2017 21:56:12</publishTime>
+    </File>
+    <File Include="resource/XLSX/Principal_Template.xlsx">
+      <publishTime>04/01/2017 21:56:13</publishTime>
+    </File>
+    <File Include="resource/XLSX/SchoolSpecialist_Template.xlsx">
+      <publishTime>04/01/2017 21:56:13</publishTime>
+    </File>
+    <File Include="resource/XLSX/School_Template.xlsx">
+      <publishTime>04/01/2017 21:56:13</publishTime>
+    </File>
+    <File Include="resource/XLSX/Single_Roster_Template.xlsx">
+      <publishTime>04/20/2017 20:38:40</publishTime>
+    </File>
+    <File Include="resource/XLSX/Statewide_Template.xlsx">
+      <publishTime>04/01/2017 21:56:13</publishTime>
+    </File>
+    <File Include="resource/XLSX/Student_Template.xlsx">
+      <publishTime>04/01/2017 21:56:13</publishTime>
+    </File>
+    <File Include="resource/XLSX/Teacher_Template.xlsx">
+      <publishTime>04/01/2017 21:56:13</publishTime>
+    </File>
+    <File Include="robot.txt">
+      <publishTime>04/01/2017 21:55:51</publishTime>
+    </File>
+    <File Include="StructureMap.config">
+      <publishTime>07/05/2017 13:23:42</publishTime>
+    </File>
+    <File Include="user-guides/circle-pm-faqs.pdf">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="user-guides/circle-pm-user-guide-v8.24.15.pdf">
+      <publishTime>04/01/2017 21:56:24</publishTime>
+    </File>
+    <File Include="user-guides/eCIRCLE-Facilitator-Application.pdf">
+      <publishTime>04/01/2017 21:56:14</publishTime>
+    </File>
+    <File Include="user-guides/Parent-Report-BW.pdf">
+      <publishTime>04/01/2017 21:56:14</publishTime>
+    </File>
+    <File Include="user-guides/Parent-Report-color.pdf">
+      <publishTime>04/01/2017 21:56:13</publishTime>
+    </File>
+    <File Include="user-guides/Parent-Report-English-BW-v11.13.15.pdf">
+      <publishTime>04/01/2017 21:56:14</publishTime>
+    </File>
+    <File Include="user-guides/Parent-Report-English-Color-v11.13.15.pdf">
+      <publishTime>04/01/2017 21:56:14</publishTime>
+    </File>
+    <File Include="user-guides/Parent-Report-Spanish-BW-v11.13.15.pdf">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="user-guides/Parent-Report-Spanish-Color-v11.13.15.pdf">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="user-guides/TSR-Online-CIRCLE-Progress-Monitoring.pptx">
+      <publishTime>04/01/2017 21:56:34</publishTime>
+    </File>
+    <File Include="user-guides/TSR-Online-Getting-Started-FINAL.pdf">
+      <publishTime>04/01/2017 21:56:41</publishTime>
+    </File>
+    <File Include="Views/Error/nonauthorized.cshtml">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Views/Home/AboutUs.cshtml">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Views/Home/ActivitiesKids.cshtml">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Views/Home/Admin.cshtml">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Views/Home/Approve.cshtml">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Views/Home/Calendar.cshtml">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Views/Home/ClassroomActivity.cshtml">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Views/Home/CoachingTool.cshtml">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Views/Home/ContactUs.cshtml">
+      <publishTime>04/01/2017 21:56:16</publishTime>
+    </File>
+    <File Include="Views/Home/Dashboard-Assessment-Outage.cshtml">
+      <publishTime>04/01/2017 21:56:16</publishTime>
+    </File>
+    <File Include="Views/Home/Dashboard.cshtml">
+      <publishTime>10/03/2017 11:47:30</publishTime>
+    </File>
+    <File Include="Views/Home/Demo.cshtml">
+      <publishTime>04/01/2017 21:56:16</publishTime>
+    </File>
+    <File Include="Views/Home/Deny.cshtml">
+      <publishTime>04/01/2017 21:56:16</publishTime>
+    </File>
+    <File Include="Views/Home/Eligibility.cshtml">
+      <publishTime>04/01/2017 21:56:16</publishTime>
+    </File>
+    <File Include="Views/Home/Faq.cshtml">
+      <publishTime>04/01/2017 21:56:16</publishTime>
+    </File>
+    <File Include="Views/Home/GoogleAccount.cshtml">
+      <publishTime>07/20/2017 12:04:17</publishTime>
+    </File>
+    <File Include="Views/Home/Help.cshtml">
+      <publishTime>04/01/2017 21:56:17</publishTime>
+    </File>
+    <File Include="Views/Home/Helps.cshtml">
+      <publishTime>04/01/2017 21:56:17</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>04/01/2017 21:56:17</publishTime>
+    </File>
+    <File Include="Views/Home/Index_old.cshtml">
+      <publishTime>04/01/2017 21:56:17</publishTime>
+    </File>
+    <File Include="Views/Home/Invalidaccount.cshtml">
+      <publishTime>04/01/2017 21:56:17</publishTime>
+    </File>
+    <File Include="Views/Home/Invite.cshtml">
+      <publishTime>04/01/2017 21:56:17</publishTime>
+    </File>
+    <File Include="Views/Home/InviteSunNet.cshtml">
+      <publishTime>04/01/2017 21:56:17</publishTime>
+    </File>
+    <File Include="Views/Home/InviteVerification.cshtml">
+      <publishTime>04/01/2017 21:56:18</publishTime>
+    </File>
+    <File Include="Views/Home/Invite_orig.cshtml">
+      <publishTime>04/01/2017 21:56:17</publishTime>
+    </File>
+    <File Include="Views/Home/Kindergarten.cshtml">
+      <publishTime>04/01/2017 21:56:18</publishTime>
+    </File>
+    <File Include="Views/Home/Launch2015.cshtml">
+      <publishTime>04/01/2017 21:56:18</publishTime>
+    </File>
+    <File Include="Views/Home/LogOut.cshtml">
+      <publishTime>07/05/2017 13:23:43</publishTime>
+    </File>
+    <File Include="Views/Home/Maintenance.cshtml">
+      <publishTime>04/01/2017 21:56:18</publishTime>
+    </File>
+    <File Include="Views/Home/MonitoringProgress.cshtml">
+      <publishTime>04/01/2017 21:56:18</publishTime>
+    </File>
+    <File Include="Views/Home/MonitorTool.cshtml">
+      <publishTime>04/01/2017 21:56:18</publishTime>
+    </File>
+    <File Include="Views/Home/MoodleGlobalCookie.cshtml">
+      <publishTime>04/01/2017 21:56:18</publishTime>
+    </File>
+    <File Include="Views/Home/News.cshtml">
+      <publishTime>04/01/2017 21:56:18</publishTime>
+    </File>
+    <File Include="Views/Home/News_orig.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/ObservationTool.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/OnlineCourse.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/OnlineLearning.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/Overview.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/ParentDashboard.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/Parents.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/Resources.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/Resources_new.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/Search.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/Signin.cshtml">
+      <publishTime>04/01/2017 21:56:19</publishTime>
+    </File>
+    <File Include="Views/Home/Signup.cshtml">
+      <publishTime>04/01/2017 21:56:20</publishTime>
+    </File>
+    <File Include="Views/Home/TakeALook.cshtml">
+      <publishTime>04/01/2017 21:56:20</publishTime>
+    </File>
+    <File Include="Views/Home/TestCAC.cshtml">
+      <publishTime>04/01/2017 21:56:20</publishTime>
+    </File>
+    <File Include="Views/Home/TestLogin.cshtml">
+      <publishTime>04/01/2017 21:56:20</publishTime>
+    </File>
+    <File Include="Views/Home/Tools.cshtml">
+      <publishTime>04/01/2017 21:56:20</publishTime>
+    </File>
+    <File Include="Views/Home/Twitter.cshtml">
+      <publishTime>04/01/2017 21:56:20</publishTime>
+    </File>
+    <File Include="Views/Home/UnderstandingChildDev.cshtml">
+      <publishTime>04/01/2017 21:56:20</publishTime>
+    </File>
+    <File Include="Views/Shared/404.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/Boolean.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/DateTime.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/decimal.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/EmailAddress.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/Enum.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/Int32.cshtml">
+      <publishTime>04/01/2017 21:56:23</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/Int64.cshtml">
+      <publishTime>04/01/2017 21:56:23</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/List.cshtml">
+      <publishTime>04/01/2017 21:56:23</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/NoData.cshtml">
+      <publishTime>04/01/2017 21:56:23</publishTime>
+    </File>
+    <File Include="Views/Shared/DisplayTemplates/String.cshtml">
+      <publishTime>04/01/2017 21:56:23</publishTime>
+    </File>
+    <File Include="Views/Shared/Error.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/Shared/_html5shiv.cshtml">
+      <publishTime>04/01/2017 21:56:20</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout_Base.cshtml">
+      <publishTime>10/26/2017 14:07:19</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout_Dashboard.cshtml">
+      <publishTime>10/26/2017 14:07:19</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout_FullContent.cshtml">
+      <publishTime>06/06/2017 11:21:39</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout_LogOut.cshtml">
+      <publishTime>04/01/2017 21:56:21</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout_Public.cshtml">
+      <publishTime>04/01/2017 21:56:21</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout_ReportQueue.cshtml">
+      <publishTime>04/01/2017 21:56:21</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout_Signup.cshtml">
+      <publishTime>04/01/2017 21:56:21</publishTime>
+    </File>
+    <File Include="Views/Shared/_MasterData_LeftMenu.cshtml">
+      <publishTime>09/22/2017 18:12:50</publishTime>
+    </File>
+    <File Include="Views/Shared/_Modal_Layout.cshtml">
+      <publishTime>04/01/2017 21:56:21</publishTime>
+    </File>
+    <File Include="Views/Shared/_Partial_Menu.cshtml">
+      <publishTime>04/01/2017 21:56:21</publishTime>
+    </File>
+    <File Include="Views/Shared/_Partial_MenuBase.cshtml">
+      <publishTime>04/01/2017 21:56:21</publishTime>
+    </File>
+    <File Include="Views/Shared/_Partial_Pager.cshtml">
+      <publishTime>07/03/2017 09:45:48</publishTime>
+    </File>
+    <File Include="Views/Shared/_Partial_Public_Menu.cshtml">
+      <publishTime>04/01/2017 21:56:21</publishTime>
+    </File>
+    <File Include="Views/Shared/_Partial_Public_Right_HNTF.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/Shared/_Partial_Slides.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/Shared/_Report_LeftMenu.cshtml">
+      <publishTime>04/01/2017 21:56:22</publishTime>
+    </File>
+    <File Include="Views/UpdateCluster/Index.cshtml">
+      <publishTime>08/24/2017 09:50:20</publishTime>
+    </File>
+    <File Include="Views/UpdateCluster/View.cshtml">
+      <publishTime>06/06/2017 11:21:39</publishTime>
+    </File>
+    <File Include="Views/web.config">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Views/_ViewStart.cshtml">
+      <publishTime>04/01/2017 21:56:15</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>10/19/2017 15:24:09</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

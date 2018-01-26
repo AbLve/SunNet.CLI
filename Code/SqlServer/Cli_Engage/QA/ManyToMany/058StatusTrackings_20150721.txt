@@ -1,0 +1,12 @@
+﻿update StatusTrackings 
+set ProcessAddress='' where ProcessAddress is null
+go
+
+alter table StatusTrackings
+alter column ProcessAddress varchar(1000) not null
+go
+
+
+alter table StatusTrackings
+add SupposedApproverIds varchar(500) not null default ''
+go

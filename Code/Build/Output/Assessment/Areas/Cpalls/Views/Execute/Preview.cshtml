@@ -1,0 +1,70 @@
+﻿@{
+    Layout = "~/Areas/Cpalls/Views/Shared/_Layout_Cpalls.cshtml";
+    ViewBag.Title = "Preview";
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var execJson;
+        var execModel;
+        $(function () {
+            $("#modalWaiting").modal("show");
+            execJson = @Html.Raw(ViewBag.Json);
+            execJson.Mode = Exec_Mode.Preview;
+            execModel = new getAssessmentModel(execJson);
+
+            $.when(execModel.prepared()).done(function () {
+                $("#modalWaiting").modal("hide");
+                execModel.init();
+                ko.applyBindings(execModel);
+            });
+        });
+    </script>
+}
+<div class="item-warp">
+    <div class="item-container">
+        <div class="item-main">
+            <div class="item-main-disable" data-bind="visible:!visible()"></div>
+            <div class="item-main-header" data-bind="visible:status() != Exec_Status.resulting">
+                <h4>
+                    <span data-bind="html:currentMeasure().name"></span>
+                    <span data-bind="html:': '+currentItem().label,visible:currentItem().isShowing(),visible:window._DEBUG"></span>
+                </h4>
+                <a class="item-fullscreen-btn stop-btn" data-bind="event:{click:fullscreen}"><i class="icon-fullscreen"></i></a>
+                <p class="time-remaining" data-bind="visible:window._DEBUG">
+                    <i class="icon-time"></i>time remaining
+                    <a class="time-con" data-bind="text:timeRemaining"></a>
+                </p>
+            </div>
+            @****Items Page****@
+            <!-- ko template: {name:$root.itemTemplate, data:currentItem(), as:'item', if:$root.visible() && $root.status() === Exec_Status.going}-->
+            <!-- /ko-->
+            @****Checklist Page****@
+            @Html.Partial("_Partial_Checklist")
+
+            <div class="item-main-footer">
+                <div class="left-btns"> </div>
+                <div class="middle-btns">
+                    <!-- ko if:currentItem().type === Ade_ItemType.TypedResponse.value && status() === Exec_Status.going-->
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary " for="optionItem" data-bind="click:function(){currentItem().showingResponse(false);},css:{active:!currentItem().showingResponse()}">
+                            <input type="radio" name="TypedResponse" id="optionItem" autocomplete="off" data-bind="checked:currentItem().showingResponse" value="true" />
+                            Item
+                        </label>
+                        <label class="btn btn-primary" for="optionResponse" data-bind="click:function(){currentItem().showingResponse(true);},css:{active:currentItem().showingResponse()}">
+                            <input type="radio" name="TypedResponse" id="optionResponse" data-bind="checked:currentItem().showingResponse" autocomplete="off" value="false" /> Response
+                        </label>
+                    </div>
+                    <!--/ko-->
+                </div>
+                <div class="right-btns">
+                    <a class="item-btn next-btn" href="#" data-bind="event:{click:close}">
+                        <i class="icon-hand-left"></i>Close
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_Partial_ItemTemplates")

@@ -1,0 +1,4 @@
+﻿if exists(select * from Permission_Pages where Name='VCW')
+begin
+update Permission_Pages set Name='CT' where Name='VCW'
+end

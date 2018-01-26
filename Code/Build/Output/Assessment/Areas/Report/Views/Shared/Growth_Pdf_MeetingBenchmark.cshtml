@@ -1,0 +1,316 @@
+﻿@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+
+    var reportModels = ViewBag.Models as List<GrowthReportModel>;
+    bool isFirst = true;
+    int index = 0;
+}
+@foreach (GrowthReportModel reportModel in reportModels)
+{
+    for (int i = 2; i < reportModel.Report.Count; )
+    {
+        <table cellpadding="0" cellspacing="0" class="noborder header  @(isFirst ? "" : "newpager") ">
+            <thead>
+                <tr>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                </tr>
+                <tr>
+                    <th colspan="4"></th>
+                    <th colspan="4" class="title">
+                        @(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+                        @(reportModel.Title)<br />
+                        @(reportModel.Report[i][0].Text)<br />
+                        @(reportModel.Type.ToDescription())
+                    </th>
+                    <th colspan="4">
+                        <img src="@(DomainHelper.AssessmentDomain)images/cli_logo.png" style="height: 60px; vertical-align: middle; width: 150px;" />
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Community)):&nbsp;@(reportModel.Community)
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Language)):&nbsp;@(reportModel.Language.ToDescription())
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                        @if (ViewContext.Controller is ClassController || ViewContext.Controller is StudentController)
+                        {
+                            @(Html.DisplayNameFor(x => reportModel.School))
+                            @Html.Raw(":&nbsp;")
+                            @(reportModel.School)
+                        }
+                        @if (ViewContext.Controller is SchoolController)
+                        {
+                            @(Html.DisplayNameFor(x => reportModel.Schools))
+                            @Html.Raw(":&nbsp;")
+                            @(reportModel.Schools)
+                        }
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @if (ViewContext.Controller is StudentController)
+                        {
+                            @(Html.DisplayNameFor(x => reportModel.Class))
+                            @Html.Raw(":&nbsp;")
+                            @(reportModel.Class)
+                        }
+                        @if (ViewContext.Controller is SchoolController || ViewContext.Controller is ClassController)
+                        {
+                            @(Html.DisplayNameFor(x => reportModel.Classes))
+                            @Html.Raw(":&nbsp;")
+                            @(reportModel.Classes)
+                        }
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.SchoolYear)):&nbsp;@(reportModel.SchoolYear)
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @if (reportModel.Wave1 > DateTime.MinValue)
+                        {
+                            @(Html.DisplayNameFor(x => reportModel.Wave1))
+                            @Html.Raw(": ")
+                            @(reportModel.Wave1.FormatDateString())
+                        }
+                    </th>
+                </tr>
+                @if (reportModel.Wave2 > DateTime.MinValue)
+                {
+                    <tr>
+                        <th colspan="6" class="heading">
+                        </th>
+                        <th colspan="3">&nbsp;</th>
+                        <th colspan="3" class="heading">
+                            @(Html.DisplayNameFor(x => reportModel.Wave2))
+                            @Html.Raw(": ")
+                            @(reportModel.Wave2.FormatDateString())
+                        </th>
+                    </tr>
+                }
+                @if (reportModel.Wave3 > DateTime.MinValue)
+                {
+                    <tr>
+                        <th colspan="6" class="heading">
+                        </th>
+                        <th colspan="3">&nbsp;</th>
+                        <th colspan="3" class="heading">
+                            @(Html.DisplayNameFor(x => reportModel.Wave3))
+                            @Html.Raw(": ")
+                            @(reportModel.Wave3.FormatDateString())
+                        </th>
+                    </tr>
+                }
+            </thead>
+
+        </table>
+        <div id="chart@(index++)" style="height: 520px; width: @ReportHelper.GetChartWidth(reportModel.Report[i][0].Rowspan + 1, 160)px;">
+        </div>
+                {
+                    isFirst = false;
+                    i += reportModel.Report[i][0].Rowspan;
+                }
+    }
+}
+@using (Html.BeginForm("Growth_Pdf_Download", null, FormMethod.Post, new { id = formId, target = "_blank" }))
+{
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("language")
+    @Html.Hidden("year")
+    @Html.Hidden("schoolId")
+    @Html.Hidden("classId")
+    @Html.Hidden("districtId")
+    @Html.Hidden("type")
+    @Html.Hidden("waves")
+    @Html.Hidden("measures")
+    @Html.Hidden("all")
+    @Html.Hidden("startDate")
+    @Html.Hidden("endDate")
+    @Html.Hidden("export", true)
+    <button type="submit" class="btn-export" id="btn_Export" onclick=" javascript:return exportPdf(); ">
+        Export
+    </button>
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+    <script type="text/javascript">
+        var dataSources = @Html.Raw(ViewBag.JData);
+
+        var index = 0;
+        var charts = [];
+        var options = [];
+        var currentIndex = 0;
+        function startGenerateReport() {
+            if (options.length > currentIndex) {
+                window.scrollTo(0, $("#chart" + currentIndex).offset().top);
+
+                var option = options[currentIndex];
+                var myChart = echarts.init(document.getElementById('chart' + index++), echartsTheme.default);
+                myChart.setOption(option);
+                charts.push(myChart);
+                currentIndex++;
+                setTimeout(function() {
+                    startGenerateReport();
+                }, 1000);
+            } else {
+                setTimeout(function() {
+                    $("#btn_Export").slideDown();
+                }, 1000);
+            }
+        }
+
+        function exportPdf() {
+            var $form = $("#@(formId)");
+            $form.find("input:hidden[name='imgSources']").remove();
+            if (charts && charts.length) {
+                for (var i = 0; i < charts.length; i++) {
+                    var myChart = charts[i];
+                    var options = myChart.getOption();
+                    options.toolbox.feature.magicType.show = false;
+                    options.toolbox.feature.dataZoom.show = false;
+                    options.toolbox.feature.restore.show = false;
+                    myChart.setOption(options);
+                    var $imgSources = $('<input name="imgSources" type="hidden" value="" />').appendTo($form);
+                    $imgSources.val(myChart.getDataURL());
+
+                    options.toolbox.feature.magicType.show = true;
+                    options.toolbox.feature.dataZoom.show = true;
+                    options.toolbox.feature.restore.show = true;
+                    myChart.setOption(options);
+                }
+            }
+            return true;
+        }
+        $(function() {
+            for (var d = 0; d < dataSources.length; d++) {
+                var dataSource = dataSources[d];
+                var rows = dataSource.Report;
+
+                // Row 0: Source Title
+                var sourceRow = rows[0];
+
+                // Row 1:Measure,Maximum Score, (Wave1), (Wave2), (Wave3)
+                var header = rows[1];
+                var waveCount = header.Cells.length - 1;
+
+                // from Row 2: Measure and scores
+                for (var measureIndex = 2; measureIndex < rows.length;) {
+                    var row = rows[measureIndex];
+                    var cells = row.Cells;
+                    var parentMeasure = cells[0];
+                    var option = new ReportOption();
+
+                    option.title = {
+                        text: dataSource.Title,
+                        subtext: sourceRow.Cells[0].Text + ": " + parentMeasure.Text,
+                        textAlign: "left",
+                        x: 0,
+                        y: 0
+                    };
+                    option.color = ["#ffffff", "#C1232B", "#ffffff", "#B5C334", "#ffffff", "#FCCE10"];
+                    option.toolbox.feature.magicType.type = ['line', 'bar', 'stack'];
+                    option.tooltip.show = false;
+                    option.xAxis = option.xAxis.slice(0, 1);
+                    var xAxis = option.xAxis[0].data;
+                    option.legend.itemGap = 20;
+                    option.legend.x = 250;
+                    option.legend.formatter = function(name) {
+                        if (name.indexOf("_") >= 0)
+                            return "";
+                        return name + "    ";
+                    };
+                    for (var w = 1; w < header.Cells.length; w++) {
+                        var title = header.Cells[w].Text;
+                        option.legend.data.push(title + "_");
+                        option.legend.data.push(title);
+                        option.series.push({
+                            name: title,
+                            type: "bar",
+                            stack: title,
+                            data: [],
+                            barGap:1
+                        });
+                        option.series.push({
+                            name: title + "_",
+                            type: "bar",
+                            stack: title,
+                            data: [],
+                            barGap:1
+                        });
+                    }
+                    for (var i = 0; i < parentMeasure.Rowspan; i++) {
+                        var tmpMeasureRow = rows[measureIndex + i];
+                        var tmpCells = tmpMeasureRow.Cells;
+                        var tmpMeasure = tmpCells[tmpCells.length - (waveCount + 1)];
+
+                        xAxis.push(tmpMeasure.Text);
+                        var max = 100;
+                        for (w = 0; w < waveCount; w++) {
+                            var average = GetNumber(tmpCells[tmpCells.length - waveCount + w].Text);
+                            option.series[2 * w].data.push({
+                                value: average,
+                                itemStyle: {
+                                    normal:{
+                                        label: {
+                                            show:true,
+                                            position: 'insideTop',
+                                            textStyle: {
+                                                color: "#000000",
+                                                fontWeight:"bold"
+                                            },
+                                            formatter:function(category,legend,value) {
+                                                return value <= 0 ? "" : value + "%";
+                                            }
+                                        }
+                                    },
+                                    emphasis: {
+                                        label: {
+                                            show:true,
+                                            zindex: 100
+                                        }
+                                    }
+                                }
+                            });
+                            option.series[2 * w + 1].data.push(max - average);
+                        }
+                    }
+                    option.yAxis[0].max = 100;
+                    option.yAxis[0].min = 0;
+                    option.yAxis[0].splitNumber = 10;
+                    option.yAxis[0].axisLine = {
+                        show: true
+                    };
+                    option.grid.width = 160;
+                    option.grid.width = xAxis.length * option.grid.width;
+                    options.push(option);
+
+                    measureIndex += parentMeasure.Rowspan;
+
+                }
+            }
+            startGenerateReport();
+        });
+    </script>
+}

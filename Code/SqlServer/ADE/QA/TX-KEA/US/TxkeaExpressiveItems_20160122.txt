@@ -1,0 +1,17 @@
+﻿ if not exists(select * from syscolumns where id=object_id('TxkeaExpressiveItems') and name='Timeoutvalue')
+	alter table [TxkeaExpressiveItems] add Timeoutvalue int 
+go
+update TxkeaExpressiveItems set Timeoutvalue = 0 where Timeoutvalue is null
+go 
+alter table [TxkeaExpressiveItems] alter column Timeoutvalue int not null
+
+go
+
+
+ if not exists(select * from syscolumns where id=object_id('TxkeaExpressiveItems') and name='ResponseType')
+	alter table [TxkeaExpressiveItems] add ResponseType tinyint 
+go
+update TxkeaExpressiveItems set ResponseType = 2 where ResponseType is null
+go 
+alter table [TxkeaExpressiveItems] alter column ResponseType tinyint not null
+

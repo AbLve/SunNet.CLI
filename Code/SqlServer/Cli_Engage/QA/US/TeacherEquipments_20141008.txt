@@ -1,0 +1,6 @@
+﻿drop table CommunitySpecialists
+drop table SchoolSpecialists
+go
+EXEC sp_rename 'TeacherEquiementRelations', 'TeacherEquipmentRelations'
+go
+EXEC sp_rename 'TeacherEquipmentRelations.EquiementId', 'EquipmentId', 'COLUMN'

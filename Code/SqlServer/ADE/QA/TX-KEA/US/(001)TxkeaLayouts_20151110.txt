@@ -1,0 +1,22 @@
+﻿IF NOT EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TxkeaLayouts]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+CREATE TABLE [dbo].[TxkeaLayouts](
+	[ID] [INT] IDENTITY(1,1) NOT NULL,
+	[Name] [NVARCHAR](200) NOT NULL,
+	[NumberOfImages] [INT] NOT NULL,
+	[Accessibility] [TINYINT] NOT NULL,
+	[BackgroundFill] [VARCHAR](200) NOT NULL,
+	[BackgroundFillType] [TINYINT] NOT NULL,
+	[IsDeleted] [BIT] NOT NULL,
+	[Layout] [NVARCHAR](MAX) NOT NULL,
+	[ScreenWidth] [DECIMAL](18, 0) NOT NULL,
+	[CreatedBy] [INT] NOT NULL,
+	[CreatedOn] [DATETIME] NOT NULL,
+	[UpdatedBy] [INT] NOT NULL,
+	[UpdatedOn] [DATETIME] NOT NULL,
+ CONSTRAINT [PK_TxkeaLayouts] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO

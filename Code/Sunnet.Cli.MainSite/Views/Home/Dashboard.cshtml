@@ -1,0 +1,473 @@
+﻿@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.Business.UpdateCluster.Models
+@using Sunnet.Cli.Core.Users.Enums
+@using Sunnet.Framework.Helpers
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout_Dashboard.cshtml";
+    List<UpdateClusterModel> listSystemUpdates = ViewBag.SystemUpdates;
+    List<UpdateClusterModel> listMessageCenters = ViewBag.MessageCenters;
+    List<UpdateClusterModel> listNewFeatureds = ViewBag.NewFeatureds;
+}
+<style>
+    body {
+        font-family: Lato, sans-serif;
+    }
+</style>
+<div class="parent-dashboard-content-left col-md-8">
+    @if (ViewBag.Assessment)
+    {
+        <div class="parent-dashboard-content-screening clearfix">
+            <div class="parent-dashboard-content-left-title">
+                <img src="/images/CLI-ENGAGE-new-icons-pm.png" alt="SCREENING, PROGRESS MONITORING, & OBSERVATION" />
+                <span>SCREENING, PROGRESS MONITORING, & OBSERVATION</span>
+                <span class="titleLink icon-angle-up"></span>
+            </div>
+            <div class="parent-dashboard-content-admini-list parent-dashboard-content-screening-list clearfix">
+                @{
+                    var i = 4;
+                }
+                @if (ViewBag.Practice)
+                {
+                    i++;
+                    <div class="list-2" style="border: 2px solid #EA1807;background: #fff;">
+                        <a class="div-a" aria-label="Practice Area" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.PracticeDomain)Home?IASID=040">
+                            <p>Assessment Practice Area</p>
+                            <span class="list-content" title="For practice and demonstration purposes only.">
+                                The Assessment Practice Area allows educators to view and practice student assessments.
+                            </span>
+                        </a>
+                    </div>
+                }
+                @if (ViewBag.ShowCPALLS)
+                {
+                    foreach (CpallsAssessmentModel item in @ViewBag.List as List<CpallsAssessmentModel>)
+                    {
+                        i++;
+                        <div class="list-2">
+                            <a class="div-a" aria-label="@(item.Name)" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)/Cpalls?assessmentId=@(item.ID)">
+                                <p>@(item.Name)</p>
+                                <span class="list-content" title="@item.Description">
+                                    @item.Description
+                                </span>
+                            </a>
+                        </div>
+                    }
+                }
+                @if (ViewBag.ShowTCD)
+                {
+                    foreach (CpallsAssessmentModel item in @ViewBag.TCDList as List<CpallsAssessmentModel>)
+                    {
+                        i++;
+                        <div class="list-2">
+                            <a class="div-a" aria-label="@(item.Name)" href="@(ViewBag.UserRoleType == Role.Parent?DomainHelper.MainSiteDomain+"/parent/parent/index":DomainHelper.AssessmentDomain+"/Observable/Observable/AccessResults")?assessmentId=@(item.ID)">
+                                <p>@(item.Name)</p>
+                                <span class="list-content" title="@item.Description">
+                                    @item.Description
+                                </span>
+                            </a>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+                    }
+    @if (ViewBag.LMS)
+    {
+        <div class="parent-dashboard-content-screening clearfix parent-dashboard-content-online">
+            <div class="parent-dashboard-content-left-title">
+                <img src="/images/CLI-ENGAGE-new-icons-pd.png" alt="ONLINE LEARNING AND PROFESSIONAL DEVELOPMENT" />
+                <span>ONLINE LEARNING AND PROFESSIONAL DEVELOPMENT</span>
+                <span class="titleLink icon-angle-up"></span>
+            </div>
+            <div class="parent-dashboard-content-admini-list parent-dashboard-content-screening-list clearfix">
+                @*<div>
+                        <p>Full Course Catalog</p>
+                        <span class="list-content">Enroll in courses here, and browse our full catalog of professional development for teachers and caregivers of children ages birth through kindergarten. </span>
+                        <a>
+                            OPEN <span class="icon-angle-right"></span>
+                        </a>
+                    </div>*@
+                <div class="list-2">
+                    <a class="div-a" aria-label="Head straight to courses you've already started to continue your learning, track progress, and download certificates. " href="@(ViewBag.LMSUrl)">
+                        <p>My Enrolled Courses</p>
+                        <span class="list-content">Head straight to courses you've already started to continue your learning, track progress, and download certificates. </span>
+                       
+                    </a>
+                </div>
+                <div class="list-2">
+                    <a class="div-a" aria-label="Head straight to courses you've already started to continue your learning, track progress, and download certificates. " href="@(SFConfig.LMSDomain)/local/cliengage/programcatalog.php">
+                        <p>Full Course Catalog</p>
+                        <span class="list-content">Enroll in courses here, and browse our full catalog for teachers and caregivers of children ages birth through kindergarten.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    @if (ViewBag.CAC)
+    {
+        <div class="parent-dashboard-content-screening clearfix parent-dashboard-content-activities">
+            <div class="parent-dashboard-content-left-title">
+                <img src="/images/CLI-ENGAGE-new-icons-activities.png" alt="ACTIVITIES & MATERIALS" />
+                <span>ACTIVITIES & MATERIALS</span>
+                <span class="titleLink icon-angle-up"></span>
+            </div>
+            <div class="parent-dashboard-content-admini-list parent-dashboard-content-screening-list clearfix">
+                <div class="list-2" style="cursor:pointer;">
+                    <a class="div-a" aria-label="Activities" href="@Url.Action("MyActivities","Index",new { @area = "ToCac" })">
+                        <p>My Activities</p>
+                        <span class="list-content">Click here to view the lessons you've favorited across all CIRCLE activity collections. </span>
+                    </a>
+                </div>
+                <div class="list-2">
+                    <a class="div-a" href="javascript:void(0);" onclick="RedirectCAC('@(SFConfig.CACDomain)pre-k/'); return false;" aria-label="Research-based, hands-on activities across school readiness areas, with alignments to the TX PreK Guidelines, TEKS, and Head Start Framework. Available in English and Spanish. ">
+                        <p>CIRCLE Activity Collection: PreK/K </p>
+                        <span class="list-content">Research-based, hands-on activities across school readiness areas, with alignments to the TX PreK Guidelines, TEKS, and Head Start Framework. Available in English and Spanish. </span>
+                    </a>
+                </div>
+                <div class="list-2">
+                    <a class="div-a" href="javascript:void(0);" onclick="RedirectCAC('@(SFConfig.CACDomain)infant-toddler/'); return false;" aria-label="Quality learning experiences to support infant and toddler language, social emotional, health, and cognitive development, with alignments to Early Head Start. Available in English and Spanish. ">
+                        <p>CIRCLE Activity Collection: 0-3 </p>
+                        <span class="list-content">Quality learning experiences to support infant and toddler language, social emotional, health, and cognitive development, with alignments to Early Head Start. Available in English and Spanish. </span>
+                    </a>
+                </div>
+                <div class="list-2">
+                    <a class="div-a" href="javascript:void(0);" onclick="RedirectCAC('@(SFConfig.CACDomain)family/'); return false;" aria-label="For children birth through K, this collection helps families support child skills at home. Available in English and Spanish.">
+                        <p>CIRCLE Activity Collection: Family </p>
+                        <span class="list-content">For children birth through K, this collection helps families support child skills at home. Available in English and Spanish. </span>
+                     </a>
+                </div>
+
+                @*<div class="list-2">
+                    <a class="div-a" href="javascript:void(0);" onclick="RedirectCAC('@(SFConfig.CACDomain)1-introducci%C3%B3n/'); return false;" aria-label="Spanish CIRCLE Activity Collection: PreK">
+                        <p>CIRCLE Colección de actividades: Prekínder</p>
+                        <span class="list-content"></span>
+                    </a>
+                </div>
+                <div>
+                    <a class="div-a" href="javascript:void(0);" onclick="RedirectCAC('@(SFConfig.CACDomain)infant_toddler_spanish/'); return false;" aria-label="Spanish CIRCLE Activity Collection: 0-3 ">
+                        <p>CIRCLE Colección de actividades: 0-3</p>
+                        <span class="list-content"></span>
+                    </a>
+                </div>
+                <div class="list-2">
+                    <a class="div-a" href="javascript:void(0);" onclick="RedirectCAC('@(SFConfig.MainSiteDomain)public/parents/activities-for-kids-coming-soon/activities-for-kids-spanish/'); return false;" aria-label="Spanish CIRCLE Activity Collection: Family ">
+                        <p>CIRCLE Colección de actividades: Familia</p>
+                        <span class="list-content"></span>
+                    </a>
+                </div>*@
+            </div>
+        </div>
+    }
+    @if (ViewBag.UserRoleType != Role.Parent)
+    {
+    <div class="parent-dashboard-content-screening clearfix parent-dashboard-content-quality">
+        <div class="parent-dashboard-content-left-title">
+            <img src="/images/CLI-ENGAGE-new-icons-qa.png" alt="QUALITY IMPROVEMENT & INNOVATION" />
+            <span>QUALITY IMPROVEMENT & INNOVATION</span>
+            <span class="titleLink icon-angle-up"></span>
+        </div>
+        <div class="parent-dashboard-content-admini-list parent-dashboard-content-screening-list clearfix">
+            @{
+                var j = 4;
+            }
+            @if (ViewBag.Vcw)
+            {
+                j++;
+                <div class="list-2">
+                    <a class="div-a" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.VcwDomain)Home?IASID=04" aria-label="Tools to exchange files and reports among teachers and coaches.">
+                        <p>Collaborative Tools</p>
+                        <span class="list-content">Tools to exchange files and reports among teachers and coaches.</span>
+                    </a>
+                </div>
+            }
+            @if (ViewBag.ShowCOT)
+            {
+                foreach (CpallsAssessmentModel item in @ViewBag.COTList as List<CpallsAssessmentModel>)
+                {
+                    j++;
+                    <div class="list-2">
+                        <a class="div-a" aria-label="@(item.Name)" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)/Cot/Teacher/All/@(item.ID)">
+                            <p>@(item.Name)</p>
+                            <span class="list-content" title="@item.Description">
+                                @item.Description
+                            </span>
+                        </a>
+                    </div>
+                }
+            }
+            @if (ViewBag.ShowCEC)
+            {
+                foreach (CpallsAssessmentModel item in @ViewBag.CECList as List<CpallsAssessmentModel>)
+                {
+                    j++;
+                    <div class="list-2">
+                        <a class="div-a" aria-label="@(item.Name)" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)/Cec/CEC?assessmentId=@(item.ID)">
+                            <p>@(item.Name)</p>
+                            <span class="list-content" title="@item.Description">
+                                @item.Description
+                            </span>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    }
+    @if (ViewBag.Trs)
+    {
+        <div class="parent-dashboard-content-screening clearfix parent-dashboard-content-texas">
+            <div class="parent-dashboard-content-left-title">
+                <img src="/images/CLI-ENGAGE-new-icons-trs.png" alt="TEXAS RISING STAR" />
+                <span>TEXAS RISING STAR</span>
+                <span class="titleLink icon-angle-up"></span>
+            </div>
+            <div class="parent-dashboard-content-admini-list parent-dashboard-content-screening-list clearfix">
+                <div class="list-2">
+                    <a class="div-a" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)AssessmentHome?IASID=034" aria-label="Click here to record assessment data, calculate star level ratings, and create technical assistance plans. ">
+                        <p>TRS Assessment Tool</p>
+                        <span class="list-content">Click here to record assessment data, calculate star level ratings, and create technical assistance plans. </span>
+                        
+                    </a>
+                </div>
+                @*<div class="list-2">
+                        <p>Assessor's and Mentor's Training</p>
+                        <span class="list-content">This online training covers topics such as the Texas Rising Star program guidelines, assessment protocols, and providing targeted technical assistance. </span>
+                        <a href="javascript:void(0)">
+                            OPEN <span class="icon-angle-right"></span>
+                        </a>
+                    </div>*@
+                <div class="list-2">
+                    <a class="div-a" href="@(SFConfig.LMSDomain)/course/view.php?id=3514" aria-label="Use the guidance board to submit questions about TRS policies, implementation, or technology.">
+                        <p>Guidance Board</p>
+                        <span class="list-content">Use the guidance board to submit questions about TRS policies, implementation, or technology.</span>
+                        
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="parent-dashboard-content-admini clearfix">
+        <div class="parent-dashboard-content-left-title">
+            <img src="/images/CLI-ENGAGE-new-icons-admin.png" alt="ADMINISTRATIVE TOOLS"/>
+            <span>ADMINISTRATIVE TOOLS</span>
+            <span class="titleLink icon-angle-up"></span>
+        </div>
+        @if (ViewBag.UserRoleType != Role.Parent)
+        {
+            <div class="parent-dashboard-content-admini-list">
+                @if (ViewBag.Administrative)
+                {
+                    <div class="list-2">
+                        <a class="div-a" aria-label="Class & Student Management" href="@Path.Combine(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain.AbsoluteUri, ViewBag.AdministrativeUrl.ToString())">
+                            <p class="pull-left list-other">Class & Student Management</p>
+                        </a>
+                    </div>
+                }
+                @if (ViewBag.TSDS)
+                {
+                    <div class="list-2">
+                        <a class="div-a" aria-label="XML File Download" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)AssessmentHome?IASID=039">
+                            <p class="pull-left">XML File Download</p>
+                        </a>
+                    </div>
+                }
+                @if (ViewBag.BUK)
+                {
+                    <div class="list-2">
+                        <a class="div-a" aria-label="Item Bulk Upload" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)AssessmentHome?IASID=037">
+                            <p class="pull-left">Item Bulk Upload</p>
+                        </a>
+                    </div>
+                }
+                @if (ViewBag.ADE)
+                {
+                    <div class="list-2">
+                        <a class="div-a" aria-label="ADE" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)AssessmentHome?IASID=02">
+                            <p class="pull-left">ADE</p>
+                        </a>
+                    </div>
+                }
+                @if (ViewBag.LDE)
+                {
+                    <div class="list-2">
+                        <a class="div-a" aria-label="LDE" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)AssessmentHome?IASID=036">
+                            <p class="pull-left">LDE</p>
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="parent-dashboard-content-admini-list">
+                <div class="list-2">
+                    <a class="div-a" aria-label="Add / Edit Children" href="@(DomainHelper.MainSiteDomain)Parent/Index/MyConnections">
+                        <p class="pull-left list-other">Add/Edit Children</p>
+                    </a>
+                </div>
+                <div class="list-2">
+                    <a class="div-a" aria-label="My Reports" href="@(DomainHelper.MainSiteDomain)Parent/Parent/SchoolReport">
+                        <p class="pull-left list-other">My Reports</p>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="parent-dashboard-content-right col-md-4">
+    <div class="parent-dashboard-content-right-system">
+        <h4 class="first-h4">
+            SYSTEM UPDATES
+            @if (ViewBag.UserRoleType == Role.Super_admin)
+            {
+                <a href="/UpdateCluster/Index" data-toggle="modal" data-target="#modalLarge"><img src="/images/edit.png" alt="SYSTEM UPDATES"></a>
+            }
+            <span class="left-icon icon-angle-up"></span>
+        </h4>
+        <ul>
+            @foreach (var item in listSystemUpdates)
+            {
+                <li>
+                    <p style="width:100%;">
+                        <span>@(item.ShowDate) - @(item.ShowTime)</span>
+                    </p>
+                    <div class="clearfix" style="position:relative;">
+                        <p class="pull-left" name="description">@(Html.Raw(item.Description))</p>
+                        <a href="/UpdateCluster/View?type=systemupdate&id=@(item.ID)" data-toggle="modal" data-target="#modalSmall" style="padding: 0;">
+                            <span class="system-more-span icon-angle-right"></span>
+                        </a>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="parent-dashboard-content-right-system">
+        <h4 class="line"><span>MESSAGE CENTER</span><span class="left-icon icon-angle-up"></span></h4>
+        <ul>
+            @foreach (var item in listMessageCenters)
+            {
+                <li>
+                    <p style="width:100%;">
+                        <span>@(item.ShowDate) - @(item.ShowTime)</span>
+                    </p>
+                    <div class="clearfix" style="position:relative;">
+                        <p class="pull-left">
+                            <a href="@(string.IsNullOrEmpty(item.HyperLink)?"javascript:void(0);":item.HyperLink)" target="_blank" style="padding-left: 0;" name="description">
+                                @(Html.Raw(item.Description))
+                            </a>
+                        </p>
+                        <a href="/UpdateCluster/View?type=messagecenter&id=@(item.ID)" data-toggle="modal" data-target="#modalSmall" style="padding: 0;">
+                            <span class="message-more-span icon-angle-right"></span>
+                        </a>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="parent-dashboard-content-right-system parent-dashboard-content-right-new">
+        <h4 class="line"><span>NEW & FEATURED</span><span class="left-icon icon-angle-up"></span></h4>
+        <ul>
+            @foreach (var item in listNewFeatureds)
+            {
+                <li>
+                    <div class="clearfix" style="position: relative;padding:0;">
+                        <div class="pull-left parent-dashboard-content-right-new-img">
+                            <a href="@(item.HyperLink)" style="padding: 0;">
+                                <img src="@(Sunnet.Cli.UIBase.Models.DomainHelper.StaticSiteDomain + "Upload/" + item.ThumbnailPath)" alt="@(item.Title)">
+                            </a>
+                        </div>
+                        <div class="pull-left parent-dashboard-content-right-new-content" style="padding: 0;">
+                            <h5>
+                                <a href="@(item.HyperLink)" target="_blank" style="padding-left: 0;">
+                                    @(item.Title)
+                                </a>
+                            </h5>
+                            <p class="pull-left" style="padding: 0;">
+                                <a href="@(item.HyperLink)" target="_blank" style="padding-left: 0;" name="description">
+                                    @(Html.Raw(item.Description))
+                                </a>
+                            </p>
+                            <a href="/UpdateCluster/View?type=newfeatured&id=@(item.ID)" data-toggle="modal" data-target="#modalSmall" style="color: #ffffff; padding: 0;">
+                                <span class="new-more-span icon-angle-right"></span>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+
+
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        $(function () {
+            $("[name='description']").each(function () {
+                var description = $(this).html();
+                if (description.length > 120) {
+                    var cutString = description.substring(0, 120);
+                    $(this).html(cutString + "...");
+                }
+            });
+        });
+        function RedirectCAC(targetUrl) {
+            $.get('@Url.Action("GenerateCacUrl")' + "?targetUrl=" + targetUrl, function (data) {
+                window.location = data;
+            }, "text");
+            return false;
+        }
+    </script>
+    @if (@ViewBag.ShowCommunityNote)
+    {
+        <script type="text/javascript">
+            $(function () {
+                $('#modalLarge').modal({
+                    remote: "/Community/Community/CommunityNotes"
+                });
+            });
+
+
+        </script>
+    }
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-66997903-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    <script>
+        $(function () {
+            $('.parent-dashboard-content-right-system h4').click(function () {
+                $(this).siblings('ul').stop().slideToggle();
+                if ($(this).children('.left-icon').hasClass('icon-angle-up')) {
+                    $(this).children('.left-icon').removeClass('icon-angle-up').addClass('icon-angle-down');
+                } else {
+                    $(this).children('.left-icon').removeClass('icon-angle-down').addClass('icon-angle-up');
+                }
+            })
+            $('.parent-dashboard-content-right-system h4 img').click(function () {
+                $('.parent-dashboard-content-right-system .first-h4').one("click", function () {
+                    $(this).siblings('ul').stop().slideToggle();
+                });
+                if ($('.first-h4 .left-icon').hasClass('icon-angle-up')) {
+                    $('.first-h4 .left-icon').attr('class', 'icon-angle-down left-icon')
+                } else {
+                    $('.first-h4 .left-icon').attr('class', 'icon-angle-up left-icon')
+                }
+            })
+        })
+    </script>
+
+}

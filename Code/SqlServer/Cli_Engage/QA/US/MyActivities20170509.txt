@@ -1,0 +1,38 @@
+﻿ 
+
+/****** Object:  Table [dbo].[MyActivities]    Script Date: 2017/5/15 10:49:47 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[MyActivities](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ActivityId] [int] NOT NULL,
+	[UserId] [int] NOT NULL,
+	[ActivityName] [varchar](5000) NOT NULL,
+	[Status] [tinyint] NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[Remark] [varchar](2000) NULL,
+	[Url] [varchar](500) NULL,
+	[Domain] [varchar](500) NULL,
+	[SubDomain] [varchar](500) NULL,
+ CONSTRAINT [PK_MyActivities] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

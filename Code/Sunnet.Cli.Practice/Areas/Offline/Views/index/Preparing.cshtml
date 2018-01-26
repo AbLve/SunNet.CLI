@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+@using System.Web.Optimization
+@using Sunnet.Cli.UIBase.Models
+@{
+    const string siteName = "Cli Engage";
+    var relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    var moduleTitle = relativePath.IndexOf("Areas/Ade", StringComparison.CurrentCultureIgnoreCase) >= 0 ? "Ade" : "";
+    moduleTitle = relativePath.IndexOf("Areas/Ade", StringComparison.CurrentCultureIgnoreCase) < 0 ? "Assessment" : moduleTitle;
+
+    ViewBag.Title = "Preparing";
+    Layout = null;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword"
+          content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>@ViewBag.Title - @moduleTitle - @siteName</title>
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.PracticeDomain";
+    </script>
+
+    @Scripts.Render("~/scripts/modernizr/practiceoffline")
+    @Scripts.Render("~/scripts/jquery/practiceoffline")
+    @Scripts.Render("~/scripts/bootstrap/practiceoffline")
+    @Scripts.Render("~/scripts/knockout/practiceoffline")
+
+    @Scripts.Render("~/scripts/cli/practiceoffline")
+    @Scripts.Render("~/scripts/cpalls/practiceoffline")
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <h4 id="msg">
+        Preparing Data
+    </h4><br />
+    <h5>
+        Please keep the Internet connection.
+    </h5>
+
+
+    <script type="text/javascript">
+        $(function() {
+            function gotoOffline() {
+                location.replace("/Offline/index?assessmentId=@(ViewBag.AssessmentId)&SchoolId=@(ViewBag.SchoolId)&Year=@(ViewBag.Year)&Wave=@(ViewBag.Wave)&ClassId=@(ViewBag.ClassId)");
+                //console.log(0);
+                //console.trace();
+            }
+
+            var $msg = $("#msg");
+            var initMsg = $msg.html();
+            var times = 1002 + 2;
+            var timer = new IntervalTimer(300, function() {
+                var dotCount = 3 - Math.abs(times % 3);
+                var msg = initMsg;
+                for (var i = 1; i <= dotCount; i++) {
+                    msg += ".";
+                }
+                $msg.html(msg);
+                times--;
+            });
+            timer.start();
+
+            var redirectTimer = new TimeoutTimer(1000);
+            $.when(redirectTimer.timeUp()).done(function() {
+                gotoOffline();
+            }).fail(function() {
+                var msg=initMsg+ ". Something is wrong, please contact administrator.";
+                $msg.html(msg);
+            });
+
+            var dataSource = @Html.Raw(ViewBag.Json);
+            var offlineApp = getCpallsOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.init();
+            if (offlineApp.status == offlineApp.values.Status.Changed) {
+                var confirmMsg = window.getErrorMessage("Override_Local_Data");
+                if (confirm(confirmMsg)) {
+                    offlineApp.writeLocalData(dataSource);
+                } else {
+                    history.back();
+                }
+            } else {
+                offlineApp.writeLocalData(dataSource);
+            }
+            timer.reset();
+
+            var msg = initMsg + " completed. Redirecting...";
+            $msg.html(msg);
+
+            redirectTimer.start();
+        });
+    </script>
+</body>
+</html>

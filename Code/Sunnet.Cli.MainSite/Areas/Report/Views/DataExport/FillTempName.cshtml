@@ -1,0 +1,47 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Fill Template Name";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId2 = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        +(function () {
+            registerFormCallbacks("@formId2", {
+                onPosted: function (response) {
+                    if (response.data.length == 2)
+                        $("#AssReportTemps").append("<option value='" + response.data[0] + "'>" + response.data[1] + "</option>");
+                    closeModal("#@(formId2)");
+                }
+            });
+
+        })();
+
+        $(".close").click(function () {
+            closeModal("#@(formId2)");
+        });
+    </script>
+}
+@using (Ajax.BeginForm("NewTemp", "DataExport", null, PostFormHelper.DefaultAjaxOptions,
+    new { @class = "form-horizontal", id = formId2 }))
+{
+    <div class="form-group">
+        <input type="hidden" name="ids" value="@ViewBag.ids"/>
+        <input type="hidden" name="assessmentId" value="@ViewBag.assessmentId"/>
+        <label class="control-label col-sm-3 required" aria-required="true">Template Name</label>
+        <div class="col-sm-9">
+            <input class="form-control validate" placeholder="Enter Template Name" id="TepmName" name="TepmName" data-val="true" aria-required="true" type="text" data-val-required="The Template Name field is required." value="" />
+            @Html.ValidationMessage("TepmName")
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton mainright-btn submit-btn" type="submit">Submit</button>
+    </div>
+}
+

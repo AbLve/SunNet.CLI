@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "New Item";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@model int
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function() {
+
+            var parent = @(Request.QueryString["listObj"]);
+            var model = {
+                createType: ko.observable("create"),
+                itemType: ko.observable(-1),
+                measureId: "@Model",
+                go: function(viewModel, event) {
+                    if (model.createType() == "create") {
+                        if (model.itemType() != "-1") {
+                            closeModal(jQuery("#@formId"));
+                            var url = "@Url.Action("New")" + "/" + model.itemType() + "?measureId=" + model.measureId + "&returnurl=" + parent.getLocation();
+                            location.href = url;
+                        }
+                    } else {
+                        closeModal(event.target);
+                        jQuery("#modalNormal").modal({ remote: '@Html.Raw(Url.Action("Existing", new
+                                                                {
+                                                                    measureId = Request.QueryString["measureId"],
+                                                                    listObj = Request.QueryString["listObj"]
+                                                                }))' });
+                    }
+                }
+            }
+
+            ko.applyBindings(model, document.getElementById("@(formId)"));
+        })();
+    </script>
+}
+<form class="form-horizontal" role="form" id="@(formId)">
+    <div class="form-group">
+        <div class="col-sm-7  col-sm-offset-3">
+            @Html.RadioButton("item", "copy", new { id = "copy", data_bind = "checked:createType" })
+            @Html.Label("", "Copy from an existing item", new { @for = "copy" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-7 col-sm-offset-3">
+            @Html.RadioButton("item", "create", new { id = "create", data_bind = "checked:createType" })
+            @Html.Label("", "Create a new item", new { @for = "create" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-7 col-sm-offset-3">
+            @Html.DropDownList("ItemType", (IEnumerable<SelectListItem>)ViewBag.ItemTypeOptions,
+                new { @class = "form-control", data_bind = "value:itemType", title = ' ' })
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" data-bind="event: { click: go }">OK</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+</form>

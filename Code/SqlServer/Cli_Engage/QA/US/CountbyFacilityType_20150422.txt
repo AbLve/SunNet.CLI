@@ -1,0 +1,24 @@
+﻿if exists(select * from sysobjects where id=object_id('[dbo].[CountbyFacilityType]') and xtype='P') 
+	drop PROCEDURE CountbyFacilityType
+GO
+
+CREATE PROCEDURE [dbo].[CountbyFacilityType]
+AS
+BEGIN
+	
+with list as (
+select s.SchoolTypeId ,st.Name as SchoolType,
+(select count(*)  from Classrooms where SchoolId =s.ID) as ClassroomTotal,
+ (select COUNT(*) from Teachers where schoolId =s.id) as TeacherTotal
+,(select count(*) from Students where SchoolId = s.id) as StudentTotal  from Schools s 
+inner join SchoolTypes st on st.ID = s.SchoolTypeId
+where s.Status = 1 and SchoolTypeId>0
+)
+select SchoolTypeId,SchoolType,count(*) as SchoolTotal,SUM(ClassroomTotal) as ClassroomTotal,SUM(TeacherTotal) as TeacherTotal
+, sum(StudentTotal) as StudentTotal from list group by SchoolTypeId ,SchoolType
+order by SchoolType
+
+
+END
+
+GO

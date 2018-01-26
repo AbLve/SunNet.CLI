@@ -1,0 +1,805 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Export.Enums
+@model Sunnet.Cli.Business.Ade.Models.BaseAssessmentModel
+@{
+    ViewBag.Title = Model.Name;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<ScoreEntity> customScores = ViewBag.CustomScores == null ? new List<ScoreEntity>() : ViewBag.CustomScores; 
+    List<ScoreEntity> otherAssessmentCustomScores = ViewBag.OtherAssessmentCustomScores == null ? new List<ScoreEntity>() : ViewBag.OtherAssessmentCustomScores;
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Reports)
+}
+@section BreadPath
+{
+    <a href="/Report/Index">Reports</a>
+    <i class="icon-angle-right"></i>
+    @(Html.ActionLink("Student Results Export", "Circle", "DataExport"))
+    <i class="icon-angle-right"></i>
+    @(ViewBag.Title)
+}
+<div class="right-content-top"></div>
+@using (Ajax.BeginForm("Export_Queue", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    id = formId,
+    @class = "form-horizontal"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input name="assessmentId" value="@ViewBag.AssessmentId" type="hidden" />
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.Label("txtCommunity", "Community/District", new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-3">
+                    @Html.TextBox("txtCommunity", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#CommunityId",
+           data_remote = Url.Action("GetCommunitySelectListForSearch"),
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtCommunity",
+           name = "txtCommunity",
+           placeholder = "Enter key text to search",
+           @for = "CommunityId",
+           data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+           data_bind = "value: searchCriteria.communityName"
+       })
+                    <label for="CommunityId"><span style="display:none;">1</span></label>
+                    <input value="" class="form-control validate" data-val="true" data-val-number="The field Community Name must be a number." data-val-required="The Community/District field is required." id="CommunityId" name="CommunityId" placeholder="Selected Community" type="hidden" aria-required="true">
+                    @Html.ValidationMessage("CommunityId")
+                    @Html.Hidden("isActiveCommunity", false)
+                </div>
+                @Html.Label("txtSchool", "School Name", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-3">
+                    @Html.TextBox("txtSchool", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#SchoolId",
+           data_remote = Url.Action("GetSchoolSelectList"),
+           data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtSchool",
+           placeholder = "Enter key text to search",
+           @for = "SchoolId",
+           data_extraParams = "{\"communityId\":\"#CommunityId\",\"isActive\":\"#isActive\"}",
+           data_bind = "value: searchCriteria.schoolName"
+       })
+                    @Html.Hidden("SchoolId", 0, new
+       {
+           @class = "form-control",
+           data_bind = "value: searchCriteria.schoolId"
+       })
+                    @Html.Hidden("isActive", false)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Year", "School Year", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-3">
+                    @Html.DropDownList("Year", (IEnumerable<SelectListItem>)ViewBag.YearOptions, new { @class = "form-control", data_bind = "value: searchCriteria.year" })
+                </div>
+                @Html.Label("Wave", "Wave", new { @class = "control-label col-sm-2 required", @for = "wave1" })
+                <div class="col-sm-3">
+                    <div class="btn-group term-chose-l" data-toggle="buttons" data-bind="foreach:{data:waves,as:'wave'}">
+                        <label class="btn nav-btn" data-bind="css:{'submit-btn':checked()},click:$root.chooseWave,attr:{for:'wave'+text}">
+                            <input type="checkbox" name="waves" class="required" autocomplete="off" data-bind="value:value,attr:{id:'wave'+text,'aria-labelledby':'wave'+text,'aria-describedby':'wave'+text}" role="group"/>
+                            <span data-bind="text:'Wave' + text"></span>
+                        </label>
+                    </div>
+                    @Html.ValidationMessage("waves", "The Wave field is required.", "div")
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.Label("", "Time Periods", new { @class = "control-label col-sm-2", @for = "startDate" })
+                <div class="col-sm-3">
+                    <div class="col-lg-6 m-l-n">
+                        @Html.TextBox("startDate", "", new { @class = "form-control date", maxDate = DateTime.Now.ToString("MM/dd/yyyy") })
+                    </div>
+                    <label class="col-lg-1 m-l-n">
+                        to
+                    </label>
+                    <div class="col-lg-6 m-l-n">
+                        @Html.TextBox("endDate", "", new { @class = "form-control date", maxDate = DateTime.Now.ToString("MM/dd/yyyy"), title = ' ', aria_labelledby= "endDate" })
+                    </div>
+                </div>
+                <label class="control-label col-sm-2" for="FileType">File Separate By</label>
+                <div class="col-sm-3">
+                    @Html.DropDownList("FileType", (IEnumerable<SelectListItem>)ViewBag.FileTypeOptions, new { @class = "form-control", title = ' ' })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="AssReportTemps">Report Template</label>
+                <div class="col-sm-3">
+                    @Html.DropDownList("AssReportTemps", (IEnumerable<SelectListItem>) ViewBag.temps,
+                        new {@class = "form-control", @onchange = "ReportTempChange()", title = ' '})
+                </div>
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-4">
+                    <a class="mainbutton mainright-btn nav-btn" data-bind="attr: { href: $root.TempList }">Report Template List</a>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("", "DOB Range", new { @class = "control-label col-sm-2", @for = "dobStartDate" })
+                <div class="col-sm-3">
+                    <div class="col-lg-6 m-l-n">
+                        @Html.TextBox("dobStartDate", "", new { @class = "form-control date", maxDate = DateTime.Now.ToString("MM/dd/yyyy") })
+                    </div>
+                    <label class="col-lg-1 m-l-n">
+                        to
+                    </label>
+                    <div class="col-lg-6 m-l-n">
+                        @Html.TextBox("dobEndDate", "", new {@class = "form-control date", maxDate = DateTime.Now.ToString("MM/dd/yyyy"), title = ' ', aria_labelledby= "dobEndDate" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="content-title">Schedule</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.Label("Start Date", new { @class = "col-sm-2 control-label required", @for = "FromDate" })
+                <div class="col-sm-3">
+                    <input class="form-control date" data-val="true" data-val-required="This Start Date field is required."
+                           id="FromDate" name="FromDate" type="text" value="@DateTime.Now.FormatDateString()" placeholder="" title=" ">
+                    <span id="FromDate-error" class="field-validation-valid" data-valmsg-for="FromDate" data-valmsg-replace="true"></span>
+                </div>
+                @Html.Label("Stop Date", new { @class = "col-sm-2 control-label required", @for = "ToDate" })
+                <div class="col-sm-3">
+                    <input class="form-control date compareDate" data-val="true" data-val-required="This Stop Date field is required."
+                           id="ToDate" name="ToDate" type="text" value="@DateTime.Now.FormatDateString()" placeholder="" title=" ">
+                    <span id="ToDate-error" class="field-validation-valid" data-valmsg-for="ToDate" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Frequency", new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-3">
+                    <input value="1" class="form-control" data-val="true" data-val-required="This Frequency field is required." data-val-number="Frequency field must be a number"
+                           data-val-range="Frequency field must be between 1 and 10" data-val-range-max="10" data-val-range-min="1" id="Frequency"
+                           name="Frequency" type="text" placeholder="" aria-invalid="true">
+                    <span id="Frequency-error" class="field-validation-valid" data-valmsg-for="Frequency" data-valmsg-replace="true"></span>
+                </div>
+                @Html.Label("FrequencyUnit", new { @class = "col-sm-2 control-label", @for = "FreqyencyUnit1" })
+                <div class="col-sm-3">
+                    @Html.RadioButton("FrequencyUnit", FrequencyUnitType.Day, new { id = "FreqyencyUnit1", @checked = "checked", role = "radiogroup", aria_labelledby= "FreqyencyUnit1" })
+                    @Html.Label("", FrequencyUnitType.Day.ToDescription(), new { @for = "FreqyencyUnit1" })
+                    @Html.RadioButton("FrequencyUnit", FrequencyUnitType.Week, new { id = "FreqyencyUnit2", role = "radiogroup", aria_labelledby = "FreqyencyUnit2" })
+                    @Html.Label("", FrequencyUnitType.Week.ToDescription(), new { @for = "FreqyencyUnit2" })
+                    @Html.RadioButton("FrequencyUnit", FrequencyUnitType.Month, new { id = "FreqyencyUnit3", role = "radiogroup", aria_labelledby = "FreqyencyUnit3" })
+                    @Html.Label("", FrequencyUnitType.Month.ToDescription(), new { @for = "FreqyencyUnit3" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Receive File By", new { @class = "col-sm-2 control-label required",@for= "ReceiveFileBy" })
+                <div class="col-sm-3">
+                    @Html.DropDownList("ReceiveFileBy", (IEnumerable<SelectListItem>)ViewBag.ReceiveFileOptions,
+                    new { @class = "form-control", onchange = "ReceiveByChange()", title = ' ' })
+                </div>
+                @Html.Label("SFTP Host IP", new { @class = "col-sm-2 control-label required", @for = "SFTPHostIp", style = "display:none" })
+                <div class="col-sm-3">
+                    <input class="form-control" data-val="true" data-val-required="This SFTP Host IP field is required."
+                           id="SFTPHostIp" onchange="SFTPChange()" name="SFTPHostIp" style="display: none" type="text" value="" placeholder="">
+                    <span class="field-validation-valid" data-valmsg-for="SFTPHostIp" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("SFTP Port", new { @class = "col-sm-2 control-label", @for = "SFTPPort", style = "display:none" })
+                <div class="col-sm-3">
+                    <input value="22" class="form-control valid" data-val="true" data-val-number="This field SFTP Port field must be a number."
+                           id="SFTPPort" onchange="SFTPChange()" name="SFTPPort" style="display: none" type="text"
+                           placeholder="" aria-required="true" aria-invalid="false">
+                    <span class="field-validation-valid" data-valmsg-for="SFTPPort" data-valmsg-replace="true"></span>
+                </div>
+                <label class="col-sm-2 control-label" for="SFTPFilePath" style="display: none">
+                    SFTP File Path
+                    <i class="icon-question-sign question-tip" id="tooltip1" data-bind="onchange:SFTPChange" data-toggle="tooltip" data-placement="top"
+                       title="This field is the path in sfTP where you want to save the file. eg:/a/b/c/d"></i>
+                </label>
+                <div class="col-sm-3">
+                    <input class="form-control valid" id="SFTPFilePath" name="SFTPFilePath" style="display: none" type="text" value="" placeholder="" aria-invalid="false">
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("SFTP UserName", new { @class = "col-sm-2 control-label", @for = "SFTPUserName", style = "display:none" })
+                <div class="col-sm-3">
+                    <input class="form-control" id="SFTPUserName" onchange="SFTPChange()" name="SFTPUserName" style="display: none" type="text" value="" placeholder="">
+                </div>
+                @Html.Label("SFTP Password", new { @class = "col-sm-2 control-label", @for = "SFTPPassword", style = "display:none" })
+                <div class="col-sm-3">
+                    <input class="form-control" id="SFTPPassword" onchange="SFTPChange()" name="SFTPPassword" style="display: none" type="password" value="" placeholder="">
+                </div>
+                <div class="col-sm-2">
+                    <a class="mainbutton mainright-btn nav-btn hide" id="showDialog" href=""
+                       data-toggle="modal" data-target="#modalSmall">sftp</a>
+                    <a class="mainbutton mainright-btn nav-btn" id="SFTPTest" href="#" data-bind="click:SFTPTest"
+                       style="display: none" data-target="#modalSmall">SFTP Test</a>
+                    <label class="hide" for="SFTPCheck">SFTPCheck</label>
+                    <input id="SFTPCheck" class="hide" type="checkbox" title="" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>English Custom Scores</th>
+                        <th>
+                            <button id="btnCustomScoreAll" class="mainbutton mainright-btn unchecked-btn" type="button" onclick="SelectCustomScore();">Select All</button>
+                        </th>
+                        <th>Spanish Custom Scores</th>
+                        <th>
+                            <button id="btnOtherCustomScoreAll" class="mainbutton mainright-btn unchecked-btn" type="button" onclick="SelectOtherCustomScore();">Select All</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ 
+                        var allCount = customScores.Count > otherAssessmentCustomScores.Count ? customScores.Count : otherAssessmentCustomScores.Count;
+                    }
+                    @for (int i = 0; i < allCount; i++)
+                    {
+                        <tr>
+                            @if (i < customScores.Count)
+                            {
+                                <td>
+                                    @(customScores[i].ScoreDomain)
+                                </td>
+                                <td>
+                                    <input id="customScore@(customScores[i].ID)" type="checkbox" value="@(customScores[i].ID)" name="customScores" role="group" aria-labelledby="customScore@(customScores[i].ID)" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            }
+                            @if (i < otherAssessmentCustomScores.Count)
+                            {
+                                <td>
+                                    @(otherAssessmentCustomScores[i].ScoreDomain)
+                                </td>
+                                <td>
+                                    <input id="customScore@(otherAssessmentCustomScores[i].ID)" type="checkbox" value="@(otherAssessmentCustomScores[i].ID)" name="otherCustomScores" role="group" aria-labelledby="customScore@(otherAssessmentCustomScores[i].ID)" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="3">English Measures</th>
+                        <th><span style="display:none;">1</span></th>
+                        <th colspan="3">Spanish Measures</th>
+                    </tr>
+                    <tr>
+                        <th>@(Model.Name)</th>
+                        <th style="width: 150px;">
+                            Results Report
+                        </th>
+                        <th style="width: 150px;">
+                            Item Level Report
+                        </th>
+                        <th><span style="display:none;">1</span></th>
+                        <th>@(Model.Name)</th>
+                        <th style="width: 150px;">
+                            Results Report
+                        </th>
+                        <th style="width: 150px;">
+                            Item Level Report
+                        </th>
+                    </tr>
+                    <tr>
+                        <th><span style="display:none;">1</span></th>
+                        <th>
+                            <button id="engResult" class="mainbutton mainright-btn unchecked-btn" type="button" data-bind="text:$root.status.english.resultsReport.checked()?'Deselect All':'Select All',click:function(){$root.switchSelectAll('english','resultsReport')},css:{'checked-btn':$root.status.english.resultsReport.checked()}"></button>
+                        </th>
+                        <th>
+                            <button id="engItemLevel" class="mainbutton mainright-btn unchecked-btn" type="button" data-bind="text:$root.status.english.itemLevel.checked()?'Deselect All':'Select All',click:function(){$root.switchSelectAll('english','itemLevel')},css:{'checked-btn':$root.status.english.itemLevel.checked()}"></button>
+                        </th>
+                        <th><span style="display:none;">1</span></th>
+                        <th><span style="display:none;">1</span></th>
+                        <th>
+                            <button id="spnResult" class="mainbutton mainright-btn unchecked-btn" type="button" data-bind="text:$root.status.spanish.resultsReport.checked()?'Deselect All':'Select All',click:function(){$root.switchSelectAll('spanish','resultsReport')},css:{'checked-btn':$root.status.spanish.resultsReport.checked()}"></button>
+                        </th>
+                        <th>
+                            <button id="spnItemLevel" class="mainbutton mainright-btn unchecked-btn" type="button" data-bind="html:$root.status.spanish.itemLevel.checked()?'Deselect All':'Select All',click:function(){$root.switchSelectAll('spanish','itemLevel')},css:{'checked-btn':$root.status.spanish.itemLevel.checked()}"></button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach:{data:measures,as:'measure'}">
+                    <tr>
+                        <!-- ko template:{data:english,name:$root.getTemplate}-->
+                        <!-- /ko-->
+                        <td>&nbsp;</td>
+                        <!-- ko template:{data:spanish,name:$root.getTemplate}-->
+                        <!-- /ko-->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="mainbutton mainright-btn save-btn" data-bind="click:submit">
+            Export Data
+        </button>
+        <a class="mainbutton mainright-btn cancel-btn" href='@(Url.Action("Circle"))'>Cancel</a>
+        <a id="FillName" class="table-btn icon-comment-alt viewcomment-btn hidden" data-bind='attr: { href: FileNameUrl }' data-toggle="modal" data-target="#modalNormal"><span style="display:none;">1</span></a>
+    </div>
+}
+<script type="text/html" id="tmp_Measure">
+    <td data-bind="text:name"></td>
+    <td>
+        <input type="checkbox" data-bind="checked:resultsReport,attr:{name:language + 'Results',id:'Results'+id,'aria-labelledby':'Results'+id},value:id" title=" " role="group"/>
+        <span id="checkReports" data-bind="attr:{id:'checkReports'+id}"></span>
+    </td>
+    <td>
+        <input type="checkbox" data-bind="checked:itemLevel,attr:{name:language + 'ItemLevel',id:'ItemLevelReport'+id,'aria-labelledby':'ItemLevelReport'+id},value:id" title=" " role="group" />
+        <span id="checkReports" data-bind="attr:{id:'checkItemLevelReport'+id}"></span>
+    </td>
+</script>
+<script type="text/html" id="tmp_Null">
+    <td></td>
+    <td></td>
+    <td></td>
+</script>
+@section Scripts
+{
+    <script type="text/javascript">
+        var getMeasureModel = function(measure) {
+            var model = {};
+            /*
+            ApplyToWave: "1"
+ID: 164
+Name: "Jack M1"
+ParentId: 1
+RelatedMeasureId: 176
+ShortName: "JM"
+Sort: 1
+            */
+            model.name = window.isNull("Name", measure, "");
+            model.id = window.isNull("ID", measure, 0);
+            model.resultsReport = ko.observable(false);
+            model.itemLevel = ko.observable(false);
+
+            model.resultsReport.subscribe(function(checked) {
+                if (checked === false) {
+                    model.itemLevel(false);
+                }
+            });
+
+            model.itemLevel.subscribe(function(checked) {
+                if (checked) {
+                    model.resultsReport(true);
+                }
+            });
+            return model;
+        };
+
+        function getReportTypeSelected(count) {
+            var model = {
+                count: count,
+                resultsReport: {
+                    selected: ko.observable(0)
+                },
+                itemLevel: {
+                    selected: ko.observable(0)
+                }
+            };
+            model.resultsReport.checked = ko.computed(function() {
+                return this.count > 0 && this.count === this.resultsReport.selected();
+            }, model);
+            model.itemLevel.checked = ko.computed(function() {
+                return this.count > 0 &&this.count === this.itemLevel.selected();
+            }, model);
+            return model;
+        }
+
+        var getReportModel = function(measures) {
+            var model = {};
+            var measureId;
+            var i;
+            var englishModel, englishEntity;
+            var spanishModel, spanishEntity;
+            var englishMeasures = measures["English"];
+            var spanishMeasures = measures["Spanish"];
+            var englishMeasureCount = englishMeasures.length;
+            var spanishMeasureCount = spanishMeasures.length;
+
+            model.measures = [];
+
+            function observeMeasure(measure, language) {
+                measure.language = language;
+                measure.resultsReport.subscribe(function(checked) {
+                    var target = model.status[language].resultsReport;
+                    target.selected(target.selected() + (checked ? 1 : -1));
+                    //console.log(measure.id, "checked:", checked);
+                });
+                measure.itemLevel.subscribe(function(checked) {
+                    var target = model.status[language].itemLevel;
+                    target.selected(target.selected() + (checked ? 1 : -1));
+                    //console.log(measure.id, "checked:", checked);
+                });
+            }
+
+            for (i = 0; i < englishMeasures.length; i++) {
+                englishEntity = englishMeasures.measures[i];
+                englishModel = getMeasureModel(englishEntity);
+                observeMeasure(englishModel, "english");
+
+                spanishEntity = spanishMeasures.measures && spanishMeasures.measures.filter(function(mea) {
+                    return mea.ID == englishEntity.RelatedMeasureId;
+                });
+                if (spanishEntity && spanishEntity.length) {
+                    spanishEntity = spanishEntity[0];
+                    spanishModel = getMeasureModel(spanishEntity);
+                    spanishEntity.processed = true;
+                    observeMeasure(spanishModel, "spanish");
+                } else {
+                    spanishModel = null;
+                }
+
+                model.measures.push({
+                    english: englishModel,
+                    spanish: spanishModel
+                });
+            }
+            for (i = 0; i < spanishMeasures.length; i++) {
+                spanishEntity = spanishMeasures.measures[i];
+                spanishModel = getMeasureModel(spanishEntity);
+                if (!spanishEntity.processed) {
+                    observeMeasure(spanishModel, "spanish");
+                    model.measures.push({
+                        english: null,
+                        spanish: spanishModel
+                    });
+                }
+            }
+
+            model.status = {
+                english: getReportTypeSelected(englishMeasureCount),
+                spanish: getReportTypeSelected(spanishMeasureCount)
+            }
+
+            model.waves = [
+                {
+                    value: "@((int)Wave.BOY)",
+                    text: "@(Wave.BOY.ToDescription())",
+                    checked: ko.observable(false)
+                }, {
+                    value: "@((int)Wave.MOY)",
+                    text: "@(Wave.MOY.ToDescription())",
+                    checked: ko.observable(false)
+                }, {
+                    value: "@((int)Wave.EOY)",
+                    text: "@(Wave.EOY.ToDescription())",
+                    checked: ko.observable(false)
+                }
+            ];
+
+            model.getTemplate = function(measure) {
+                if (measure) return "tmp_Measure";
+                return "tmp_Null";
+            };
+
+            model.searchCriteria = {
+                assessmentId: ko.observable(window.queryString("assessmentId", @(Model.ID))),
+                year: ko.observable(window.queryString("year", "")),
+                communityId: ko.observable(window.queryString("communityId", "")),
+                communityName: ko.observable(window.queryString("communityName", "")),
+                schoolId: ko.observable(window.queryString("schoolId", "")),
+                schoolName: ko.observable(window.queryString("schoolName", ""))
+            };
+
+            model.switchSelectAll = function(language, type) {
+                var target = model.status[language][type];
+                var targetStatus;
+                if (target) {
+                    if (target.checked()) {
+                        targetStatus = false;
+                    } else {
+                        targetStatus = true;
+                    }
+                    for (i = 0; i < model.measures.length; i++) {
+                        var measure = model.measures[i];
+                        measure && measure[language] && measure[language][type](targetStatus);
+                    }
+                }
+            };
+
+            model.chooseWave = function(wave) {
+                wave.checked(!wave.checked());
+            };
+
+            model.submit = function() {
+                if (!$form.valid()) {
+                    return false;
+                }
+                var txt = $("#ReceiveFileBy option:selected").text().trim().toUpperCase();
+                if(txt=="SFTP" && !$("#SFTPCheck").prop("checked")){
+                    window.showMessage("hint", window.getErrorMessage('SFTPWithoutTest'));
+                    return false;
+                }
+                var checked = $("input:checkbox:checked[name='englishResults']").length + $("input:checkbox:checked[name='spanishResults']").length;
+                if (checked < 1) {
+                    //window.showMessage("hint", "Please select measures");
+                    //return false;
+                }
+                return true;
+            };
+            model.FileNameUrl=ko.observable("");
+            model.IdsJson=ko.observable("");
+            model.TempList=ko.observable('@Url.Action("AssReportTempList")'+"/"+@ViewBag.assessmentId+"?returnurl="+location.href);
+
+            model.SFTPTest=function(){
+                if (!$('#SFTPHostIp').valid()) {
+                    return;
+                }
+                $('#showDialog').click();
+                var hostIP=$("#SFTPHostIp").val();
+                var hostPort=$("#SFTPPort").val();
+                var userName=$("#SFTPUserName").val();
+                var password=$("#SFTPPassword").val();
+                $.get("../ValidateSFTP",
+                    {hostIP:hostIP, hostPort:hostPort, userName:userName, password:password},
+                    function(result){
+                        if(result=='fail'){
+                            window.showMessage("hint", window.getErrorMessage('SFTPTestFail'));
+                            $("#SFTPCheck").prop("checked", false);
+                        }
+                        else
+                        {
+                            $.when(window.waitingAlert("success", window.getErrorMessage('SFTPTestSuccess')));
+                            $("#SFTPCheck").prop("checked", true);
+                        }
+                        closeModal("#modalSmall");
+                    });
+            };
+            return model;
+        };
+        var measures = @(Html.Raw(ViewBag.Measures));
+        var $form;
+
+        $(function() {
+            $("[name='waves']").removeAttr("aria-required");
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function(response) {
+                    if (response.success) {
+                        if (response.msg == "SaveTemp") {
+                            SaveTemp(response.data);
+                        }
+                        else
+                        {
+                            $.when(window.waitingAlert("success", response.msg));
+                        }
+                    } else {
+                        window.showMessage("fail", response.msg);
+                    }
+                }
+            });
+            $form = $("#@(formId)");
+            reportModel = getReportModel(measures);
+            ko.applyBindings(reportModel);
+
+            $.validator.addMethod("compareDate", function (value, element) {
+                var starttime = $("#FromDate").val();
+                var stoptime = $("#ToDate").val();
+                var reg = new RegExp('-', 'g');
+                starttime = starttime.replace(reg, '/');
+                stoptime = stoptime.replace(reg, '/');
+                starttime = new Date(parseInt(Date.parse(starttime), 10));
+                stoptime = new Date(parseInt(Date.parse(stoptime), 10));
+                if (starttime > stoptime) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }, window.getErrorMessage('stopGreaterStart'));
+            jQuery.validator.addMethod("ip", function (value, element) {
+                return this.optional(element) || /^(([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))\.)(([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))\.){2}([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))$/.test(value);
+            }, window.getErrorMessage('CheckIP'));
+        });
+
+        $("#txtCommunity").on("selected.sunnet.datalist", function (event) {
+            $("#txtSchool").datalist("clear");
+        });
+
+        /*----------Report Template Start-----------*/
+        function SaveTemp(ids) {
+            $.when(waitingConfirm(getErrorMessage("report_SaveTemp"), "Yes", "No")).done(function () {
+                if (ids.length > 0) {
+                    reportModel.FileNameUrl('@Url.Action("FillTempName")'+"?ids="+ids+"&assessmentId="+@ViewBag.AssessmentId);
+                    $("#FillName").click();
+                }
+            }).fail(function () {
+
+            });
+        }
+
+        function ReportTempChange()
+        {
+            if(reportModel.status.english.resultsReport.checked())
+                $("#engResult").click();
+            if(reportModel.status.english.itemLevel.checked())
+                $("#engItemLevel").click();
+            if(reportModel.status.spanish.resultsReport.checked())
+                $("#spnResult").click();
+            if(reportModel.status.spanish.itemLevel.checked())
+                $("#spnItemLevel").click();
+            var assTempId=$("#AssReportTemps").val();
+            $(":checkbox[name!='waves']").prop("checked", false);
+            if(assTempId=="0")
+            {
+                return;
+                //assTempId=-1;
+            }
+            $.getJSON('../BindTemp',{tempId:assTempId},function(data){
+                if(data==null)
+                    return;
+
+
+                if(data.englishResults!="")
+                {
+                    var englishResultCheck=data.englishResults.split(',');
+                    for(var i=0;i<englishResultCheck.length;i++)
+                    {
+                        $(":checkbox[name='englishResults'][value='"+englishResultCheck[i]+"']").prop("checked", true);
+                    }
+                    if( $(":checkbox[name='englishResults']").not("input:checked").length==0)
+                    {
+                        $("#engResult").click();
+                    }
+                }
+                if(data.englishItemLevel!="")
+                {
+                    var englishItemLevelCheck=data.englishItemLevel.split(',');
+                    for(var i=0;i<englishItemLevelCheck.length;i++)
+                    {
+                        $(":checkbox[name='englishItemLevel'][value='"+englishItemLevelCheck[i]+"']").prop("checked", true);
+                    }
+                    if( $(":checkbox[name='englishItemLevel']").not("input:checked").length==0)
+                    {
+                        $("#engItemLevel").click();
+                    }
+                }
+                if(data.spanishResults!="")
+                {
+                    var spanishResultCheck=data.spanishResults.split(',');
+                    for(var i=0;i<spanishResultCheck.length;i++)
+                    {
+                        $(":checkbox[name='spanishResults'][value='"+spanishResultCheck[i]+"']").prop("checked", true);
+                    }
+                    if( $(":checkbox[name='spanishResults']").not("input:checked").length==0)
+                    {
+                        $("#spnResult").click();
+                    }
+                }
+                if(data.spanishItemLevel!="")
+                {
+                    var spanishItemLevelCheck=data.spanishItemLevel.split(',');
+                    for(var i=0;i<spanishItemLevelCheck.length;i++)
+                    {
+                        $(":checkbox[name='spanishItemLevel'][value='"+spanishItemLevelCheck[i]+"']").prop("checked", true);
+                    }
+                    if( $(":checkbox[name='spanishItemLevel']").not("input:checked").length==0)
+                    {
+                        $("#spnItemLevel").click();
+                    }
+                }
+            });
+        }
+        /*----------Report Template End-----------*/
+
+        /*----------SRTP Report Start-----------*/
+        function ReceiveByChange()
+        {
+            var txt = $("#ReceiveFileBy option:selected").text().trim().toUpperCase();
+            if (txt == undefined || txt == "") {
+                return false;
+            }
+            else {
+                if (txt == "SFTP".toUpperCase()) {
+                    $("#SFTPHostIp").val("");
+                    $("#SFTPHostIp").show();
+                    $("[for='SFTPHostIp']").show();
+                    $("#SFTPHostIp-error").show();
+
+                    $("#SFTPPort").val(22);
+                    $("[for='SFTPPort']").show();
+                    $("#SFTPPort").show();
+
+                    $("#SFTPFilePath").val('/');
+                    $("[for='SFTPFilePath']").show();
+                    $("#SFTPFilePath").show();
+
+                    $("#SFTPUserName").val("");
+                    $("#SFTPUserName").show();
+                    $("[for='SFTPUserName']").show();
+
+                    $("#SFTPPassword").val("");
+                    $("#SFTPPassword").show();
+                    $("[for='SFTPPassword']").show();
+
+                    $("#SFTPTest").show();
+                }
+                else {
+                    $("#SFTPHostIp").hide();
+                    $("[for='SFTPHostIp']").hide();
+                    $("#SFTPHostIp-error").hide();
+
+                    $("[for='SFTPPort']").hide();
+                    $("#SFTPPort").hide();
+
+                    $("[for='SFTPFilePath']").hide();
+                    $("#SFTPFilePath").hide();
+
+                    $("#SFTPUserName").hide();
+                    $("[for='SFTPUserName']").hide();
+
+                    $("#SFTPPassword").hide();
+                    $("[for='SFTPPassword']").hide();
+
+                    $("#SFTPTest").hide();
+                    $("#SFTPCheck").prop("checked", false);
+                }
+            }
+        }
+        function SFTPChange()
+        {
+            if($("#SFTPCheck").prop("checked"))
+                $("#SFTPCheck").prop("checked",false);
+        }
+        /*----------SRTP Report End-----------*/
+
+        function SelectCustomScore() {
+            if($("#btnCustomScoreAll").hasClass("checked-btn")) {
+                $("[name='customScores']").prop("checked", false);
+                $("#btnCustomScoreAll").removeClass("checked-btn");
+            } 
+            else {
+                $("#btnCustomScoreAll").addClass("checked-btn");
+                $("[name='customScores']").prop("checked", true);
+            }
+        }
+        function SelectOtherCustomScore() {
+            if ($("#btnOtherCustomScoreAll").hasClass("checked-btn")) {
+                $("[name='otherCustomScores']").prop("checked", false);
+                $("#btnOtherCustomScoreAll").removeClass("checked-btn");
+            }
+            else {
+                $("#btnOtherCustomScoreAll").addClass("checked-btn");
+                $("[name='otherCustomScores']").prop("checked", true);
+            }
+        } 
+    </script>
+}

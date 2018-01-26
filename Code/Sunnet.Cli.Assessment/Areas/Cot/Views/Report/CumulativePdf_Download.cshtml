@@ -1,0 +1,68 @@
+﻿@using Sunnet.Cli.Business.Cot.Cumulative
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Cot/Views/Shared/_Layout_Report_Chart.cshtml";
+    var models = ViewBag.Model as List<ReportModel>;
+    var isFirstTeacher = true;
+    var index = 0;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@foreach (var model in models)
+{
+    foreach (var measure in model.Measures)
+    {
+        <table class='header @(isFirstTeacher ? "" : "newpager") ' width="100%">
+            @Html.Partial("_Partial_CumulativeReport_Head", model, new ViewDataDictionary { new KeyValuePair<string, object>("measureName", measure.Name) })
+        </table>
+        <div style="width: @ReportHelper.GetChartWidth(measure.Items.Count() + 2, 50, 100, 1200)px;height:520px;text-align: center; page-break-inside: avoid; margin: 0 auto;">
+            <img src='@(ViewData["Image" + index++])' />
+        </div>
+        <table class='header newpager' width="100%">
+            @Html.Partial("_Partial_CumulativeReport_Head", model, new ViewDataDictionary { new KeyValuePair<string, object>("measureName", measure.Name) })
+        </table>
+        <table cellpadding="0" cellspacing="0" class="report-data table_border" style="text-align:center; margin-bottom:50px" width="50%">
+            <thead style="page-break-inside: avoid">
+                <tr>
+                    <td colspan="5">Possible Goals</td>
+                </tr>
+                <tr>
+                    <td>Item</td>
+                    <td>Status</td>
+                    <td>Date</td>
+                    <td>Level Number</td>
+                    <td>Resource</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in measure.Items.Where(i => !i.IsFillColor))
+                {
+                    <tr>
+                        <td>@item.Description</td>
+                        <td>@(item.IsSet ? "Set" : "Not Set")</td>
+                        <td>@(item.IsSet ? item.SetDate.ToShortDateString() : "")</td>
+                        <td>@item.Level.GetValue()</td>
+                        <td>
+                            @if (item.Links != null)
+                        {
+                            foreach (var link in item.Links)
+                            {
+                                    <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                    <br />
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (measure.Items.Count(i => !i.IsFillColor) == 0)
+                {
+                    <tr>
+                        <td colspan="5">No Data</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        {
+            isFirstTeacher = false;
+        }
+    }
+}

@@ -1,0 +1,5 @@
+GO 
+ALTER TABLE dbo.Scores ALTER COLUMN TargetRound INT
+GO 
+UPDATE  dbo.Scores
+SET     TargetRound = CAST(TargetRound AS INT);

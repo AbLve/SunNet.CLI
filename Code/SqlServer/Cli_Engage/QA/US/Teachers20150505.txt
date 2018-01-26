@@ -1,0 +1,7 @@
+﻿if not exists(select * from syscolumns where id=object_id('Teachers') and name='ReqCycles')
+alter table Teachers add  ReqCycles decimal(18, 2) 
+GO
+
+update Teachers set ReqCycles =0 where ReqCycles is null
+
+go

@@ -1,0 +1,32 @@
+﻿IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'EmailLogs') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+	DROP TABLE [dbo].[EmailLogs]
+GO
+
+/****** Object:  Table [dbo].[EmailLogs]    Script Date: 2014/9/25 16:41:28 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[EmailLogs](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[UserID] [int] NOT NULL,
+	[SendDate] [datetime] NOT NULL,
+	[Email] [varchar](200) NOT NULL,
+	[EmailType] [tinyint] NOT NULL,
+ CONSTRAINT [PK_EmailLogs] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

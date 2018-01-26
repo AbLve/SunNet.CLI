@@ -1,0 +1,185 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework
+@using Sunnet.Cli.UIBase.Controllers
+
+<!DOCTYPE html>
+@{
+    const string siteName = "Cli Engage";
+    var relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    var lastModified = FileHelper.GetFileLastModified(Server.MapPath(relativePath));
+}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword" content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>@ViewBag.Title - @siteName</title>
+    @Styles.Render("~/css/basic")
+    @Styles.Render("~/css/signup")
+    @RenderSection("Styles", false)
+    @Scripts.Render("~/scripts/modernizr")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/scripts/ie68")
+    <![endif]-->
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <div class="warp">
+        <div class="header">
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="/">
+                        <img src="/images/cli_logo.png" alt="cli_logo"></a>
+                </div>
+                @if (ViewBag.Login)
+                {
+                    <div class="header-login">
+                        <div class="dropdown">
+                            <a class="header-sign-btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" href="#" data-toggle="modal"><i class="icon-user"></i>@ViewBag.FirstName
+                                <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="@(DomainHelper.MainSiteDomain)home/dashboard"><i class="icon-dashboard"></i>Dashboard</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="@(DomainHelper.MainSiteDomain)Profile/MyProfile"><i class="icon-bullhorn"></i>My Profile</a></li>
+                            </ul>
+                        </div>
+                        <a href="@(DomainHelper.SsoSiteDomain)home/LogOut"><i class="icon-off"></i>Log out</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="header-login">
+                        <a class="header-sign-btn" href="#" data-toggle="modal" data-target="#myModal-2">SIGN IN</a>
+                        @if (ViewBag.GoogleID)
+                        {
+                            <a class="header-sign-btn" href="@(DomainHelper.SsoSiteDomain)home/LogOut">Log Out Google Account</a>
+                        }
+                        <div class="modal fade in" id="myModal-2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog-sm modal-dialog-login">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                        <div class="modal-login-header">
+                                            <h3>Welcome to CLI Engage</h3>
+                                            <a class="g-in-btn" href="@(DomainHelper.SsoSiteDomain)home/Index?@(ViewBag.LoginUrl)">Sign In with your Google Account</a>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <div class="modal-main-content">
+
+                                            <div class="modal-login-body">
+                                                <p>
+                                                    You will need a Google or Gmail account to set up a new account or log in to your existing account on CLI Engage.
+                                                        If you do not have a Google account, you can create one using your existing email account or create a Gmail account
+                                                        by going to the following link: <a class="login-text-link" target="_blank" href="https://accounts.google.com/signup">https://accounts.google.com/signup</a>
+                                                </p>
+                                                <p>
+                                                    (To use your current email address, click "I prefer to use my current email address" below the Choose Your Username field.)
+                                                </p>
+
+                                                <p>
+                                                    This process will allow you to use your Google account to log into the CLI Engage website. Only basic Google account information
+                                                        will be used by UTHealth to set up your CLI Engage account. 
+                                                </p>
+                                            </div>
+                                            <div class="modal-login-footer">
+                                                UTHealth employees,
+                                                    please click here to log in: <a class="login-text-link" href="@(Sunnet.Cli.UIBase.Models.DomainHelper.SsoSiteDomain)home/Index?@(ViewBag.CLIUserLogin)">UTHealth Login</a>&nbsp;&nbsp;
+                                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="help-btn">
+                    <a href="http://www.texasschoolready.org/help/MainTicketForm.aspx?Section8" target="_blank">&nbsp;</a>
+                </div>
+            </div>
+            @Html.Partial("_Partial_MenuBase")
+        </div>
+
+        @RenderSection("Banner", false)
+    </div>
+    @RenderSection("Slides", false)
+    <div class="main-container">
+        @RenderBody()
+    </div>
+    <div class="footer">
+        <div class="homelink">
+            <ul>
+                <li class="link-ut"><a href="https://www.uth.edu/" target="_blank">
+                    <img src="/images/UT.png" alt="UT"></a></li>
+                <li class="link-cli"><a href="http://www.childrenslearninginstitute.org/" target="_blank">
+                    <img src="/images/CLI.png" alt="CLI"></a></li>
+                <li class="link-tsr"><a href="http://www.texasschoolready.org/" target="_blank">
+                    <img src="/images/TSR.png" alt="TSR"></a></li>
+            </ul>
+        </div>
+        <div class="copyright">
+            <div class="nav-bottom">
+                <ul>
+
+                    <li><a href="https://www.uth.edu/index/policies.htm" target="_blank">Site Policies</a></li>
+                    <li><a href="https://www.uth.edu/index/file-viewing-information.htm" target="_blank">Web File Viewing</a></li>
+                    <li>@Html.ActionLink("Contact Us", "ContactUs", "Home", new { Area = "" }, null)</li>
+                </ul>
+            </div>
+            <p>
+                Copyright © 2013 by <a class="main-a" href="https://www.uth.edu/" target="_blank">The University of Texas Health Science Center</a> at Houston (UTHealth)
+                <br />
+                Webmaster: <a href="mailto:cliengage@uth.tmc.edu">cliengage@@uth.tmc.edu</a> | This document was last modified on: @(lastModified.ToString("MM/dd/yyyy HH:mm:ss"))
+            </p>
+
+        </div>
+    </div>
+    @Scripts.Render("~/scripts/jquery")
+    @Scripts.Render("~/scripts/jquery_val")
+    @Scripts.Render("~/scripts/bootstrap")
+    @Scripts.Render("~/scripts/knockout")
+    @Scripts.Render("~/scripts/format")
+    @Scripts.Render("~/scripts/cli")
+    @RenderSection("Scripts", false)
+
+    <div id="modalSmall" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-sm">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalLarge" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

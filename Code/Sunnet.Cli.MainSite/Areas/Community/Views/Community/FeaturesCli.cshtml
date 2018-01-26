@@ -1,0 +1,256 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Communities.Enums
+@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Communities.Entities
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Communities.Models.CommunityFeatureModel
+@{
+    ViewBag.Title = "Community/District Approved Features";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<CpallsAssessmentModel> listAssessments = ViewBag.listAssessments;
+    List<CommunityAssessmentRelationsEntity> assignedList = ViewBag.assignedList;
+    var localAssessments = ViewBag.localAssessments as List<LocalAssessment>;
+    var cotCecList = listAssessments.Where(c => c.Type == AssessmentType.Cot || c.Type == AssessmentType.Cec).ToList();
+    var cpallsList = listAssessments.Where(c => c.Type == AssessmentType.Cpalls || c.Type == AssessmentType.UpdateObservables).ToList();
+}
+<style>
+    .border-bold tr:first-child td {
+        border-top: 1px solid #333;
+    }
+
+    .border-bold tr:last-child td {
+        border-bottom: 1px solid #333;
+    }
+
+    .border-bold tr td {
+        padding: 2px 0 !important;
+    }
+</style>
+@section Scripts
+{
+
+    <script type="text/javascript">
+
+        +(function() {
+            registerFormCallbacks("formId", {
+                onPosted: function(response) {
+                    redirectBack("index");
+                }
+            });
+
+            $(".approved :checkbox").css("cursor", "pointer");
+
+
+            $(".request :input").prop("disabled", "true");
+
+        })();
+        $(function() {
+
+        });
+
+        function ChangeFeature(assessmentId) {
+            if ($("#chk" + assessmentId).prop("checked")) {
+                $("[name='classLevel" + assessmentId + "']").removeAttr("readonly");
+            } else {
+                $("[name='classLevel" + assessmentId + "']").prop("readonly", "readonly");
+            }
+        }
+
+        var ListAssessment = [];
+
+        function GetAllCheckedItem() {
+
+            $(".approved :checked").each(function(index, obj) {
+                var assessment = {};
+                assessment.AssessmentId = $(this).val();
+                var classLevelIds = new Array();
+                $("[name='classLevel" + assessment.AssessmentId + "']:checked").each(function(index, obj) {
+                    console.log($(this).val());
+                    classLevelIds.push($(this).val());
+                });
+                assessment.ClassLevels = classLevelIds;
+                ListAssessment.push(assessment);
+            });
+            console.log(ListAssessment);
+            return ListAssessment;
+        }
+
+        function SubmitFeatures() {
+            ListAssessment = GetAllCheckedItem();
+            $.post("/Community/Community/FeaturesCli", { comId: "@Model.ID", listAssessment: ListAssessment }, function(data) {
+                var res = JSON.parse(data);
+                if (res.success == true) {
+                    showMessage("success", "");
+                    closeModal("#@(formId)");
+                } else {
+                    showMessage("fail", res.msg);
+                }
+            });
+        }
+    </script>
+}
+@using (Ajax.BeginForm("FeaturesCli", "Community", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ID" value="@Model.ID"/>
+@*<div class="form-group">
+        <label class="control-label col-sm-5">Community/District Features: [@Model.Name]</label>
+    </div>*@
+    <div class="form-group approved" style="border-bottom: 3px solid #247432;">
+        <span class="col-lg-4" style="color: black; font-weight: bold; font-size: 16px">Approved Features</span>
+    </div>
+    <div class="form-group approved">
+        <div class="col-sm-12" style="border-bottom: 1px solid #cccccc;">
+            @for (int i = 0; i < localAssessments.Count; i++)
+            {
+                <div class="col-lg-4 m-b m-l-n">
+                    @if (assignedList.Any(o => o.AssessmentId == (int)localAssessments[i] && o.Isrequest == false))
+                    {
+                        @Html.CheckBox("chkAssessment", new { @value = (int)localAssessments[i], id = "chk" + (int)localAssessments[i], @checked = true })
+                    }
+                    else
+                    {
+                        @Html.CheckBox("chkAssessment", new { @value = (int)localAssessments[i], id = "chk" + (int)localAssessments[i] })
+                    }
+                    <label for=@("chk" + (int)localAssessments[i])>@localAssessments[i].ToDescription() </label>
+                </div>
+            }
+               @for (int i = 0; i < cotCecList.Count; i++)
+               {
+                   <div class="col-lg-4 m-b m-l-n" >
+                       <div style="background-color: #dddddd; padding: 5px">
+                           @if (assignedList.Any(o => o.AssessmentId == cotCecList[i].ID && o.Isrequest == false))
+                           {
+                               @Html.CheckBox("chkAssessment", new { @value = cotCecList[i].ID, id = "chk" + cotCecList[i].ID, @checked = true, onclick = "ChangeFeature(this.value)" })
+                           }
+                           else
+                           {
+                               @Html.CheckBox("chkAssessment", new { @value = cotCecList[i].ID, id = "chk" + cotCecList[i].ID, onclick = "ChangeFeature(this.value)" })
+                           }
+                           <label  style="margin: 0px" for=@("chk" + cotCecList[i].ID)>@cotCecList[i].Name </label>
+                       </div>
+                   </div>
+               }
+        </div>
+    </div>
+    <div class="form-group approved">
+        <span class="col-lg-4" style="color: black; font-weight: bold; font-size: 16px">Assessments</span>
+    </div>
+    <div class="form-group approved" style="border-bottom: 3px solid #247432;">
+
+        <div class="col-sm-12">
+
+            @for (int i = 0; i < cpallsList.Count; i++)
+            {
+               
+                <div class="col-lg-4 m-b m-l-n" style="padding-top: 10px;">
+                    <div style="background-color: #dddddd; padding: 5px">
+                        @if (assignedList.Any(o => o.AssessmentId == cpallsList[i].ID && o.Isrequest == false))
+                        {
+                            @Html.CheckBox("chkAssessment", new { @value = cpallsList[i].ID, id = "chk" + cpallsList[i].ID, @checked = true, onclick = "ChangeFeature(this.value)" })
+                        }
+                        else
+                        {
+                            @Html.CheckBox("chkAssessment", new { @value = cpallsList[i].ID, id = "chk" + cpallsList[i].ID, onclick = "ChangeFeature(this.value)" })
+                        }
+                        <label  style="margin: 0px" for=@("chk" + cpallsList[i].ID)>@cpallsList[i].Name </label>
+                    </div>
+                    <table class="table table-condensed" id="tbClassLevel@(cpallsList[i].ID)">
+                        <thead>
+                            <tr>
+                                <th style="border: 0; padding: 0; font-size: 12px;">Class Level</th>
+                                <th style="border: 0; padding: 0; font-size: 12px;">Avaliable</th>
+                            </tr>
+                            <tr>
+                                <th style="border: 0; padding: 0;">
+                                    <label for="chkAll@(cpallsList[i].ID)" >All and missing</label>
+                                </th>
+                                <th style="border: 0; padding: 0;"><span style="display:none;">1</span>
+                                    @if (assignedList.Any(o => o.AssessmentId == cpallsList[i].ID
+                                                && ("," + o.ClassLevelIds + ",").Contains(",0,"))
+                                        )
+                                    {
+                                        <input name="classLevel@(cpallsList[i].ID)" type="checkbox" value="0" checked="checked" title=" "/>
+                                    }
+                                    else
+                                    {
+                                        <input name="classLevel@(cpallsList[i].ID)" type="checkbox" value="0" title=" "/>
+                                    }
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="border-bold">
+                            <tr>
+                                <td>PK</td>
+                                <td>
+                                    @if (assignedList.Any(o => o.AssessmentId == cpallsList[i].ID
+                                                                     && ("," + o.ClassLevelIds + ",").Contains(",1,"))
+                                              )
+                                    {
+                                        <input name="classLevel@(cpallsList[i].ID)" value="1" type="checkbox" checked="checked" title=" "/>
+                                    }
+                                    else
+                                    {
+                                        <input name="classLevel@(cpallsList[i].ID)" value="1" type="checkbox" title=" "/>
+                                    }
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>
+                                    @if (assignedList.Any(o => o.AssessmentId == cpallsList[i].ID
+                                                               && ("," + o.ClassLevelIds + ",").Contains(",2,"))
+                                        )
+                                    {
+                                        <input name="classLevel@(cpallsList[i].ID)" value="2" type="checkbox" checked="checked" title=" "/>
+                                    }
+                                    else
+                                    {
+                                        <input name="classLevel@(cpallsList[i].ID)" value="2" type="checkbox" title=" "/>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="form-group request" style="display: none">
+        <span class="control-label col-sm-2">Send Request(s)</span>
+        @for (int i = 0; i < assignedList.Count; i++)
+        {
+            if (@assignedList[i].Isrequest)
+            {
+            <span class="col-sm-2"></span>
+            <div class="col-sm-10" id=@("div" + assignedList[i].ID)>
+                <div class="col-lg-4 m-b m-l-n">
+                    @Html.CheckBox("chkAssessmentRequest", new { @value = assignedList[i].AssessmentId, @checked = true, id = "request" + assignedList[i].AssessmentId })
+                    <label for=@("request" + assignedList[i].AssessmentId)>@assignedList[i].AssessmentName </label>
+                </div>
+                <div class="col-lg-6 m-b m-l-n">
+                    @Html.TextBox("txtComments", @assignedList[i].Comment, new
+               {
+                   @class = "form-control",
+                   placeholder = "Comments",
+                   id = "txtComment" + assignedList[i].AssessmentId
+               })
+                </div>
+            </div>
+            }
+        }
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" onclick="SubmitFeatures()">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

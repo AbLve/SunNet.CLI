@@ -1,0 +1,38 @@
+﻿
+
+IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[CompletionReportData]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+	DROP TABLE [dbo].[CompletionReportData]
+GO
+
+/****** Object:  Table [dbo].[CompletionReportData]    Script Date: 2015/1/7 15:53:07 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[CompletionReportData](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Type] [tinyint] NOT NULL,
+	[Language] [tinyint] NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[Year] [int] NOT NULL,
+	[Waves] [varchar](4000) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[Remark] [varchar](4000) NOT NULL,
+	[AccessKey] [varchar](10) NOT NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

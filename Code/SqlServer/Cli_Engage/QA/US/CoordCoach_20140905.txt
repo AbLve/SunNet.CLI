@@ -1,0 +1,49 @@
+﻿
+drop table CoordCoachs
+
+go
+
+create table CoordCoachs
+(
+	ID int primary key identity(1,1) not null,
+	UserId int not null,
+	SchoolYear varchar(10) not null,
+	BirthDate datetime not null,
+	Gender tinyint not null,
+	OfficeAddress1 varchar(200) not null,
+	OfficeAddress2 varchar(200) not null,
+	OfficeCity varchar(200) not null,
+	OfficeCountyId int not null,
+	OfficeStateId int not null,
+	OfficeZip varchar(5) not null,
+	OfficeIsReceiveFedEx bit not null default 0,
+	OfficeIsReceiveMail bit not null default 0,
+	HomeMailingAddress1 varchar(200) not null,
+	HomeMailingAddress2 varchar(200) not null,
+	HomeMailingCity varchar(200) not null,
+	HomeMailingCountyId int not null,
+	HomeMailingStateId int not null,
+	HomeMailingZip varchar(5) not null,
+	HomeIsReceiveFedEx bit not null default 0,
+	HomeIsReceiveMail bit not null default 0,
+	Ethnicity  tinyint not null,
+	EthnicityOther  varchar(100) not null,
+	PrimaryLanguageId int not null,
+	PrimaryLanguageOther varchar(100) not null,
+	SecondaryLanguageId int not null,
+	SecondaryLanguageOther varchar(100) not null,
+	TotalYearsCoaching int not null,
+	EducationLevel tinyint not null,
+	PMAssignmentId int not null,
+	CoachingType tinyint not null,
+	CoachingTypeOther varchar(100) not null,
+	VendorCode int not null,
+	FTE decimal(18,2) not null,
+	CLIFundingId int not null,
+	FundedThrough tinyint not null,
+	FundedThroughOther varchar(100) not null,
+	AccountSponsor varchar(50) not null,
+	Employer varchar(140) not null,
+	IsAssessmentEquipment bit not null,
+	CoordCoachNotes varchar(600) not null
+)

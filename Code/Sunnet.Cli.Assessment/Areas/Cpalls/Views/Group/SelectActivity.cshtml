@@ -1,0 +1,86 @@
+﻿@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.CAC.Entities
+@using Sunnet.Cli.Core.Cpalls 
+@using Sunnet.Framework
+@using Sunnet.Framework.Extensions 
+@{
+    ViewBag.Title = "My Activities";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control", title = " " };
+    var listActivity = ViewBag.list as IList<MyActivityEntity>;
+    var selectedIds = ViewBag.groupList as IList<int>;
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    SearchCustomGroup();
+                    closeModal($("#@(formId)"));
+                }
+            });
+        })();
+    </script>
+}
+@using (Ajax.BeginForm("SaveActivities", "Group", null, PostFormHelper.DefaultAjaxOptions,
+                            new
+                            {
+                                @class = "form-horizontal",
+                                role = "form",
+                                id = formId
+                            }))
+{
+    
+    <div class="clearfix">
+        <input type="hidden" name="groupId" value="@ViewBag.groupId" />
+        <div class="col-sm-12 backlink" style="border-bottom: 3px solid #247432;height:84px;line-height:84px;">
+            <p class="text-left" style="margin-bottom:0;line-height:22px;padding:10px 0 5px;color:#247432;">
+                Select activities for this custom group. All activities that you have saved into "My Activities" will appear on this page. If you don’t see any activities listed below, or you would like to review and save additional activities, <a target="_blank" href="@(SFConfig.CACDomain)pre-k/" title="CIRCLE Activity Collection" style="text-decoration: underline;">visit the CIRCLE Activity Collection</a>
+            </p>
+        </div>
+        <div class="col-sm-12">
+            <table class="table table-hover" style="text-align:left;border-bottom:0;">
+                <tr>
+                    <th style="text-align:left;">Activity</th>
+                    <th style="text-align:left;">Domain</th>
+                    <th style="text-align:left;">SubDomain</th>
+                    <th style="text-align:left;">Note</th>
+                </tr>
+                @foreach (var item in listActivity)
+                {
+                    <tr>
+                        <td width="40%">
+                            @if (selectedIds.Contains(item.ID))
+                    {
+                                @Html.CheckBox("chkAcvitity", new { @checked = true, @value = item.ID, id = "chk" + item.ID })<label style="display: none" for=@("chk" + item.ID)>111 </label>
+
+                            }
+                            else
+                            {
+                                @Html.CheckBox("chkAcvitity", new { @value = item.ID, id = "chk" + item.ID })<label style="display: none" for=@("chk" + item.ID)>111 </label>
+
+                            }
+
+                            <a href="@(SFConfig.CACDomain + item.Url)" target="_blank" style="display:inline-block;width:85%;vertical-align :top;color:#20ADEA"><span for=@("chk" + item.ID)> @item.ActivityName </span></a>
+                        </td>
+                        <td width="15%">@item.Domain</td>
+                        <td width="15%">@item.SubDomain</td>
+                        <td width="30%">@item.Remark</td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+        <div class="modal-footer col-sm-12" style="margin:0;padding:15px;">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Save" id="btnSubmit">
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+}
+<style>
+    .modal-main-content{
+        padding:0;
+    }
+</style>

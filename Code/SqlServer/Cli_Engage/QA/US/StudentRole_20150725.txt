@@ -1,0 +1,66 @@
+GO
+
+/****** Object:  Table [dbo].[StudentRoles]    Script Date: 2015.7.25 15:37:13 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[StudentRoles](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[RoleName] [varchar](50) NOT NULL,
+	[StudentId] [varchar](2) NOT NULL,
+	[FirstName] [varchar](2) NOT NULL,
+	[MiddleName] [varchar](2) NOT NULL,
+	[LastName] [varchar](2) NOT NULL,
+	[Status] [varchar](2) NOT NULL,
+	[StatusDate] [varchar](2) NOT NULL,
+	[SchoolYear] [varchar](2) NOT NULL,
+	[BirthDate] [varchar](2) NOT NULL,
+	[Gender] [varchar](2) NOT NULL,
+	[Ethnicity] [varchar](2) NOT NULL,
+	[PrimaryLanguageId] [varchar](2) NOT NULL,
+	[SecondaryLanguageId] [varchar](2) NOT NULL,
+	[IsSendParent] [varchar](2) NOT NULL,
+	[IsMediaRelease] [varchar](2) NOT NULL,
+	[Notes] [varchar](2) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_StudentRoles] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+GO
+SET IDENTITY_INSERT [dbo].[StudentRoles] ON 
+
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (1, 1, N'superuser', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (2, 10, N'statistical user', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (3, 5, N'content personnel (author)', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (4, 20, N'intervention manager', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (5, 30, N'intervention support personnel', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (6, 15, N'administrative personnel', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (7, 35, N'coordinator', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'RW', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (8, 40, N'mentor / coach', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'RW', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (9, 25, N'video coding analyst', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (10, 105, N'statewide', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'X', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (11, 110, N'district / community user', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'X', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (12, 115, N'educational specialist', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'X', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (13, 125, N'Principal', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'X', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (14, 145, N'Teacher', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'R', N'RW', N'RW', N'RW', N'RW', N'RW', N'RW', N'R', N'X', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (15, 150, N'Parent', N'R', N'R', N'R', N'R', N'X', N'X', N'R', N'R', N'R', N'R', N'R', N'R', N'X', N'R', N'X', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+INSERT [dbo].[StudentRoles] ([ID], [RoleId], [RoleName], [StudentId], [FirstName], [MiddleName], [LastName], [Status], [StatusDate], [SchoolYear], [BirthDate], [Gender], [Ethnicity], [PrimaryLanguageId], [SecondaryLanguageId], [IsSendParent], [IsMediaRelease], [Notes], [CreatedOn], [UpdatedOn]) VALUES (16, 101, N'external Auditor', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'R', N'X', CAST(0x0000A4E0006E5488 AS DateTime), CAST(0x0000A4E0006E5488 AS DateTime))
+SET IDENTITY_INSERT [dbo].[StudentRoles] OFF
+

@@ -1,0 +1,38 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.ApplicantContactEntity
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Confirmation";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#modalNormal').on('hidden.bs.modal', function (e) {
+                location = "/Home/SignUp";
+            })
+        })
+    </script>
+}
+<div class="logup-container1">
+    <p>
+        Thank you for your interest in CLI Engage. 
+            A CLI representative will be in contact soon to discuss enrollment opportunities for you district or school.
+    </p>
+    <p>&nbsp;</p>
+    <p>
+        Please explore our website for more information on the components of CLI Engage and how you district or school
+            can benefit these tools. Visit <a href="www.cliengage.org/demos">www.cliengage.org/demos</a> to explore
+            demos of the professional development and progress monitoring tools in CLI Engage.
+    </p>
+    <p>&nbsp;</p>
+    If you have any questions, please contact <a href="cliengage@uth.tmc.edu">cliengage@uth.tmc.edu</a>.
+        <div class=" btn-container"><a class="logbutton redbtn">Close</a></div>
+</div>
+
+<div class="modal-footer">
+    <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Close</button>
+</div>
+
+

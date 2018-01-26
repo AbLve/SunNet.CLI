@@ -1,0 +1,37 @@
+
+GO
+
+/****** Object:  Table [dbo].[CommunityNotes]    Script Date: 2015.6.12 9:58:59 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[CommunityNotes](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CommunityId] [int] NOT NULL,
+	[Messages] [nvarchar](1500) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[StartOn] [datetime] NOT NULL,
+	[StopOn] [datetime] NOT NULL,
+	[DisplayLogo] [bit] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdateBy] [int] NOT NULL,
+ CONSTRAINT [PK_CommunityNotes] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

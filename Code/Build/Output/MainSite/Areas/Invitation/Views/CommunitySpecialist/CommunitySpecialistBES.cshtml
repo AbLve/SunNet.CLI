@@ -1,0 +1,770 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models 
+
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Users.Models.CommunitySpecialistUserModel
+@{
+    ViewBag.Title = "Bulk Add/Update Community/District Specialist";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+} 
+@section BreadPath
+{
+    @(Html.ActionLink("User Management", "Dashboard", "Public"))
+    <i class="icon-angle-right"></i>
+@Html.ActionLink("Community/District Specialist List", "Index", "CommunitySpecialist")
+    <i class="icon-angle-right"></i>Bulk Add/Update Community/District Specialist
+
+} 
+<div class="right-content-top"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        @Html.LabelFor(m => m.CommunityName, new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#communityId",
+                    data_remote = "/Community/Community/GetCommunitySelectList",
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "txtCommunity",
+                    name = "txtCommunity",
+                    @for = "communityId",
+                    placeholder = "Enter key text to search",
+                    data_bind = "value: searchCriteria.txtCommunity",
+                    data_required = "false"
+                })
+            @Html.Hidden("communityId", "", new
+           {
+               @class = "form-control ",
+               placeholder = "selected from autocomplete",
+               data_bind = "value: searchCriteria.communityId"
+           })
+        </div> 
+    </div>
+    <div class="form-group">
+        @Html.Label("Code", "Community/District Specialist ID", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Code, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.communitySpecialistCode"
+            })
+        </div>
+        @Html.LabelFor(m => m.Status, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultAllText, "-1", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.status"
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.FirstName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.FirstName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.firstName"
+            })
+        </div>
+        @Html.LabelFor(m => m.LastName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.LastName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.lastName"
+            })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+
+    <div class="main-content main-content" style="width: 3000px">
+        <div class="content-title">
+            Community Specialist 
+        </div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover p-table-list">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="html: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody id="listBody" data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr data-bind="css:{'new-table-list':created}">
+                        <td>
+                            <!-- ko if: created -->
+                            <i class="icon-hand-right"></i>
+  <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.deleteCommunitySpecialist }" title="Delete"></a>
+                            <!--/ko-->
+                            <span data-bind="text:$index()+1"></span>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="chkIsInvitation"
+                                data-bind="checked:item.IsInvitation,attr:{id:'IsInvitation'+$index(),
+                                    name:'IsInvitation'+$index()}" />
+                        </td>
+                        <td>
+                            <!-- ko ifnot: created -->
+                            <label data-bind="text: item.CommunityNameText"></label>
+                            <!--/ko-->
+                            <!-- ko if: created -->
+                            <input class="form-control " data-bind="value: item.CommunityId,attr:{id:'communityId'+$index(),name:'communityId'+$index()}"
+                                placeholder="selected from autocomplete" type="hidden" value="0" />
+                            <input autocomplete="off"
+                                class="form-control" data-bind="value: item.CommunityName,attr:{id:'txtCommunity'+$index(),name:'txtCommunity'+$index(),'for':'communityId'+$index(),
+    'data-for':'#communityId'+$index()},datalist:true"
+                                data-list="true"
+                                data-remote="/Community/Community/GetCommunitySelectList" data-required="false" data-text="Name" data-value="ID"
+                                placeholder="Enter key text to search" type="text" value="" />
+                            <!--/ko-->
+                        </td> 
+                       
+                        <td>
+
+                            <select class="form-control" data-bind="
+    options:$root.positionOptions,
+    optionsText:'Text',
+    optionsValue:'Value',
+    value: item.PositionId,
+    attr:{id:'position'+$index(),name:'position'+$index()},required:true">
+                            </select>
+                        </td>
+                        <td data-bind="attr: { title: $index() }">
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.FirstName,attr:{id:'FirstName'+$index(),name:'FirstName'+$index()},required:true" />
+                        </td>
+                        <td data-bind="attr: { title: $index() }">
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.MiddleName,attr:{id:'MiddleName'+$index(),name:'MiddleName'+$index()}" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.LastName,attr:
+                        {id:'LastName'+$index(),name:'LastName'+$index()},required:true" />
+                        </td>
+
+                        <td data-bind="attr: { title: $index() }">
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.PreviousLastName,attr:{id:'PreviousLastName'+$index(),name:'PreviousLastName'+$index()}" />
+                        </td>
+
+                        <td>
+                            <input type="text" class="form-control date" maxlength="100"
+                                style="display: inline-block;"
+                                data-bind="value:item.BirthDate,attr:{id:'BirthDate'+$index(),name:'BirthDate'+$index()}" />
+                        </td>
+
+                        <td>
+                            <select class="form-control" data-bind="
+                               
+    options:$root.genderOptions,
+    optionsText:'text',
+    optionsValue:'value',
+    value: item.Gender.value,
+    attr:{id:'Gender'+$index(),name:'Gender'+$index()}">
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control" data-bind="
+    value: item.PrimaryLanguageId,
+    options:$root.primaryLanguageOptions,
+    optionsText:'Text',
+    optionsValue:'Value',attr:{id:'PrimaryLanguage'+$index(),name:'PrimaryLanguage'+$index()}">
+                            </select>
+
+                        </td>
+                        <td>
+                            <select class="form-control" data-bind="
+    value: item.Status.value,
+    options:$root.statusOptions,
+    optionsText:'text',
+    optionsValue:'value',attr:{id:'Status'+$index(),name:'Status'+$index(),required:true}">
+                            </select>
+
+                        </td>
+
+                        <td>
+                            <!-- ko ifnot: created -->
+                            <label data-bind="text: item.IsSameAddress"></label>
+                            <!--/ko-->
+                            <!-- ko if: created -->
+                            <input type="checkbox" id="chkSameAddress"
+                                data-bind="checked:item.IsSameAddress,attr:{id:'IsSameAddress'+$index(),
+    name:'IsSameAddress'+$index()}" />
+                            <!--/ko-->
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.Address,attr:
+                        {id:'Address'+$index(),name:'Address'+$index()},required:true" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control _homephone input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.PrimaryPhoneNumber,attr:
+                        {id:'PrimaryPhoneNumber'+$index(),name:'PrimaryPhoneNumber'+$index()},required:true" />
+                        </td>
+                        <td>
+                            <select class="form-control" data-bind="
+    value: item.PrimaryNumberType.value,
+    options:$root.primaryPhoneTypesOptions,
+    optionsText:'text',
+    optionsValue:'value',attr:{id:'PrimaryNumberType'+$index(),name:'PrimaryNumberType'+$index()},required:true">
+                            </select>
+
+
+                        </td>
+                        <td>
+                            <input type="text" class="form-control _homephone input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.SecondPhoneNumber,attr:
+                        {id:'SecondPhoneNumber'+$index(),name:'SecondPhoneNumber'+$index()}" />
+                        </td>
+                        <td>
+                            <select class="form-control" data-bind="
+    value: item.SecondNumberType.value,
+    options:$root.phoneTypesOptions,
+    optionsText:'text',
+    optionsValue:'value',attr:{id:'SecondNumberType'+$index(),name:'SecondNumberType'+$index()}">
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control _phone input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.FaxNumber,attr:
+                        {id:'FaxNumber'+$index(),name:'FaxNumber'+$index()}" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control email input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.PrimaryEmail,attr:
+                        {id:'PrimaryEmail'+$index(),name:'PrimaryEmail'+$index()},required:true" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control email input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.SecondEmail,attr:
+                        {id:'SecondEmail'+$index(),name:'SecondEmail'+$index()}" />
+                        </td>
+
+                    </tr>
+                </tbody>
+                @Html.Display("e", "NoData", new { Colspan = 11 })
+            </table>
+
+            @Html.Partial("_Partial_Pager")
+        </div>
+        <a class="table-btn icon-plus  create-btn" data-bind="event: { click: $root.newRow }" href="#" title="New Community Specialist"></a>
+
+      
+
+    </div>
+</form>
+@using (Ajax.BeginForm("BESSave", null, null, PostFormHelper.DefaultAjaxOptions,new
+{
+    id = formId,
+    data_bind = "visible:changed"
+}))
+{
+    @Html.AntiForgeryToken()
+     
+    <input type="hidden" name="CommunitySpecialists" id="CommunitySpecialists" />
+<input type="hidden" name="debug" value="true" />
+<div class="modal-footer">
+    <button class="mainbutton modal-btn submit-btn" type="button" data-bind="click:submit">Submit</button>
+</div>
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        ko.bindingHandlers.datalist = {
+            init: function(element, valueAccessor, allBinding, viewModel, bindingContext) {
+                $(element).datalist();
+            }
+        };
+        var list_CommunitySpecialists = {};
+
+        function getOptions(positions, status, gender, primaryLanguages, primaryPhoneTypes, phoneTypes) {
+            var pleaseSelect = '@(ViewTextHelper.DefaultPleaseSelectText)';
+
+            gender.unshift({ text: pleaseSelect, value: 0 });
+            status.unshift({ text: pleaseSelect, value: '' });
+         
+            primaryPhoneTypes.unshift({ text: pleaseSelect, value: '' });
+            phoneTypes.unshift({ text: pleaseSelect, value: 0 });
+            return {
+                positionOptions: positions,
+                statusOptions: status,
+                genderOptions: gender,
+                primaryLanguageOptions: primaryLanguages,
+                primaryPhoneTypesOptions: primaryPhoneTypes,
+                phoneTypesOptions: phoneTypes
+            };
+        } 
+        var options = getOptions(@(Html.Raw(ViewBag.PositionOptions)), @(Html.Raw(ViewBag.StatusJson)), @(Html.Raw(ViewBag.GendersJson)), @(Html.Raw(ViewBag.LanguageJson)),
+            @(Html.Raw(ViewBag.PhoneTypeOptions)), @(Html.Raw(ViewBag.PhoneTypeOptions)));
+
+        function CommunitySpecialist(defaultValues) {
+            var self = this;
+            this.ID = 0;
+            this.CommunityId = 0; 
+            this.PositionId = 0;
+
+            this.FirstName = "";
+            this.MiddleName = "";
+
+            this.LastName = "";
+            this.PreviousLastName = "";
+            this.BirthDate = "";
+            this.Gender = { value: 0 };
+            this.PrimaryLanguageId = 0;
+            this.IsSameAddress = 0;
+            this.IsInvitation = 0;
+            this.Address = "";
+            this.PrimaryPhoneNumber = "";
+            this.PrimaryNumberType = { value: 0 };
+            this.SecondPhoneNumber = "";
+            this.SecondNumberType = { value: 0 };
+            this.FaxNumber = "";
+            this.PrimaryEmail = "";
+            this.SecondEmail = "";
+
+            this.Status = { value: 0 };
+            this.School = { value: 0 };
+            this.changed = ko.observable(false);
+
+            var fieldChanged = function(newVal) {
+
+                self.changed(true);
+            };
+
+            if (defaultValues) {
+                $.extend(self, defaultValues);
+            }
+            this.CommunityId = ko.observable(this.CommunityId);
+            this.CommunityId.subscribe(fieldChanged); 
+            this.PositionId = ko.observable(this.PositionId === 0 ? '' : this.PositionId);
+            this.PreviousLastName = ko.observable(this.PreviousLastName);
+            this.BirthDate = ko.observable(this.BirthDate);
+            this.Gender.value = ko.observable(this.Gender.value);
+            this.PrimaryLanguageId = ko.observable(this.PrimaryLanguageId);
+            this.IsSameAddress = ko.observable(this.IsSameAddress);
+            this.IsInvitation = ko.observable(this.IsInvitation);
+            this.Address = ko.observable(this.Address);
+            this.PrimaryPhoneNumber = ko.observable(this.PrimaryPhoneNumber);
+            this.PrimaryNumberType.value = ko.observable(this.PrimaryNumberType.value === 0 ? '' : this.PrimaryNumberType.value);
+            this.SecondPhoneNumber = ko.observable(this.SecondPhoneNumber);
+            this.SecondNumberType.value = ko.observable(this.SecondNumberType.value);
+            this.FaxNumber = ko.observable(this.FaxNumber);
+            this.PrimaryEmail = ko.observable(this.PrimaryEmail);
+            this.SecondEmail = ko.observable(this.SecondEmail);
+            this.FirstName = ko.observable(this.FirstName);
+            this.FirstName.subscribe(fieldChanged);
+            this.MiddleName = ko.observable(this.MiddleName);
+            this.MiddleName.subscribe(fieldChanged);
+            this.LastName = ko.observable(this.LastName);
+            this.LastName.subscribe(fieldChanged);
+            this.Status.value = ko.observable(this.Status.value);
+            this.Status.value.subscribe(fieldChanged);
+
+            if (defaultValues != undefined) {
+
+              
+                this.PositionId.subscribe(
+                    function(newVal) {
+                        if (defaultValues.PositionId != newVal)
+                            self.changed(true);
+                    });
+                this.PreviousLastName.subscribe(
+                    function(newVal) {
+                        if (defaultValues.PreviousLastName != newVal)
+                            self.changed(true);
+                    });
+                this.BirthDate.subscribe(
+                    function(newVal) {
+                        if (defaultValues.BirthDate != newVal)
+                            self.changed(true);
+                    });
+                this.Gender.value.subscribe(
+                    function(newVal) {
+                        if (defaultValues.Gender.value != newVal)
+                            self.changed(true);
+                    });
+                this.PrimaryLanguageId.subscribe(
+                    function(newVal) {
+                        if (defaultValues.PrimaryLanguageId != newVal)
+                            self.changed(true);
+                    });
+                this.IsSameAddress.subscribe(
+                    function(newVal) {
+                        if (defaultValues.IsSameAddress != newVal)
+                            self.changed(true);
+                    });
+                this.IsInvitation.subscribe(
+                    function(newVal) {
+                        if (defaultValues.IsInvitation != newVal)
+                            self.changed(true);
+                    });
+                this.Address.subscribe(
+                    function(newVal) {
+                        if (defaultValues.Address != newVal)
+                            self.changed(true);
+                    });
+                this.PrimaryNumberType.value.subscribe(
+                    function(newVal) {
+                        if (defaultValues.PrimaryNumberType.value != newVal)
+                            self.changed(true);
+                    });
+                this.SecondPhoneNumber.subscribe(
+                    function(newVal) {
+                        if (defaultValues.SecondPhoneNumber != newVal)
+                            self.changed(true);
+                    });
+                this.PrimaryPhoneNumber.subscribe(
+                    function(newVal) {
+                        if (defaultValues.PrimaryPhoneNumber != newVal)
+                            self.changed(true);
+                    });
+                this.SecondNumberType.value.subscribe(
+                    function(newVal) {
+                        if (defaultValues.SecondNumberType.value != newVal)
+                            self.changed(true);
+                    });
+                this.FaxNumber.subscribe(
+                    function(newVal) {
+                        if (defaultValues.FaxNumber != newVal)
+                            self.changed(true);
+                    });
+                this.PrimaryEmail.subscribe(
+                    function(newVal) {
+                        if (defaultValues.PrimaryEmail != newVal)
+                            self.changed(true);
+                    });
+                this.SecondEmail.subscribe(
+                    function(newVal) {
+                        if (defaultValues.SecondEmail != newVal)
+                            self.changed(true);
+                    });
+
+            }
+
+            this.changed(false);
+
+        }
+
+        function getNewCommunitySpecialist() {
+            var communitySpecialist = new CommunitySpecialist();
+            communitySpecialist.changed(true);
+            communitySpecialist.created = true;
+            return communitySpecialist;
+        }
+
+        function getCommunitySpecialist(values) {
+            var communitySpecialist = new CommunitySpecialist(values);
+            communitySpecialist.created = false;
+            return communitySpecialist;
+        }
+
+        $(function() {
+            var $form = $("#@(formId)");
+            var $formData = $("#formSearch");
+            var inited = false;
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+
+                    if (response.success) {
+                        list_CommunitySpecialists.search();
+                    }
+                }
+            });
+            list_CommunitySpecialists = new ViewModel(
+                {
+                    instanceName: "list_CommunitySpecialists",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("BESSearch")))',
+                    orderBy: "FirstName",
+                    orderDirection: "ASC",
+                    pageSize: 50,
+                    headers: [
+                        {
+                            text: '#',
+                            width: '80px'
+                        },
+                        {
+                            text: 'Send Invitation',
+                            width: '113px'
+                        },
+                        {
+                            text: "<span class='required'>Community</span>",
+                            field: "@Html.NameFor(model => model.CommunityName)",
+                            order: true,
+                            width: '150px'
+                        },
+                        {
+                            text: "<span class='required'>Title/Role</span>",
+                            field: "@Html.NameFor(model => model.PositionId)",
+                            order: true,
+                            width: '140px'
+                        },
+                        {
+                            text: "<span class='required'>First Name</span>",
+                            field: "@Html.NameFor(model => model.FirstName)",
+                            order: true,
+                            width: '120px'
+                        },
+                        {
+                            text: "<span  >Middle Name</span>",
+                            field: "@Html.NameFor(model => model.MiddleName)",
+                            order: true,
+                            width: '120px'
+                        },
+                        {
+                            text: "<span class='required'>Last Name</span>",
+                            field: "@Html.NameFor(model => model.LastName)",
+                            order: true,
+                            width: '120px'
+                        },
+                        {
+                            text: "<span  >Previous Last Name</span>",
+                            field: "@Html.NameFor(model => model.PreviousLastName)",
+                            order: true,
+                            width: '160px'
+                        },
+                        {
+                            text: "<span >Birth Date</span>",
+                            field: "@Html.NameFor(model => model.BirthDate)",
+                            order: true,
+                            width: '100px'
+                        },
+                        {
+                            text: "Gender(M/F)",
+                            field: "@Html.NameFor(model => model.Gender)",
+                            order: true,
+                            width: '90px'
+                        },
+                        {
+                            text: "Primary Language",
+                            field: "@Html.NameFor(model => model.PrimaryLanguageId)",
+                            order: true,
+                            width: '150px'
+                        },
+                        {
+                            text: "<span class='required'>Status</span>",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '100px'
+                        },
+                        {
+                            text: "Same Address",
+                            field: "@Html.NameFor(model => model.IsSameAddress)",
+                            order: true,
+                            width: '120px'
+                        },
+                        {
+                            text: "<span class='required'>Work Site Physical Address1</span>",
+                            field: "@Html.NameFor(model => model.Address)",
+                            order: true,
+                            width: '250px'
+                        },
+                        {
+                            text: "<span class='required'>Primary Phone Number</span>",
+                            field: "@Html.NameFor(model => model.PrimaryPhoneNumber)",
+                            order: true,
+                            width: '160px'
+                        },
+                        {
+                            text: "<span class='required'>Primary Number Type</span>",
+                            field: "@Html.NameFor(model => model.PrimaryNumberType)",
+                            order: true,
+                            width: '150px'
+                        },
+                        {
+                            text: "Secondary Phone Number",
+                            field: "@Html.NameFor(model => model.SecondPhoneNumber)",
+                            order: true,
+                            width: '170px'
+                        },
+                        {
+                            text: "Secondary Number Type",
+                            field: "@Html.NameFor(model => model.SecondNumberType)",
+                            order: true,
+                            width: '170px'
+                        },
+                        {
+                            text: "Fax Number",
+                            field: "@Html.NameFor(model => model.FaxNumber)",
+                            order: true,
+                            width: '120px'
+                        },
+                        {
+                            text: "<span class='required'>Primary Email</span>",
+                            field: "@Html.NameFor(model => model.PrimaryEmail)",
+                            order: true,
+                            width: '150px'
+                        },
+                        {
+                            text: "Secondary Email",
+                            field: "@Html.NameFor(model => model.SecondEmail)",
+                            order: true,
+                            width: '150px'
+                        }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("communityId", "@ViewBag.CommunityId")),
+                        txtCommunity: ko.observable(window.queryString("txtCommunity", "@Html.Raw(ViewBag.CommunityName)")),
+                        schoolId: ko.observable(window.queryString("schoolId", "@ViewBag.SchoolId")),
+                        txtSchool: ko.observable(window.queryString("txtSchool", "@Html.Raw(ViewBag.SchoolName)")),
+                        communitySpecialistCode:
+                            ko.observable(window.queryString("communitySpecialistCode", "")),
+                        status:
+                            ko.observable(window.queryString("status", 0)),
+                        firstName:
+                            ko.observable(window.queryString("firstName", "")),
+                        lastName: ko.observable(window.queryString("lastName", ""))
+                    }
+                },
+                {
+                    dataProcessor: function(items) {
+                        var models = [];
+                        for (var i = 0; i < items.length; i++) {
+                            models.push(getCommunitySpecialist(items[i]));
+                        }
+                        if (items.length == 0)
+                            list_CommunitySpecialists.newRow();
+                        return models;
+
+                    },
+                    newRow: function() {
+                        list_CommunitySpecialists.showRecords.push(getNewCommunitySpecialist());
+                    },
+                    deleteCommunitySpecialist: function(communitySpecialist) {
+                        list_CommunitySpecialists.showRecords.remove(communitySpecialist);
+                    },
+                    submit: function() {
+                        var communitySpecialists = [], changedCommunitySpecialists = [];
+
+                        if (list_CommunitySpecialists.changed()) {
+                            if ($formData.valid() === false) {
+                                window.showMessage("hint", "multiple_Fields_Required");
+                                return false;
+                            }
+
+                            for (var i = 0; i < list_CommunitySpecialists.showRecords().length; i++) {
+                                var item = list_CommunitySpecialists.showRecords()[i];
+                                if (item.changed()) {
+                                    changedCommunitySpecialists.push(item);
+                                }
+                            }
+
+                            communitySpecialists = $.map(changedCommunitySpecialists, function(item) {
+                                return {
+                                    ID: item.ID,
+                                    CommunityId: item.CommunityId(),
+                                    PositionId: item.PositionId(),
+                                    PreviousLastName: item.PreviousLastName(),
+                                    BirthDate: item.BirthDate(),
+                                    Gender: item.Gender.value(),
+                                    PrimaryLanguageId: item.PrimaryLanguageId(),
+                                    IsSameAddress: item.IsSameAddress(),
+                                    Address: item.Address(),
+                                    PrimaryPhoneNumber: item.PrimaryPhoneNumber(),
+                                    PrimaryNumberType: item.PrimaryNumberType.value(),
+                                    SecondPhoneNumber: item.SecondPhoneNumber(),
+                                    SecondNumberType: item.SecondNumberType.value(),
+                                    PrimaryEmail: item.PrimaryEmail(),
+                                    SecondEmail: item.SecondEmail(),
+                                    FirstName: item.FirstName(),
+                                    MiddleName: item.MiddleName(),
+                                    FaxNumber: item.FaxNumber(),
+                                    LastName: item.LastName(),
+                                    Status: item.Status.value(),
+                                    IsInvitation: item.IsInvitation()
+                                }
+                            });
+
+                            $form.find("#CommunitySpecialists").val(JSON.stringify(communitySpecialists));
+                            $form.submit();
+                        } else {
+                            window.showMessage("success", "Nothing is changed.");
+                            return;
+                        }
+                    }
+                }
+            );
+
+            $.extend(list_CommunitySpecialists, options);
+            list_CommunitySpecialists.changed = ko.computed(function() {
+                var changed = false;
+                for (var i = 0; i < this.showRecords().length; i++) {
+                    if (this.showRecords()[i].changed()) {
+                        changed = true;
+                        break;
+                    }
+                }
+                return changed;
+            }, list_CommunitySpecialists);
+
+            ko.applyBindings(list_CommunitySpecialists);
+            var $txtCommunity = $("#txtCommunity");
+            var $txtSchool = $("#txtSchool");
+            $txtCommunity.on("selected.sunnet.datalist", function(event) {
+                $txtSchool.datalist("clear");
+            });
+        });
+
+        $(function() {
+            $form = $("#@(formId)");
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response) {
+                    if (response.success) {
+                        var promise;
+                        if (typeof response.data == "string") {
+                            if (response.data == "waiting") {
+                                promise = window.waitingAlert("warning", response.msg);
+                            } else {
+                                promise = window.showMessage("success", response.msg);
+                            }
+                            $.when(promise).done(function () {
+                                
+                            });
+                        } else if (typeof response.data == "object") {
+                            if (response.data != null && response.data.type == "continue") {
+                                $.when(window.waitingConfirm(response.msg, "Continue", "Cancel")).done(function () {
+                                    $form.find("#confirm").val(true);
+                                    $form.submit();
+                                }).fail(function () {
+                                    $form.find("#confirm").val(false);
+                                });
+                            } else {
+                                window.showMessage("success", response.msg);
+                            }
+                        }
+                    }
+                    else if (response.success) {
+                        window.showMessage("success", response.msg);
+                    }
+                    else {
+                        window.showMessage("fail",
+                            response.msg);
+                    }
+                }
+            });
+        });
+    </script>
+}

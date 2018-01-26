@@ -1,0 +1,40 @@
+﻿ALTER procedure [dbo].[CoachReport]
+@communityIds varchar(max),
+@coachId int,
+@fundingIds varchar(max),
+@status int
+AS
+begin
+declare @sql varchar(max)
+ set @sql='select BC.Name as CommunityName,BS.Name as SchoolName,ST.Name as SchoolType,
+ U.FirstName,U.LastName,TeacherId as TeacherCode,U.PrimaryPhoneNumber,U.PrimaryEmailAddress,
+ (case when T.CoachAssignmentWay=0 then '''' when T.CoachAssignmentWay=1 then ''Face-to-Face'' when T.CoachAssignmentWay=2 then ''Remote'' 
+else T.CoachAssignmentWayOther end) as CoachModel,
+(case when T.ECIRCLEAssignmentWay=0 then '''' when T.ECIRCLEAssignmentWay=1 then ''Face-to-Face'' when T.ECIRCLEAssignmentWay=2 then ''Remote'' 
+else T.ECIRCLEAssignmentWayOther end) as EcircleAssignment,
+(case when T.CoachAssignmentWay=0 then '''' when T.CoachAssignmentWay=1 then ''Face-to-Face'' when T.CoachAssignmentWay=2 then ''Remote'' 
+else T.CoachAssignmentWayOther end) as CoachAssignment,
+YIP.YearsInProject,F.Name as TeacherFunding,
+(case when T.TeacherType=0 then '''' when T.TeacherType=1 then ''Lead Teacher'' when T.TeacherType=2 then ''Co-Teacher'' 
+when T.TeacherType=3 then ''Assistant Teacher'' else T.TeacherTypeOther end) as TeacherType，
+T.CoachingHours as NumberofCoachingHoursReceived,ISNULL(T.ReqCycles,0.00) as NumberofRemoteCoachingCyclesReceived,
+(Coachs.FirstName+'' ''+Coachs.LastName) as Coach
+from Teachers T inner join Users U on U.ID=T.UserId 
+left join (select * from Users where (role=35 or role =40) '
+if(@communityIds!='')
+	set @sql+=' and ID in (select UserID from UserCommunityRelations where CommunityId in('+CAST(@communityIds as varchar(max))+'))'
+set @sql+=') as Coachs on Coachs.ID=T.CoachId
+left join YearsInProjects YIP on YIP.ID=T.YearsInProjectId
+left join Fundings F on F.ID=T.CLIFundingId
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId left join SchoolTypes ST on ST.ID=S.SchoolTypeId 
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId 
+where Coachs.Status=1 and S.Status=1 and C.Status=1 '
+if(@fundingIds!='')
+	set @sql+=' and T.CLIFundingId in ('+CAST(@fundingIds AS varchar(max))+')'
+if(@coachId>0)
+	set @sql+= ' and Coachs.ID='+CAST(@coachId as varchar(100))
+if(@status=1 or @status=2)
+	set @sql+=' and U.Status='+CAST(@status as varchar(100))+''
+set @sql+=' order by BC.Name'
+exec(@sql)
+end

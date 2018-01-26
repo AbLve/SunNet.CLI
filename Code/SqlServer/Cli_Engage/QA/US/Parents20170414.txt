@@ -1,0 +1,5 @@
+﻿ alter table Parents add [SettingIds] varchar(200)
+ alter table Parents add [OtherSetting] varchar(200)
+ go
+ update Parents set [SettingIds] =''
+ update Parents set [OtherSetting] =''

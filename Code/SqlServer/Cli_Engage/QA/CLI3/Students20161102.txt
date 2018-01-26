@@ -1,0 +1,57 @@
+﻿
+ 
+GO
+/****** Object:  Trigger [dbo].[StudentDOBChange]    Script Date: 2016/11/2 9:33:52 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER TRIGGER [dbo].[StudentDOBChange] ON [dbo].[Students]
+    FOR UPDATE
+AS
+   
+    DECLARE @oldDOB datetime,@newDOB datetime 
+	select @oldDOB = BirthDate from deleted 
+	select @newDOB = BirthDate from inserted  
+
+    IF (@oldDOB != @newDOB)
+        BEGIN
+            IF EXISTS ( SELECT  SD.ID
+                        FROM    dbo.StudentDOB AS SD ,
+                                Deleted d
+                        WHERE   SD.StudentId = d.ID )
+                BEGIN
+                    UPDATE  StudentDOB
+                    SET     OldDOB = d.BirthDate ,
+                            NewDOB = i.BirthDate ,
+                            [Status] = 1 ,
+                            SchoolYear = i.SchoolYear ,
+                            UpdatedOn = GETDATE()
+                    FROM    dbo.StudentDOB AS SD ,
+                            Deleted d ,
+                            Inserted i
+                    WHERE   SD.StudentId = d.ID;
+                END;
+            ELSE
+                BEGIN
+                    INSERT  INTO dbo.StudentDOB
+                            ( StudentId ,
+                              Status ,
+                              OldDOB ,
+                              NewDOB ,
+                              SchoolYear ,
+                              CreatedOn ,
+                              UpdatedOn
+			                )
+                            SELECT  d.ID ,
+                                    1 ,
+                                    d.BirthDate ,
+                                    i.BirthDate ,
+                                    i.SchoolYear ,
+                                    GETDATE() ,
+                                    GETDATE()
+                            FROM    Deleted d ,
+                                    Inserted i;
+                END;
+        END;

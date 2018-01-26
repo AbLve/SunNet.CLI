@@ -1,0 +1,151 @@
+﻿@using System.Collections.Generic
+@using Sunnet.Cli.MainSite.Models
+@model Sunnet.Cli.Business.Students.Models.StudentModel
+@{
+    ViewBag.Title = "Students";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Student)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Student", "Index", "Student"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Parent Invitations 
+}
+<form action='@Url.Action("ExportPdf")' target="_blank" id="form1" method="POST">
+    <input type="hidden" value="" id="hideStudentList" name="studentList"/>
+    <div class="right-content-top">
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Student List</a>
+   
+        <button type="submit" class="mainbutton mainright-btn create-btn" data-bind="click:submitCustom">Export to PDF</button>
+    </div>
+    <div class="main-content main-content">
+        <div class="content-title">Students Parent Invitations</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                  data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                  data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr>
+                        <td data-bind="text: item.StudentId"></td>
+                        <td data-bind="text: item.FirstName"></td>
+                        <td data-bind="text: item.LastName"></td>
+                        <td data-bind="text: item.ParentCode"></td>
+
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+            </table>
+              <button class="mainbutton modal-btn create-btn" type="button"
+                data-bind="event: { click: $root.loadMore }, visible: $root.hasMore">
+            View more
+        </button>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Students = {};
+
+        $(function() {
+            list_Students = new ViewModel(
+                {
+                    instanceName: "list_Students",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '',
+                    addType: 'Redirect',
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: 'Redirect',
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: 'Redirect',
+                    deleteDataUrl: '@Html.Raw(Url.Action(""))',
+                    orderBy: "FirstName",
+                    orderDirection: "ASC",
+                    pageSize: 20,
+                    headers: [
+                        {
+                            text: "@Html.DisplayNameFor(model => model.StudentId)",
+                            field: "@Html.NameFor(model => model.StudentId)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.FirstName)",
+                            field: "@Html.NameFor(model => model.FirstName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.LastName)",
+                            field: "@Html.NameFor(model => model.LastName)",
+                            order: true,
+                            width: '20%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.ParentCode)",
+                            field: "@Html.NameFor(model => model.ParentCode)",
+                            order: true,
+                            width: '10%'
+                        }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("communityId", "@ViewBag.CommunityId")),
+                        communityName: ko.observable(window.queryString("communityName", "@Html.Raw(ViewBag.CommunityName)")),
+                        schoolId: ko.observable(window.queryString("schoolId", "@ViewBag.SchoolId")),
+                        schoolName: ko.observable(window.queryString("schoolName", "@Html.Raw(ViewBag.SchoolName)")),
+
+                        classId: ko.observable(window.queryString("classId", -1)),
+                        studentId: ko.observable(window.queryString("studentId")),
+                        studentName: ko.observable(window.queryString("studentName")),
+                        status: ko.observable(window.queryString("status", -1))
+                    }
+                }, {
+                    dataProcessor: function(items) {
+                        setTimeout(function() { ExportPdf(); }, 100);
+                        return items;
+                    },
+                    submitCustom: function() {
+                        setTimeout(function ()
+                        {
+                            window.loading(false);
+                            $("#form1").find("button,input").button("reset");
+                        }, 500);
+                        $("#form1").submit();
+                    }
+                }
+            );
+            list_Students.search();
+            ko.applyBindings(list_Students);
+
+        });
+
+        function ExportPdf() {
+            var list = new Array();
+            $(list_Students.showRecords()).each(
+                function(i, obj) {
+                    list[i] = new Array();
+                    list[i][0] = obj.FirstName;
+                    list[i][1] = obj.LastName;
+                    list[i][2] = obj.ParentCode;
+                });
+            $("#hideStudentList").val(JSON.stringify(list));
+        }
+    </script>
+}

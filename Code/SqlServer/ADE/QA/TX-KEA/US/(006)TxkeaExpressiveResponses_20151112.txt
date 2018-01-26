@@ -1,0 +1,30 @@
+﻿/****** Object:  Table [dbo].[TxkeaExpressiveResponses]    Script Date: 2015/11/12 9:37:38 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[TxkeaExpressiveResponses](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Text] [varchar](200) NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[Mandatory] [bit] NOT NULL,
+	[type] [tinyint] NOT NULL,
+	[Buttons] [int] NOT NULL,
+	[IsDeleted] [bit] NOT NULL,
+ CONSTRAINT [PK_TxkeaExpressiveResponses] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

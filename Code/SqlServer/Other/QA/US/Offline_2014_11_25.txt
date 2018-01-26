@@ -1,0 +1,16 @@
+﻿离线功能发布说明：
+
+因为离线应用不允许跨域，所以Assessment这里面需要增加两个虚拟目录
+1，Content 指向 Static站点的 Content 目录
+2，Upload  指向 Web.Config 配置的 configuration>appSettings>UploadFile节点的值所在目录
+
+另外：离线程序时Start Page和End Page里面的图片路径需要修改：
+ 打开sql 目录下面的 other 目录。里面包含两个文件：ReplaceChars.exe  run.bat ， 将这两个文件
+ 放到configuration>appSettings>UploadFile节点所配置的物理路径的 Staticfiles  子目录 
+ 打开 run.bat  修改里面的域名为当前网站的正确地址，保存后运行
+    
+即可把所有以 http://static.sunnet.cc/ 开始的图片路径引用修改为相对网站根目录引用的方式。
+修改前：<img src="http://static.sunnet.cc/Upload/staticfiles/dafo.jpg" />
+修改后：<img src="/Upload/staticfiles/dafo.jpg" />
+
+ReplaceChars.exe源代码位于：$/SunNet.CLI/Demo/Sunnet.Cli.sln 解决方案

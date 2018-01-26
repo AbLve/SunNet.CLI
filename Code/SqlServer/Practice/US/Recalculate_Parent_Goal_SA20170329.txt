@@ -1,0 +1,86 @@
+﻿ALTER PROCEDURE [dbo].[Recalculate_Parent_Goal_SA]
+	-- Add the parameters for the stored procedure here
+	@SaId int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+	DECLARE @AssessmentId int ;
+	DECLARE @StudentId int 
+	DECLARE @SchoolYear varchar(10)
+	DECLARE @Wave int
+	DECLARE @BirthDate datetime
+	DECLARE @Goal decimal(18,2)
+	set @AssessmentId = 0;
+	select @AssessmentId = AssessmentId,@StudentId=StudentId,@SchoolYear=SchoolYear,@Wave=Wave from PracticeStudentAssessments where ID = @SaId ; 
+	select @BirthDate = (DATEADD(m, 0-StudentAgeMonth, DATEADD(YY,0-StudentAgeYear,CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME)))) from PracticeDemoStudents where ID=@StudentId
+
+	if @AssessmentId > 0
+	begin
+		select distinct ParentId into #Parents 
+		from CLI_ADE_Measures 
+		where AssessmentId = @AssessmentId and ParentId > 1
+
+		--SELECT * FROM #Parents ; 
+
+		select MeasureId = ID, ParentId into #Measures 
+		from CLI_ADE_Measures 
+		where AssessmentId = @AssessmentId and ParentId > 1 AND TotalScored = 1
+
+		--SELECT * FROM #Measures ; 
+
+		Update PracticeStudentMeasures set Goal = (SELECT SUM(CASE Goal WHEN -1 THEN 0 ELSE Goal END) 
+											FROM PracticeStudentMeasures SM WHERE SM.SAId = @SaId 
+												AND EXISTS(SELECT 1 FROM #Measures M WHERE M.MeasureId = SM.MeasureId AND M.ParentId = [PracticeStudentMeasures].MeasureId) AND SM.[Status] = 3)
+		FROM PracticeStudentMeasures
+		where SAId = @SaId
+		and exists (select 1 from #Parents P where P.ParentId = [PracticeStudentMeasures].MeasureId ) 
+		and exists (SELECT 1 FROM PracticeStudentMeasures SM WHERE SM.SAId = @SaId AND EXISTS(SELECT 1 FROM #Measures M WHERE M.MeasureId = SM.MeasureId AND M.ParentId = [PracticeStudentMeasures].MeasureId) AND SM.[Status] = 3); 
+		
+		--parent measure benchmark,LowerScore,HigherScore calculate
+		Update PracticeStudentMeasures set BenchmarkId = (
+			ISNULL((select BenchmarkId from CLI_ADE_CutOffScores where HostId=PracticeStudentMeasures.MeasureId AND HostType='Sunnet.Cli.Core.Ade.Entities.MeasureEntity' 
+			AND Wave = @Wave AND LowerScore<=Goal and HigherScore>=Goal
+			AND @BirthDate>(DATEADD(m, 0-ToMonth, DATEADD(YY,0-ToYear,CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME))))
+			AND @BirthDate<=DATEADD(m, 0-FromMonth, DATEADD(YY,0-FromYear,CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME)))),0)
+		)	,LowerScore = (
+			ISNULL((select LowerScore from CLI_ADE_CutOffScores where HostId=PracticeStudentMeasures.MeasureId AND HostType='Sunnet.Cli.Core.Ade.Entities.MeasureEntity' 
+			AND Wave = @Wave AND LowerScore<=Goal and HigherScore>=Goal
+			AND @BirthDate>(DATEADD(m, 0-ToMonth, DATEADD(YY,0-ToYear,CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME))))
+			AND @BirthDate<=DATEADD(m, 0-FromMonth, DATEADD(YY,0-FromYear,CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME)))),-1)
+		),HigherScore = (
+			ISNULL((select HigherScore from CLI_ADE_CutOffScores where HostId=PracticeStudentMeasures.MeasureId AND HostType='Sunnet.Cli.Core.Ade.Entities.MeasureEntity' 
+			AND Wave = @Wave AND LowerScore<=Goal and HigherScore>=Goal
+			AND @BirthDate>(DATEADD(m, 0-ToMonth, DATEADD(YY,0-ToYear,CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME))))
+			AND @BirthDate<=DATEADD(m, 0-FromMonth, DATEADD(YY,0-FromYear,CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME)))),-1)
+		),
+		PercentileRank=(
+			select (case when PercentileRank=1 then (
+			ISNULL((select top 1 PercentileRank
+			from CLI_ADE_PercentileRankLookups where RawScore=Goal
+			AND DATEDIFF(Day,@BirthDate,PracticeStudentMeasures.UpdatedOn)>=AgeMin
+			AND DATEDIFF(Day,@BirthDate,PracticeStudentMeasures.UpdatedOn)<=AgeMax
+			AND MeasureLabel= (select top 1 Label from CLI_ADE_Measures where ID=PracticeStudentMeasures.MeasureId)),'N/A')) 
+			else '-' end) 
+			from CLI_ADE_Measures where ID=PracticeStudentMeasures.MeasureId
+		)	
+		FROM PracticeStudentMeasures
+		where SAId = @SaId
+		and exists (select 1 from #Parents P where P.ParentId = PracticeStudentMeasures.MeasureId ) 
+		and exists (SELECT 1 FROM PracticeStudentMeasures SM WHERE SM.SAId = @SaId AND EXISTS(SELECT 1 FROM #Measures M WHERE M.MeasureId = SM.MeasureId AND M.ParentId = [PracticeStudentMeasures].MeasureId) AND SM.[Status] = 3); 
+
+
+		Update PracticeStudentMeasures set Goal = -1,
+		PercentileRank = (select case when PercentileRank=1 then 'N/A' else '-' end from CLI_ADE_Measures where ID=[PracticeStudentMeasures].MeasureId) , 
+		BenchmarkId=0,LowerScore=-1,HigherScore=-1  
+		FROM PracticeStudentMeasures 
+		where SAId = @SaId 
+		and exists (select 1 from #Parents P where P.ParentId = [PracticeStudentMeasures].MeasureId ) 
+		and not exists (SELECT 1 FROM PracticeStudentMeasures SM WHERE SM.SAId = @SaId AND EXISTS(SELECT 1 FROM #Measures M WHERE M.MeasureId = SM.MeasureId AND M.ParentId = [PracticeStudentMeasures].MeasureId) AND SM.[Status] = 3); 
+
+		drop table #Parents
+		drop table #Measures
+	end
+END

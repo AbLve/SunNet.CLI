@@ -1,0 +1,80 @@
+﻿@using Sunnet.Cli.Core.Users.Enums
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "User Management";
+    List<int> Pages = ViewBag.PageList as List<int>;
+    Role UserRole = ViewBag.RoleType;
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.User)
+}
+@section BreadPath
+{
+User Management
+}
+<ul class="ade-menu-dashboard">
+    @if (Pages.Contains((int)PagesModel.Community)  && UserRole != Role.District_Community_Delegate)  
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/Community/Index" class="administrative-con"><span><i></i>Community/District User</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.Community) && UserRole == Role.Community)
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/Community/MyDelegate" class="administrative-con"><span><i></i>My Delegates</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.Community_Specialist_List) && UserRole != Role.District_Community_Specialist && UserRole != Role.Community_Specialist_Delegate) 
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/CommunitySpecialist/Index" class="administrative-con"><span><i></i>Community/District Specialist</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.Community_Specialist_List) && UserRole == Role.District_Community_Specialist)
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/CommunitySpecialist/MyDelegate" class="administrative-con"><span><i></i>My Delegates</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.Principal_Director) && UserRole != Role.Principal && UserRole != Role.Principal_Delegate) 
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/Principal/Index" class="administrative-con"><span><i></i>Principal/Director</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.Principal_Director) && UserRole == Role.Principal)
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/Principal/MyDelegate" class="administrative-con"><span><i></i>My Delegates</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.TRS_Specialist) && UserRole != Role.TRS_Specialist && UserRole != Role.TRS_Specialist_Delegate) 
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/TRSSpecialist/Index" class="administrative-con"><span><i></i>TRS Specialist</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.TRS_Specialist) && UserRole == Role.TRS_Specialist)
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/TRSSpecialist/MyDelegate" class="administrative-con"><span><i></i>My Delegates</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.School_Specialist) && UserRole != Role.School_Specialist && UserRole != Role.School_Specialist_Delegate) 
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/SchoolSpecialist/Index" class="administrative-con"><span><i></i>School Specialist</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.School_Specialist) && UserRole == Role.School_Specialist)
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/SchoolSpecialist/MyDelegate" class="administrative-con"><span><i></i>My Delegates</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.Teacher))
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/Teacher/Index" class="administrative-con"><span><i></i>Teacher</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.Parent))
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/Parent/Index" class="administrative-con"><span><i></i>Parent</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.Statewide))
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/StateWide/Index" class="administrative-con"><span><i></i>Statewide Agency</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.Auditor))
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Invitation/Auditor/Index" class="administrative-con"><span><i></i>Auditor</span></a></li>
+    }
+    @if (Pages.Contains((int)PagesModel.User_Verification))
+    {
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)UserVerification/VerificationRequest/Index" class="administrative-con"><span><i></i>User Verification</span></a></li>
+    }
+</ul>
+

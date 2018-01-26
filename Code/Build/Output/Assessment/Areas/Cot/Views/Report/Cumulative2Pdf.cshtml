@@ -1,0 +1,352 @@
+﻿@using Sunnet.Cli.Business.Cot.Cumulative
+@using Sunnet.Cli.Core.Users.Enums
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Cot/Views/Shared/_Layout_Report_Chart.cshtml";
+    var models = ViewBag.Model as List<CumulativeReportModel>;
+    if (models == null)
+    {
+        models = new List<CumulativeReportModel>();
+    }
+
+    bool isFirstTeacher = true;
+    int index = 0;
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@foreach (CumulativeReportModel model in models)
+{
+    foreach (MeasureModel measure in model.Measures)
+    {
+        <table class='header @(isFirstTeacher ? "" : "newpager") ' width="100%">
+            <thead>
+                <tr>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        &nbsp;
+                    </td>
+                    <th class="title" style="vertical-align: middle;" colspan="4">
+                        @(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))<br />
+                        @(model.Type.ToDescription())
+                    </th>
+                    <td colspan="4" style="text-align: right;" rowspan="2">
+                        <img src="@(SFConfig.AssessmentDomain)/Resources/cli_logo.png" alt="CLI logo" style="width: 150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">&nbsp;</td>
+                    <th class="title" colspan="4">
+                        @(measure.Name)
+                        <br />
+                        @(model.Type.GetDisplayName())
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        @Html.DisplayNameFor(x => model.Community):
+                        &nbsp;@(model.Community)
+                    </td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.Teachers):
+                        &nbsp;@(model.Teachers)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @(model.Type == CumulativeReportType.SchoolCumulative || model.Type == CumulativeReportType.AllAssignedSchoolCumulative ? "School" : "Schools")
+                        :
+                        &nbsp;@(model.School)
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.Mentor):
+                        &nbsp;@(model.Mentor)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.SchoolYear):
+                        &nbsp;@(model.FullSchoolYear)
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.BoyDate):
+                        &nbsp;@(model.BoyDate.FormatDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.YearsInProject):
+                        &nbsp;@(string.Join(", ", model.YearsInProject))
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.MoyDate):
+                        &nbsp;@(model.MoyDate.FormatDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.CoachModels):
+                        &nbsp;@(string.Join(", ", model.CoachModels.Select(x => x.ToDescription())))
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.MetDate):
+                        &nbsp;@(model.MetDate.FormatDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.ECircles):
+                        &nbsp;@(string.Join(", ", model.ECircles.Select(x => x.ToDescription())))
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3"> </td>
+                </tr>
+            </thead>
+        </table>
+        <div id="chart@(index++)" style="height: 520px; width: @ReportHelper.GetChartWidth(measure.Items.Count() + 2, 50, 100, 1200)px;">
+        </div>
+        {
+            isFirstTeacher = false;
+        }
+    }
+}
+
+@using (Html.BeginForm("Cumulative2Pdf_Download", "Report", FormMethod.Post, new { id = formId, target = "_blank" }))
+{
+    @Html.Hidden("teacherId")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("type")
+    @Html.Hidden("SchoolId")
+    @Html.Hidden("CommunityId")
+    @Html.Hidden("measures")
+    @Html.Hidden("yearsInProject")
+    if (models.Any())
+    {
+        foreach (AssignmentType type in models.First().CoachModels)
+        {
+            @Html.Hidden("coachModels", type)
+        }
+        foreach (AssignmentType type in models.First().ECircles)
+        {
+            @Html.Hidden("eCircles", type)
+        }
+    }
+    @Html.Hidden("export", true)
+
+    <button type="submit" class="btn-export" id="btn_Export" onclick=" javascript:return exportPdf(); ">
+        Export
+    </button>
+}
+@section Scripts{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+    <script type="text/javascript">
+    var reports = @Html.Raw(ViewBag.Json);
+    var charts = [];
+    var options = [];
+    var currentIndex = 0;
+
+    function exportPdf() {
+        var $form = $("#@(formId)");
+            $form.find("input:hidden[name='imgSources']").remove();
+            if (charts && charts.length) {
+                for (var i = 0; i < charts.length; i++) {
+                    var myChart = charts[i];
+                    var options = myChart.getOption();
+                    options.toolbox.feature.magicType.show = false;
+                    options.toolbox.feature.dataZoom.show = false;
+                    options.toolbox.feature.restore.show = false;
+                    myChart.setOption(options);
+                    var $imgSources = $('<input name="imgSources" type="hidden" value="" />').appendTo($form);
+                    $imgSources.val(myChart.getDataURL());
+
+                    options.toolbox.feature.magicType.show = true;
+                    options.toolbox.feature.dataZoom.show = true;
+                    options.toolbox.feature.restore.show = true;
+                    myChart.setOption(options);
+                }
+            }
+            return true;
+        }
+
+        var totalOfMeasure = {};
+        var splitColor = "#ffffff";
+        $(function() {
+            function startGenerateReport() {
+                if (options.length > currentIndex) {
+                    window.scrollTo(0, $("#chart" + currentIndex).offset().top);
+
+                    var option = options[currentIndex];
+                    var myChart = echarts.init(document.getElementById('chart' + index++), echartsTheme.default);
+                    myChart.setOption(option);
+                    charts.push(myChart);
+                    currentIndex++;
+                    setTimeout(function() {
+                        startGenerateReport();
+                    }, 1000);
+                } else {
+                    setTimeout(function() {
+                        $("#btn_Export").slideDown();
+                    }, 1000);
+                }
+            }
+
+            var valueOfCategory = {};
+            var index = 0;
+            var lastLevel = 0;
+            for (var i = 0; i < reports.length; i++) {
+                var report = reports[i];
+
+                for (var j = 0; j < report.Measures.length; j++) {
+                    var measure = report.Measures[j];
+                    var option = new ReportOption();
+                    option.title = {
+                        text: "@(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))",
+                        subtext: report.Teacher,
+                        textAlign: "left",
+                        x: 0,
+                        y: 0
+                    };
+                    option.tooltip.show = false;
+                    option.toolbox.feature.magicType.type = [];
+
+                    var legendTitle = report.Teachers;// calc label for bar in callback
+                    option.legend.data.push(legendTitle);
+                    option.legend.x = 10350; // hide legend
+                    option.legend.show = false;
+
+                    option.series.push({
+                        name: legendTitle,
+                        type: 'bar',
+                        stack: legendTitle,
+                        data: [],
+                        barWidth: 30,
+                        itemStyle: {
+                            normal: {
+                                barBorderWidth: 1,
+                                label: {
+                                    show: true,
+                                    position: "insideTop",
+                                    textStyle: {
+                                        color: "#000000"
+                                    }
+                                }
+                            },
+                            emphasis: {
+                                barBorderColor: '#ffffff',
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: "#000000"
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+
+                    option.xAxis = option.xAxis.slice(0, 1);
+                    option.xAxis[0].axisLabel.rotate = 0;
+                    option.xAxis[0].axisLabel.formatter = function(value) {
+                        return value.toString().split('').join("\n");
+                    };
+                    var xAxis = option.xAxis[0].data;
+                    for (var itemIndex = 0; itemIndex < measure.Items.length; itemIndex++) {
+                        var item = measure.Items[itemIndex];
+                        if (lastLevel == 0) {
+                            lastLevel = item.Level.value;
+                        }
+                        if (lastLevel != item.Level.value) {
+                            xAxis.push("");
+                            option.series[0].data.push(
+                            {
+                                value: 100,
+                                itemStyle: {
+                                    normal: {
+                                        color: splitColor,
+                                        label: {
+                                            show: false
+                                        }
+                                    },
+                                    emphasis: {
+                                        label: {
+                                            show: false
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        xAxis.push(item.CotItemNo);
+                        if (!(item.CotItemNo in valueOfCategory)) {
+                            valueOfCategory[item.CotItemNo + "_"] = [];
+                        }
+                        valueOfCategory[item.CotItemNo + "_"].unshift(item.Count);
+                        valueOfCategory[item.CotItemNo + "_"].unshift(item.Count);
+
+                        option.series[0].data.push(
+                        {
+                            value: item.Count * 100 / report.Teachers,
+                            itemStyle: {
+                                normal: {
+                                    color: item.Level.text,
+                                    label: {
+                                        show: item.Count > 0,
+                                        formatter: function(legend, category, value) {
+                                            return ((legend * value * 1.0 ) / 100).toFixed(0);
+                                        },
+                                        position: 'insideTop'
+                                    }
+                                },
+                                emphasis: {
+                                    label: {
+                                        zindex: 100
+                                    }
+                                }
+                            }
+                        });
+                        lastLevel = item.Level.value;
+                    }
+                    option.yAxis[0].axisLabel.formatter = "{value} %";
+                    option.yAxis[0].splitNumber = 20;
+                    option.yAxis[0].max = 100;
+                    option.yAxis[0].min = 0;
+                    option.yAxis[0].axisLine = {
+                        show: true
+                    };
+                    option.grid.width = 50;
+                    option.grid.height += 50;
+                    option.grid.width = xAxis.length * option.grid.width;
+                    options.push(option);
+
+                    lastLevel = 0;
+                }
+            }
+            console.log(valueOfCategory);
+            startGenerateReport();
+        });
+    </script>
+}

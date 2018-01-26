@@ -1,0 +1,13 @@
+﻿
+IF NOT EXISTS(SELECT * FROM SYSCOLUMNS WHERE ID=OBJECT_ID('ItemBases') AND NAME='ShowAtTestResume')
+BEGIN
+ALTER TABLE dbo.ItemBases
+ADD [ShowAtTestResume] BIT NULL
+END
+GO
+
+UPDATE ItemBases SET [ShowAtTestResume] = 0 ;
+GO
+
+ALTER TABLE dbo.ItemBases
+ALTER COLUMN [ShowAtTestResume] BIT NULL

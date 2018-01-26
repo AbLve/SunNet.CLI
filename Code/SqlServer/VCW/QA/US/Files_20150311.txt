@@ -1,0 +1,74 @@
+﻿
+IF NOT EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[AssignmentStrategies]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
+begin
+	CREATE TABLE [dbo].[AssignmentStrategies](
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[AssignmentId] [int] NOT NULL,
+		[StrategyId] [tinyint] NOT NULL,
+		[CreatedOn] [datetime] NOT NULL,
+	 CONSTRAINT [PK_AssignmentStrategies_1] PRIMARY KEY CLUSTERED 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+end
+GO
+
+
+IF NOT EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[FileContents]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
+begin
+	CREATE TABLE [dbo].[FileContents](
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[FileId] [int] NOT NULL,
+		[ContentId] [tinyint] NOT NULL,
+		[CreatedOn] [datetime] NOT NULL,
+	 CONSTRAINT [PK_FileContents] PRIMARY KEY CLUSTERED 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+end
+GO
+
+IF NOT EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[AssignmentReports]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
+begin
+	CREATE TABLE [dbo].[AssignmentReports](
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[AssignmentId] [int] NOT NULL,
+		[ReportId] [int] NOT NULL,
+		[ReportCreatedOn] [datetime] NOT NULL,
+		[CreatedOn] [datetime] NOT NULL,
+	 CONSTRAINT [PK_AssignmentReports] PRIMARY KEY CLUSTERED 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+end
+GO
+
+
+
+IF  EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[AssignmentWatchFiles]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
+begin
+	drop table AssignmentWatchFiles
+end
+GO
+
+
+if exists(select * from syscolumns where id=object_id('Assignments') and name='StrategyId')
+begin
+	alter table Assignments drop column StrategyId
+end
+GO
+
+if exists(select * from syscolumns where id=object_id('Files') and name='ContentId')
+begin
+	alter table Files drop column ContentId
+end
+GO
+
+if not exists(select * from syscolumns where id=object_id('Assignments') and name='IsVisited')
+begin
+	alter table Assignments add IsVisited bit not null default 1
+end
+GO

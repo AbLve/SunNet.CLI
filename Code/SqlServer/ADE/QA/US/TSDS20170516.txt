@@ -1,0 +1,12 @@
+﻿alter table TSDS add [MetaDataFile] varchar(500) default ''
+go
+update TSDS SET [MetaDataFile] = ''
+GO
+alter table TSDS add [StudentParentFile] varchar(500) default ''
+go
+update TSDS SET [StudentParentFile] = ''
+GO
+alter table TSDS add [ErrorFileName] varchar(500) default ''
+go
+update TSDS SET [ErrorFileName] = ''
+GO

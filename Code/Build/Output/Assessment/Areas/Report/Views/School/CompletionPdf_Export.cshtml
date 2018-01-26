@@ -1,0 +1,52 @@
+﻿@using Sunnet.Cli.Business.Common
+@using Sunnet.Cli.Business.Cpalls
+
+@{
+    ViewBag.Title = "Community Combined Completion Report";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+
+    var report = ViewBag.report as ReportList;
+    var waveNum = report.ModelList.Keys.FirstOrDefault().ToDescription();
+    int year = ViewBag.year;
+    var breakPager = false;
+    ViewDataDictionary data = new ViewDataDictionary();
+    data.Add("AssessmentName", ViewBag.AssessmentName);
+    data.Add("report", report);
+    data.Add("breakPager", breakPager);
+
+    data.Add("title", ViewBag.Title);
+    data.Add("communityName", ViewBag.communityName);
+    data.Add("language", ViewBag.language);
+    data.Add("schoolName", "All");
+    data.Add("className", "All");
+    data.Add("schoolYear", year.ToFullSchoolYearString());
+    data.Add("wave", waveNum);
+    data.Add("teacherName", "All");
+}
+
+<table style="width: 100%">
+    <thead>
+        <tr>
+            <td>@Html.Partial("_Partial_Completion_Measure_Header", data) </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Html.Partial("_Partial_Completion_Measure", data)</td>
+        </tr>
+          <tr>
+            <td style="height:40px;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+<div id="studentSummaryChart" style="width: 100%; page-break-inside: avoid;">
+    <img class="newpager" src="@(ViewBag.imgSource)"/><br />
+    <img class="newpager" src="@(ViewBag.imgSourcePercent)"/>
+</div>
+            </td>
+        </tr>
+</table>
+
+
+

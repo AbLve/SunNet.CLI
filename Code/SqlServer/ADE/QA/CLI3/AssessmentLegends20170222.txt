@@ -1,0 +1,11 @@
+﻿CREATE TABLE [dbo].[AssessmentLegends](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[LegendType] [tinyint] NOT NULL,
+	[ColorFilePath] [varchar](500) NOT NULL,
+	[ColorFileName] [varchar](500) NOT NULL,
+	[BlackWhiteFilePath] [varchar](500) NOT NULL,
+	[BlackWhiteFileName] [varchar](500) NOT NULL,
+	[Text] [varchar](500) NOT NULL,
+	[TextPosition] [varchar](100) NOT NULL
+) 

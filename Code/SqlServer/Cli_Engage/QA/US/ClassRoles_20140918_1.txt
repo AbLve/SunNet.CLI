@@ -1,0 +1,7 @@
+﻿
+update classroles
+set CommunityId='RW',SchoolId='RW',ClassroomId='RW',ClassId='RW'
+where id in( 
+select id from classroles
+where name like '%RW%'
+)

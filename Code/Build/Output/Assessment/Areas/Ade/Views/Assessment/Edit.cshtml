@@ -1,0 +1,132 @@
+﻿@using Sunnet.Cli.Core.Cpalls
+@model Sunnet.Cli.Business.Ade.Models.AssessmentModel
+
+@{
+    ViewBag.Title = "Edit Assessment - " + Model.Label + " (" + Model.Type.ToDescription() + ")";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    response.data.Status = ko.observable(response.data.Status);
+                    var parentListObj = @Request.QueryString["listObj"];
+                    parentListObj.onDataUpdated(response);
+                }
+            });
+            var scoreModel = getAdeScoreModel(@Html.Raw(ViewBag.Scores),'@formId','scores','deleted');
+            scoreModel.wave1(true);
+            scoreModel.wave2(true);
+            scoreModel.wave3(true);
+            ko.applyBindings(scoreModel, document.getElementById("@(formId)"));
+        })();
+    </script>
+}
+@using (Ajax.BeginForm("Save", "Assessment", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.Hidden("scores")
+    @Html.HiddenFor(x => x.Type)
+    <div class="form-group">
+        @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Label, baseClassObj)
+            @Html.ValidationMessageFor(model => model.Label)
+        </div>@Html.LabelFor(model => model.Name, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Name, baseClassObj)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+    </div>
+    <div class="form-group">
+        @if (Model.Type != AssessmentType.Cec)
+        {
+            @Html.LabelFor(model => model.OrderType, new { @class = "control-label col-sm-3 required", @for = "OrderType_x" })
+            <div class="col-sm-4">
+                @Html.Hidden("OrderType_x")
+                @Html.RadioButtonFor(model => model.OrderType, OrderType.Sequenced, new { id = "Order1" })
+                @Html.Label("", OrderType.Sequenced.ToDescription(), new { @for = "Order1" })
+                @ViewTextHelper.HtmlEmptySeparator
+                @Html.RadioButtonFor(model => model.OrderType, OrderType.Random, new { id = "Order2" })
+                @Html.Label("", OrderType.Random.ToDescription(), new { @for = "Order2" })
+                <br />
+                @Html.ValidationMessageFor(model => model.OrderType)
+            </div>
+            
+            @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-3">
+                @Html.EnumDropDownListFor(model => model.Status, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                @Html.ValidationMessageFor(model => model.Status)
+            </div>
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.Language)
+              
+            @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-3 required" })
+            <div class="col-sm-3">
+                @Html.EnumDropDownListFor(model => model.Status, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                @Html.ValidationMessageFor(model => model.Status)
+            </div>
+        }
+    </div>
+        if (Model.Type != AssessmentType.Cec)
+        {
+    <div class="form-group">@Html.LabelFor(model => model.TotalScored, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.EditorFor(model => model.TotalScored)
+            @Html.ValidationMessageFor(model => model.TotalScored)
+        </div>
+
+        @Html.LabelFor(model => model.Language, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.Language, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+            @Html.ValidationMessageFor(model => model.Language)
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            Cutoff Scores:
+            @Html.ValidationMessage("FromYear", "", "div")
+            @Html.ValidationMessage("FromMonth", "", "div")
+            @Html.ValidationMessage("ToYear", "", "div")
+            @Html.ValidationMessage("ToMonth", "", "div")
+            @Html.ValidationMessage("CutoffScore", "", "div")
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="nav-tab">
+            <ul id="measureContainer" class="nav-container" role="tablist">
+                <li class="active"><a href="#Wave1" role="tab" data-toggle="tab">Wave @(Wave.BOY.ToDescription())</a></li>
+                <li><a href="#Wave2" role="tab" data-toggle="tab">Wave @(Wave.MOY.ToDescription())</a></li>
+                <li><a href="#Wave3" role="tab" data-toggle="tab">Wave @(Wave.EOY.ToDescription())</a></li>
+            </ul>
+        </div>
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade in active" id="Wave1">
+                @Html.Editor("", "CutoffScores", new { wave = Wave.BOY })
+            </div>
+            <div class="tab-pane fade" id="Wave2">
+                @Html.Editor("", "CutoffScores", new { wave = Wave.MOY })
+            </div>
+            <div class="tab-pane fade" id="Wave3">
+                @Html.Editor("", "CutoffScores", new { wave = Wave.EOY })
+            </div>
+        </div>
+    </div>
+        }
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" data-bind="event:{click:submit}">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

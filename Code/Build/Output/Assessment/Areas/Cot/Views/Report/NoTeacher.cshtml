@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "No Teacher";
+}
+
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls" )
+}
+@section BreadPath
+{
+    @Html.ActionLink("COT", "Index", "Dashboard", new { Area = "" }, new { })
+    <i class="icon-angle-right"></i>There is no teachers under selected filters
+}

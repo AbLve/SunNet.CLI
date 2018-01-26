@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout_FullContent.cshtml";
+}
+@section Banner
+{
+    <div class="container">
+        <div class="banner-pages">
+            <h1>@ViewBag.Title</h1>
+        </div>
+    </div>
+}
+<div class="main-con">
+    <div class="dashboard-text">
+        <h3>Welcome to CLI Engage!</h3>
+        <p>
+            Thank you for participating in the CLI Engage pilot project. Use the links below to access the tools and resources available to you through CLI Engage.
+            <br />
+            <br />
+            If you need assistance or have a question, please click the green ticket above to submit a <a href="http://www.texasschoolready.org/help/MainTicketForm.aspx?Section8" target="_blank">Help Ticket</a>.
+			<br />
+            <br />
+            Visit the CLI Engage Pilot Resources page for trainings, CIRCLE Assessment resources, and how-to guides: <a href="http://www.texasschoolready.org/pilot" target="_blank">www.texasschoolready.org/pilot</a>. If you will be conducting assessments on a laptop, try zooming in or out to adjust your display.  (Note: press the control key and minus to zoom out, or the control key and plus to zoom in.)
+        </p>
+    </div>
+    <div class="dashboard-con">
+        <ul>
+            @if (ViewBag.ADE)
+            {
+                <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)AssessmentHome?IASID=02" class="ade-con"><span>ADE</span></a></li>
+            }
+            @if (ViewBag.Assessment)
+            {
+                <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)AssessmentHome?IASID=03" class="assessment-con">
+                    <span>Assessment
+                            <p>Progress Monitoring</p>
+                    </span>
+
+                </a></li>
+            }
+            @if (ViewBag.LMS)
+            {
+                <li><a href="@(ViewBag.LMSUrl)" class="lms-con"><span>Online Courses</span></a></li>
+            }
+
+            @if (ViewBag.Vcw)
+            {
+                <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.VcwDomain)Home?IASID=04" class="tool-con"><span>Collaborative Tools</span></a></li>
+            }
+
+            @if (ViewBag.Administrative)
+            {
+                <li>
+                    <a href="@Path.Combine(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain.AbsoluteUri, ViewBag.AdministrativeUrl.ToString())" class="administrative-con">
+                        <span>Administrative
+                    <p>Class and Student Management</p>
+                        </span>
+                    </a>
+                </li>
+            }
+@* <li><a href="javascript:alert('Coming Soon...');" class="reports-con"><span>Reports</span></a></li>*@
+
+           @if (ViewBag.CAC)
+           {
+               <li>
+                   <a href="@Path.Combine(Sunnet.Cli.UIBase.Models.DomainHelper.CACDomain.AbsoluteUri, ViewBag.CACUrl.ToString())" target="_blank" class="circle-online">
+                       <span>CIRCLE Activity Collection</span>
+                   </a>
+               </li>
+           }
+            @if (ViewBag.Trs)
+            {
+                <li>
+                    <a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.AssessmentDomain)AssessmentHome?IASID=034" class="trs-con">
+                        <span>Texas Rising Star</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+@section Scripts
+{
+    @if(@ViewBag.ShowCommunityNote){
+    <script type="text/javascript">
+        $(function () {
+            $('#modalLarge').modal({
+                remote: "/Community/Community/CommunityNotes"
+            })
+        });
+    </script>
+    }
+}

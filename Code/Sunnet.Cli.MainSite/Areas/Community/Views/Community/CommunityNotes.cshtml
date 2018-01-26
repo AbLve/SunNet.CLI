@@ -1,0 +1,74 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Business.Communities.Models
+
+@{
+    var Pages = (ViewBag.CommunityNotes as List<CommunityNotesModel>);
+    var firstPanel = true;
+    ViewBag.Title = "Community/District Notifications";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+}
+<style>
+    ul, li, ol {
+	margin: 0;
+	padding: 0;
+	list-style:inherit;
+}
+     ol {
+         display: block;
+         list-style-type: decimal;
+         -webkit-margin-before: 1em;
+         -webkit-margin-after: 1em;
+         -webkit-margin-start: 0px;
+         -webkit-margin-end: 0px;
+         -webkit-padding-start: 40px;
+ 
+     }
+</style>
+<div class="panel-group" id="accordion">
+    @foreach (var page in Pages)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#@(page.CommunityId)">
+                <h4 class="panel-title"><a>@(page.CommunityName) </a></h4>
+            </div>
+            @if (firstPanel)
+            {
+                <div id="@(page.CommunityId)" style="overflow-x:auto" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        @if (!string.IsNullOrEmpty(page.LogoUrl) && page.DisplayLogo)
+                        {
+                            <div style="height: 120px; text-align: center">
+                                <img alt="@(page.CommunityName)" src="@FileHelper.GetPreviewPathofUploadFile(page.LogoUrl)" style="max-width: 250px; max-height: 100px" />
+                            </div>
+                        }
+                        @Html.Raw(page.Messages)
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div id="@(page.CommunityId)" style="overflow-x:auto" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        @if (!string.IsNullOrEmpty(page.LogoUrl) && page.DisplayLogo)
+                        {
+                            <div style="height: 120px; text-align: center">
+                                <img alt="@(page.CommunityName)" src="@FileHelper.GetPreviewPathofUploadFile(page.LogoUrl)"  style="max-width: 250px; max-height: 100px"/>
+                            </div>
+                        }
+                        @Html.Raw(page.Messages)
+                    </div>
+                </div>
+            }
+        </div>
+        firstPanel = false;
+    }
+</div>
+  <div class="modal-footer">
+      
+        <button class="mainbutton modal-btn submit-btn" type="button" data-dismiss="modal">OK</button>
+    </div>
+
+

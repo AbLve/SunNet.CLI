@@ -1,0 +1,9 @@
+﻿@model  IMultiChoiceProperty
+    @{}
+    @Html.RadioButtonFor(x => x.IsMultiChoice, true, new { id = "IsMultiChoice1" })
+    @Html.Label("", "Multi-choice", new { @for = "IsMultiChoice1" })
+    @ViewTextHelper.HtmlEmptySeparator
+    @Html.RadioButtonFor(x => x.IsMultiChoice, false, new { id = "IsMultiChoice2" })
+    @Html.Label("", "Single-choice", new { @for = "IsMultiChoice2" })
+    <div class="clearfix"></div>
+    @Html.ValidationMessageFor(model => model.IsMultiChoice)

@@ -1,0 +1,5 @@
+﻿alter table Classrooms add ClassroomInternalID varchar(32)
+go
+update Classrooms set ClassroomInternalID = '' 
+go
+alter table Classrooms alter column ClassroomInternalID varchar(32) not null

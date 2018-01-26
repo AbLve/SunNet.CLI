@@ -1,0 +1,218 @@
+﻿
+@model Sunnet.Cli.Business.Ade.Models.ScoreModel
+@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Cli.Core.Cpalls
+
+@{
+    ViewBag.Title = " New Score ";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+<style>
+    .liOption:hover {
+        background-color: #1C86EE;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .selectedOption {
+        background-color: #1C86EE;
+        color: #fff;
+    }
+
+    #divCustom .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+        padding-right: 0px;
+        padding-left: 2px;
+    }
+</style>
+
+@section Scripts
+{
+    <script type="text/javascript">
+    var customScoreModel = null;
+    var cutoffScoreModel = null;
+        $(function () {
+        registerFormCallbacks("@(formId)", {
+                 onResponsed: function(response) {
+                    if(response.success)
+                    {
+                        if(response.data=="warning")
+                        {
+                            window.showMessage('warning', response.msg);
+                            return;
+                        }
+                    }
+                    window.showMessage('success', response.msg)
+                    setTimeout(function () {
+                        list_Scores.search();
+                        closeModal($("#@(formId)"));
+                    },1000);
+                }
+        });
+
+        console.log(1);
+        var measures =@Html.Raw(ViewBag.JsonMeasures);
+        customScoreModel = new CustomScoreModel(measures, [], []);
+        cutoffScoreModel = getAdeScoreModel([], "@formId", 'scores', 'deleted',@Html.Raw(ViewBag.Benchmarks));
+        cutoffScoreModel.wave1 = ko.observable(true);
+        cutoffScoreModel.wave2 = ko.observable(true);
+        cutoffScoreModel.wave3 = ko.observable(true);
+        $.extend(customScoreModel, cutoffScoreModel);
+        ko.applyBindings(customScoreModel, document.getElementById("@formId"));
+        CKEDITOR.on('instanceReady', function (e) { $("iframe").removeAttr("frameborder"); });
+    });
+    </script>
+    <script type="text/javascript">
+        function Submit() {
+            if (typeof (CKupdate) != "undefined") {
+                CKupdate();
+            }
+            var descriptionText = CKEDITOR.instances.ckDescription.document.getBody().getText();
+            var textLen = getTextLen(descriptionText);
+            if (textLen > 1000) {
+                window.showMessage('warning', "Description field should less than 1000 words.");
+                return false;
+            }
+            customScoreModel.$scores.val(JSON.stringify(customScoreModel.scores()));
+            var coefficients = JSON.stringify(customScoreModel.coefficients());
+            $("#coefficients").val(coefficients);
+            var bands = JSON.stringify(customScoreModel.bands());
+            $("#bands").val(bands);
+            return true;
+        }
+        CKEDITOR.replace('ckDescription', { toolbar: 'Community' });
+        function CKupdate() {
+            updateCkeditor();
+            $("#Description").val($("#ckDescription").val());
+        }
+
+        function getTextLen(htmlStr) {
+            var len = 0;
+            var pres = htmlStr.match(/<pre*.?>(.*?)<\/pre>/g);
+            htmlStr = htmlStr.replace(/<pre*.?>(.*?)<\/pre>/g, "");
+            if (pres)
+                len += pres.join("").length;
+            htmlStr = htmlStr
+                .replace(/\s+/g, "")               //remove "    "
+                .replace(/<br\s*?\/?>/g, "")       //remove <br>
+                .replace(/(<\/p>)/g, "")           //remove section
+                .replace(/<\/.+?>\s*<[^\/]>/g, "") //remove html
+                .replace(/<.+?>/g, "")             //remove html
+                .replace(/&.+?;/g, "");
+            len += htmlStr.length;
+            return len;
+        }
+    </script>
+}
+@using (Ajax.BeginForm("NewScore", "Assessment", null, PostFormHelper.DefaultAjaxOptions, new { @class = "form-horizontal", id = formId }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.AssessmentId)
+    @Html.Hidden("bands")
+    @Html.Hidden("coefficients")
+    @Html.Hidden("scores")
+    <div id="SocreMainDiv">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ScoreName, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.ScoreName, new { @class = "form-control", maxlength = "100" })
+                @Html.ValidationMessageFor(model => model.ScoreName)
+            </div>
+            @Html.LabelFor(model => model.ScoreDomain, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.ScoreDomain, new { @class = "form-control", maxlength = "100" })
+                @Html.ValidationMessageFor(model => model.ScoreDomain)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Description", new { @class = "control-label col-sm-2", @for = "ckDescription" })
+            <div class="col-sm-10">
+                @Html.TextArea("ckDescription", "", new { @class = "form-control", rows = 3 })
+                @Html.HiddenFor(model => model.Description)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 text-center">
+            </div>
+            <div class="col-sm-4">
+                <label class="control-label "><strong>Input Means</strong></label>
+            </div>
+            <div class="col-sm-6">
+                <label class="control-label "><strong>Input Standard Deviations</strong></label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2" style="padding-left:23px;"><strong>Base:</strong></div>
+            <div class="col-sm-2 text-left" style="padding-right:0;">
+                @Html.LabelFor(model => model.MeanAdjustment, new { @class = "control-label required" })
+            </div>
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.MeanAdjustment, new { @class = "form-control _numfloat2", maxlength = 7 })
+                @Html.ValidationMessageFor(model => model.MeanAdjustment, "Mean Adjustment field is required.", new { id = "MeanAdjustment-error" })
+            </div>
+            <div class="col-sm-2 text-left" style="padding-right:0;">
+                @Html.LabelFor(model => model.SDAdjustment, new { @class = "control-label required" })
+            </div>
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.SDAdjustment, new { @class = "form-control _numfloat2", maxlength = 7 })
+                @Html.ValidationMessageFor(model => model.SDAdjustment, "SD Adjustment field is required.", new { id = "SDAdjustment-error" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2" style="padding-left:23px;"><strong>Target:</strong></div>
+            @Html.LabelFor(model => model.TargetMean, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.TargetMean, new { @class = "form-control _numfloat2", maxlength = 7 })
+                @Html.ValidationMessageFor(model => model.TargetMean, "Target Mean field is required.", new { id = "TargetMean-error" })
+            </div>
+            @Html.LabelFor(model => model.TargetSD, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.TargetSD, new { @class = "form-control _numfloat2", maxlength = 7 })
+                @Html.ValidationMessageFor(model => model.TargetSD, "Target SD field is required.", new { id = "TargetSD-error" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            @Html.LabelFor(model => model.TargetRound, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.TargetRound, new { @class = "form-control _num_2", min = 0, max = 28 })
+                @Html.ValidationMessageFor(model => model.TargetRound, "Target Round field is required.", new { id = "TargetRound-error" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.GroupByLabel, new { @class = "control-label col-sm-2" })
+            <div class="col-sm-4 checkbox">
+                &nbsp;@ViewTextHelper.HtmlEmptySeparator
+                @Html.CheckBoxFor(model => model.GroupByLabel, new { })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="nav-tab" style="margin:0">
+            <ul id="measureContainer" class="nav-container">
+                <li class="active"><a href="#Wave1" role="tab" data-toggle="tab">Wave @(Wave.BOY.ToDescription())</a></li>
+                <li><a href="#Wave2" role="tab" data-toggle="tab">Wave @(Wave.MOY.ToDescription())</a></li>
+                <li><a href="#Wave3" role="tab" data-toggle="tab">Wave @(Wave.EOY.ToDescription())</a></li>
+            </ul>
+        </div>
+        <div id="divCustom" class="tab-content" style="padding:0 10px;">
+            <div class="tab-pane fade in active" id="Wave1">
+                @Html.Editor("", "CustomScore", new { wave = Wave.BOY })
+            </div>
+            <div class="tab-pane fade" id="Wave2">
+                @Html.Editor("", "CustomScore", new { wave = Wave.MOY })
+            </div>
+            <div class="tab-pane fade" id="Wave3">
+                @Html.Editor("", "CustomScore", new { wave = Wave.EOY })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="submit" onclick="return Submit();">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}
+
+
+

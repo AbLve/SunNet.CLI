@@ -1,0 +1,48 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+@{
+    ViewBag.Title = "Error";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword" content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>404</title>
+    @Styles.Render("~/css/basic")
+    @Scripts.Render("~/scripts/modernizr")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/scripts/ie68")
+    <![endif]-->
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <div class="warp">
+        <div class="error-page">
+            <div class="error-page-header">
+                <a href="@SFConfig.MainSiteDomain">
+                    <img src="/images/cli_logo.png" alt="cli_logo">
+                </a>
+            </div>
+            <div class="error-page-main">
+                <h4>404</h4>
+                <p>Not found!</p>
+                <a class="mainbutton logout-main-btn backhome-btn" href="@SFConfig.MainSiteDomain">Return to the home page</a>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

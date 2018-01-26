@@ -1,0 +1,22 @@
+﻿@using Sunnet.Cli.MainSite.Areas.Demo.Controllers
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model TestClass
+@{
+    ViewBag.Title = "Enum";
+}
+<h2>Enum</h2>
+@using (Html.BeginForm("Enum"))
+{
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(x => x.ID)
+    @Html.DropDownList("Items", (IEnumerable<SelectListItem>)ViewBag.ItemsOptions)
+    @Html.DropDownListFor(x => x.TE, (IEnumerable<SelectListItem>)ViewBag.ItemsOptions)
+    @Html.EnumDropDownListFor(x => x.TE, ViewTextHelper.DefaultPleaseSelectText, "", null)
+    @Html.ValidationMessageFor(x => x.TE)
+    @Html.DropDownList("t3", (IEnumerable<SelectListItem>)EnumHelper.GetSelectList(typeof(TestEnum)))
+    <hr />
+    @Html.Raw(ViewBag.Json)
+    <hr />
+    <button type="submit" class="btn btn-default">Submit</button>
+}

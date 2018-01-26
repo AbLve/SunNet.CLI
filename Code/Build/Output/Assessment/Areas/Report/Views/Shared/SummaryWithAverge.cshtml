@@ -1,0 +1,195 @@
+﻿@using Sunnet.Cli.Assessment.Areas.Report.Controllers
+@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    var waves = ViewBag.Waves as Dictionary<Wave, List<ReportRowModel>>;
+    var breakPager = false;
+}
+
+<table style="width: 100%">
+    <thead>
+        <tr>
+            <td>
+                <table cellpadding="0" cellspacing="0" class="noborder header">
+                    <tr>
+                        <td style="width: 90px;"></td>
+                        <td style="width: 90px;"></td>
+                        <td style="width: 90px;"></td>
+                        <td style="width: 90px;"></td>
+
+                        <td style="width: 90px;"></td>
+                        <td style="width: 90px;"></td>
+                        <td style="width: 90px;"></td>
+                        <td style="width: 90px;"></td>
+
+                        <td style="width: 90px;"></td>
+                        <td style="width: 90px;"></td>
+                        <td style="width: 90px;"></td>
+                        <td style="width: 90px;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td colspan="8" style="font-size: 14px; font-weight: bold;" colspan="3">
+                            @(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+                        @(ViewBag.Title)
+                    </td>
+                        <td colspan="2">
+                            <img src="@(DomainHelper.AssessmentDomain)images/cli_logo.png" style="width: 150px; height: 60px; vertical-align: middle;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: left; width: 180px; vertical-align: top;" colspan="2">
+                            Community:&nbsp;@(ViewBag.District)
+                        </td>
+                        <td colspan="4" style="vertical-align: top;">&nbsp;</td>
+                        <td colspan="4" style="text-align: right; width: 180px; vertical-align: top;" colspan="2">
+                            Assessment Language:&nbsp;@ViewBag.Language
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: left; vertical-align: top;" colspan="2">
+                            School:&nbsp;@ViewBag.School
+                        </td>
+                        <td colspan="4">&nbsp;</td>
+                        <td colspan="4" style="text-align: right; vertical-align: top;" colspan="2">Class:&nbsp;@ViewBag.Class</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: left; vertical-align: top;" colspan="2">
+                            School year:&nbsp;@ViewBag.ScoolYear<br />
+                            Wave @waves.Keys.First().ToDescription()
+                        </td>
+                        <td colspan="4">&nbsp;</td>
+                        <td colspan="4" style="text-align: right; vertical-align: top;" colspan="2">Teacher:&nbsp;@Html.Raw(ViewBag.Teacher)</td>
+                    </tr>
+                    @if(ViewBag.NoClassSummary){
+                        <tr>
+                            <td colspan="12">&nbsp;</td>
+                        </tr>
+                    }
+                </table>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @foreach (var wave in waves)
+                {
+                    <table cellpadding="0" cellspacing="0" class='@(breakPager ? "newpager" : "") report-data table_border'>
+                        <caption style="text-align: center;">
+                            @if (ViewContext.Controller is StudentController)
+                            {
+                                <span>Raw Scores</span>
+                            }
+                            else
+                            {
+                                <span>Average Scores</span>
+                            }
+                        </caption>
+                        <thead style="page-break-inside: avoid">
+                            <tr class='fixed-columns-rotate' style="page-break-inside: avoid">
+                                @for (var j = 0; j < wave.Value[0].Cells.Count; j++)
+                                {
+                                    if (j == 0)
+                                    {
+                                        <th rowspan="@(wave.Value[0][j].Rowspan)"
+                                            colspan="@(wave.Value[0][j].Colspan)" class="border-l border-t border-b">
+                                            <div style="width: 200px;">
+                                                <span>
+                                                    @(ViewBag.ReportFirstColumn)
+                                                </span>
+                                            </div>
+                                        </th>
+                                    }
+                                    else
+                                    {
+                                        <th class='@(wave.Value[0][j].IsParent ? "fixed-columns-rotate-super" : "fixed-columns-rotate") border-t'
+                                            rowspan="@(wave.Value[0][j].Rowspan)"
+                                            colspan="@(wave.Value[0][j].Colspan)">
+                                            <div>
+                                                <span>
+                                                    @(wave.Value[0][j].Text.ToString().CutString((wave.Value[0][j].Colspan > 1 ? wave.Value[0][j].Colspan : 4) * 6))
+                                                </span>
+                                            </div>
+                                        </th>
+                                    }
+                                }
+                                <th class="noborder border-t"></th>
+                                <th class="noborder border-t"></th>
+                            </tr>
+                            <tr class='fixed-columns-rotate' style="page-break-inside: avoid">
+                                @for (var j = 0; j < wave.Value[1].Cells.Count; j++)
+                                {
+                                    <th class='fixed-columns-rotate'
+                                        rowspan="@(wave.Value[1][j].Rowspan)"
+                                        colspan="@(wave.Value[1][j].Colspan)">
+                                        <div>
+                                            <span>@(wave.Value[1][j].Text.ToString().CutString(20))</span>
+                                        </div>
+                                    </th>
+
+                                }
+                                <th class="noborder "></th>
+                                <th class="noborder "></th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @for (var i = 2; i < wave.Value.Count; i++)
+                            {
+                                <tr style="page-break-inside: avoid">
+                                    @for (var j = 0; j < wave.Value[i].Cells.Count; j++)
+                                    {
+                                        <td class="@(wave.Value[i][j].Background)">
+                                            <span>
+                                                @(wave.Value[i][j].Text.ToString().CutString(16))
+                                            </span>
+                                        </td>
+                                    }
+                                    <td class="noborder border-l"></td>
+                                    <td class="noborder"></td>
+                                </tr>
+                            }
+                            @if (!(ViewContext.Controller is StudentController))
+                            {
+                                <tr>
+                                    <td colspan="@((wave.Value.LastOrDefault() ?? new ReportRowModel()).Cells.Sum(c => c.Colspan) + 2)">
+                                        @if (ViewContext.Controller is SchoolController)
+                                        {
+                                            <div class="note">*  Averages for Schools and Community/District are based on students tested.</div>
+                                        }
+                                        @if (ViewContext.Controller is ClassController)
+                                        {
+                                            <div class="note">*  Averages for Classes and School are based on students tested.</div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>
+@if (ViewContext.Controller is StudentController)
+{
+    <table class="noborder" cellpadding="0" cellspacing="0" style="margin-bottom: 0px; margin-top: 5px;">
+        <tr style="page-break-inside: avoid">
+            <td class="cpalls_normal"><span>#</span></td>
+            <td style="text-align: left;">: At or above benchmark</td>
+            <td style="width: 100px;"></td>
+            <td class="cpalls_four"><span>#</span></td>
+            <td style="text-align: left;">: 4 years old and older below benchmark</td>
+        </tr>
+        <tr style="page-break-inside: avoid">
+            <td class="cpalls_three"><span>#</span></td>
+            <td style="text-align: left;">: 3.5 to 3.9 years old below benchmark</td>
+            <td style="width: 100px;"></td>
+            <td class="cpalls_no_benchmark"><span>#</span></td>
+            <td style="text-align: left;">: Younger than 3.5 or no benchmark applies</td>
+        </tr>
+    </table>
+}

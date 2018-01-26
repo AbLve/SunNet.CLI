@@ -1,0 +1,6 @@
+﻿alter table [dbo].[Files]
+alter column [Language] int not null
+go
+
+EXEC sp_rename 'Files.Language', 'LanguageId', 'COLUMN';
+go

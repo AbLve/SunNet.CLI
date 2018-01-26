@@ -1,0 +1,17 @@
+
+GO
+ALTER TABLE dbo.StudentMeasures ADD BenchmarkId INT NOT NULL DEFAULT 0;
+GO
+ALTER TABLE dbo.StudentMeasures ADD LowerScore DECIMAL(18,2);
+GO
+ALTER TABLE dbo.StudentMeasures ADD HigherScore DECIMAL(18,2);
+
+GO
+UPDATE  dbo.StudentMeasures
+SET     LowerScore = Benchmark ,
+        HigherScore = Benchmark;
+
+GO
+ALTER TABLE dbo.StudentMeasures ALTER COLUMN LowerScore DECIMAL(18,2) NOT NULL;
+GO
+ALTER TABLE dbo.StudentMeasures ALTER COLUMN HigherScore DECIMAL(18,2) NOT NULL;

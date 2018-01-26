@@ -1,0 +1,41 @@
+﻿DELIMITER $$
+
+
+DROP PROCEDURE IF EXISTS `PDCompletionCourseReport`$$
+
+CREATE PROCEDURE `PDCompletionCourseReport`(IN communityId INT,IN schoolId INT,IN teacher VARCHAR(100))
+BEGIN
+DECLARE sqlQuery VARCHAR(100000);
+SET sqlQuery='SELECT uset.name AS CommunityDistrict,uset_school.name AS SchoolName,usr.firstname,usr.lastname,usr.email,course.fullname AS CircleCourse,
+FROM_UNIXTIME(cls.startdate) as startdate,cls_enrol.completestatusid AS STATUS,cls_enrol.grade,
+(SELECT GROUP_CONCAT(VALUE) FROM mdl_scorm_scoes_track WHERE id IN (
+SELECT MAX(id) FROM mdl_scorm_scoes_track WHERE userid=usr_mdl.muserid AND scormid 
+IN (SELECT id FROM mdl_scorm WHERE course=course.id) GROUP BY userid,scormid ORDER BY id DESC
+))
+ as TimeSpentInCourse,
+(SELECT COUNT(*) FROM mdl_message WHERE useridfrom =usr_mdl.muserid) AS CountofPosts,
+(SELECT COUNT(id) FROM mdl_logstore_standard_log WHERE courseid=course.id AND userid=usr_mdl.muserid AND target=''course'') as CourseViewed
+FROM mdl_local_elisprogram_uset uset
+LEFT JOIN mdl_local_elisprogram_uset uset_school ON uset.id=uset_school.parent
+LEFT JOIN mdl_local_elisprogram_uset_asign uset_assign ON uset_assign.clusterid=uset_school.id
+INNER JOIN mdl_local_elisprogram_usr usr ON usr.id=uset_assign.userid 
+LEFT JOIN `mdl_local_elisprogram_usr_mdl` usr_mdl ON usr_mdl.cuserid=usr.id 
+LEFT JOIN mdl_local_elisprogram_uset_pgm uset_pgm ON (uset_school.id=uset_pgm.clusterid or uset.id=uset_pgm.clusterid) 
+LEFT JOIN mdl_local_elisprogram_pgm_crs curcrs ON uset_pgm.curriculumid = curcrs.curriculumid 
+LEFT JOIN mdl_local_elisprogram_cls cls ON cls.courseid=curcrs.courseid 
+LEFT JOIN mdl_local_elisprogram_cls_enrol cls_enrol ON cls_enrol.classid=cls.id AND cls_enrol.userid=usr.id 
+LEFT JOIN mdl_local_elisprogram_cls_mdl cls_mdl ON cls_mdl.classid=cls.id 
+INNER JOIN mdl_course course ON course.id=cls_mdl.moodlecourseid 
+WHERE uset.parent=0
+AND EXISTS (SELECT userid FROM mdl_role_assignments WHERE roleid=(SELECT id FROM mdl_role WHERE NAME=''Learner'') AND contextid=1 and userid=usr_mdl.muserid)';
+IF communityId>0 THEN SET sqlQuery=CONCAT(sqlQuery,' AND uset.display=','''',communityId,''''); END IF;
+IF schoolId>0 THEN SET sqlQuery=CONCAT(sqlQuery,' AND uset_school.display=','''',schoolId,''''); END IF;
+IF teacher!='' THEN SET sqlQuery=CONCAT(sqlQuery,' and (usr.firstname like','''','%',teacher,'%','''',' or usr.lastname like','''','%',teacher,'%','''',' or usr.email like','''','%',teacher,'%','''',')'); END IF;
+SET sqlQuery=CONCAT(sqlQuery,' ORDER BY uset.name,uset_school.name,usr.email');
+SET @sql=sqlQuery;
+PREPARE s1 FROM @sql;
+EXECUTE s1;
+DEALLOCATE PREPARE s1;
+END$$
+
+DELIMITER ;

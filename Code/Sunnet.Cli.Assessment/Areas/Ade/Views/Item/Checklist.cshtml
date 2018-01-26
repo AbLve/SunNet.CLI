@@ -1,0 +1,216 @@
+﻿@model ChecklistItemModel
+@{
+    if (Model.ID < 1)
+    {
+        ViewBag.Title = "New " + ItemType.Checklist.ToDescription();
+    }
+    else
+    {
+        ViewBag.Title = Model.Label;
+    }
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Detail", "Measure", new { id = Model.MeasureId });
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @Html.Partial("NEV_Item_BreadPath", Model)
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        window.onload = function () {
+            $("iframe").removeAttr("frameborder");
+        };
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+        function getToFolder() {
+            return "assessment";
+        }
+        var itemModel;
+        jQuery(function() {
+
+            CKEDITOR.replace('TargetText',
+            {
+                toolbar: 'Cli'
+            });
+            CKEDITOR.on('instanceReady', function(e) { $("iframe").removeAttr("frameborder"); });
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@Html.Raw(backUrl)");
+                }
+            });
+
+            var jsonModel = @Html.Raw(ViewBag.ModelJson);
+            var formEle = document.getElementById("@formId");
+            itemModel = getChecklistItemModel(jsonModel, {Answer:"#Answers"});
+            ko.applyBindings(itemModel, formEle);
+        });
+    </script>
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+    @if (Model.ID > 0)
+    {
+        <a class="mainbutton mainright-btn nav-btn" target="_blank" href='@(Url.Action("Preview", "Execute", new { Area = "Cpalls", itemId = Model.ID, measureId = Model.MeasureId }))'>Preview</a>
+    }
+</div>
+@using (Ajax.BeginForm("SaveChecklist", "Item", null, PostFormHelper.DefaultAjaxOptions,
+                                                    new
+                                                    {
+                                                        @class = "form-horizontal",
+                                                        id = formId
+                                                    }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ID" value="@Model.ID" />
+    @Html.HiddenFor(m => m.Type)
+    @Html.HiddenFor(m => m.MeasureId)
+    @Html.Hidden("Answers", "")
+    @Html.HiddenFor(x => x.AnswerType)
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Label, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Label)
+                </div>
+                <div class="col-sm-2">
+                    @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control", @aria_label = "Status" })
+                    @Html.ValidationMessageFor(model => model.Status, "Status field error.", new { id = "Status-error" })
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label for="IsPractice">
+                            @Html.CheckBoxFor(x => x.IsPractice, new { data_bind = "checked:IsPractice" })
+                            @Html.DisplayNameFor(x => x.IsPractice)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label for="ShowAtTestResume">
+                            @Html.CheckBoxFor(x => x.ShowAtTestResume, new { data_bind = "checked:ShowAtTestResume,enable:IsPractice()" })
+                            @Html.DisplayNameFor(x => x.ShowAtTestResume)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(model => model.Description, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TargetText, new { @class = "control-label col-sm-2  " })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.TargetText, new { @class = "form-control", style = "height:30px;" })
+
+                    @Html.ValidationMessageFor(model => model.TargetText)
+                </div>
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(model => model.ResponseCount, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.ResponseCount, new
+               {
+                   @class = "form-control",
+                   @readonly = "readonly",
+                   data_bind = "value:Answers().length"
+               })
+                    @Html.ValidationMessageFor(model => model.ResponseCount, "Response# filed error.", new { id = "ResponseCount-error" })
+                </div>
+                <div class="col-sm-4">
+                    <fieldset>
+                        <legend style="display:none">Multi-choice or Single-choice</legend>
+                        @Html.EditorForModel("IsMultiChoice")
+                    </fieldset>
+                </div>
+                <div class="col-sm-4">
+                    <fieldset>
+                        <legend style="display:none">Portrait or Landscape</legend>
+                        @Html.RadioButtonFor(x => x.Direction, CecItemsDirection.Portrait, new { id = "Portrait" })
+                        @Html.Label("", CecItemsDirection.Portrait.ToDescription(), new { @for = "Portrait" })
+                        @ViewTextHelper.HtmlEmptySeparator
+                        @Html.RadioButtonFor(x => x.Direction, CecItemsDirection.Landscape, new { id = "Landscape" })
+                        @Html.Label("", CecItemsDirection.Landscape.ToDescription(), new { @for = "Landscape" })
+                        <div class="clearfix"></div>
+                        @Html.ValidationMessageFor(model => model.Direction)
+                    </fieldset>
+                </div>
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(model => model.WaitTime, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.WaitTime, new { @class = "form-control  timeout" })
+                        <span class="input-group-addon">ms</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.IsRequired, new { @class = "control-label col-sm-2  ", @style = "vertical-align:bottom" })
+                <div class="col-sm-10">
+                    @Html.CheckBoxFor(c => c.IsRequired, new { @style = "vertical-align:bottom" })
+                </div>
+            </div>
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 10%">Response</th>
+                        <th>Text</th>
+                        <th style="width: 15%">Score</th>
+                        <th style="width: 10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach:{data:Answers,as:'answer'}">
+                    <tr data-bind="css:{'has-error':answer.hasError}">
+                        <td data-bind="text:$index()+1"></td>
+                        <td>
+                            <input type="text" class="form-control  input-lg" maxlength="100" aria-label="Text" data-bind="
+    value:Text,
+    attr:{name:'Text'+$index(),id:'Text'+$index()},required:true" />
+                            <div class="field-validation-valid" data-valmsg-replace="true"
+                                 data-bind="attr:{'data-valmsg-for':'Text'+$index()}">
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm positive" aria-label="Score" maxlength="5" data-bind="
+    value:Score,
+    attr:{name:'Score'+$index(),id:'Score'+$index()},
+    number:true,required:true"
+                                   style="width: 50px; display: inline-block;">
+                            <div class="field-validation-valid" data-valmsg-replace="true"
+                                 data-bind="attr:{'data-valmsg-for':'Score'+$index()}">
+                            </div>
+                        </td>
+                        <td>
+                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event:{click:$root.newAnswer}" title="New"></a>
+                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event:{click:$root.deleteAnswer}" title="Delete"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+        </div>
+    </div>
+    <div class="button-content">
+        <button class="mainbutton mainright-btn submit-btn submit" id="btnSubmit" type="submit" data-bind="event:{click:submit}">Submit</button>
+        <a class="mainbutton mainright-btn cancel-btn" href="@(Html.Raw(backUrl))">Cancel</a>
+    </div>
+}

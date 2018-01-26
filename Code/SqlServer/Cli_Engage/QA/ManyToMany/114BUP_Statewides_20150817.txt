@@ -1,0 +1,48 @@
+﻿ 
+GO
+
+/****** Object:  Table [dbo].[BUP_Statewides]    Script Date: 2015/8/18 19:54:29 ******/
+DROP TABLE [dbo].[BUP_Statewides]
+GO
+
+/****** Object:  Table [dbo].[BUP_Statewides]    Script Date: 2015/8/18 19:54:29 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[BUP_Statewides](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[TaskId] [int] NOT NULL,
+	[Action] [tinyint] NOT NULL,
+	[CommunityName] [varchar](200) NOT NULL,
+	[CommunityEngageID] [varchar](50) NOT NULL,
+	[SchoolName] [varchar](200) NOT NULL,
+	[SchoolEngageID] [varchar](200) NOT NULL,
+	[FirstName] [varchar](500) NOT NULL,
+	[MiddleName] [varchar](500) NOT NULL,
+	[LastName] [varchar](500) NOT NULL,
+	[EngageID] [varchar](32) NOT NULL,
+	[InternalID] [varchar](50) NOT NULL,
+	[PhoneNumber] [varchar](15) NOT NULL,
+	[PhoneType] [tinyint] NOT NULL,
+	[PrimaryEmail] [varchar](150) NOT NULL,
+	[SecondEmail] [varchar](150) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[Remark] [varchar](200) NOT NULL,
+ CONSTRAINT [PK_BUP_Statewides] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

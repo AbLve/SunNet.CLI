@@ -1,0 +1,43 @@
+﻿alter table [dbo].[BUP_Auditors]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_Classes]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_Classrooms]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_Communities]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_CommunityUsers]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_Parents]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_Principals]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_Schools]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_Statewides]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_Students]
+add LineNum int not null default 0
+go
+
+alter table [dbo].[BUP_Teachers]
+add LineNum int not null default 0
+go

@@ -1,0 +1,162 @@
+﻿@using Sunnet.Cli.Assessment.Areas.Cpalls.Controllers
+<!DOCTYPE html>
+@{
+    const string siteName = "Cli Engage";
+    var relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    var lastModified = FileHelper.GetFileLastModified(Server.MapPath(relativePath));
+    var moduleTitle = "CIRCLE Assessment System";
+    moduleTitle = relativePath.IndexOf("Areas/Ade", StringComparison.CurrentCultureIgnoreCase) >= 0 ? "Ade" : moduleTitle;
+    moduleTitle = relativePath.IndexOf("Areas/Cec", StringComparison.CurrentCultureIgnoreCase) > 0 ? "CEC" : moduleTitle;
+    moduleTitle = relativePath.IndexOf("Areas/Cot", StringComparison.CurrentCultureIgnoreCase) > 0 ? "COT" : moduleTitle;
+    moduleTitle = relativePath.IndexOf("Areas/Trs", StringComparison.CurrentCultureIgnoreCase) > 0 ? "TRS" : moduleTitle;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @if (ViewContext.Controller is StudentController || ViewContext.Controller is ClassController || ViewContext.Controller is SchoolController)
+    {
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, minimum-scale=1, maximum-scale=1.0" />
+    }
+    else
+    {
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1" />
+    }
+    <meta name="keyword" content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>@ViewBag.Title - @moduleTitle - @siteName</title>
+    @Styles.Render("~/css/basic")
+    @RenderSection("Styles", false)
+    @Scripts.Render("~/scripts/modernizr")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/scripts/ie68")
+    <![endif]-->
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <div class="warp">
+        <div class="header">
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="@(SFConfig.MainSiteDomain)">
+                        <img src="/images/cli_logo.png" alt="cli_logo">
+                    </a>
+                </div>
+                <div class="header-login">
+                    <div class="dropdown">
+                        <a class="header-sign-btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" href="#" data-toggle="modal">
+                            <i class="icon-user"></i>@ViewBag.FirstName
+                            <span class="caret"></span>
+                        </a>
+
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="@(DomainHelper.MainSiteDomain)home/dashboard"><i class="icon-dashboard"></i>Dashboard</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="@(DomainHelper.MainSiteDomain)Profile/MyProfile"><i class="icon-bullhorn"></i>My Profile</a></li>
+                        </ul>
+                    </div>
+                    <a href="@(DomainHelper.SsoSiteDomain)home/LogOut"><i class="icon-off"></i>Log out</a>
+
+                </div>
+                <div class="help-btn">
+                    <a href="http://www.texasschoolready.org/help/MainTicketForm.aspx?Section8" target="_blank">&nbsp;</a>
+                </div>
+            </div>
+            @Html.Partial("_Partial_Menu")
+        </div>
+    </div>
+    @if (IsSectionDefined("LeftMenu"))
+    {
+        <div title="Toggle menu" class="toggle-menu" id="toggle-menu" data-target="#menu" data-main="#main_content_">
+            <a href="">
+                <i class="icon-reorder"></i>
+            </a>
+        </div>
+    <div class="main-con-left menu-side hidden" id="menu">
+        @RenderSection("LeftMenu", false)
+    </div>
+    }
+    <div id="main_content_" class="main-con-right main-con-right-full-screen">
+        @if (IsSectionDefined("BreadPath"))
+        {
+            <h4 class="backlink">@RenderSection("BreadPath", false)</h4>
+        }
+        <div class="right-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="homelink">
+            <ul>
+                <li class="link-ut">
+                    <a href="https://www.uth.edu/" target="_blank">
+                        <img src="/images/UT.png" alt="UT">
+                    </a>
+                </li>
+                <li class="link-cli">
+                    <a href="http://www.childrenslearninginstitute.org/" target="_blank">
+                        <img src="/images/CLI.png" alt="CLI">
+                    </a>
+                </li>
+                <li class="link-tsr">
+                    <a href="http://www.texasschoolready.org/" target="_blank">
+                        <img src="/images/TSR.png" alt="TSR">
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="copyright">
+            <div class="nav-bottom">
+                <ul>
+                    <li><a href="https://www.uth.edu/index/policies.htm" target="_blank">Site Policies</a></li>
+                    <li><a href="https://www.uth.edu/index/file-viewing-information.htm" target="_blank">Web File Viewing</a></li>
+                    <li>
+                        <a href="@(SFConfig.MainSiteDomain)contact">@(Cli_Menus.ContactUs.ToDescription())</a>
+                    </li>
+                </ul>
+            </div>
+            <p>
+                Copyright © 2013 by <a class="main-a" href="https://www.uth.edu/" target="_blank">The University of Texas Health Science Center</a> at Houston (UTHealth)
+                <br />
+                Webmaster: <a href="mailto:cliengage@uth.tmc.edu">cliengage@@uth.tmc.edu</a> | This document was last modified on: @(lastModified.ToString("MM/dd/yyyy HH:mm:ss"))
+            </p>
+
+        </div>
+    </div>
+    <div id="modalSmall" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-sm">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div id="modalLarge" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @Scripts.Render("~/scripts/jquery")
+    @Scripts.Render("~/scripts/jquery_val")
+    @Scripts.Render("~/scripts/bootstrap")
+    @Scripts.Render("~/scripts/knockout")
+    @Scripts.Render("~/scripts/format")
+    @Scripts.Render("~/scripts/cli")
+    @RenderSection("Scripts", false)
+</body>
+</html>

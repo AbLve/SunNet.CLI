@@ -1,0 +1,20 @@
+﻿@using Sunnet.Cli.Core.Users.Enums
+@using Sunnet.Cli.MainSite.Models
+@{
+    ViewBag.Title = "PermissionMenu";
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml",Leftmenu_MainSite.Permission)
+}
+@section BreadPath
+{
+    Permission Management
+}
+
+
+<ul class="ade-menu-dashboard">
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Permission/Package/Default" class="administrative-con"><span><i></i>Default Package</span></a></li>
+        <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Permission/Package/Custom" class="administrative-con"><span><i></i>Custom Package</span></a></li>        
+</ul>

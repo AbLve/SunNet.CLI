@@ -1,0 +1,7 @@
+﻿@model IMultiChoiceProperty
+@{
+    var dics = new Dictionary<bool, string>();
+    dics.Add(true, "Multi-choice");
+    dics.Add(false, "Single-choice");
+}
+@Html.DisplayFor(x => x.IsMultiChoice, new { Dics = dics })

@@ -1,0 +1,9 @@
+﻿  CREATE TRIGGER [UpdateTeacherCode] ON [dbo].[Teachers] 
+FOR INSERT
+AS
+  declare @ID int
+  select @ID = ID from Inserted
+  if(@ID is not null) begin
+  update Teachers set TeacherId = 'ETE'+ left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqTeacherCode ),'5') 
+  where id = @ID
+  end

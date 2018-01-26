@@ -1,0 +1,53 @@
+﻿ALTER procedure [dbo].[BeechReport]
+@communityIds varchar(max),
+@excludeCommunityIds varchar(max),
+@schoolIds varchar(max),
+@teacher varchar(200)
+AS
+begin
+declare @sql varchar(max)
+set @sql='select C.Name as CommunityDistrict,S.Name as SchoolName,S.SchoolId as SchoolCode,S.PhoneNumber as Phone,S.PhysicalAddress1 as PhysicalAddress,S.City,S.Zip,
+S.PrimaryName as AdminName,S.PrimaryEmail as AdminEmail,S.SchoolNumber as ChildCareLicense, 
+CL.Language,CL.TeacherName,CL.TeacherCode,ISNULL(CL.Infant,0) as Infant,ISNULL(CL.Toddler,0) as Toddler,
+ISNULL(CL.Preschool,0) as Preschool,ISNULL(CL.Other,0) as Other,CL.ClassName,CL.ClassCode
+from Schools S 
+inner join CommunitySchoolRelations CS on S.ID=CS.SchoolId
+ inner join Communities C on CS.CommunityId=C.ID
+ left join SchoolTypes ST on ST.ID=S.SchoolTypeId
+ left join 
+ (select CL.Name as ClassName,CL.ClassID as ClassCode,Cl.SchoolId,Language,TeacherName as TeacherName,T.TeacherCode,
+(select SUM(CHCR.ChildrenNumber) from Classes CL1 inner join ChChildrenResult CHCR on Cl.ID=CHCR.ClassId 
+inner join CHChildrens CHC on CHC.ID=CHCR.CHChildrenId where CL1.ID=CL.ID and CHC.AgeArea=1) as Infant,
+(select SUM(CHCR.ChildrenNumber) from Classes CL1 inner join ChChildrenResult CHCR on Cl.ID=CHCR.ClassId 
+inner join CHChildrens CHC on CHC.ID=CHCR.CHChildrenId where CL1.ID=CL.ID and CHC.AgeArea=2) as Toddler,
+(select SUM(CHCR.ChildrenNumber) from Classes CL1 inner join ChChildrenResult CHCR on Cl.ID=CHCR.ClassId 
+inner join CHChildrens CHC on CHC.ID=CHCR.CHChildrenId where CL1.ID=CL.ID and CHC.AgeArea=3) as Preschool,
+(select SUM(CHCR.ChildrenNumber) from Classes CL1 inner join ChChildrenResult CHCR on Cl.ID=CHCR.ClassId 
+inner join CHChildrens CHC on CHC.ID=CHCR.CHChildrenId where CL1.ID=CL.ID and CHC.AgeArea=4) as Other
+from Classes CL
+left join
+(
+select (case when T.PrimaryLanguageOther='''' then L.Language else T.PrimaryLanguageOther end) as Language,
+(U.FirstName+'' ''+U.LastName) as TeacherName,T.TeacherId as TeacherCode,Cl.ID
+ from Classes Cl left join TeacherClassRelations TCR on CL.ID=TCR.ClassId
+left join Teachers T on TCR.TeacherId=T.ID inner join Users U on U.ID=T.UserId left join Languages L on L.ID=T.PrimaryLanguageId 
+ where CL.LeadTeacherId=t.ID and U.Status=1 ' 
+set @sql+=') T on T.ID=CL.ID
+inner join Schools S on CL.SchoolId=S.ID 
+inner join CommunitySchoolRelations CS on S.ID=CS.SchoolId
+ inner join Communities C on CS.CommunityId=C.ID
+where C.ID in (select CommunityId from CommunityAssessmentRelations where AssessmentId =-3 and Status=1) '
+set @sql+=')CL on CL.SchoolId=S.id where C.ID in (select CommunityId from CommunityAssessmentRelations where AssessmentId =-3 and Status=1)
+ and S.Status=1 and C.Status=1 and SUBSTRING(ST.Name,1,4)!=''Demo'' '
+
+if(@communityIds!='')
+	set @sql+=' and CS.CommunityId in('+convert(varchar(100),@communityIds)+')'
+if(@excludeCommunityIds!='')
+	set @sql+=' and CS.CommunityId not in('+convert(varchar(100),@excludeCommunityIds)+')'
+if(@schoolIds!='')
+	set @sql+=' and CS.ID in('+convert(varchar(100),@schoolIds)+')'
+if(@teacher!='')
+	set @sql+=' and CL.TeacherName like ''%'+@teacher+'%'''
+set @sql+=' order by C.Name,S.Name'
+exec(@sql)
+end

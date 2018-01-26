@@ -1,0 +1,195 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.ApplicantContactEntity
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Invitation Principal Register";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    IEnumerable<SelectListItem> StateOptions = (IEnumerable<SelectListItem>)ViewBag.StateOptions;
+    int txid = int.Parse(StateOptions.Where(a => a.Text.Trim() == "TX").FirstOrDefault().Value);
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            if ('@(Model.StateId)' == '0') {
+                $("#StateId").val(@txid);
+            }
+            if ('@(Model.SchoolName)' != '')
+                $("#SchoolName").attr("readonly", true);
+        })
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function (response) {
+                $("#confirmation").click();
+            }
+        });
+    </script>
+}
+@using (Ajax.BeginForm("InvitationPrincipalRegister", "Teacher", new {isSpecialist=ViewBag.isSpecialist}, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    <a href="/Signup/Teacher/Confirmation" id="confirmation" data-toggle="modal" data-target="#modalNormal"></a>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ApplicantId);  
+    <div class="main-container">
+        <div class="main-con">
+            <div class="row">
+                <h3><b>Confirmation</b></h3>
+                <p>Thank you for your interest in CLI Engage. Your school/district is not currently enrolled in our system. To request access to CLI Engage, please provide contact information for a district representative or school administrator. An email will be sent to the person you indicate in the form below to begin the registration process.</p>
+                <p>If you are a teacher, we suggest you enter you principal or director. If you are a principal, please enter the early childhood education specialist at your district. If you are a home-base provider, please enter your own contact information.</p>
+                <div class="form-group">
+
+                </div>
+                <div class="form-group">                   
+                    <div class="col-sm-4" align="right">
+                        <h4>Your School Information</h4>
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-4 control-label required",@for="txtCommunity" })
+                    <div class="col-sm-4">
+                        @Html.TextBox("txtCommunity", Model.CommunityName, new
+                   {
+                       autocomplete = "off",
+                       @class = "form-control logup-right",
+                       data_list = "true",
+                       data_for = "#CommunityId",
+                       data_remote = "/Signup/Teacher/GetCommunitySelectList",
+                       data_text = "Name",
+                       data_value = "ID",
+                       id = "txtCommunity",
+                       name = "txtCommunity",
+                       @for = "CommunityId",
+                       placeholder = "Enter community to search"
+                   })
+                        @Html.HiddenFor(model => model.CommunityId, new { @class = "form-control validate" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.CommunityId)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SchoolTypeId, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(model => model.SchoolTypeId, (IEnumerable<SelectListItem>)ViewBag.SchoolTypeOptions, new { @class = "form-control logup-right" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.SchoolTypeId)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SchoolName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.SchoolName, new { @class = "form-control col-sm-4", placeholder = "School Name*" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.SchoolName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        @Html.LabelFor(model => model.Address, null, new { @class = "control-label hide" })
+                        @Html.TextBoxFor(model => model.Address, new { @class = "form-control col-sm-4", placeholder = "Address 1*" })
+                    </div>
+                    <div class="col-sm-4">@Html.ValidationMessageFor(model => model.Address)</div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        @Html.LabelFor(model => model.Address2, null, new { @class = "control-label hide" })
+                        @Html.TextBoxFor(model => model.Address2, new { @class = "form-control col-sm-4", placeholder = "Address 2(optional)" })
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <div class="col-lg-4 m-l-n">
+                                @Html.LabelFor(model => model.City, null, new { @class = "control-label hide" })
+                                @Html.TextBoxFor(model => model.City, new { @class = "form-control", placeholder = "City*" })
+                            </div>
+                            <div class="col-lg-5 m-l-n">
+                                @Html.LabelFor(model => model.StateId, null, new { @class = "control-label hide" })
+                                @Html.DropDownListFor(e => e.StateId, (IEnumerable<SelectListItem>)ViewBag.StateOptions, new { @class = "form-control" })
+                            </div>
+                            <div class="col-lg-4 m-l-n">
+                                @Html.LabelFor(model => model.Zip, null, new { @class = "control-label hide" })
+                                @Html.TextBoxFor(model => model.Zip, new { @class = "form-control _num_5", placeholder = "Zip*" })
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="form-group">
+                    <div class="col-sm-4" align="right">
+                        <h4>Who should we contact？</h4>
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.FirstName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.LastName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.WorkPhone, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.WorkPhone, new { @class = "_homephone form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.WorkPhone)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OtherPhone, new { @class = "col-sm-4 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.OtherPhone, new { @class = "_homephone form-control col-sm-4" })
+                    </div>
+                    <div>
+                        @Html.ValidationMessageFor(model => model.OtherPhone)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control col-sm-4 email" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.Email)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12 logbtn-con">
+                        <input type="submit" class="logbutton submit-btn" value="Submit">
+                        <input type="button" class="logbutton cancel-btn" onclick="javascript: location.href = '/Home/SignUp/'" value="Cancel">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

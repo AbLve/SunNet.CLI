@@ -1,0 +1,24 @@
+﻿@using Sunnet.Cli.Business.Trs.Models
+@model Sunnet.Cli.Business.Trs.Models.TrsSchoolModel
+@{
+    ViewBag.Title = "School is not available";
+    var assessments = ViewBag.Assessments as List<TrsAssessmentListModel>;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section BreadPath
+{
+    <a href="@(SFConfig.MainSiteDomain)Home/Dashboard">
+        <img src="/images/icon_trs.png" alt="Logo" />
+    </a>
+    <i class="icon-angle-right"></i>@Html.ActionLink("Facilities", "Index")
+    <i class="icon-angle-right"></i>School is not available
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to Facility List</a>
+</div>
+<div class="main-content top-form">
+    <form class="form-horizontal" role="form">
+        The specified school is not available.
+    </form>
+</div>
+

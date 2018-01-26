@@ -1,0 +1,4 @@
+﻿IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[VideoContexts]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+begin
+  drop table VideoContexts
+end

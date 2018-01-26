@@ -1,0 +1,31 @@
+﻿--需要确认用户服务器
+
+IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TypedResponseOptions]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+DROP TABLE [dbo].[TypedResponseOptions]
+
+	
+CREATE TABLE [dbo].[TypedResponseOptions](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Type] [tinyint] NOT NULL,
+	[Keyword] [nvarchar](50) NOT NULL,
+	[From] [decimal](18, 2) NOT NULL,
+	[To] [decimal](18, 2) NOT NULL,
+	[Score] [decimal](18, 2) NOT NULL,
+	[ResponseId] [int] NOT NULL,
+	[IsDeleted] [bit] NOT NULL,
+ CONSTRAINT [PK_TypedResponseOptions] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[TypedResponseOptions]  WITH CHECK ADD  CONSTRAINT [FK_TypedResponseOptions_TypedResponses] FOREIGN KEY([ResponseId])
+REFERENCES [dbo].[TypedResonses] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[TypedResponseOptions] CHECK CONSTRAINT [FK_TypedResponseOptions_TypedResponses]
+GO

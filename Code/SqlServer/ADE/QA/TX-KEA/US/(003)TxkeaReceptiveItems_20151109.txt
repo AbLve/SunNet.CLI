@@ -1,0 +1,27 @@
+﻿IF NOT EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[TxkeaReceptiveItems]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+CREATE TABLE [dbo].[TxkeaReceptiveItems](
+	[ID] [INT] NOT NULL,
+	[BackgroundFill] [VARCHAR](200) NOT NULL,
+	[BackgroundFillType] [TINYINT] NOT NULL,
+	[InstructionAudio] [VARCHAR](200) NOT NULL,
+	[InstructionText] [VARCHAR](1000) NOT NULL,
+	[NumberOfImages] [INT] NOT NULL,
+	[SelectionType] [TINYINT] NOT NULL,
+	[ImageSequence] [TINYINT] NOT NULL,
+	[TimeoutValue] [INT] NOT NULL,
+	[BreakCondition] [TINYINT] NOT NULL,
+	[StopConditionX] [INT] NOT NULL,
+	[StopConditionY] [INT] NOT NULL,
+	[Stop] [BIT] NOT NULL,
+	[Scoring] [TINYINT] NOT NULL,
+	[NextButton] [BIT] NOT NULL,
+	[ItemLayout] [NVARCHAR](MAX) NOT NULL,
+	[ScreenWidth] [DECIMAL](18, 2) NOT NULL,
+	[RealStatus] [TINYINT] NOT NULL,
+ CONSTRAINT [PK_TxkeaReceptiveItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO

@@ -1,0 +1,5 @@
+﻿alter table [dbo].[Assessments]
+add Language tinyint default(1) not null
+
+alter table [dbo].[Assessments] 
+add [Locked] bit default(0) not null

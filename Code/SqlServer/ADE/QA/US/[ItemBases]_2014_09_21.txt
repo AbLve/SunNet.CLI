@@ -1,0 +1,20 @@
+﻿/*
+Direction = 9,
+        [Description("CEC")]
+        Cec = 1,
+        [Description("COT")]
+        Cot = 2,
+        [Description("Multiple Choice")]
+        MultipleChoices = 3,
+        [Description("Phonological Awareness")]
+        Pa = 4,
+        Quadrant = 5,
+        [Description("Rapid Expressive")]
+        RapidExpressive = 6,
+        [Description("Receptive without prompt")]
+        Receptive = 7,
+        [Description("Receptive with prompt")]
+        ReceptivePrompt = 8,
+        Checklist = 10
+*/
+update [dbo].[ItemBases] set Scored  = 1 where Type in (1,2,10)

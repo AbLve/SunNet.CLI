@@ -1,0 +1,22 @@
+﻿@using Sunnet.Cli.UIBase.Models;
+@{
+    ViewBag.Title = "Account Switches";
+    Layout = "~/Views/Shared/_Layout_LogOut.cshtml";    
+}
+<div class="login-wrong-main">
+    <div class="login-wrong-header">
+        <a href="#">
+            <img src="/images/cli_logo.png" alt="cli_logo"></a>
+    </div>
+    <div class="login-wrong-body login-wrong-body2">
+        <h4>Account Switches</h4>
+        <p>
+        You have landed, new account registration can not be completed.</p><p>
+
+            If want to undertake new account registration, please click <a href="@(DomainHelper.SsoSiteDomain)home/LogOut">here</a>.</p><p>
+If not, please click <a href="@(DomainHelper.MainSiteDomain)home/dashboard">here</a>.
+        </p>
+
+    </div>
+</div>
+

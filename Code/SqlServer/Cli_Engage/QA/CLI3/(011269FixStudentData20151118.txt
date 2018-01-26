@@ -1,0 +1,25 @@
+﻿select * into students_20151118 from Students 
+GO
+update Students Set ParentCode='' where ParentCode is null
+GO
+DECLARE @ID INT
+DECLARE contact_cursor CURSOR FOR SELECT ID FROM Students where ParentCode = '' 
+  
+OPEN contact_cursor 
+FETCH NEXT FROM contact_cursor  INTO @ID
+WHILE @@FETCH_STATUS = 0
+  BEGIN
+     DECLARE @ParentCode VARCHAR(8)
+        SET @ParentCode = CAST(ceiling(rand() * 90000000 + 10000000) AS INT);
+	       WHILE((SELECT COUNT(1) FROM dbo.Students WHERE ParentCode = @ParentCode) > 0)
+			  BEGIN
+				 SET @ParentCode = CAST(ceiling(rand() * 90000000 + 10000000) AS INT);
+			  END
+        UPDATE Students SET ParentCode = @ParentCode where ID=@ID
+        FETCH NEXT FROM contact_cursor INTO @ID
+    END
+
+CLOSE contact_cursor
+DEALLOCATE contact_cursor
+GO
+ 

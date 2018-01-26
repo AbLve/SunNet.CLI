@@ -1,0 +1,422 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Communities.Enums
+@using Sunnet.Cli.Business.Communities.Models
+@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Core.Communities.Entities.CommunityEntity
+@using Sunnet.Framework.Extensions
+@{
+    List<CommunityModel> communityList = ViewBag.CommunityList as List<CommunityModel>;
+    List<CpallsAssessmentModel> listAssessments = ViewBag.listAssessments;
+  var localAssessments = ViewBag.localAssessments as List<LocalAssessment>;
+    int[] assignedIds = ViewBag.assignedIds;
+}
+@section BreadPath
+{
+    <ul id="myTab" class="nav-container" style="border-bottom: none; padding-top: 5px;" role="tablist">
+        @for (int i = 0; i < communityList.Count; i++)
+        {
+            if (communityList[i].ID == Model.ID)
+            {
+            <li style="border-radius: 5px 5px 5px 5px" class="active"><a href="#">@communityList[i].CommunityName</a></li>
+            }
+            else
+            {
+            <li style="border-radius: 5px 5px 5px 5px">
+                <a href="/Community/Community/CommunityProfile/@communityList[i].ID" role="tab">
+                    @communityList[i].CommunityName
+                </a>
+            </li>
+            }
+        }
+    </ul>
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.My_DistrictCommunity)
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/module_community")
+
+    <script type="text/javascript">
+       
+        var roleJson = @Html.Raw(ViewBag.Role);
+
+        var list_Community = {};
+
+        jQuery(function () {
+                    
+            $.extend(roleJson,{
+                selectedCounty: ko.observable(@Model.CountyId),
+                countiesOptions: ko.observableArray([]),
+                selectedState: ko.observable(@Model.StateId)
+            });
+            
+            roleJson.selectedState.subscribe(function (state) {
+                $.getJSON('@Url.Action("GetCountiesByStateId")',
+                { stateId: state },
+                function (data)
+                {
+                    roleJson.countiesOptions.removeAll();
+                    roleJson.countiesOptions.push.apply(roleJson.countiesOptions, data);
+                    roleJson.selectedCounty(@Model.CountyId);
+                });
+            });
+            InitControlsByRole();
+            
+            var uploader = SunnetWebUploader.CreateWebUploader({
+                pick: "#btnPickStartHtml",
+                container: "#thelist1",
+                submitbutton: "#btnSubmit",
+                targetField: "#MouDocument",
+                accept: {
+                    extensions: "pdf",
+                    mimeTypes: "application/pdf"
+                }
+            });
+            function beforeSubmit(sender) {
+                if (uploader.getStats().queueNum > 0) {
+                    $(sender).data("clicked", true);
+                    if (uploader.state == "ready") {
+                        uploader.upload();
+                    }
+                    return false;
+                }
+                $("#frmCommunity").submit();
+                return false;
+            };
+
+            $("#btnSubmit").click(function () {
+                return beforeSubmit(this);
+            });
+        
+            fnMouDocument();
+
+            if ($("input[name='MouStatus']:checked").val() != "False") {
+                $("#MouDocument").rules("add", { required: true });
+            } else
+                setTimeout(hideMouDocument, 200);
+
+        });
+
+        function hideMouDocument() {
+            if ($("#statusNotSigned").val()) {
+                $("#divMouDocument").hide();
+                $("[for='MouDocument']").hide();
+            }
+        }
+    </script>
+}
+
+
+@using (Ajax.BeginForm("ProfileUpdate", "Community", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    HttpMethod = "Post",
+    role = "form",
+    id = "frmCommunity",
+    @class = "form-horizontal"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.BasicCommunityId, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.HiddenFor(model => model.BasicCommunityId)
+                    @Html.HiddenFor(model => model.ID)
+                    <input type="text" id="BasicCommunityId" class="form-control" readonly="readonly" value="@ViewBag.communityName"/>
+                </div>
+
+                @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.CommunityId, new { @class = "form-control", Readonly = "true" })
+                    @Html.ValidationMessageFor(model => model.CommunityId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.StatusOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+                @Html.LabelFor(model => model.StatusDate, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.StatusDate, new { @class = "form-control", Readonly = "true", @Value = Model.StatusDate.FormatDateString() })
+                    @Html.ValidationMessageFor(model => model.StatusDate)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FundingId, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.FundingId, (IEnumerable<SelectListItem>)ViewBag.FundingOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.FundingId)
+                </div>
+                @Html.LabelFor(model => model.SchoolYear, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", Readonly = "true" })
+                    @Html.ValidationMessageFor(model => model.SchoolYear)
+                </div>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-2 control-label required">MOU Status</span>
+                <div class="col-sm-4">
+                    @Html.RadioButtonFor(model => model.MouStatus, true, new { id = "statusSigned", data_bind = "disable: MouStatus == 'R'" })
+                    <label for="statusSigned">Signed</label>
+                    @Html.RadioButtonFor(model => model.MouStatus, false, new { id = "statusNotSigned", data_bind = "disable: MouStatus == 'R'" })
+                    <label for="statusNotSigned">Not Signed</label>
+                    <br />
+                    @Html.ValidationMessageFor(model => model.MouStatus)
+                </div>
+                @Html.LabelFor(model => model.MouDocument, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4" id="divMouDocument">
+                    <div id="thelist1" class="uploader-list"></div>
+                    <div class="btns" data-bind="visible:MouDocument != 'R'">
+                        <div id="btnPickStartHtml" for="MouDocument">Browse</div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.MouDocument))
+                    {
+                        <div class="col-sm-1" id="divPreview">
+                            <a href="@FileHelper.GetPreviewPathofUploadFile(Model.MouDocument)"  class="table-btn  icon-zoom-in preview-btn" target="_blank"></a>
+                        </div>
+                    }
+                    @Html.HiddenFor(model => model.MouDocument, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MouDocument)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.WebAddress, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.WebAddress, new { @class = "col-sm-4 form-control url" })
+                    @Html.ValidationMessageFor(model => model.WebAddress)
+                </div>
+                @Html.LabelFor(model => model.DistrictNumber, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.DistrictNumber, new { @class = "col-sm-4 form-control" })
+                    @Html.ValidationMessageFor(model => model.DistrictNumber)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Community/District Physical Address (No P.O. Boxes)</div>
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-2 "></div>
+                <div class="col-sm-10">
+                    @Html.LabelFor(model => model.PhysicalAddress1, new { @class = "hide" })
+                    @Html.TextBoxFor(model => model.PhysicalAddress1, new { @class = "form-control", PlaceHolder = "Address1*" })
+                    @Html.ValidationMessageFor(model => model.PhysicalAddress1)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 "></div>
+                <div class="col-sm-10">
+                    @Html.LabelFor(model => model.PhysicalAddress2, new { @class = "hide" })
+                    @Html.TextBoxFor(model => model.PhysicalAddress2, new { @class = "form-control", PlaceHolder = "Address2(optional)" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 "></div>
+                <div class="col-sm-10">
+                    <div class="col-lg-3 m-l-n">
+                        @Html.LabelFor(model => model.City, new { @class = "hide" })
+                        @Html.TextBoxFor(model => model.City, new { @class = "form-control", PlaceHolder = "City*" })
+                        @Html.ValidationMessageFor(model => model.City)
+                    </div>
+                    <div class="col-lg-3 m-l-n">
+                        @Html.LabelFor(model => model.StateId, new { @class = "hide" })
+                        @Html.DropDownListFor(model => model.StateId, (IEnumerable<SelectListItem>)ViewBag.StateOptions,
+                        new { @class = "form-control", placeholder = "State*" })
+                        @Html.ValidationMessageFor(model => model.StateId)
+                    </div>
+                    <div class="col-lg-3 m-l-n">
+                        @Html.LabelFor(model => model.CountyId, new { @class = "hide" })
+                        @Html.DropDownListFor(model => model.CountyId, (IEnumerable<SelectListItem>)ViewBag.CountyOptions,
+                        new
+                        {
+                            @class = "form-control",
+                            placeholder = "County*"
+                        })
+                        @Html.ValidationMessageFor(model => model.CountyId)
+                    </div>
+                    <div class="col-lg-3 m-l-n">
+                        @Html.LabelFor(model => model.Zip, new { @class = "hide" })
+                        @Html.TextBoxFor(model => model.Zip, new { @class = "form-control _num_5", PlaceHolder = "Zip*" })
+                        @Html.ValidationMessageFor(model => model.Zip)
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PhoneNumber, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control _homephone", PlaceHolder = "(###)###-####" })
+                    @Html.ValidationMessageFor(model => model.PhoneNumber)
+                </div>
+                @Html.LabelFor(model => model.PhoneNumberType, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.PhoneNumberType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PhoneNumberType)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Community/District Primary Contact</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimarySalutation, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.PrimarySalutation, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PrimarySalutation)
+                </div>
+                @Html.LabelFor(model => model.PrimaryTitleId, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.PrimaryTitleId, (IEnumerable<SelectListItem>)ViewBag.TitleOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PrimaryTitleId)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimaryName, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.PrimaryName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PrimaryName)
+                </div>
+                @Html.LabelFor(model => model.PrimaryEmail, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.PrimaryEmail, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.PrimaryEmail)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimaryPhone, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.PrimaryPhone, new { @class = "form-control _homephone", PlaceHolder = "(###)###-####" })
+                    @Html.ValidationMessageFor(model => model.PrimaryPhone)
+                </div>
+                @Html.LabelFor(model => model.PrimaryPhoneType, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.PrimaryPhoneType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.PrimaryPhoneType)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Community/District Secondary Contact</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.SecondarySalutation, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.SecondarySalutation, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SecondarySalutation)
+                </div>
+                @Html.LabelFor(model => model.SecondaryTitleId, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.SecondaryTitleId, (IEnumerable<SelectListItem>)ViewBag.SecondaryTitleOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SecondaryTitleId)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SecondaryName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SecondaryName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SecondaryName)
+                </div>
+                @Html.LabelFor(model => model.SecondaryEmail, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SecondaryEmail, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.SecondaryEmail)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SecondaryPhone, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SecondaryPhone, new { @class = "form-control _homephone", PlaceHolder = "(###)###-####" })
+                    @Html.ValidationMessageFor(model => model.SecondaryPhone)
+                </div>
+                @Html.LabelFor(model => model.SecondaryPhoneType, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.EnumDropDownListFor(model => model.SecondaryPhoneType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SecondaryPhoneType)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Community/District Approved Features</div>
+        <div class="content-body">
+             <div class="form-group" style="border-bottom: 1px dashed #d2691e;  margin-right: 0px;  margin-left: 0px;">
+                
+               @for (int i = 0; i < localAssessments.Count; i++)
+                {
+                    if (assignedIds.Contains((int)localAssessments[i]))
+                    {
+                        <div class="col-sm-4">
+                            <input type="checkbox"  name="chkAssessment" id="@((int)localAssessments[i])"  checked="true" value="@((int)localAssessments[i])"/>
+                            <label for=@((int)localAssessments[i])>@localAssessments[i].ToDescription() </label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-4">
+                            <input type="checkbox"  name="chkAssessment" id="@((int)localAssessments[i])"  value="@((int)localAssessments[i])"/>
+                            <label for=@((int)localAssessments[i])>@localAssessments[i].ToDescription() </label>
+                        </div>
+                    }
+
+                }
+            </div>
+
+            <div class="form-group" style=" margin-right: 0px;  margin-left: 0px;">
+                
+                @for (int i = 0; i < listAssessments.Count; i++)
+                {
+                    if (assignedIds.Contains(listAssessments[i].ID))
+                    {
+                        <div class="col-sm-4">
+                            <input type="checkbox"  name="chkAssessment" id="@(listAssessments[i].ID)"  checked="true" value="@(listAssessments[i].ID)"/>
+                            <label for=@(listAssessments[i].ID)>@listAssessments[i].Name </label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-4">
+                            <input type="checkbox"  name="chkAssessment" id="@(listAssessments[i].ID)"  value="@(listAssessments[i].ID)"/>
+                            <label for=@(listAssessments[i].ID)>@listAssessments[i].Name </label>
+                        </div>
+                    }
+
+                }
+            </div>
+        </div>
+    </div>
+    <div class="main-content" data-bind="visible:Notes != 'X'">
+        <div class="content-title">Community/District Notes</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Notes, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.Notes, 5, 3, new { @class = "form-control", PlaceHolder = "Limit to 600 characters." })
+                    @Html.ValidationMessageFor(model => model.Notes)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="button-content">
+        <a class="mainbutton modal-btn cancel-btn" type="button" data-toggle="modal" 
+            data-target="#modalNormal" title="Features" href="@Html.Raw(Url.Action(ViewBag.FeatureQueryString))?communityId=@(Model.ID)">Features</a>
+        <button class="mainbutton modal-btn submit-btn" type="button" id="btnSubmit">Submit</button>
+    </div>
+}
+

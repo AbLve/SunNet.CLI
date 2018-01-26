@@ -1,0 +1,135 @@
+﻿@model ChildListModel
+@using Sunnet.Cli.Business.Students.Models
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Edit Child";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    if (response.success) {
+                        window.showMessage("success", response.msg);
+                        redirectBack("/Parent/Index/MyConnections");
+                    }
+                }
+            });
+        })();
+    </script>
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Sunnet.Cli.MainSite.Models.Leftmenu_MainSite.My_Profile)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("My Connections", "MyConnections", "Index"))
+    <i class="icon-angle-right"></i>Edit Child
+}
+
+@using (Ajax.BeginForm("SaveParentChild", "Index", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{     
+    @Html.AntiForgeryToken()
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            @Html.HiddenFor(model => model.ID)
+            @Html.HiddenFor(model => model.StudentId)
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.FirstName, null, new { @class = "form-control col-sm-4" })
+                    @Html.ValidationMessageFor(model => model.FirstName)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control col-sm-4" })
+                    @Html.ValidationMessageFor(model => model.LastName)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.BirthDate, new { @class = "col-sm-4 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.BirthDate, new
+                    {
+                        @class = "form-control date",
+                        @Value = Model.BirthDate.FormatDateString()
+                    })
+                    @Html.ValidationMessageFor(model => model.BirthDate)
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolCity, null, new { @class = "col-sm-4 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolCity, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolZip, null, new { @class = "col-sm-4 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.SchoolZip, new { @class = "form-control _num_5" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolName, null, new { @class = "col-sm-4 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBox("SchoolName", "", new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#SchoolId",
+                    data_remote = Url.Action("GetAllSchoolSelectList", "School", new { Area = "School" }),
+                    data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "SchoolName",
+                    placeholder = "Enter key text to search",
+                    name = "SchoolName",
+                    @for = "schoolId",
+                    data_extraParams = "{\"communityId\":\"#CommunityId\"}",
+                    @Value = Model.SchoolName
+                })
+                    @Html.HiddenFor(model => model.SchoolId, new { Value = Model.SchoolId })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3">
+                    <a href="javascript:void(0);" style="text-decoration: underline;">Receive my child's school reports
+                    </a>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PINCode, null, new { @class = "col-sm-4 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.PINCode, new { @class = "form-control"  })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-6">
+                    <p>Note:The First and Last name of the child must match the name on the PIN page provided by the teacher.</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="button-content">
+            <button class="mainbutton modal-btn submit-btn" type="submit">Submit</button>
+            <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Cancel</a>
+        </div>
+    </div>
+}
+

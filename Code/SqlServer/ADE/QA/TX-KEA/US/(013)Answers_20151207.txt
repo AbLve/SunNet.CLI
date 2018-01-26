@@ -1,0 +1,7 @@
+﻿
+if not exists(select * from syscolumns where id=object_id('Answers') and name='SequenceNumber')
+  alter table Answers  add SequenceNumber int 
+  go
+  update Answers set SequenceNumber = 0 where SequenceNumber is null
+  go
+  alter table Answers  alter column  SequenceNumber int not null

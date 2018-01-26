@@ -1,0 +1,88 @@
+﻿@using Sunnet.Cli.UIBase.Models
+
+@{
+    ViewBag.Title = "Assign Teacher to Class ";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        if ("@ViewBag.accessView".toLowerCase() == "false")
+            closeModal("#@formId");
+
+        +(function () {
+
+            registerFormCallbacks("formId", {
+                onPosted: function (response) {
+                    redirectBack("index");
+                }
+            });
+
+        })();
+
+        function addLeadTeacher(o) {
+            if ($(o).prop("checked")) {
+                var selectText = $(o).parent().text().trim();
+                $("#LeadTeacher").append("<option value='" + $(o).val() + "'>" + selectText + "</option>");
+            }
+            else {
+                jQuery("#LeadTeacher option[value='" + $(o).val() + "']").remove();
+            }
+        }
+    </script>
+}
+@using (Ajax.BeginForm("AssignTeacher", "Class", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="classId" value="@ViewBag.classId"/>
+
+    <div class="form-group">
+        @if (ViewBag.teacherList != null && ViewBag.teacherList.Count > 0)
+        {
+            foreach (var item in ViewBag.teacherList)
+            {
+            <label class="col-sm-3" for="chk@(item.ID)">
+                @if (item.Selected)
+                {
+                    <input name="chkTeacher" type="checkbox" class="check-m-r" id="chk@(item.ID)" value="@item.ID" checked="checked" onclick="addLeadTeacher(this)"/>
+                }
+                else
+                {
+                    <input name="chkTeacher" type="checkbox" class="check-m-r" id="chk@(item.ID)" value="@item.ID" onclick="addLeadTeacher(this)"/>
+                }
+                @item.Name
+            </label>
+            }
+        }
+        else
+        {
+            <span>@ViewTextHelper.NoRecordFound</span>
+        }
+    </div>
+    <div class="form-group">
+        <label for="LeadTeacher" class="control-label col-sm-2">
+            Lead Teacher
+        </label>
+        <div class="col-sm-4">
+            @Html.DropDownList("LeadTeacher",@ViewBag.ddlLeadTeacher as IEnumerable<SelectListItem>)
+        </div>
+
+    </div>
+    
+    <div class="modal-footer">
+        @if (ViewBag.teacherList != null && ViewBag.teacherList.Count > 0)
+        {
+            <button class="mainbutton modal-btn submit-btn" type="submit">Assign</button>
+        }
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+    if(@ViewBag.AccessAddTeacher){
+    <div><a class="mainbutton modal-btn add-teacher-btn" href="/Invitation/Teacher/New">Add Teacher</a></div>
+    }    
+}

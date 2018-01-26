@@ -1,0 +1,215 @@
+﻿ALTER PROCEDURE [dbo].[BUP_Community]
+	@BUPCommunityID int
+AS
+BEGIN
+	SET XACT_ABORT ON;
+
+	DECLARE @CommunityId int ;--Community表Id
+
+	DECLARE @Action tinyint ;
+    DECLARE @Name varchar(500);
+	DECLARE @CommunityEngageId VARCHAR(32);
+    DECLARE @BasicCommunityId INT;
+    DECLARE @Status tinyint;
+    DECLARE @StatusDate datetime ;
+    DECLARE @SchoolYear varchar(5);
+    DECLARE @PhysicalAddress1 varchar(500);
+    DECLARE @PhysicalAddress2 varchar(500);
+    DECLARE @City varchar(140);
+    DECLARE @CountyId int;
+    DECLARE @StateId int;
+    DECLARE @Zip varchar(10);
+    DECLARE @PhoneNumber varchar(15);
+    DECLARE @PhoneNumberType tinyint ;
+    DECLARE @PrimarySalutation tinyint;
+    DECLARE @PrimaryName varchar(150);
+    DECLARE @PrimaryTitleId int;
+    DECLARE @PrimaryPhone varchar(150);
+    DECLARE @PrimaryPhoneType tinyint;
+    DECLARE @PrimaryEmail varchar(150);
+    DECLARE @SecondarySalutation tinyint;
+    DECLARE @SecondaryName varchar(150);
+    DECLARE @SecondaryTitleId int;
+    DECLARE @SecondaryPhone varchar(150);
+    DECLARE @SecondaryPhoneType tinyint
+    DECLARE @SecondaryEmail varchar(150);
+    DECLARE @WebAddress varchar(500);
+    DECLARE @DistrictNumber varchar(100);
+
+	-------------------------------
+    DECLARE @FundingId int ;
+    DECLARE @MouStatus bit;
+    DECLARE @MouDocument varchar(500);
+    DECLARE @Notes varchar(600);
+    DECLARE @CreatedOn datetime;
+    DECLARE @UpdatedOn datetime;   
+    DECLARE @LogoUrl varchar(500);
+
+	
+	BEGIN TRY
+	  BEGIN TRANSACTION;
+		SELECT @Action=Action , @Name = Name, @CommunityEngageId=EngageID, @DistrictNumber=InternalID, @PhysicalAddress1=Address1, @PhysicalAddress2=Address2,
+			@City=City, @StateId=State, @Zip=Zip, @PhoneNumber=PhoneNumber, @PhoneNumberType=PHoneNumberType, @PrimarySalutation=PrimarySalutation,
+			@PrimaryName=PrimaryName, @PrimaryTitleId=PrimaryTitleId, @PrimaryPhone=PrimaryPhone, @PrimaryPhoneType=PrimaryPhoneType, @PrimaryEmail=PrimaryEmail,
+			@SecondarySalutation=SecondarySalutation, @SecondaryName=SecondaryName, @SecondaryTitleId=SecondaryTitleId, @SecondaryPhone=SecondaryPhone,
+			@SecondaryPhoneType=SecondaryPhoneType, @SecondaryEmail=SecondaryEmail, @WebAddress=WebAddress, @FundingId=FundingId
+		FROM BUP_Communities 
+		WHERE ID = @BUPCommunityID
+
+		--Insert
+		IF(@Action = 1)BEGIN
+			SELECT @BasicCommunityId=ID FROM BasicCommunities WHERE Name=@Name AND Status=1
+			IF(@BasicCommunityId IS NULL) BEGIN
+				UPDATE BUP_Communities SET Status = 5 ,Remark='Community Name not in BasicCommunities'  WHERE ID=@BUPCommunityID
+			END
+			ELSE BEGIN
+			UPDATE BasicCommunities SET Status = 2 ,UpdatedOn = GETDATE() WHERE ID = @BasicCommunityId
+			INSERT INTO [dbo].[Communities]
+			   ([CommunityId]
+			   ,[BasicCommunityId]
+			   ,[Status]
+			   ,[StatusDate]
+			   ,[SchoolYear]
+			   ,[FundingId]
+			   ,[PhysicalAddress1]
+			   ,[PhysicalAddress2]
+			   ,[City]
+			   ,[CountyId]
+			   ,[StateId]
+			   ,[Zip]
+			   ,[PhoneNumber]
+			   ,[PhoneNumberType]
+			   ,[PrimarySalutation]
+			   ,[PrimaryName]
+			   ,[PrimaryTitleId]
+			   ,[PrimaryPhone]
+			   ,[PrimaryPhoneType]
+			   ,[PrimaryEmail]
+			   ,[SecondarySalutation]
+			   ,[SecondaryName]
+			   ,[SecondaryTitleId]
+			   ,[SecondaryPhone]
+			   ,[SecondaryPhoneType]
+			   ,[SecondaryEmail]
+			   ,[WebAddress]
+			   ,[MouStatus]
+			   ,[MouDocument]
+			   ,[Notes]
+			   ,[CreatedOn]
+			   ,[UpdatedOn]			   
+			   ,[DistrictNumber]
+			   ,[Name]
+			   ,[LogoUrl])
+		 VALUES
+			   ( 
+			   ''
+			   ,@BasicCommunityId 
+			   ,1
+			   ,getdate()
+			   ,dbo.GetSchoolYear()
+			   ,@FundingId
+			   ,@PhysicalAddress1 
+			   ,@PhysicalAddress2 
+			   ,@City 
+			   ,0 --<CountyId, int,>
+			   ,@StateId  
+			   ,@Zip 
+			   ,@PhoneNumber 
+			   ,@PhoneNumberType 
+			   ,@PrimarySalutation 
+			   ,@PrimaryName 
+			   ,@PrimaryTitleId 
+			   ,@PrimaryPhone 
+			   ,@PrimaryPhoneType 
+			   ,@PrimaryEmail 
+			   ,@SecondarySalutation 
+			   ,@SecondaryName 
+			   ,@SecondaryTitleId 
+			   ,@SecondaryPhone 
+			   ,@SecondaryPhoneType 
+			   ,@SecondaryEmail 
+			   ,@WebAddress 
+			   ,0 -- <MouStatus, bit,>
+			   ,0 --<MouDocument, varchar(500),>
+			   ,'' --<Notes, varchar(600),>
+			   ,getdate() --<CreatedOn, datetime,>
+			   ,getdate() --<UpdatedOn, datetime,>			   
+			   ,@DistrictNumber
+			   ,@Name
+			   ,'' --<LogoUrl, varchar(500),>
+			   )
+			END
+		END
+	
+		--Update
+		IF(@Action = 2)BEGIN
+			SELECT @CommunityId=ID FROM Communities WHERE CommunityId=@CommunityEngageId
+			IF(@CommunityId IS NULL) 
+				UPDATE BUP_Communities SET Status = 5 ,Remark='Community Engage ID not in Communities'  WHERE ID=@BUPCommunityID
+			ELSE BEGIN
+
+				IF(@Name != '')BEGIN
+					SELECT @BasicCommunityId = BasicCommunityId FROM Communities WHERE ID=@CommunityId AND Name != @Name
+					IF (@BasicCommunityId is not null) 
+						UPDATE BasicCommunities SET Name=@Name ,UpdatedOn = GETDATE() WHERE ID = @BasicCommunityId
+				END
+
+				UPDATE [dbo].[Communities]
+				SET  
+				[PhysicalAddress1] = CASE WHEN  @PhysicalAddress1 != '' THEN @PhysicalAddress1 ELSE [PhysicalAddress1] END
+				,[PhysicalAddress2] = CASE WHEN @PhysicalAddress2='*CLEAR*' THEN '' WHEN @PhysicalAddress2 != '' THEN @PhysicalAddress2 ELSE [PhysicalAddress2] END
+				,[City] = CASE WHEN @City != '' THEN @City ELSE City END 
+				,[StateId] =  CASE WHEN @StateId >0 THEN @StateId ELSE [StateId] END 
+				,[Zip] = CASE WHEN @Zip != '' THEN @Zip ELSE [Zip] END 
+				,[PhoneNumber] = CASE WHEN @PhoneNumber != '' THEN @PhoneNumber ELSE [PhoneNumber] END 
+				,[PhoneNumberType] = CASE WHEN @PhoneNumberType = 127 THEN 0 WHEN @PhoneNumberType>0 THEN @PhoneNumberType ELSE [PhoneNumberType] END 
+				,[PrimarySalutation] = CASE WHEN @PrimarySalutation = 127 THEN 0 WHEN @PrimarySalutation>0 THEN @PrimarySalutation ELSE [PrimarySalutation] END 
+				,[PrimaryName] = CASE WHEN @PrimaryName != '' THEN @PrimaryName ELSE [PrimaryName] END 
+				,[PrimaryTitleId] = CASE WHEN @PrimaryTitleId = -1 THEN 0 WHEN @PhoneNumberType>0 THEN @PrimaryTitleId ELSE [PrimaryTitleId] END 
+				,[PrimaryPhone] = CASE WHEN @PrimaryPhone != '' THEN @PrimaryPhone ELSE [PrimaryPhone] END 
+				,[PrimaryPhoneType] =CASE WHEN @PrimaryPhoneType = 127 THEN 0 WHEN @PrimaryPhoneType>0 THEN @PrimaryPhoneType ELSE [PrimaryPhoneType] END 
+				,[PrimaryEmail] = CASE WHEN @PrimaryEmail != '' THEN @PrimaryEmail ELSE [PrimaryEmail] END 
+				,[SecondarySalutation] = CASE WHEN @SecondarySalutation = 127 THEN 0 WHEN @SecondarySalutation>0 THEN @SecondarySalutation ELSE [SecondarySalutation] END 
+				,[SecondaryName] =  CASE WHEN @SecondaryName='*CLEAR*' THEN '' WHEN @SecondaryName != '' THEN @SecondaryName ELSE [SecondaryName] END
+				,[SecondaryTitleId] =  CASE WHEN @SecondaryTitleId = -1 THEN 0 WHEN @SecondaryTitleId>0 THEN @SecondaryTitleId ELSE [SecondaryTitleId] END 
+				,[SecondaryPhone] =  CASE WHEN @SecondaryPhone='*CLEAR*' THEN '' WHEN @SecondaryPhone != '' THEN @SecondaryPhone ELSE [SecondaryPhone] END
+				,[SecondaryPhoneType] =  CASE WHEN @SecondaryPhoneType = 127 THEN 0 WHEN @SecondaryPhoneType>0 THEN @SecondaryPhoneType ELSE [SecondaryPhoneType] END
+				,[SecondaryEmail] =  CASE WHEN @SecondaryEmail='*CLEAR*' THEN '' WHEN @SecondaryEmail != '' THEN @SecondaryEmail ELSE [SecondaryEmail] END
+				,[WebAddress] =  CASE WHEN @WebAddress='*CLEAR*' THEN '' WHEN @WebAddress != '' THEN @WebAddress ELSE [WebAddress] END      
+				,[UpdatedOn] = GETDATE()
+				,[DistrictNumber] = CASE WHEN @DistrictNumber='*CLEAR*' THEN '' WHEN @DistrictNumber != '' THEN @DistrictNumber ELSE [DistrictNumber] END      
+				,[Name] =CASE WHEN  @Name != '' THEN @Name ELSE [Name] END     
+				WHERE ID = @CommunityId
+			END
+		END
+
+		--Delete
+		IF(@Action = 3) 
+		BEGIN
+			SELECT @CommunityId=ID FROM Communities WHERE CommunityId=@CommunityEngageId;
+			IF(@CommunityId IS NULL) 
+				UPDATE BUP_Communities SET Status = 5 ,Remark='Community Engage ID not in Communities'  WHERE ID=@BUPCommunityID
+			ELSE BEGIN
+				UPDATE [dbo].[Communities]
+				SET  Status=2 , StatusDate=GETDATE(),UpdatedOn=GETDATE() 
+				WHERE ID = @CommunityId
+			END
+		END
+
+		UPDATE BUP_Communities SET Status = 3 WHERE ID = @BUPCommunityID AND Status = 1;
+	  COMMIT TRANSACTION ;
+	END TRY
+
+	BEGIN CATCH
+		IF (XACT_STATE()) = -1
+		BEGIN			
+			ROLLBACK TRANSACTION;
+			UPDATE BUP_Communities SET Remark = ERROR_MESSAGE() ,Status = 4 WHERE ID = @BUPCommunityID
+		END;
+
+		IF (XACT_STATE()) = 1
+		BEGIN
+			COMMIT TRANSACTION;   
+		END;
+	END CATCH 
+END

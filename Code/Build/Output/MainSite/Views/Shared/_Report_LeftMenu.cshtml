@@ -1,0 +1,19 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Users.Enums
+@model Sunnet.Cli.MainSite.Models.Leftmenu_Report
+@{   
+    List<int> UserPages = ViewBag.UserPages as List<int>;
+    var menuClasses = Leftmenu_Report.DataExport.ToList().Cast<Leftmenu_Report>()
+        .ToDictionary(module => module, module => module == Model ? "active" : "");
+ 
+}
+<h4>
+    <a href="/Home/Dashboard" class="main-ade-left-active"><i class="icon-dashboard"></i>Dashboard</a>
+</h4>
+<ul>
+     
+    <li><a class="@menuClasses[Leftmenu_Report.DataExport]" href="/Report/Report/DataExport">DataExport</a>
+    </li>
+     
+</ul>

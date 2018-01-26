@@ -1,0 +1,221 @@
+﻿@using Sunnet.Cli.Core.Cpalls
+@model Sunnet.Cli.Business.Ade.Models.AssessmentModel
+
+@{
+    ViewBag.Title = "Edit Assessment - " + Model.Label + " (" + Model.Type.ToDescription() + ")";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    var ShowUpload = ViewBag.ShowUpload;
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function() {
+            console.log(1);
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    response.data.Status = ko.observable(response.data.Status);
+                    var parentListObj = @Request.QueryString["listObj"];
+                    parentListObj.onDataUpdated(response);
+                }
+            });
+
+            var benchmarkModel=getBenchmarkModel(@Html.Raw(ViewBag.Benchmarks),'@formId','adebenchmarks');
+            ko.applyBindings(benchmarkModel, document.getElementById("@(formId)"));
+
+            var uploadCover= SunnetWebUploader.CreateWebUploader({
+                pick: "#btnCoverFile",
+                container: "#coverlist",
+                submitbutton: "#btnSubmit",
+                targetField: "#ParentReportCoverPath",
+                accept: {
+                    extensions: "pdf",
+                    mimeTypes: "application/pdf"
+                }
+            });
+            @*if('@ShowUpload'=='True'){
+                $("#uploadDiv").show();
+            }
+            else{
+                $("#uploadDiv").hide();
+            }*@
+            function beforeSubmit (sender) {
+                if (uploadCover != null && uploadCover.getStats().queueNum > 0) {
+                    var docConfirmHtml = "<div>"
+                    docConfirmHtml += "<p>Confirm Documentation Upload</p>";
+                    docConfirmHtml += "<p style='font-size:16px'>You will be uploading the following item</p>";
+                    var queueFiles = uploadCover.getFiles("queued");
+                    for (var i = 0; i < queueFiles.length; i++) {
+                        docConfirmHtml += "<p style='font-size:14px'>" + queueFiles[i].name + "(" + WebUploader.formatSize(queueFiles[i].size) + ")</p>";
+                    }
+                    docConfirmHtml += "<p style='font-size:16px;font-weight: bolder;'>Would you like to proceed with the document upload and assessment record creation?</p>";
+                    docConfirmHtml += "</div>";
+                    jQuery.when(waitingConfirm(docConfirmHtml, "Yes", "No")).done(function () {
+                        $("#ParentReportCoverName").val(queueFiles[0].name + "(" + WebUploader.formatSize(queueFiles[0].size) + ")")
+                        $(sender).data("clicked", true);
+                        if (uploadCover.state == "ready") {
+                            uploadCover.upload();
+                        }
+                    }).fail(function () {
+                        return false;
+                    });
+                    return false;
+                }
+                if (uploadCover != null && uploadCover.getStats().progressNum > 0) {
+                    return false;
+                }
+                $("#adebenchmarks").val(JSON.stringify(benchmarkModel.benchmarks()));
+                if($('#@(formId)').valid())
+                    $('#@(formId)').submit();
+                return false;
+            }
+            $("#btnSubmit").click(function() {
+                return beforeSubmit(this);
+            });
+        })();
+
+        function DeleteCover(assessmentId) {
+            jQuery.when(waitingConfirm("You will delete the file, Continue? ", "Yes", "No")).done(function() {
+                $.post('@Url.Action("DeleteParentReportCover")', { assessmentId: assessmentId }, function(data) {
+                    var res = JSON.parse(data);
+                    if (res.success) {
+                        showMessage("success");
+                        $("#fileDiv").hide();
+                        $("#ParentReportCoverPath").val("");
+                        $("#ParentReportCoverName").val("");
+                    } else {
+                        showMessage("fail",res.message);
+                    }
+                });
+            }).fail(function() {
+            });
+        }
+    </script>
+}
+@using (Ajax.BeginForm("Save", "Assessment", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.Hidden("scores")
+    @Html.Hidden("adebenchmarks")
+    @Html.HiddenFor(x => x.Type)
+    <div class="form-group">
+        @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Label, baseClassObj)
+            @Html.ValidationMessageFor(model => model.Label)
+        </div>@Html.LabelFor(model => model.Name, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Name, baseClassObj)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+    </div>
+    <div class="form-group">
+        @if (Model.Type != AssessmentType.Cec)
+        {
+            @Html.LabelFor(model => model.OrderType, new { @class = "control-label col-sm-3 required", @for = "OrderType_x" })
+            <div class="col-sm-4">
+                @Html.Hidden("OrderType_x")
+                @Html.RadioButtonFor(model => model.OrderType, OrderType.Sequenced, new { id = "Order1" })
+                @Html.Label("", OrderType.Sequenced.ToDescription(), new { @for = "Order1" })
+                @ViewTextHelper.HtmlEmptySeparator
+                @Html.RadioButtonFor(model => model.OrderType, OrderType.Random, new { id = "Order2" })
+                @Html.Label("", OrderType.Random.ToDescription(), new { @for = "Order2" })
+                <br />
+                @Html.ValidationMessageFor(model => model.OrderType)
+            </div>
+
+            @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-3">
+                @Html.EnumDropDownListFor(model => model.Status, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                @Html.ValidationMessageFor(model => model.Status)
+            </div>
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.Language)
+
+            @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-3 required" })
+            <div class="col-sm-3">
+                @Html.EnumDropDownListFor(model => model.Status, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                @Html.ValidationMessageFor(model => model.Status)
+            </div>
+        }
+    </div>
+
+    if (Model.Type != AssessmentType.Cec)
+    {
+        <div class="form-group">
+            @Html.LabelFor(model => model.TotalScored, new { @class = "control-label col-sm-3 required" })
+            <div class="col-sm-3 checkbox">
+                @ViewTextHelper.HtmlEmptySeparator
+                @Html.EditorFor(model => model.TotalScored)
+                @Html.ValidationMessageFor(model => model.TotalScored)
+            </div>
+
+            @Html.LabelFor(model => model.Language, new { @class = "control-label col-sm-3 required" })
+            <div class="col-sm-3">
+                @Html.EnumDropDownListFor(model => model.Language, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                @Html.ValidationMessageFor(model => model.Language)
+            </div>
+        </div>
+        <div class="form-group" id="divTotal">
+            @Html.LabelFor(model => model.ParentReportCoverPath, new { @class = "control-label col-sm-4" })
+            <div class="col-sm-8">
+                <div id="uploadDiv">
+                    <div id="coverlist" class="uploader-list"></div>
+                    <div class="btns">
+                        <div id="btnCoverFile" for="ParentReportCover">Select File</div>
+                    </div>
+                </div>
+                <div id="fileDiv">
+                    @if (!string.IsNullOrEmpty(Model.ParentReportCoverPath))
+                    {
+                        <div id="divPreview">
+                            <a href="@FileHelper.GetPreviewPathofUploadFile(Model.ParentReportCoverPath)" class="form-link4" target="_blank">
+                                @Model.ParentReportCoverName
+                            </a>
+                            <span class="delete" title="Remove this file"><a href="javascript:;" onclick="DeleteCover(@Model.ID)"><i class="icon-trash icon-large"><span style="display: none;">delete legend</span></i></a></span>
+                        </div>
+                    }
+                </div>
+                @Html.HiddenFor(model => model.ParentReportCoverPath, new { @style = "display:none" })
+                @Html.HiddenFor(model => model.ParentReportCoverName, new { @style = "display:none" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DisplayPercentileRank, new { @class = "control-label col-sm-3" })
+            <div class="col-sm-2 checkbox">
+                @ViewTextHelper.HtmlEmptySeparator
+                @Html.EditorFor(model => model.DisplayPercentileRank)
+            </div>
+        </div>
+        <div class="form-group" id="divDescription">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-3 " })
+            <div class="col-sm-9 ">
+                @Html.TextBoxFor(model => model.Description, baseClassObj)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                Benchmark Labels and Colors:
+            </div>
+        </div>
+        <div class="form-group">
+            <div id="myTabContent" class="tab-content">
+                @Html.Editor("", "Benchmarks")
+            </div>
+        </div>
+    }
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" id="btnSubmit">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

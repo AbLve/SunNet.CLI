@@ -1,0 +1,46 @@
+﻿@using Sunnet.Cli.Core.Cpalls
+@model Sunnet.Cli.Business.Ade.Models.AssessmentModel
+
+@{
+    ViewBag.Title = "View Assessment - " + Model.Label + " (" + Model.Type.ToDescription() + ")";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var parentListObj = @Request.QueryString["listObj"];
+                    parentListObj.onDataUpdated(response);
+                }
+            });
+            var scoreModel = getAdeScoreModel(@Html.Raw(ViewBag.Scores),'@formId','scores','deleted');
+            ko.applyBindings(scoreModel, document.getElementById("@(formId)"));
+        })();
+    </script>
+}
+
+<form id="@formId" class="form-horizontal">
+    <div class="form-group">
+        @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.DisplayFor(model => model.Label)
+        </div>
+        @Html.LabelFor(model => model.Name, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.DisplayFor(model => model.Name)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.DisplayFor(model => model.Status, "Enum")
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn close-btn" type="button" data-dismiss="modal">Close</button>
+    </div>
+</form>

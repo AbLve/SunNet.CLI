@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Format";
+    Layout = "~/Views/Shared/_Layout_Base.cshtml";
+}
+
+<h2>Format</h2>
+
+@Html.TextBox("Date", "", new { @class = "date form-control", placeholder = "选择或者输入日期" })
+@Html.TextBox("Date", "", new { @class = "_date form-control", placeholder = "输入日期:99/99/9999" })
+@Html.TextBox("Date", "", new { @class = "_num_4 form-control", placeholder = "四位数字:9999" })
+@Html.TextBox("Date", "", new { @class = "_num_5 form-control", placeholder = "五位数字(邮编):99999" })
+@Html.TextBox("Date", "", new { @class = "_phone form-control", placeholder = "电话号码:999-999-9999" })
+@Html.TextBox("Date", "", new { @class = "_homephone form-control", placeholder = "家庭电话号码:(999)999-9999" })
+<div class="input-group" >
+    <span class="input-group-addon">$</span>
+    @Html.TextBox("Date", "", new { @class = "_money form-control", placeholder = "金额:$999,999,999.99" })
+</div>
+@Html.TextBox("Date", "", new { @class = "_number form-control", placeholder = "数值:999999999.88888888" })
+@Html.TextBox("Date", "", new { @class = "_number form-control",@float=2, placeholder = "数值(两位小数):999999999.888" })

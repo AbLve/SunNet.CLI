@@ -1,0 +1,350 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@model Sunnet.Cli.Assessment.Areas.Cpalls.Models.SchoolViewModel
+@{
+    ViewBag.Title = "School View";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    int leftWidth = 210;
+    ViewBag.LeftWidth = leftWidth;// Partial
+    ViewBag.Target = "School";
+    var childrenMeasures = ViewBag.MeasureList as List<MeasureHeaderModel>;
+    var topHeight = childrenMeasures != null && childrenMeasures.Any(x => x.ParentId > 1) ? 160 : 130;
+    List<AssessmentReportEntity> assessmentReports = ViewBag.AssessmentReports;
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a><em class="icon-angle-right"></em>School View
+}
+@section Styles{
+    <style type="text/css">
+        .fixed-header {
+            margin-left: 224px;
+        }
+        .fixed-column-title div {
+            top: @(topHeight - 25)px;
+        }
+        .main-content, .right-content-top {
+            margin-top: 5px;
+        }
+        .modal-l-b {
+            margin: 5px 0;
+        }
+        .form-horizontal .control-label {
+            padding-right: 5px;
+        }
+        .form-group > div{
+            padding-left: 5px;
+        }
+    </style>
+}
+<div class="right-content-top">
+    <div class="btn-group">
+        <button type="button" class="mainbutton mainright-btn nav-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <em class="icon-bar-chart"></em>
+            Reports <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            @if (assessmentReports.Any(e => e.Report == ReportEnum.Completion))
+            {
+                <li><a href="javascript:void(0);" data-bind="click:completion_report">Community Completion Report</a></li>
+            }
+            @if (assessmentReports.Any(e => e.Report == ReportEnum.Summary))
+            {
+                <li><a href="javascript:void(0);" data-bind="click:summary_report">Community Summary Report</a></li>
+            }
+            @if (assessmentReports.Any(e => e.Report == ReportEnum.CommunityCustomScoreReport))
+            {
+                <li><a href="javascript:void(0);" data-bind="click:communitycustomscore_report">Community Custom Score Report</a></li>
+            }
+            @if (assessmentReports.Any(e => e.Report == ReportEnum.PercentileRank))
+            {
+                <li><a href="javascript:void(0);" data-bind="click:percentileRank_report">Community Summary (Percentile Rank)</a></li>
+            }
+            @if (assessmentReports.Any(e => e.Report == ReportEnum.Growth))
+            {
+                <li><a href="javascript:void(0);" data-bind="click:growth_report">Community Growth Report</a></li>
+            }
+            @if (assessmentReports.Any(e => e.Report == ReportEnum.ComparisionofGrowth))
+            {
+                if (ViewBag.Debug)
+                {
+                <li><a href="javascript:void(0);" data-bind="click:growth_report">Community Comparison of Growth</a></li>
+                }
+                else
+                {
+                <li><a href="javascript:void(0);" onclick=" alert('Coming soon.'); ">Community Comparison of Growth</a></li>
+                }
+            }
+        </ul>
+
+    </div>
+    <div class="btn-group">
+        @if (ViewBag.HasAnotherVersion)
+        {
+            <a class="mainbutton mainright-btn nav-btn "
+               href='@(Html.Raw(Url.Action("Index", "School", new
+                 {
+                     assessmentId = ViewBag.OtherAssessmentId,
+                     year = Request.QueryString["year"],
+                     wave = Request.QueryString["wave"]
+                 })))'>
+                <em class="icon-exchange"></em>
+                @(ViewData["OtherVersion"].ToString())
+            </a>
+        }
+
+    </div>
+</div>
+<div class="modal-l-b"></div>
+<div class="form-horizontal" id="formSearch">
+    <div class="form-group">
+        @Html.Label("txtCommunity", "Community/District", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-2">
+            @Html.TextBox("txtCommunity", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#CommunityId",
+           data_remote = Url.Action("GetCommunitySelectListForSearch"),
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtCommunity",
+           name = "txtCommunity",
+           placeholder = "Enter key text to search",
+           @for = "CommunityId",
+           data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+           data_bind = "value: searchCriteria.communityName"
+       })
+            @Html.HiddenFor(model => model.CommunityId, new
+       {
+           @class = "form-control ",
+           placeholder = "Selected Community",
+           data_bind = "value: searchCriteria.communityId"
+       })
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        @Html.Label("txtSchool", Html.DisplayNameFor(m => m.SchoolName).ToString(), new { @class = "control-label col-sm-1" })
+        <div class="col-sm-2">
+            @Html.TextBox("txtSchool", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#SchoolId",
+           data_remote = Url.Action("GetSchoolSelectList"),
+           data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtSchool",
+           placeholder = "Enter key text to search",
+           @for = "SchoolId",
+           data_extraParams = "{\"communityId\":\"#CommunityId\",\"isActive\":\"#isActive\"}",
+           data_bind = "value: searchCriteria.schoolName"
+       })
+            @Html.HiddenFor(model => model.SchoolId, new
+       {
+           @class = "form-control",
+           data_bind = "value: searchCriteria.schoolId"
+       })
+            @Html.Hidden("isActive", false)
+        </div>
+        @Html.LabelFor(m => m.Year, new { @class = "control-label col-sm-1" })
+        <div class="col-sm-1">
+            @Html.DropDownListFor(m => m.Year, (IEnumerable<SelectListItem>)ViewBag.YearOptions, new { @class = "form-control", data_bind = "value: searchCriteria.year" })
+        </div>
+        @*      @Html.LabelFor(m => m.Wave, new { @class = "control-label col-sm-1" })
+        <div class="col-sm-1">
+            @Html.DropDownListFor(m => m.Wave, (IEnumerable<SelectListItem>)ViewBag.WaveOptions, new { @class = "form-control", data_bind = "value: searchCriteria.wave,event:{change:WaveChanged}" })
+        </div>*@
+        <div class="col-sm-1">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+
+</div>
+<div class="modal-l-b"></div>
+<div class="main-content">
+    <ul class="assessment-menu-Cpalls">
+        <div class="assessment-d-btns" data-bind="foreach: { data: showRecords, as: 'item' }">
+            <li>
+                <a data-title-length="50" class="cpalls-btn" href="#" data-bind="click:$root.viewSchool,text:item.Name, title:item.Name"></a>
+
+            </li>
+        </div>
+    </ul>
+    @Html.Partial("_Partial_Pager")
+
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @if (ViewBag.Mobile)
+    {
+        @Scripts.Render("~/scripts/hammer")
+    }
+    <script type="text/javascript">
+
+        function changeStatus() {
+            $("#txtCommunity").on("selected.sunnet.datalist", function (obj) {
+                $("#txtSchool").datalist("clear");
+            });
+
+        }
+
+
+        var list_Assessment = {};
+        jQuery(function() {
+            changeStatus();
+            list_Assessment = new ViewModel(
+            {
+                instanceName: "list_Assessment",
+                modalId: "modalNormal",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                orderBy: "Name",
+                orderDirection: "ASC",
+                pageSize: 50,
+                searchCriteria: {
+                    assessmentId: ko.observable(window.queryString("assessmentId", @ViewBag.AssessmentId)),
+                    year: ko.observable(window.queryString("year", @ViewBag.Year)),
+                    wave: ko.observable(window.queryString("wave", @ViewBag.Wave)),
+                    communityId: ko.observable(window.queryString("communityId", -1)),
+                    schoolId: ko.observable(window.queryString("schoolId", -1)),
+                    communityName: ko.observable(window.queryString("communityName", "")),
+
+                    schoolName: ko.observable(window.queryString("schoolName", ""))
+                }
+            },
+            {
+                dataProcessor: function(items) {
+                    setTimeout(function() {
+                        //fixTable();
+                    }, 200);
+                    return items;
+                },
+                getCreateUrl: function(item) {
+                    return "@Url.Action("index", "class")?schoolId=" + item.ID + "&assessmentId=@(ViewBag.AssessmentId)&year=" + list_Assessment.searchCriteria.year()
+                            + "&wave=" + list_Assessment.searchCriteria.wave();
+                },
+                viewSchool: function(school) {
+                    var url = "@Url.Action("index", "class")?schoolId=" + school.ID
+                        + "&assessmentId=@(ViewBag.AssessmentId)"
+                        + "&year=" + list_Assessment.searchCriteria.year()
+                        + "&wave=" + list_Assessment.searchCriteria.wave()
+                        + "&communityId=" + list_Assessment.searchCriteria.communityId()
+                        + "&communityName=" + list_Assessment.searchCriteria.communityName();
+                    location.href = url;
+                },
+
+                summary_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        var url = '@Html.Raw(Url.Action("Summary", "School", new { Area = "Report", assessmentId = ViewBag.AssessmentId, year = ViewBag.Year }))';
+                        url += '&districtId=' + list_Assessment.searchCriteria.communityId();
+                        url += '&district=' + encodeURIComponent(list_Assessment.searchCriteria.communityName());
+                        $("#modalNormal").modal({
+                            remote: url,
+                            confirm: false
+                        });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                },
+                percentileRank_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        var url = '@Html.Raw(Url.Action("SummaryPercentileRank", "School", new { Area = "Report", assessmentId = ViewBag.AssessmentId, year = ViewBag.Year }))';
+                        url += '&districtId=' + list_Assessment.searchCriteria.communityId();
+                        url += '&district=' + encodeURIComponent(list_Assessment.searchCriteria.communityName());
+                        $("#modalNormal").modal({
+                            remote: url,
+                            confirm: false
+                        });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                },
+                growth_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        var url = '@Html.Raw(Url.Action("Growth", "School", new { Area = "Report", assessmentId = ViewBag.AssessmentId, year = ViewBag.Year }))';
+                        url += '&districtId=' + list_Assessment.searchCriteria.communityId();
+                        url += '&district=' + encodeURIComponent(list_Assessment.searchCriteria.communityName());
+                        $("#modalNormal").modal({ confirm: false, remote: url });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                },
+                completion_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        $("#modalNormal").modal({
+                            remote: '@Url.Action("Completion", "School", new { Area = "Report", assessmentId = ViewBag.AssessmentId })'
+                                + '&year=' + $("#Year").val()
+                                + "&communityId=" + list_Assessment.searchCriteria.communityId(),
+                            confirm: false
+                        });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                },
+                communitycustomscore_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        var url = '@Html.Raw(Url.Action("CustomScoreReportView", "School", new { Area = "Report", assessmentId = ViewBag.AssessmentId, year = ViewBag.Year }))';
+                        url += '&districtId=' + list_Assessment.searchCriteria.communityId();
+                        url += '&district=' + encodeURIComponent(list_Assessment.searchCriteria.communityName());
+                        $("#modalNormal").modal({ confirm: false, remote: url });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                },
+                HideShowMeasures: function() {
+                    $("#modalNormal").modal({
+                        remote: '@Url.Action("HideMeasures", "School", new { Area = "Cpalls", assessmentId = ViewBag.AssessmentId })'
+                            + '&year=' + $("#Year").val()
+                            + "&wave=" +  $("#Wave").val()
+                    });
+                },
+                comparison_report: function() {
+                    if (list_Assessment.searchCriteria.communityId() > 0) {
+                        $("#modalNormal").modal({
+                            remote: '@Url.Action("Comparison", "School", new { Area = "Report", assessmentId = ViewBag.AssessmentId })'
+                                + "&communityId=" + list_Assessment.searchCriteria.communityId(),
+                            confirm: false
+                        });
+                    } else {
+                        var community = $("#txtCommunity");
+                        showMessage("hint", "Cpalls_Report_need_CommunityId");
+                        community.focus();
+                    }
+                },
+
+            });
+
+            list_Assessment.search();
+            ko.applyBindings(list_Assessment);
+        });
+
+        function ReLoadFunction() {
+            location.href = "?assessmentId=@(ViewBag.AssessmentId)" +
+                            "&year=" + list_Assessment.searchCriteria.year() +
+                            "&wave=" + list_Assessment.searchCriteria.wave() +
+                            "&communityId=" + list_Assessment.searchCriteria.communityId() +
+                            "&communityName=" + list_Assessment.searchCriteria.communityName() +
+                            "&schoolId=" + list_Assessment.searchCriteria.schoolId() +
+                            "&schoolName=" + list_Assessment.searchCriteria.schoolName();
+        }
+
+    </script>
+}

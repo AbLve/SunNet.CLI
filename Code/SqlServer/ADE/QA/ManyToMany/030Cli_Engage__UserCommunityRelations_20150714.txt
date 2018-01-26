@@ -1,0 +1,14 @@
+﻿/****** 
+Object:  Synonym [dbo].[Cli_Engage__UserCommunityRelations]    
+Script Date: 7/14/2015 20:41:44 
+执行之前需要修改: 主数据库名 为真正的主数据库名
+******/
+IF EXISTS (SELECT 1 FROM sysobjects where NAME='Cli_Engage__UserCommunityRelations')
+DROP SYNONYM [dbo].[Cli_Engage__UserCommunityRelations]
+GO
+
+/****** Object:  Synonym [dbo].[Cli_Engage__UserCommunityRelations]    Script Date: 7/14/2015 20:41:44 ******/
+CREATE SYNONYM [dbo].[Cli_Engage__UserCommunityRelations] FOR [主数据库].[dbo].[UserCommunityRelations]
+GO
+
+

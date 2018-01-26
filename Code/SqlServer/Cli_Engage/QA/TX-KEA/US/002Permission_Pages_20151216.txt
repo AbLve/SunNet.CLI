@@ -1,0 +1,46 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+INSERT INTO dbo.Permission_Pages
+        ( ID,
+		  Name ,
+          IsPage ,
+          ParentID ,
+          Url ,
+          Sort ,
+          IsShow ,
+          Descriptions ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 
+		  9000,
+		  N'Item Bulk Upload' , -- Name - nvarchar(100)
+          0 , -- IsPage - bit
+          0 , -- ParentID - int
+          N'' , -- Url - nvarchar(100)
+          8 , -- Sort - int
+          1 , -- IsShow - bit
+          N'Item Bulk Upload' , -- Descriptions - nvarchar(200)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )
+SET IDENTITY_INSERT Permission_Pages OFF
+
+GO
+
+
+
+INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9000 , -- PageId - int
+          N'128;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )
+
+GO

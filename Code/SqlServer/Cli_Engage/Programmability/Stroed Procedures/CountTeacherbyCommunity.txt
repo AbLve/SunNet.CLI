@@ -1,0 +1,20 @@
+﻿
+Create PROCEDURE [dbo].[CountTeacherbyCommunity]
+
+AS
+BEGIN
+	
+
+with teacherList as(
+select bc.Name as CommunityName ,c.ID as CommunityId ,u.Status,COUNT(*) as Total from teachers t 
+inner join Users u on t.userid = u.id 
+inner join Communities c on t.CommunityId = c.ID
+inner join BasicCommunities bc on bc.ID  = c.BasicCommunityId
+group by bc.Name   ,c.ID   ,u.Status
+)
+select u.id as UserId, u.FirstName ,u.LastName ,l.CommunityName,l.CommunityId,u.Status,l.Total from Users u 
+inner join UserCommunityRelations r on u.ID = r.UserId
+inner join teacherList l on l.CommunityId = r.CommunityId
+where u.Status = 1 and u.Role = 20
+order by u.id,u.FirstName ,u.LastName ,l.CommunityName 
+END

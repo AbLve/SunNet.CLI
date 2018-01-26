@@ -1,0 +1,86 @@
+﻿
+/****** Object:  Trigger [dbo].[tgr_ClassRoom_update]    Script Date: 2015/4/27 14:45:11 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+Alter TRIGGER [dbo].[tgr_ClassRoom_update]
+on [dbo].[Classrooms]
+    for update
+as
+	DECLARE @ID int
+	SELECT @ID = ID FROM inserted;
+
+    DECLARE @OldStatus tinyint,@NewStatus tinyint;
+	SELECT @OldStatus = Status FROM deleted;
+	SELECT @NewStatus = Status FROM inserted;
+
+	IF(@OldStatus != @NewStatus)
+	BEGIN
+	UPDATE Classrooms SET StatusDate = GETDATE() WHERE ID = @ID;
+	INSERT ClassroomStatusHistories SELECT @ID, @NewStatus,GETDATE()
+	END
+
+	DECLARE @OldKitId int,@NewKitId int; 
+    SELECT @OldKitId = KitId FROM deleted;
+	SELECT @NewKitId = KitId FROM inserted;
+
+	IF(@OldKitId != @NewKitId)
+	UPDATE Classrooms SET KitUpdatedOn = GETDATE() WHERE ID = @ID;
+
+    DECLARE @OldPart1KitId int,@NewPart1KitId int; 
+    SELECT @OldPart1KitId = Part1KitId FROM deleted;
+	SELECT @NewPart1KitId = Part1KitId FROM inserted;
+
+	IF(@OldPart1KitId != @NewPart1KitId)
+	UPDATE Classrooms SET Part1KitUpdatedOn = GETDATE() WHERE ID = @ID;
+
+	DECLARE @OldPart2KitId int,@NewPart2KitId int; 
+    SELECT @OldPart2KitId = Part2KitId FROM deleted;
+	SELECT @NewPart2KitId = Part2KitId FROM inserted;
+
+	IF(@OldPart2KitId != @NewPart2KitId)
+	UPDATE Classrooms SET Part2KitUpdatedOn = GETDATE() WHERE ID = @ID;
+
+	DECLARE @OldStartupKitId int,@NewStartupKitId int; 
+    SELECT @OldStartupKitId = StartupKitId FROM deleted;
+	SELECT @NewStartupKitId = StartupKitId FROM inserted;
+
+	IF(@OldStartupKitId != @NewStartupKitId)
+	UPDATE Classrooms SET StartupKitUpdatedOn = GETDATE() WHERE ID = @ID;
+
+
+	DECLARE @OldCurriculumId int,@NewCurriculumId int; 
+    SELECT @OldCurriculumId = CurriculumId FROM deleted;
+	SELECT @NewCurriculumId = CurriculumId FROM inserted;
+
+	IF(@OldCurriculumId != @NewCurriculumId)
+	UPDATE Classrooms SET CurriculumUpdatedOn = GETDATE() WHERE ID = @ID;
+
+	DECLARE @OldNeedCurriculumId int,@NewNeedCurriculumId int; 
+    SELECT @OldNeedCurriculumId = NeedCurriculumId FROM deleted;
+	SELECT @NewNeedCurriculumId = NeedCurriculumId FROM inserted;
+
+	IF(@OldNeedCurriculumId != @NewNeedCurriculumId)
+	UPDATE Classrooms SET NeedCurriculumUpdatedOn = GETDATE() WHERE ID = @ID;
+
+	
+	DECLARE @OldDevelopingTalkersKitId int,@NewDevelopingTalkersKitId int; 
+    SELECT @OldDevelopingTalkersKitId = DevelopingTalkersKitId FROM deleted;
+	SELECT @NewDevelopingTalkersKitId = DevelopingTalkersKitId FROM inserted;
+
+	IF(@OldDevelopingTalkersKitId != @NewDevelopingTalkersKitId)
+	UPDATE Classrooms SET DevelopingTalkersKitUpdatedOn = GETDATE() WHERE ID = @ID;
+
+	DECLARE @OldFccKitId int,@NewFccKitId int; 
+    SELECT @OldFccKitId = FccKitId FROM deleted;
+	SELECT @NewFccKitId = FccKitId FROM inserted;
+
+	IF(@OldFccKitId != @NewFccKitId)
+	UPDATE Classrooms SET FccKitUpdatedOn = GETDATE() WHERE ID = @ID;
+
+GO
+
+

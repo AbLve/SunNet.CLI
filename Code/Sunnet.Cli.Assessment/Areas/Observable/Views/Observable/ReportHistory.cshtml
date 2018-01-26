@@ -1,0 +1,129 @@
+﻿@using System.Collections.Generic
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Students.Models
+@{
+    ViewBag.Title = "Track Child's Development";
+    IList<StudentModel> studentList = ViewBag.StudentList;
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Observable")
+}
+@section BreadPath
+{
+    <a href="#">Assessment</a>&nbsp;<i class="icon-angle-right"></i>&nbsp;Track Child's Development
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back </a>
+</div>
+<div class="main-content main-content">
+    <div class="content-title">
+        Reports
+    </div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.Name"></td>
+                    <td data-bind="text: item.CreateOn"></td>
+                    <td data-bind="text: item.StudentAge"></td>
+                    <td>
+                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.DeleteReport }" href="#" title="Delete"></a>
+                        <a class="table-btn icon-download-alt download-btn" data-bind="attr: { href: item.Url }" title="Download"></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Reports = {};
+        $(function () {
+            list_Reports = new ViewModel(
+                {
+                    instanceName: "list_Reports",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchHistory")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: 'Redirect',
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: 'Redirect',
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: 'Redirect',
+                    deleteDataUrl: '@Html.Raw(Url.Action(""))',
+                    orderBy: "Name",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "Rport Name",
+                            field: "Name",
+                            order: false,
+                            width: '35%'
+                        },
+                        {
+                            text: "Date",
+                            field: "CreateOn",
+                            order: false,
+                            width: '20%'
+                        },
+                        {
+                            text: "Child's Age",
+                            field: "",
+                            order: false,
+                            width: '30%'
+                        },
+                        { text: "Action", width: '15%' }
+                    ],
+                    searchCriteria: {
+                        studentId: ko.observable(@ViewBag.StudentId),
+                        childId: ko.observable(@ViewBag.ChildId),
+                        assessmentId: ko.observable(@ViewBag.AssessmentId)
+                    }
+                },
+                {
+                    DeleteReport: function (item) {
+                        var msg = "Do you want to delete the " + "<b>" + item.Name + "</b> " + "report?<br /> Once deleted it cannot be recovered.";
+                        var itemId = item.ID;
+                        $.when(waitingConfirm(msg, "Delete", "Cancel")).done(function () {
+                            $.post('@Html.Raw(Url.Action("DeleteReport"))', { id: itemId }, function (response) {
+                                if (response.success) {
+                                    showMessage("success");
+                                    list_Reports.search();
+                                } else {
+                                    showMessage("fail", response.msg);
+                                }
+                            }, 'json');
+                        });
+                    }
+
+                }
+            );
+            list_Reports.search();
+            ko.applyBindings(list_Reports);
+        });
+    </script>
+}

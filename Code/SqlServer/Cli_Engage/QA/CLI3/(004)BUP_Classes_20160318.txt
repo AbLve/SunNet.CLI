@@ -1,0 +1,9 @@
+﻿alter table [dbo].[BUP_Classes] add HomeroomTeacherFirst varchar(50)
+alter table [dbo].[BUP_Classes] add HomeroomTeacherLast varchar(50)
+alter table [dbo].[BUP_Classes] add HomeroomTeacherEngageID varchar(50)
+alter table [dbo].[BUP_Classes] add ClassStatus tinyint
+GO
+update BUP_Classes set HomeroomTeacherFirst='' 
+update BUP_Classes set HomeroomTeacherLast='' 
+update BUP_Classes set HomeroomTeacherEngageID='' 
+update BUP_Classes set ClassStatus=1

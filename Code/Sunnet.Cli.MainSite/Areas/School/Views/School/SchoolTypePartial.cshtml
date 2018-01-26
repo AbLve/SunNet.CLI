@@ -1,0 +1,65 @@
+﻿@model Sunnet.Cli.Core.Schools.Entities.SchoolEntity
+<div class="main-content" id="divPublicSchool">
+    <div class="content-title">Public School Information</div>
+    <div class="content-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCount3Years, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCount3Years, new { @class = "form-control" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCount4Years, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCount4Years, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCount34Years, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCount34Years, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountKinder, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountKinder, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountgrade, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountgrade, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountOther, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountOther, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountEarly, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountEarly, new { @class = "form-control" })
+            </div>
+            @Html.LabelFor(model => model.ClassroomCountInfant, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountInfant, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassroomCountToddler, null, new { @class = "col-sm-6 control-label" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountToddler, new { @class = "form-control" })
+            </div>
+            @Html.LabelFor(model => model.ClassroomCountPreSchool, null, new { @class = "col-sm-6 control-label " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(model => model.ClassroomCountPreSchool, new { @class = "form-control" })
+            </div>
+        </div>
+
+    </div>
+</div>
+ 

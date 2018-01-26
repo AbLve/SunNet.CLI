@@ -1,0 +1,87 @@
+﻿ 
+
+/****** Object:  Table [dbo].[SchoolRoles]    Script Date: 2014/9/4 9:54:46 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[SchoolRoles](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[SchoolId] [varchar](2) NOT NULL,
+	[BasicSchoolId] [varchar](2) NOT NULL,
+	[CommunityId] [varchar](2) NOT NULL,
+	[Status] [varchar](2) NOT NULL,
+	[SchoolYear] [varchar](2) NOT NULL,
+	[ESCName] [varchar](2) NOT NULL,
+	[ParentAgencyId] [varchar](2) NOT NULL,
+	[PhysicalAddress1] [varchar](2) NOT NULL,
+	[PhysicalAddress2] [varchar](2) NOT NULL,
+	[City] [varchar](2) NOT NULL,
+	[CountyId] [varchar](2) NOT NULL,
+	[StateId] [varchar](2) NOT NULL,
+	[Zip] [varchar](2) NOT NULL,
+	[PhoneNumber] [varchar](2) NOT NULL,
+	[PhoneType] [varchar](2) NOT NULL,
+	[SchoolTypeId] [varchar](2) NOT NULL,
+	[SubTypeId] [varchar](2) NOT NULL,
+	[ClassroomCount3Years] [varchar](2) NOT NULL,
+	[ClassroomCount4Years] [varchar](2) NOT NULL,
+	[ClassroomCount34Years] [varchar](2) NOT NULL,
+	[ClassroomCountKinder] [varchar](2) NOT NULL,
+	[ClassroomCountgrade] [varchar](2) NOT NULL,
+	[ClassroomCountOther] [varchar](2) NOT NULL,
+	[ClassroomCountEarly] [varchar](2) NOT NULL,
+	[ClassroomCountInfant] [varchar](2) NOT NULL,
+	[ClassroomCountToddler] [varchar](2) NOT NULL,
+	[ClassroomCountPreSchool] [varchar](2) NOT NULL,
+	[AtRiskPercent] [varchar](2) NOT NULL,
+	[FundingId] [varchar](2) NOT NULL,
+	[TrsProviderId] [varchar](2) NOT NULL,
+	[TrsLastStatusChange] [varchar](2) NOT NULL,
+	[TrsReviewDate] [varchar](2) NOT NULL,
+	[PrimarySalutation] [varchar](2) NOT NULL,
+	[PrimaryName] [varchar](2) NOT NULL,
+	[PrimaryTitleId] [varchar](2) NOT NULL,
+	[PrimaryPhone] [varchar](2) NOT NULL,
+	[PrimaryPhoneType] [varchar](2) NOT NULL,
+	[PrimaryEmail] [varchar](2) NOT NULL,
+	[SecondarySalutation] [varchar](2) NOT NULL,
+	[SecondaryName] [varchar](2) NOT NULL,
+	[SecondaryTitleId] [varchar](2) NOT NULL,
+	[SecondaryPhoneNumber] [varchar](2) NOT NULL,
+	[SecondaryPhoneType] [varchar](2) NOT NULL,
+	[SecondaryEmail] [varchar](2) NOT NULL,
+	[Latitude] [varchar](2) NOT NULL,
+	[Longitude] [varchar](2) NOT NULL,
+	[IsSamePhysicalAddress] [varchar](2) NOT NULL,
+	[MailingAddress1] [varchar](2) NOT NULL,
+	[MailingAddress2] [varchar](2) NOT NULL,
+	[MailingCity] [varchar](2) NOT NULL,
+	[MailingCountyId] [varchar](2) NOT NULL,
+	[MailingStateId] [varchar](2) NOT NULL,
+	[MailingZip] [varchar](2) NOT NULL,
+	[SchoolSize] [varchar](2) NOT NULL,
+	[IspId] [varchar](2) NOT NULL,
+	[ISPOther] [varchar](2) NOT NULL,
+	[InternetSpeed] [varchar](2) NOT NULL,
+	[InternetType] [varchar](2) NOT NULL,
+	[WirelessType] [varchar](2) NOT NULL,
+	[Notes] [varchar](2) NOT NULL,
+ CONSTRAINT [PK_SchoolRoles] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

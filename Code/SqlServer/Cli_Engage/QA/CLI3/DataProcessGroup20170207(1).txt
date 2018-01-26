@@ -1,0 +1,74 @@
+﻿ALTER PROCEDURE [dbo].[DataProcessGroup]
+	@ID int,
+	@CreatedBy int
+AS
+BEGIN
+	BEGIN TRY
+
+		DECLARE @InvitationEmail BIT
+		DECLARE @CommunityId INT
+		DECLARE @CreateClassroom BIT
+		SELECT  @InvitationEmail = SendInvitation,@CommunityId = CommunityId,@CreateClassroom=CreateClassroom FROM DataGroups WHERE ID = @ID and [Status] = 1 
+
+		IF (@InvitationEmail IS NULL)
+			RETURN;
+		
+		UPDATE DataGroups SET  [Status] = 2 WHERE ID = @ID and [Status] = 1
+
+		DECLARE @DataProcessId BIGINT
+		DECLARE @Remark varchar(max)
+
+		DECLARE cur CURSOR  FOR
+		SELECT ID,Remark FROM dbo.DataProcesses WHERE GroupId = @ID AND [Status] = 1
+		OPEN cur FETCH NEXT FROM cur INTO @DataProcessId,@Remark
+
+		WHILE @@FETCH_STATUS=0
+		BEGIN
+			if(@Remark ='')
+			begin
+				EXECUTE DataProcess @DataProcessId,@InvitationEmail,@CreatedBy,@CommunityId,@CreateClassroom
+			end
+			FETCH NEXT FROM cur INTO @DataProcessId,@Remark
+		END
+		CLOSE cur
+		DEALLOCATE cur
+
+	
+		DECLARE @TeacherFail INT = 0
+		DECLARE @StudentFail INT = 0 
+		DECLARE @SchoolFail INT = 0 
+
+		Select @TeacherFail = COUNT(*) FROM (
+		Select TeacherInternalId FROM DataProcesses WHERE GroupId=@ID AND Status IN (4,5) AND RemarkType != 3
+		GROUP BY TeacherInternalId,TeacherFirstName,TeacherLastName,TeacherPrimaryEmail) AS teacher
+		print @TeacherFail
+
+		--if student duplicate , then this group show error
+		Select @StudentFail = COUNT(*) FROM (
+		Select StudentFirstName FROM DataProcesses WHERE GroupId=@ID AND Status IN (4,5) AND RemarkType != 3
+		GROUP BY StudentFirstName,StudentLastName,StudentBirthdate) AS student
+		print @StudentFail
+
+		Select @StudentFail += COUNT(*) FROM (
+		Select StudentFirstName FROM DataProcesses WHERE GroupId=@ID AND Status IN (4,5) AND RemarkType = 3
+		GROUP BY StudentFirstName,StudentLastName,StudentBirthdate) AS studentError
+		print @StudentFail
+
+
+		Select @SchoolFail = count(*) from (
+			Select SchoolInternalId FROM DataProcesses WHERE 
+			GroupId=@ID AND Status IN (4,5) AND RemarkType != 3 group by SchoolInternalId,SchoolName) AS school
+		print @SchoolFail
+
+
+		UPDATE DataGroups SET Status=3,UpdatedBy=@CreatedBy,UpdatedOn=GETDATE(),
+		TeacherFail=@TeacherFail,TeacherSuccess=TeacherTotal-@TeacherFail,
+		StudentFail=@StudentFail,StudentSuccess=StudentTotal-@StudentFail,
+		SchoolFail=@SchoolFail,SchoolSuccess=SchoolTotal-@SchoolFail
+		WHERE ID=@ID
+
+	END TRY
+	BEGIN CATCH
+		UPDATE DataGroups SET Remark = ERROR_MESSAGE() ,Status = 4 WHERE ID = @ID
+	END CATCH
+END

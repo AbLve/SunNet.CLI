@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0C8F14CA-5530-4A9D-9875-F1CF91974A88}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sunnet.Cli.Impl</RootNamespace>
+    <AssemblyName>Sunnet.Cli.Impl</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\EF\6.0\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Ade\AdeLinkRpst.cs" />
+    <Compile Include="Ade\AnswerRpst.cs" />
+    <Compile Include="Ade\AssessmentRpst.cs" />
+    <Compile Include="Ade\CutOffScoreRpst.cs" />
+    <Compile Include="Ade\ItemBaseRpst.cs" />
+    <Compile Include="Ade\MeasureRpst.cs" />
+    <Compile Include="AsynReport\CompletionReportDataGpst.cs" />
+    <Compile Include="Cec\CecHistoryRpst.cs" />
+    <Compile Include="Cec\CecResultRpst.cs" />
+    <Compile Include="Classes\ClassAgeGroupRpst.cs" />
+    <Compile Include="Classes\ClassRoleRpst.cs" />
+    <Compile Include="Classes\MonitoringToolRpst.cs" />
+    <Compile Include="Classrooms\ClassroomRoleRpst.cs" />
+    <Compile Include="Classes\CHChildrenRpst.cs" />
+    <Compile Include="Classes\CHChildrenResultRpst.cs" />
+    <Compile Include="Communities\CommunityRoleRpst.cs" />
+    <Compile Include="Cot\CotAssessmentWaveItemRpst.cs" />
+    <Compile Include="Cot\CotAssessmentItemRpst.cs" />
+    <Compile Include="Cot\CotAssessmentRpst.cs" />
+    <Compile Include="Cot\CotStgReportRpst.cs" />
+    <Compile Include="Cot\CotWaveRpst.cs" />
+    <Compile Include="Cpalls\CpallsClassMeasureRpst.cs" />
+    <Compile Include="Cpalls\CpallsClassRpst.cs" />
+    <Compile Include="Cpalls\CpallsSchoolMeasureRpst.cs" />
+    <Compile Include="Cpalls\CpallsSchoolRpst.cs" />
+    <Compile Include="Cpalls\CpallsStudentGroupRpst.cs" />
+    <Compile Include="Cpalls\StudentAssessmentRpst.cs" />
+    <Compile Include="Cpalls\StudentItemRpst.cs" />
+    <Compile Include="Cpalls\StudentMeasureRpst.cs" />
+    <Compile Include="DataProcess\DataCommunityRpst.cs" />
+    <Compile Include="DataProcess\DataGroupRpst.cs" />
+    <Compile Include="DataProcess\DataSchoolRpst.cs" />
+    <Compile Include="DataProcess\DataStudentRpst.cs" />
+    <Compile Include="Log\OperationLogRpst.cs" />
+    <Compile Include="MasterData\CurriculumRpst.cs" />
+    <Compile Include="Permission\AssignedPackageRpst.cs" />
+    <Compile Include="Permission\AuthorityRpst.cs" />
+    <Compile Include="Permission\PageRpst.cs" />
+    <Compile Include="Permission\RolePageAuthorityRpst.cs" />
+    <Compile Include="Permission\PermissionRoleRpst.cs" />
+    <Compile Include="Permission\UserAuthorityRpst.cs" />
+    <Compile Include="Reports\DataExportRpst.cs" />
+    <Compile Include="Reports\SchoolViewRpst.cs" />
+    <Compile Include="Schools\IspRpst.cs" />
+    <Compile Include="Schools\ParentAgencyRpst.cs" />
+    <Compile Include="Schools\PlaygroundRpst.cs" />
+    <Compile Include="TRS\TRSAnswerRpst.cs" />
+    <Compile Include="TRS\TRSAssessmentItemRpst.cs" />
+    <Compile Include="TRS\TRSAssessmentRpst.cs" />
+    <Compile Include="TRS\TrsStarRpst.cs" />
+    <Compile Include="TRS\TRSItemAnswerRpst.cs" />
+    <Compile Include="TRS\TRSItemRpst.cs" />
+    <Compile Include="TRS\TRSSubcategoryRpst.cs" />
+    <Compile Include="Users\CertificateRpst.cs" />
+    <Compile Include="Classes\ClassRpst.cs" />
+    <Compile Include="Classrooms\ClassroomRpst.cs" />
+    <Compile Include="Classrooms\KitRpst.cs" />
+    <Compile Include="Communities\BasicCommunityRpst.cs" />
+    <Compile Include="Communities\CommunityRpst.cs" />
+    <Compile Include="Users\AffiliationRpst.cs" />
+    <Compile Include="Schools\BasicSchoolRpst.cs" />
+    <Compile Include="Schools\SchoolTypeRpst.cs" />
+    <Compile Include="Students\StudentRpst.cs" />
+    <Compile Include="Users\CoordCoachEquipmentRpst.cs" />
+    <Compile Include="Users\CoordCoachRpst.cs" />
+    <Compile Include="Users\ParentStudentRelationRpst.cs" />
+    <Compile Include="Users\TeacherRoleRpst.cs" />
+    <Compile Include="Users\TeacherTransactionRpst.cs" />
+    <Compile Include="Users\UserCommRpst.cs" />
+    <Compile Include="Users\VideoCodingRpst.cs" />
+    <Compile Include="Users\YearsInProjectRpst.cs" />
+    <Compile Include="MasterData\LanguageRpst.cs" />
+    <Compile Include="Users\PositionRpst.cs" />
+    <Compile Include="Users\ProfessionalDevelopmentRpst.cs" />
+    <Compile Include="MasterData\TitleRpst.cs" />
+    <Compile Include="MasterData\CountyRpst.cs" />
+    <Compile Include="MasterData\FundingRpst.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Schools\SchoolRpst.cs" />
+    <Compile Include="MasterData\StateRpst.cs" />
+    <Compile Include="Users\ApplicantContactRpst.cs" />
+    <Compile Include="Users\ApplicantEmailRpst.cs" />
+    <Compile Include="Users\ApplicantRpst.cs" />
+    <Compile Include="Users\AuditorRpst.cs" />
+    <Compile Include="Users\DisCommunityRpst.cs" />
+    <Compile Include="Users\PrincipalRpst.cs" />
+    <Compile Include="Users\StateWideRpst.cs" />
+    <Compile Include="Users\TeacherAgeGroupRpst.cs" />
+    <Compile Include="Users\TeacherEquipmentRelationRpst.cs" />
+    <Compile Include="Users\UserBaseRpst.cs" />
+    <Compile Include="Users\ParentRpst.cs" />
+    <Compile Include="Users\RegistorLogRpst.cs" />
+    <Compile Include="Vcw\AssignmentContentRpst.cs" />
+    <Compile Include="Vcw\AssignmentContextRpst.cs" />
+    <Compile Include="Vcw\AssignmentFileRpst.cs" />
+    <Compile Include="Vcw\AssignmentRpst.cs" />
+    <Compile Include="Vcw\AssignmentUplaodTypeRpst.cs" />
+    <Compile Include="Vcw\AssignmentWatcgFileEntity.cs" />
+    <Compile Include="Vcw\AssignmentWatchFileRpst.cs" />
+    <Compile Include="Vcw\FileRpst.cs" />
+    <Compile Include="Vcw\FileSelectionRpst.cs" />
+    <Compile Include="Vcw\FileSharedRpst.cs" />
+    <Compile Include="Vcw\Synonym\TeacherRpst.cs" />
+    <Compile Include="Vcw\Synonym\UserRpst.cs" />
+    <Compile Include="Vcw\VIPDocumentRpst.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sunnet.Cli.Core\Sunnet.Cli.Core.csproj">
+      <Project>{aef8d87a-9af5-47e1-bd90-f77fc916affe}</Project>
+      <Name>Sunnet.Cli.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Framework\Sunnet.Framework.csproj">
+      <Project>{14a83fe3-67ab-4bd7-b171-870de20f5bf1}</Project>
+      <Name>Sunnet.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Users\TeacherRpst.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Languages\" />
+    <Folder Include="States\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Schools\TrsProviderRpst.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

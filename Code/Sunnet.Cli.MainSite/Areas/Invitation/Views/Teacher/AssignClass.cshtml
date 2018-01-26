@@ -1,0 +1,98 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Business.Classes
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Assign Class";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    IEnumerable<AssigenStudentClassModel> classSelectItemModel = ViewBag.Classs;
+    List<AssigenStudentClassModel> selectedClasses = ViewBag.ClassSelected;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        @*if ("@ViewBag.accessClass" == "X")
+            closeModal("#@formId");
+        else if ("@ViewBag.accessClass" == "R") {
+            $(":checkbox").prop("disabled", "true");
+            $("#btnSubmit").hide();
+        }*@
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                    onPosted: function (response) {
+                        closeModal($("#@(formId)"));
+                    }
+                });
+
+                $("#chkAll").click(function (event) {
+                    if ($(this).is(":checked"))
+                        $("[name='chkClasses']").prop("checked", true);
+                    else {
+                        $("[name='chkClasses']").prop("checked", false);
+                    }
+                });
+            })();
+    </script>
+}
+
+@using (Ajax.BeginForm("AssignClass", "Teacher", null, Sunnet.Cli.UIBase.Models.PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="teacherId" value="@ViewBag.TeacherId" />
+    <div class="content-body" id="dvEquipment">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <table class="table table-striped table-hover">
+                    <tr>
+                        <th width="">
+                            <label for="chkAll" class="hide">chkAll</label>
+                            @Html.CheckBox("chkAll", false)
+                        </th>
+                        <th>Class Name</th>
+                        <th>Class Code</th>
+                        <th>Day Type</th>
+                        <th>Classroom</th>
+                    </tr>
+                    @foreach (var item in classSelectItemModel)
+                    {
+                        string strChecked = "";
+                        if (selectedClasses.Where(e => e.ClassId == item.ClassId).Count() > 0)
+                        {
+                            strChecked = "checked='checked'";
+                        }
+                        <tr>
+                            <td>
+                                <label for="chkClass@(item.ClassId)" class="hide">@item.ClassId</label>
+                                <input type="checkbox" @strChecked id="chkClass@(item.ClassId)" name="chkClasses"  value="@item.ClassId">
+                            </td>
+                            <td>
+                                @item.ClassName
+                            </td>
+                            <td>
+                                <span>@item.ClassCode</span>
+                            </td>
+                            <td>
+                                <span>@item.DayType.ToDescription()</span>
+                            </td>
+                            <td>
+                                <span>@item.ClassroomName</span>
+                            </td>
+                        </tr>                         
+                    }
+                </table>
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="mainbutton modal-btn submit-btn" type="submit" id="btnSubmit" data-bind="event: { click: submit }">Assign</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+}
+

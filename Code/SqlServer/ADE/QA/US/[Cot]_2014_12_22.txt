@@ -1,0 +1,231 @@
+﻿GO
+
+/****** Object:  Table [dbo].[COTAssessments]    Script Date: 12/22/2014 08:46:23 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[COTAssessments]') AND type in (N'U'))
+DROP TABLE [dbo].[COTAssessments]
+GO
+
+/****** Object:  Table [dbo].[COTAssessments]    Script Date: 12/22/2014 08:46:23 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[COTAssessments](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[TeacherId] [int] NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[SchoolYear] [nvarchar](10) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_COTAssessments] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Index [IX_COTAssessments_1]    Script Date: 12/22/2014 08:46:44 ******/
+CREATE UNIQUE CLUSTERED INDEX [IX_COTAssessments_1] ON [dbo].[COTAssessments] 
+(
+	[AssessmentId] ASC,
+	[TeacherId] ASC,
+	[SchoolYear] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+---------------------------------------------------------------------------
+IF  EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[DF__COTAssess__NeedS__6FE99F9F]') AND type = 'D')
+BEGIN
+ALTER TABLE [dbo].[COTAssessmentItems] DROP CONSTRAINT [DF__COTAssess__NeedS__6FE99F9F]
+END
+
+GO
+
+/****** Object:  Table [dbo].[COTAssessmentItems]    Script Date: 12/22/2014 08:48:57 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[COTAssessmentItems]') AND type in (N'U'))
+DROP TABLE [dbo].[COTAssessmentItems]
+GO
+
+/****** Object:  Table [dbo].[COTAssessmentItems]    Script Date: 12/22/2014 08:48:57 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[COTAssessmentItems](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[CotAssessmentId] [int] NOT NULL,
+	[GoalSetDate] [datetime] NOT NULL,
+	[GoalMetDate] [datetime] NOT NULL,
+	[BoyObsDate] [datetime] NOT NULL,
+	[MoyObsDate] [datetime] NOT NULL,
+	[CotUpdatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[NeedSupport] [bit] NOT NULL,
+ CONSTRAINT [PK_COTAssessmentItems] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[COTAssessmentItems] ADD  DEFAULT ((0)) FOR [NeedSupport]
+GO
+
+/****** Object:  Index [IX_COTAssessmentItems_1]    Script Date: 12/22/2014 08:49:35 ******/
+CREATE CLUSTERED INDEX [IX_COTAssessmentItems_1] ON [dbo].[COTAssessmentItems] 
+(
+	[CotAssessmentId] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+-----------------------------------------------------------
+/****** Object:  Table [dbo].[CotStgReportItems]    Script Date: 12/22/2014 08:49:59 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CotStgReportItems]') AND type in (N'U'))
+DROP TABLE [dbo].[CotStgReportItems]
+GO
+
+/****** Object:  Table [dbo].[CotStgReportItems]    Script Date: 12/22/2014 08:49:59 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[CotStgReportItems](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CotStgReportId] [int] NOT NULL,
+	[ItemId] [int] NOT NULL,
+ CONSTRAINT [PK_CotStgReportItems] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Index [IX_CotStgReportItems]    Script Date: 12/22/2014 08:50:17 ******/
+CREATE CLUSTERED INDEX [IX_CotStgReportItems] ON [dbo].[CotStgReportItems] 
+(
+	[CotStgReportId] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+---------------------------------------------------------------
+
+
+IF  EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[DF__CotStgRep__Spent__72C60C4A]') AND type = 'D')
+BEGIN
+ALTER TABLE [dbo].[CotStgReports] DROP CONSTRAINT [DF__CotStgRep__Spent__72C60C4A]
+END
+
+GO
+
+IF  EXISTS (SELECT * FROM dbo.sysobjects WHERE id = OBJECT_ID(N'[DF__CotStgRep__Statu__73BA3083]') AND type = 'D')
+BEGIN
+ALTER TABLE [dbo].[CotStgReports] DROP CONSTRAINT [DF__CotStgRep__Statu__73BA3083]
+END
+
+GO
+
+/****** Object:  Table [dbo].[CotStgReports]    Script Date: 12/22/2014 08:50:43 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CotStgReports]') AND type in (N'U'))
+DROP TABLE [dbo].[CotStgReports]
+GO
+
+/****** Object:  Table [dbo].[CotStgReports]    Script Date: 12/22/2014 08:50:43 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[CotStgReports](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CotAssessmentId] [int] NOT NULL,
+	[GoalSetDate] [datetime] NOT NULL,
+	[GoalMetDate] [datetime] NOT NULL,
+	[OnMyOwn] [nvarchar](4000) NOT NULL,
+	[WithSupport] [nvarchar](4000) NOT NULL,
+	[AdditionalComments] [nvarchar](4000) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[SpentTime] [varchar](10) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+ CONSTRAINT [PK_CotStgReports] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[CotStgReports] ADD  DEFAULT ('') FOR [SpentTime]
+GO
+
+ALTER TABLE [dbo].[CotStgReports] ADD  DEFAULT ((1)) FOR [Status]
+GO
+
+/****** Object:  Index [IX_CotStgReports_1]    Script Date: 12/22/2014 08:51:07 ******/
+CREATE CLUSTERED INDEX [IX_CotStgReports_1] ON [dbo].[CotStgReports] 
+(
+	[CotAssessmentId] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+--------------------------------------------------------
+GO
+
+/****** Object:  Table [dbo].[CotWaves]    Script Date: 12/22/2014 08:51:25 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CotWaves]') AND type in (N'U'))
+DROP TABLE [dbo].[CotWaves]
+GO
+
+/****** Object:  Table [dbo].[CotWaves]    Script Date: 12/22/2014 08:51:25 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[CotWaves](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CotAssessmentId] [int] NOT NULL,
+	[Wave] [tinyint] NOT NULL,
+	[VisitDate] [datetime] NOT NULL,
+	[SpentTime] [nvarchar](10) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_CotWaves] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+/****** Object:  Index [IX_CotWaves_1]    Script Date: 12/22/2014 08:51:48 ******/
+CREATE CLUSTERED INDEX [IX_CotWaves_1] ON [dbo].[CotWaves] 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+
+

@@ -1,0 +1,22 @@
+﻿GO
+
+/****** Object:  View [dbo].[V_Teachers]    Script Date: 2016/3/23 15:39:50 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER VIEW [dbo].[V_Teachers]
+AS
+SELECT   T.ID, T.UserId, T.TeacherId, U.FirstName, U.LastName, T.TeacherType, T.CLIFundingId, ISNULL(YIP.ID, 0) 
+                AS YearsInProjectId, ISNULL(YIP.YearsInProject, '') AS YearsInProject, U.Status, Coach.ID AS CoachId, 
+                Coach.FirstName AS CoachFirstname, Coach.LastName AS CoachLastname
+FROM      dbo.Cli_Engage__Teachers AS T INNER JOIN
+                dbo.Cli_Engage__Users AS U ON T.UserId = U.ID AND U.Status = 1 AND U.IsDeleted = 0 LEFT OUTER JOIN
+                dbo.Cli_Engage__YearsInProjects AS YIP ON T.YearsInProjectId = YIP.ID LEFT OUTER JOIN
+                dbo.Cli_Engage__Users AS Coach ON T.CoachId = Coach.ID AND Coach.Role IN (35, 40) AND Coach.IsDeleted = 0
+
+GO
+
+

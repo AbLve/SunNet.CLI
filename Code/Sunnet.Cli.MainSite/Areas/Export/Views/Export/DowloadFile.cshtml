@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "DowloadFile";
+    Layout = "~/Views/Shared/_Layout_ReportQueue.cshtml";
+}
+@if (ViewBag.CanDownload)
+{
+    using (Html.BeginForm("File_Export", "Export", FormMethod.Post))
+    {
+    @Html.Hidden("id")
+    @Html.Hidden("export", true)
+    <button type="submit" class="download-report btn btn-primary ">
+        <i class="icon-cloud-download"></i>
+        Download
+    </button>
+    }
+}
+else if (!ViewBag.Creater)
+{
+    <style>
+        .download-container
+        {
+            width: 350px;
+        }
+    </style>
+    @Html.Raw("Sorry, you have no permission to download this file.")
+}
+else
+{
+    <style>
+        .download-container
+        {
+            width: 200px;
+        }
+    </style>
+    @Html.Raw("The report is not ready yet.")
+}
+

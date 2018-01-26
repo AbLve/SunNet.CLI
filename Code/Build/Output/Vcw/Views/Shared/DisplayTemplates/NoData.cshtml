@@ -1,0 +1,13 @@
+﻿@{
+    var colspan = Model;
+    if (colspan == null || colspan < 1)
+    {
+        colspan = Convert.ToInt32(ViewData["Colspan"]);
+    }
+}
+@if (colspan > 0)
+{
+    <tr data-bind="visible:hasNoRecord()" style="display: none;">
+        <td style="text-align: left;" colspan="@colspan">@ViewTextHelper.NoRecordFound</td>
+    </tr>
+}

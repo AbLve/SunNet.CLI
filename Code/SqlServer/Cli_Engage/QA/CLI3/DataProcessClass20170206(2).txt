@@ -1,0 +1,125 @@
+﻿ALTER PROCEDURE [dbo].[DataProcessClass] 
+@SchoolId INT,
+@TeacherId INT,
+@TeacherUserId INT,
+@TeacherFirstName VARCHAR(150),
+@TeacherLastName VARCHAR(150),
+@ClassDayType TINYINT,
+@ClassLevel TINYINT,
+@StudentId INT,
+@Action TINYINT,
+@CreatedClasses INT OUTPUT --return createdclasses' id
+AS
+BEGIN
+		DECLARE @ClassName VARCHAR(200)
+		DECLARE @ClassId INT
+		DECLARE @IsInsertStudentClass bit
+		set @IsInsertStudentClass=1
+		SET @CreatedClasses=0;
+		IF(EXISTS(SELECT * FROM Users U INNER JOIN UserComSchRelations UC
+		ON U.ID=UC.UserId AND UC.SchoolId=@SchoolId AND U.LastName=@TeacherLastName
+		AND U.ID != @TeacherUserId))
+			BEGIN
+				IF(EXISTS(SELECT * FROM Users U INNER JOIN UserComSchRelations UC
+				ON U.ID=UC.UserId AND UC.SchoolId=@SchoolId AND U.LastName=@TeacherLastName 
+				AND SUBSTRING(U.FirstName,1,1)=SUBSTRING(@TeacherFirstName,1,1) 
+				AND U.ID != @TeacherUserId))
+					SET @ClassName=@TeacherFirstName+' '+@TeacherLastName+'''s';
+				ELSE
+					SET @ClassName=SUBSTRING(@TeacherFirstName,1,1)+' '+@TeacherLastName+'''s';
+			END
+		ELSE
+			SET @ClassName = @TeacherLastName+'''s';
+
+		SET @ClassName=@ClassName+CASE @ClassDayType WHEN 1 THEN ' AM' WHEN 2 THEN ' PM' ELSE '' END;
+		SET @ClassName=@ClassName+CASE @ClassLevel WHEN 2 THEN ' K' ELSE '' END;
+		SET @ClassName=@ClassName+' Class';
+
+		SELECT @ClassId=NULL  --initial classid value
+
+		SELECT @ClassId=ID FROM Classes WHERE SchoolId=@SchoolId AND Name=@ClassName
+
+		IF(@ClassId IS NULL)
+		BEGIN
+			INSERT INTO dbo.Classes
+				( SchoolId ,
+					ClassId ,
+					Name ,
+					Status ,
+					StatusDate ,
+					SchoolYear ,
+					IsSameAsSchool ,
+					AtRiskPercent ,
+					DayType ,
+					CurriculumId ,
+					CurriculumOther ,
+					SupplementalCurriculumId ,
+					SupplementalCurriculumOther ,
+					MonitoringToolId ,
+					MonitoringToolOther ,
+					UsedEquipment ,
+					EquipmentNumber ,
+					ClassType ,
+					Notes ,
+					CreatedOn ,
+					UpdatedOn ,
+					Previous_Teacher_TEA_ID ,
+					Classlevel ,
+					LeadTeacherId ,  
+					ClassInternalID,
+					IsDeleted 
+				)
+			VALUES  ( @SchoolId , -- SchoolId - int
+					'' , -- ClassId - varchar(32)
+					@ClassName , -- Name - varchar(150)
+					1 , -- Status - tinyint
+					GETDATE() , -- StatusDate - datetime
+					DBO.GetSchoolYear() , -- SchoolYear - varchar(5)
+					0 , -- IsSameAsSchool - bit
+					0 , -- AtRiskPercent - int
+					@ClassDayType , -- DayType - tinyint
+					0 , -- CurriculumId - int
+					'' , -- CurriculumOther - varchar(150)
+					0 , -- SupplementalCurriculumId - int
+					'' , -- SupplementalCurriculumOther - varchar(150)
+					0 , -- MonitoringToolId - int
+					'' , -- MonitoringToolOther - varchar(150)
+					0 , -- UsedEquipment - tinyint
+					'' , -- EquipmentNumber - varchar(150)
+					0 , -- ClassType - tinyint
+					'' , -- Notes - varchar(600)
+					GETDATE() , -- CreatedOn - datetime
+					GETDATE() , -- UpdatedOn - datetime
+					'' , -- Previous_Teacher_TEA_ID - varchar(50)
+					@ClassLevel , -- Classlevel - tinyint
+					@TeacherId , -- LeadTeacherId - int 
+					'',  -- ClassInternalID - varchar(32)
+					0
+				)
+				
+			SELECT @ClassId=SCOPE_IDENTITY()
+		END
+		ELSE 
+		BEGIN
+			IF EXISTS (select * from StudentClassRelations where ClassID=@ClassId and StudentId=@StudentId)
+				set @IsInsertStudentClass=0 
+			DELETE StudentClassRelations where ClassID=@ClassId and StudentId=@StudentId
+		END
+
+		IF(@Action=1 or @IsInsertStudentClass=1)
+		BEGIN
+			SET @CreatedClasses = @ClassId;-- return teacher's class
+
+			IF(NOT EXISTS(SELECT * FROM TeacherClassRelations WHERE TeacherId=@TeacherId AND ClassId =@ClassId ))
+			INSERT INTO TeacherClassRelations(TeacherId,ClassId) 
+			VALUES(@TeacherId,@ClassId)
+
+			--create relationship(student-class)
+			IF(@StudentId > 0)  -- existed student do not create relationship with class
+			BEGIN
+				IF(NOT EXISTS(SELECT * FROM StudentClassRelations WHERE StudentId=@StudentId AND ClassId=@ClassId))
+					INSERT INTO StudentClassRelations([StudentId],[ClassId])
+					VALUES(@StudentId,@ClassId)
+			END
+		END
+END

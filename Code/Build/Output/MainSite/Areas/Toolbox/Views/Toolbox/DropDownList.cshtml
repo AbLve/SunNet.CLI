@@ -1,0 +1,224 @@
+﻿@using System.IdentityModel.Tokens
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Toolbox";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var titleName = ViewBag.ShowName ?? ViewBag.ddlName ;
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Toolbox)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Toolbox", "Index", "Toolbox"))&nbsp;<i class="icon-angle-right"></i>&nbsp;@titleName
+}
+@Html.AntiForgeryToken()
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Toolbox List</a>
+</div>
+<div class="main-content">
+    <div class="content-title">
+        @titleName
+    </div>
+
+    @using (Ajax.BeginForm("", "Toolbox", null, PostFormHelper.DefaultAjaxOptions, new
+    {
+        HttpMethod = "Post",
+        role = "form",
+        id = "frmAdd",
+        @class = "form-horizontal"
+    }))
+    {
+        @Html.AntiForgeryToken()
+        
+        <div class="content-body">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">New Option Name</label>
+                <div class="col-sm-3">
+                    <label for="newName" class="hide"></label>
+                    <input type="text" class="form-control required" data-val="true" name="newName" id="newName" />
+                    @Html.ValidationMessage("newName")
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">New Option Status</label>
+                </div>
+                <div class="col-sm-2">
+                    <label>
+                        <input type="radio" name="newStatus" value="@((byte)EntityStatus.Active)" checked="checked"/>&nbsp;@EntityStatus.Active</label>
+                    <label>
+                        <input type="radio" name="newStatus" value="@((byte)EntityStatus.Inactive)" />&nbsp;@EntityStatus.Inactive</label>
+                </div>
+                <div class="col-sm-2">
+                    <button class="mainbutton modal-btn submit-btn" type="submit" id="btnAdd">&nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="main-content">
+    <div class="content-body-tab">
+        <form id="frmToolbox" class="form-horizontal" role = "form" method="POST">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th width="25%">Option ID</th>
+                        <th width="25%">Option Name</th>
+                        <th width="25%">Status</th>
+                        <th width="*">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyList" data-bind="template: { name: displayMode, foreach: items, as: 'item' }">
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    
+    <script type="text/html" id="view">
+        <tr>
+            <td>
+                <span data-bind="html:item.ID"></span>
+            </td>
+            <td>
+                <span class="" data-bind="html: item.Name"></span>
+            </td>
+            <td>
+                <span data-bind="html:item.Status=='1'?'Active':'Inactive'"></span>
+            </td>
+            <td>
+                <a class="table-btn icon-pencil pencil-btn" href="#" title="Edit" data-bind="click: $root.changeToEdit"></a>
+            </td>
+        </tr>
+    </script>
+    <script type="text/html" id="edit">
+        <tr>
+            <td>
+                <span data-bind="html:item.ID"></span>
+            </td>
+            <td>
+                <label>
+                    <input class="form-control required" type="text" data-val="true" data-bind="value: item.Name,attr:{name:item.ID}" />
+                    <span class="field-validation-valid" data-bind="attr:{'data-valmsg-for':item.ID}" data-valmsg-replace="true"></span>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" value="1" data-bind="checked: item.Status, attr: { name: 'radio' + $index() }" />
+                    @EntityStatus.Active
+                </label>
+                <label>
+                    <input type="radio" value="2" data-bind="checked: item.Status, attr: { name: 'radio' + $index() }" />
+                    @EntityStatus.Inactive
+                </label>
+            </td>
+            <td>
+                <a class="table-btn icon-save save-btn" title="Save" href="#" data-bind="click: $root.updateItem"></a>
+                <a class="icon-ban-circle table-btn active-btn" title="Cancel" href="#" data-bind="click: $root.changeToView"></a>
+            </td>
+        </tr>
+    </script>
+    
+    <script type="text/javascript">
+
+        function item(id, name, status, mode) {
+            var self = this;
+            self.ID = id;
+            self.Name = name;
+            self.Status = status + '';
+            self.Mode = ko.observable(mode);
+        }
+
+        function ViewModel() {
+            var self = this;
+            self.items = ko.observableArray();
+            self.updateItem = function(item) {
+                if ($("#frmToolbox").valid()) {
+                    $.post("/Toolbox/Toolbox/Update", {
+                            ddlName: "@ViewBag.ddlName",
+                            fieldId: item.ID,
+                            fieldName: item.Name,
+                            fieldStatus: item.Status
+                        },
+                        function(response) {
+                            if (response.success) {
+                                showMessage("success");
+                                item.Mode("view");
+                            } else {
+                                showMessage("fail", response.msg);
+                            }
+                            
+                        }, "json");
+                };
+            };
+
+            self.displayMode = function(item) {
+                return item.Mode();
+            };
+            self.changeToEdit = function (item) {
+                var oldStatus = { Status: item.Status };
+                item.oldStatus = oldStatus;
+                item.oldName = item.Name;
+                item.Mode("edit");
+            };
+            self.changeToView = function (item) {
+                item.Status = item.oldStatus.Status;
+                item.Name = item.oldName;
+                item.Mode("view");
+            };
+        };
+
+
+        $(function() {
+            var vm = new ViewModel();
+            $.getJSON("/Toolbox/Toolbox/Search?name=@ViewBag.ddlName", function(json) {
+                $.each(json.data, function(i, value) {
+                    vm.items.push(new item(value.ID, value.Name, value.Status.value, "view"));
+                });
+                ko.applyBindings(vm);
+            });
+
+            $("#btnAdd").click(function() {
+                var newName = $("#newName").val();
+                var newStatus = $("[name='newStatus']:checked").val();
+                if ($("#frmAdd").valid()) {
+                        $.post("/Toolbox/Toolbox/Add", {
+                            ddlName: "@ViewBag.ddlName",
+                            fieldName: newName,
+                            fieldStatus: newStatus
+                        }, function (response) {
+                            if (response.success) {
+                                showMessage("success");
+                                var obj = new item();
+                                obj.ID = response.data;
+                                obj.Name = newName;
+                                obj.Status = newStatus;
+                                obj.Mode("view");
+                                vm.items.unshift(obj);
+                                $("#newName").val("");
+                                $("[name='newStatus']").first().prop("checked", true);
+                            } else {
+                                showMessage("fail", response.msg);
+                            }
+                        }, "json");
+                }
+                return false;
+            });
+        });
+
+        //function fnLimitValidate(ddlName) {
+        //    switch (ddlName.toLowerCase()) {
+        //    case "fundings":
+                
+        //    default:
+        //    }
+        //}
+    </script>
+    
+}

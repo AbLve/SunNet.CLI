@@ -1,0 +1,333 @@
+﻿@using Sunnet.Cli.Business.Cot.Growth
+@using Sunnet.Cli.Core.Users.Enums
+@{
+    ViewBag.Title = "Growth";
+    Layout = "~/Areas/Cot/Views/Shared/_Layout_Report_Chart.cshtml";
+    var models = ViewBag.Model as List<GrowthReportModel>;
+    bool isFirstTeacher = true;
+    int index = 0;
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@foreach (GrowthReportModel model in models)
+{
+    foreach (MeasureModel measure in model.Measures)
+    {
+        <table class='header @(isFirstTeacher ? "" : "newpager") ' width="100%">
+            <thead>
+                <tr>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        &nbsp;
+                    </td>
+                    <th class="title" style="vertical-align: middle;" colspan="4">
+                        @(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))<br />
+                        @(model.Type.ToDescription())
+                    </th>
+                    <td colspan="4" style="text-align: right;" rowspan="2">
+                        <img src="@(SFConfig.AssessmentDomain)/Resources/cli_logo.png" alt="CLI logo" style="width: 150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">&nbsp;</td>
+                    <th class="title" colspan="4">
+                        @(measure.Name)
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        @Html.DisplayNameFor(x => model.Community):
+                        &nbsp;@(model.Community)
+                    </td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @if (model.Type == GrowthReportType.SingleTeacher || model.Type == GrowthReportType.AssignedTeachers)
+                        {
+                            @Html.DisplayNameFor(x => model.Teacher)
+                        }
+                        else
+                        {
+                            @Html.Raw("Teachers")
+                        }
+                        :
+                        &nbsp;@(model.Teacher)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @if (model.Type == GrowthReportType.AssignedTeachersAverage
+                            || model.Type == GrowthReportType.DistrictAverage)
+                        {
+                            @Html.Raw("Schools")
+                        }
+                        else
+                        {
+                            @Html.DisplayNameFor(x => model.School)
+                        }
+                        :
+                        &nbsp;@(model.School)
+                    </td>
+
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.Mentor):
+                        &nbsp;@(model.Mentor)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.SchoolYear):
+                        &nbsp;@(model.FullSchoolYear)
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+
+                        @Html.DisplayNameFor(x => model.BoyDate):
+                        &nbsp;@(model.BoyDate.FormatDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.YearsInProject):
+                        &nbsp;@(string.Join(", ", model.YearsInProject))
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.MoyDate):
+                        &nbsp;@(model.MoyDate.FormatDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.CoachModels):
+                        &nbsp;@(string.Join(", ", model.CoachModels.Select(x => x.ToDescription())))
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3">
+                        @Html.DisplayNameFor(x => model.MetDate):
+                        &nbsp;@(model.MetDate.FormatDateString())
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        @Html.DisplayNameFor(x => model.ECircles):
+                        &nbsp;@(string.Join(", ", model.ECircles.Select(x => x.ToDescription())))
+                    </td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td colspan="3"></td>
+                </tr>
+            </thead>
+        </table>
+        <div id="chart@(index++)" style="height: 520px; width: @ReportHelper.GetChartWidth(measure.CountOfMonth.Count,80, 100, 1200)px;">
+        </div>
+                        {
+                            isFirstTeacher = false;
+                        }
+    }
+}
+@using (Html.BeginForm("Growth_Download", "Report", FormMethod.Post, new { id = formId, target = "_blank" }))
+{
+    @Html.Hidden("teacherId")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("type")
+    @Html.Hidden("SchoolId")
+    @Html.Hidden("CommunityId")
+    @Html.Hidden("measures")
+    @Html.Hidden("yearsInProject")
+    if (models.Any())
+    {
+        foreach (AssignmentType type in models.First().CoachModels)
+        {
+            @Html.Hidden("coachModels", type)
+        }
+        foreach (AssignmentType type in models.First().ECircles)
+        {
+            @Html.Hidden("eCircles", type)
+        }
+    }
+    @Html.Hidden("export", true)
+    <button type="submit" class="btn-export" id="btn_Export" onclick=" javascript:return exportPdf(); ">
+        Export
+    </button>
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+
+    <script type="text/javascript">
+    var reports = @Html.Raw(ViewBag.Json);
+    var charts = [];
+    var options = [];
+    var currentIndex = 0;
+
+    function exportPdf() {
+        var $form = $("#@(formId)");
+            $form.find("input:hidden[name='imgSources']").remove();
+            if (charts && charts.length) {
+                for (var i = 0; i < charts.length; i++) {
+                    var myChart = charts[i];
+                    var options = myChart.getOption();
+                    options.toolbox.feature.magicType.show = false;
+                    options.toolbox.feature.dataZoom.show = false;
+                    options.toolbox.feature.restore.show = false;
+                    myChart.setOption(options);
+                    var $imgSources = $('<input name="imgSources" type="hidden" value="" />').appendTo($form);
+                    $imgSources.val(myChart.getDataURL());
+
+                    options.toolbox.feature.magicType.show = true;
+                    options.toolbox.feature.dataZoom.show = true;
+                    options.toolbox.feature.restore.show = true;
+                    myChart.setOption(options);
+                }
+            }
+            return true;
+        }
+
+        var maxCount = {
+            maxCount: 0,
+            getMaxCount: function(minVlaue) {
+                var value = (Math.floor(this.maxCount / 10) + 1) * 10;
+                if (minVlaue && value < minVlaue) {
+                    value = minVlaue;
+                }
+                return value;
+            },
+            getSplitNumber: function() {
+                var count = Math.ceil(this.maxCount / 5);
+                return count;
+            },
+            setMaxCount: function(max) {
+                if (max > this.maxCount)
+                    this.maxCount = max;
+            },
+            reset: function() {
+                this.maxCount = 0;
+            }
+        }
+        $(function() {
+            function startGenerateReport() {
+                if (options.length > currentIndex) {
+                    window.scrollTo(0, $("#chart" + currentIndex).offset().top);
+
+                    var option = options[currentIndex];
+                    var myChart = echarts.init(document.getElementById('chart' + index++), echartsTheme.default);
+                    myChart.setOption(option);
+                    charts.push(myChart);
+                    currentIndex++;
+                    setTimeout(function() {
+                        startGenerateReport();
+                    }, 1000);
+                } else {
+                    setTimeout(function() {
+                        $("#btn_Export").slideDown();
+                    }, 1000);
+                }
+            }
+
+            var index = 0;
+            for (var i = 0; i < reports.length; i++) {
+                var report = reports[i];
+
+                for (var j = 0; j < report.Measures.length; j++) {
+                    var measure = report.Measures[j];
+                    var option = new ReportOption();
+                    option.title = {
+                        text: "@(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))",
+                        subtext: measure.Name,
+                        textAlign: "left",
+                        x: 0,
+                        y: 0
+                    };
+                    option.color = ["#3399CC"];
+                    var legendTitle = "Items";
+                    option.legend.data.push(legendTitle);
+                    option.legend.x = 350; // hide legend
+
+                    option.series.push({
+                        name: legendTitle,
+                        type: 'bar',
+                        stack: legendTitle,
+                        data: [],
+                        barWidth: 30,
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    position: 'insideTop',
+                                    formatter: function(legend, category, value) {
+                                        return value < 1 ? "" : value;
+                                    },
+                                    textStyle: {
+                                        color: "#000000"
+                                    }
+                                }
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    position: 'top',
+                                    formatter: function(legend, category, value) {
+                                        return value < 1 ? "" : value;
+                                    },
+                                    textStyle: {
+                                        color: "#000000"
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    option.xAxis = option.xAxis.slice(0, 1);
+                    option.xAxis[0].axisLabel.rotate = 0;
+                    var xAxis = option.xAxis[0].data;
+
+                    for (var month in measure.CountOfMonth) {
+                        var count = measure.CountOfMonth[month];
+                        xAxis.push(month);
+                        option.series[0].data.push(count);
+                    }
+                    maxCount.setMaxCount(measure.ItemCount);
+
+                    option.yAxis[0].name = "Obs/Met";
+                    option.yAxis[0].max = measure.ItemCount;
+                    option.yAxis[0].splitNumber = maxCount.getSplitNumber();
+                    option.yAxis[0].min = 0;
+
+                    option.yAxis[0].axisLabel = {
+                        show: true,
+                        interval: 0
+                    };
+                    option.yAxis[0].axisLine = {
+                        show: true
+                    };
+                    option.grid.width = xAxis.length * option.grid.width;
+
+                    options.push(option);
+                    maxCount.reset();
+                }
+            }
+            startGenerateReport();
+        });
+    </script>
+}

@@ -1,0 +1,181 @@
+﻿@model Sunnet.Cli.Business.Permission.Models.PageModel
+@using Sunnet.Cli.UIBase.Models;
+@using Sunnet.Cli.Business.Permission.Models;
+@using Sunnet.Cli.MainSite.Models;
+@using Sunnet.Framework.Permission;
+
+@{
+    ViewBag.Title = "Page Edit";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    bool ispage = Model.IsPage;
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Page", "Index", "Page")) <i class="icon-angle-right"></i>
+    @(Html.ActionLink(Model.Name, "Edit", new { ID = Model.ID }))
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Permission)
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(
+            function () {
+                if ($("#isPage").val() == "True") {
+                    $("#ispageselect")[0].value = 1;
+                }
+                else {
+                    $("#ispageselect")[0].value = 0;
+                }
+
+                //if it is menu ,visibility authorities
+                if ($("#ispageselect")[0].value == "0") {
+                    $("#Authorities").attr("style", "visibility:hidden");
+                }
+                else {
+                    $("#Authorities").removeAttr("style");
+                }
+            }
+            )
+
+        var CheckedAuthorities = new Array();
+        function GetAuthorities() {
+            if ($("#ispageselect")[0].value != "0") {
+                $("#Authorities input[type=checkbox]").each(
+                function () {
+                    if (this.checked == true) {
+                        CheckedAuthorities.push(this.value);
+                    }
+                }
+                )
+
+                $("#authorityValues").val(CheckedAuthorities);
+            }
+            $("#ispageselect")[0].value == 1 ? $("#isPage").val(true) : $("#isPage").val(false);
+        }
+
+        function CheckIfPage(obj) {
+            if (obj.value == "0") {
+                $("#Authorities").attr("style", "visibility:hidden");
+            }
+            else {
+                $("#Authorities").removeAttr("style");
+            }
+        }
+
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function (response) {
+                redirectBack("index");
+            }
+        })
+
+    </script>
+}
+
+@using (Ajax.BeginForm("EditInvitation", "Page", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Page List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.HiddenFor(model => model.ID)
+                @Html.LabelFor(model => model.Name, null, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => Model.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+                @Html.LabelFor(model => model.Descriptions, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Descriptions, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Url, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Url, new { @class = "form-control" })
+                </div>
+                @Html.LabelFor(model => model.Sort, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Sort, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.IsShow, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-1">
+                    @Html.CheckBoxFor(model => model.IsShow, new { @class = "form-control" })
+                </div>
+                <div id="div_ispage">
+                    @Html.LabelFor(model => model.IsPage, null, new { @class = "col-sm-1 control-label" })
+                    @Html.Label("", "&nbsp;", new { @class = "control-label hide",@for="ispageselect" })
+                    <div class="col-sm-2">
+                        @if (Model.IsPage == false)
+                        {
+                            <select class="form-control" disabled="disabled" id="ispageselect" onchange="CheckIfPage(this)">
+                                <option value="0">Menu
+                                </option>
+                                <option value="1">Page
+                                </option>
+                            </select>
+                        }
+                        else
+                        {
+                            <select class="form-control" id="ispageselect" onchange="CheckIfPage(this)">
+                                <option value="0">Menu
+                                </option>
+                                <option value="1">Page
+                                </option>
+                            </select>
+                        }
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.ParentID, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.ParentID, @ViewBag.Menu as IEnumerable<SelectListItem>,
+                    new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group" id="Authorities">
+                <div class="col-sm-2 control-label">
+                    Page Authorities 
+                </div>
+                <div class="col-sm-10">
+                    @{
+                        Array authorities = Enum.GetValues(typeof(Authority));
+                        for (int i = 0; i < authorities.Length; i++)
+                        {
+                            if ((Authority)authorities.GetValue(i) != Authority.All)
+                            {
+                                <input id="authority@(i)" type="checkbox" value="@((int)authorities.GetValue(i))"
+                                @(Model.Authorities.Where(a => a.ID == (int)authorities.GetValue(i)).Count() > 0 ? "checked" : "") />
+                                <label for="authority@(i)">@(authorities.GetValue(i))</label>                               
+                            }
+                        }                       
+                    }
+                </div>
+            </div>
+            <div style="display: none">
+                @Html.Label("", "&nbsp;", new { @class = "control-label hide",@for="authorityValues" })
+                @Html.TextBox("authorityValues")
+                @Html.Label("", "&nbsp;", new { @class = "control-label hide",@for="isPage" })
+                @Html.TextBox("isPage")
+            </div>
+        </div>
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" onclick="GetAuthorities()">
+            <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+        </div>
+    </div>
+}
+

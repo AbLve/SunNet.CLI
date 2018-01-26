@@ -1,0 +1,221 @@
+﻿@model ReceptiveItemModel
+@{
+    if (Model.ID < 1)
+    {
+        ViewBag.Title = "New " + ItemType.Receptive.ToDescription();
+    }
+    else
+    {
+        ViewBag.Title = Model.Label;
+    }
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    string backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                     Url.Action("Detail", "Measure", new { id = Model.MeasureId });
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @Html.Partial("NEV_Item_BreadPath", Model)
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+        function getToFolder() {
+            return "assessment";
+        }
+
+        CKEDITOR.replace('TargetText',
+        {
+            toolbar: 'Cli'
+        });
+        var itemModel;
+        jQuery(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    redirectBack("@Html.Raw(backUrl)");
+                }
+            });
+
+            var jsonModel = @Html.Raw(ViewBag.ModelJson);
+            var formEle = document.getElementById("@formId");
+            itemModel = getReceptiveItemModel(jsonModel, { Answer: "#Answers" });
+            ko.applyBindings(itemModel, formEle);
+        });
+    </script>
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))" >Back</a>
+    @if (Model.ID > 0)
+    {
+        <a class="mainbutton mainright-btn nav-btn" target="_blank" href='@(Url.Action("Preview", "Execute", new {Area = "Cpalls", itemId = Model.ID, measureId = Model.MeasureId}))'>Preview</a>
+    }
+</div>
+@using (Ajax.BeginForm("SaveReceptive", "Item", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ID" value="@Model.ID"/>
+    @Html.HiddenFor(m => m.Type)
+    @Html.HiddenFor(m => m.MeasureId)
+    @Html.Hidden("Answers", "")
+    @Html.HiddenFor(x => x.AnswerType)
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Label, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Label)
+                </div>
+                <div class="col-sm-2">
+                    @Html.LabelFor(model => model.Status, new { @class = "hide" })
+                    @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label for="IsPractice">
+                            @Html.CheckBoxFor(x => x.IsPractice, new { data_bind = "checked:IsPractice" })
+                            @Html.DisplayNameFor(x => x.IsPractice)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label for="ShowAtTestResume">
+                            @Html.CheckBoxFor(x => x.ShowAtTestResume, new { data_bind = "checked:ShowAtTestResume,enable:IsPractice()" })
+                            @Html.DisplayNameFor(x => x.ShowAtTestResume)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, new {@class = "control-label col-sm-2"})
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(model => model.Description, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TargetText, new {@class = "control-label col-sm-2"})
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.TargetText, new {@class = "form-control", rows = 3})
+
+                    @Html.ValidationMessageFor(model => model.TargetText)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TargetText, new {@class = "control-label col-sm-2", @for = "TargetTextTimeout"})
+                <div class="col-sm-2">
+                    <div class=" input-group">
+                        @Html.TextBoxFor(model => model.TargetTextTimeout, new
+                        {
+                            @class = "form-control timeout",
+                            placeholder = Html.DisplayNameFor(x => x.TargetTextTimeout),
+                            data_bind = "required:false"
+                        })
+                        <span class="input-group-addon">ms</span>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.TargetTextTimeout)
+                </div>
+               
+                @Html.LabelFor(model => model.Timed, new {@class = "control-label col-sm-2"})
+                <div class="col-sm-1">
+                    <div class="checkbox">
+                        @Html.CheckBoxFor(model => model.Timed) &nbsp;
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.Scored, new {@class = "control-label col-sm-1"})
+                <div class="col-sm-1">
+                    <div class="checkbox">
+                        @Html.CheckBoxFor(model => model.Scored, new { data_bind = "checked:Scored,enable:!IsPractice()" }) &nbsp;
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.Score, new {@class = "control-label col-sm-1", data_bind = "visible:Scored"})
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.Score, new {@class = "form-control", data_bind = "visible:Scored,enable:Scored"})
+                </div>
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(model => model.WaitTime, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.WaitTime, new { @class = "form-control  timeout" })
+                        <span class="input-group-addon">ms</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(model => model.TargetAudio, new {@class = "control-label col-sm-2"})
+                <div class="col-sm-2">
+                    <div id="btnPickTargetAudio" for="TargetAudio">Browse</div>
+                    @if (!string.IsNullOrEmpty(Model.TargetAudio))
+                    {
+                        <div class="webuploader-preview">
+                            <a href="@FileHelper.GetPreviewPathofUploadFile(Model.TargetAudio)"
+                               class="table-btn icon-zoom-in preview-btn" target="_blank"><span class="hide">none</span></a>
+                        </div>
+                    }
+                </div>
+                <div class="col-sm-4">
+                    <div id="TargetAudioFilelist" class="uploader-list"></div>
+                    @Html.HiddenFor(model => model.TargetAudio, new
+                    {
+                        data_pick = "#btnPickTargetAudio",
+                        data_container = "#TargetAudioFilelist",
+                        data_submitbutton = "#btnSubmit",
+                        data_targetField = "#TargetAudio",
+                        data_accept = "{\"title\":\"Audio\",\"extensions\":\"mp3\",\"mimeTypes\":\"audio/mpeg\"}",
+                        data_bind = "upload:true"
+                    })
+                    @Html.ValidationMessageFor(model => model.TargetAudio)
+                </div>
+                 
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TargetAudio, new {@class = "control-label col-sm-2", @for = "TargetAudioTimeout"})
+                <div class="col-sm-2">
+                    <div class=" input-group">
+                        @Html.TextBoxFor(model => model.TargetAudioTimeout, new
+                        {
+                            @class = "form-control  timeout",
+                            placeholder = Html.DisplayNameFor(x => x.TargetAudioTimeout),
+                            data_bind = "required:false"
+                        })
+                        <span class="input-group-addon">ms</span>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.TargetAudioTimeout)
+                </div>
+                @Html.LabelFor(model => model.RandomAnswer, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        @Html.CheckBoxFor(model => model.RandomAnswer)
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+            @Html.Editor("e", "Answers")
+            <br />
+        </div>
+    </div>
+    <div class="button-content">
+        <button class="mainbutton mainright-btn submit-btn submit" id="btnSubmit" type="button" data-bind="event:{click:submit}">Submit</button>
+        <a class="mainbutton mainright-btn cancel-btn" href="@(Html.Raw(backUrl))">Cancel</a>
+    </div>
+}

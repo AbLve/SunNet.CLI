@@ -1,0 +1,39 @@
+﻿/****** Object:  StoredProcedure [dbo].[Community_Mentor_Teachers]    Script Date: 2015/4/10 18:32:24 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE  [dbo].[Community_Mentor_Teachers]
+	
+AS
+BEGIN
+with list as (
+select basicC.Name ,c.ID ,t.CoachId,uMentor.FirstName ,uMentor.LastName ,count(*) as Total 
+from Teachers t 
+inner join Users uTeacher on t.UserId =uTeacher.ID and uTeacher.Status = 1
+inner join Users uMentor on t.CoachId = uMentor.ID and uMentor.Status = 1
+inner join Communities  c on  t.CommunityId = c.ID
+inner join BasicCommunities basicC on basicC.ID = c.BasicCommunityId
+group by basicC.Name ,c.ID  ,t.CoachId,uMentor.FirstName ,uMentor.LastName
+
+)
+
+select u.FirstName as PM_FirstName ,u.LastName as PM_LastName ,u.ID as PMID 
+,l.Name as CommunityName ,l.ID as CommunityID
+,l.CoachId,l.FirstName as Coach_FirstName,l.LastName as Coach_lastName,l.Total from Users u
+inner join UserCommunityRelations r on u.id = r.userid
+inner join list l on r.CommunityId = l.ID
+where Role =20 and Status = 1
+order by u.FirstName,u.LastName,l.FirstName,l.LastName
+
+END
+
+GO
+

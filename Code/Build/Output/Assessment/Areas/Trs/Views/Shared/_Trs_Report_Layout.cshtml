@@ -1,0 +1,30 @@
+﻿@using System.Web.Optimization
+@{
+    Layout = null;
+    if (ViewBag.Preview == null)
+    {
+        ViewBag.Preview = false;
+    }
+    if (ViewBag.Pdf == null)
+    {
+        ViewBag.Pdf = false;
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href='@Styles.Url("~/css/trs")'/>
+    <title>@ViewBag.Title - TRS - Cli Engage</title>
+    @RenderSection("Styles",false)
+</head>
+<body>
+    <div class='trs-report @(ViewBag.Pdf?"pdf":"") @(ViewBag.Preview?"preview":"")'>
+        @RenderBody()
+    </div>
+    @Scripts.Render("~/scripts/jquery")
+    @Scripts.Render("~/scripts/knockout")
+    @RenderSection("Scripts", false)
+</body>
+</html>

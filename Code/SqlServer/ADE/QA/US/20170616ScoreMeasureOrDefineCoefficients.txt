@@ -1,0 +1,16 @@
+﻿
+if exists (select * from sysobjects where id = object_id(N'[ScoreMeasureOrDefineCoefficients]') and OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+drop table [ScoreMeasureOrDefineCoefficients]  
+
+CREATE TABLE [dbo].[ScoreMeasureOrDefineCoefficients](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Measure] [int] NULL,
+	[ScoreId] [int] NULL,
+	[Coefficient] [decimal](6, 3) NULL,
+ CONSTRAINT [PK_ScoreMeasureOrDefineCoefficients] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO

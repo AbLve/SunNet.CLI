@@ -1,0 +1,11 @@
+GO
+DELETE  FROM dbo.FieldMap
+WHERE   FieldName = 'TrsAssessorId';
+GO
+DELETE  FROM dbo.FieldMap
+WHERE   FieldName = 'TrsMentorId';
+GO
+UPDATE  dbo.FieldMap
+SET     ID = ID - 2
+WHERE   ID > 310
+        AND ID < 322;

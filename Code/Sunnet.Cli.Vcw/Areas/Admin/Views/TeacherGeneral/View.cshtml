@@ -1,0 +1,368 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherGeneralFileModel
+@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase;
+@using Sunnet.Cli.Business.Vcw.Models;
+@using Sunnet.Cli.Vcw.Models;
+@using Sunnet.Framework
+@{
+    ViewBag.Title = "View Teacher General File";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    bool isSummary = !string.IsNullOrEmpty(ViewBag.Redirect);
+    List<SelectItemModel> Contents = ViewBag.Contents as List<SelectItemModel>;
+    List<SelectItemModel> Contexts = ViewBag.Contexts as List<SelectItemModel>;
+}
+
+@if (isSummary)
+{
+    @section LeftMenu
+    {
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Admin_Summary)
+    }
+}
+else
+{
+    @section LeftMenu
+    {
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Admin_Teachers)
+    }
+}
+
+@if (isSummary)
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Summary", "Index", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("Teacher Files", "TeacherFiles", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        File
+    }
+}
+else
+{
+
+    @section BreadPath
+    {
+        @(Html.ActionLink("Teachers", "Index", "TeacherVIP"))&nbsp;<i class="icon-angle-right"></i>
+        @(Html.ActionLink("Teacher General", "Index", "TeacherGeneral"))&nbsp;<i class="icon-angle-right"></i>
+    View
+    }
+}
+<div class="right-content-top">
+    @if (isSummary)
+    {
+        <a class="mainbutton  nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("TeacherFiles", "Summary"))" >Back to Files</a>
+    }
+    else
+    {
+        <a class="mainbutton nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("Index", "TeacherGeneral"))" >Back to Teacher General</a>
+    }
+</div>
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    @Scripts.Render("~/scripts/vcw_upload_feedback")
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var backurl = "@(ViewBag.Redirect)";
+                    if (backurl != "") {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("TeacherFiles", "Summary"))");
+                    }
+                    else {
+                        redirectBack("@Url.Action("View", new { id = Model.ID })");
+                    }
+                }
+            });
+        });
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+        function beforeSubmit(sender) {
+            if (uploader.getFiles('queued').length > 0) {
+                showMessage("hint", "Vcw_File_Inqueue")
+                return false;
+            }
+            if (uploader_feedback.getFiles('queued').length > 0) {
+                showMessage("hint", "Vcw_Feedback_Inqueue")
+                return false;
+            }
+            GetFiles();
+            return true;
+        };
+
+        function GetFiles() {
+            var uploadFile = "";
+            var completeFiles = uploader.getFiles("complete");
+            if (completeFiles.length > 0) {
+                uploadFile += completeFiles[0].name + "(" + WebUploader.formatSize(completeFiles[0].size) + ")" + "|" + completeFiles[0].dbName;
+            }
+            $("#uploadfile").val(uploadFile);
+
+            var uploadFile_feedback = "";
+            var completeFiles_feedback = uploader_feedback.getFiles("complete");
+            if (completeFiles_feedback.length > 0) {
+                uploadFile_feedback += completeFiles_feedback[0].name + "(" + WebUploader.formatSize(completeFiles_feedback[0].size) + ")" + "|" + completeFiles_feedback[0].dbName;
+            }
+            $("#uploadfile_feedback").val(uploadFile_feedback);
+        }
+    </script>
+}
+
+@using (Ajax.BeginForm("Edit", "TeacherGeneral", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(a => a.ID)
+    @Html.Partial("/Views/TeacherInfo/TeacherInfo.cshtml")
+    <div class="main-content">
+        <div class="content-title">Selected File Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    @Html.LabelFor(model => model.IdentifyFileName, new { @class = "control-label required" })
+                                </div>
+                                <div class="inputtext-con">
+                                    @Html.TextBoxFor(model => model.IdentifyFileName, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdentifyFileName)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <label class="control-label" for="DateVieoRecorded">Date Video Recorded</label>
+                                </div>
+                                <div class="inputtext-con">
+                                    @Html.TextBoxFor(model => model.DateVieoRecorded, new
+                                   {
+                                       @class = "form-control date"
+                                       ,
+                                       @Value = Model.DateVieoRecorded.Value.FormatDateString()
+                                   })
+                                    @Html.ValidationMessageFor(model => model.DateVieoRecorded)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Video Context</div>
+                                </div>
+                                @if (Contexts != null)
+                                {
+                                    foreach (SelectItemModel item in Contexts)
+                                    {
+                                        bool isChecked = Model.ContextId == item.ID;
+                                        if (item.Name.Trim().ToLower() == SFConfig.ContextOther)
+                                        {
+                                    <div class="checkbox-con">
+                                        <label class="checkbox-inline checkbox-other">
+                                            <input type="checkbox" name="Context" value="@(item.ID)"  @(isChecked ? "checked" : "") isOther="true"/>@item.Name
+                                        </label>
+                                        <label class="textbox-other">
+                                            @if (isChecked)
+                                            {
+                                                @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control" })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control", disabled = "disabled" })  
+                                            }
+                                        </label>
+                                        @Html.ValidationMessageFor(model => model.ContextOther)
+                                    </div>
+                                        }
+                                        else
+                                        {
+                                    <div class="checkbox-con">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="Context" value="@(item.ID)" @(isChecked ? "checked" : "")/>@item.Name
+                                        </label>
+                                    </div>
+                                        }
+
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Video Content</div>
+                                </div>
+                                @if (Contents != null)
+                                {
+                                    foreach (SelectItemModel item in Contents)
+                                    {
+                                        bool isChecked = Model.ContentIds.Contains(item.ID);
+                                        if (item.Name.Trim().ToLower() == SFConfig.VideoContentOther)
+                                        {
+                                    <div class="checkbox-con">
+                                        <label class="checkbox-inline  checkbox-other">
+                                            <input type="checkbox" name="Content" onclick="ContentClick(this)" 
+                                                    value="@item.ID" @(isChecked ? "checked" : "")>@item.Name
+                                        </label>
+                                        <label class="textbox-other">
+                                            @if (isChecked)
+                                            {
+                                                @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control" })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control", @disabled = "disabled" })   
+                                            }
+                                        </label>
+                                        @Html.ValidationMessageFor(model => model.ContentOther)
+                                    </div>
+                                        }
+                                        else
+                                        {
+                                    <div class="checkbox-con">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="Content"  
+                                                    value="@item.ID" @(isChecked ? "checked" : "") >
+                                            @item.Name
+                                        </label>
+                                    </div>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    @Html.Partial("/Areas/Coach/Views/Partials/UploadedFile2.cshtml")
+                </div>
+                <div class="col-sm-6">
+                    <video controls="controls" class="videoplay">
+                        <source src="@(FileHelper.GetPreviewPathofUploadFile(Model.FilePath).Replace("\\", "/"))" />
+                    </video>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">
+                                Teacher Description
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                            </div>
+                            <label for="Description" class="hide">&nbsp;</label>
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "2" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">
+                                FeedbackText
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                            </div>
+                            <label for="FeedbackText" class="hide">&nbsp;</label>
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextAreaFor(model => model.FeedbackText, new { @class = "form-control", @rows = "2" })
+                            @Html.ValidationMessageFor(model => model.FeedbackText)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="content-con" style="min-height: 138px">
+                        <div class="content-title3">
+                            <div class="control-label">Uploaded Feedback File</div>
+                        </div>
+                        <div class="uploader-list" id="uploader-list_feedback">
+                            @if (!string.IsNullOrEmpty(Model.FeedbackFileName))
+                            {
+                                <div class="item">
+                                    <i class="icon-paper-clip"></i>
+                                    <a href="@(DownLoadFile.GetDownFilePath(Model.FeedbackFilePath, Model.FeedbackFileName))" 
+                                        class="form-link4" >@(Model.FeedbackFileName)</a>
+                                    <span class="delete" title="Remove this file">
+                                        <a href="javascript:;" onclick="RemoveFile_feedback(this)">×</a>
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">
+                                Coach Feedback
+                                (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                            </div>
+                        </div>
+                        <div class="upload-btn">
+                            <div id="picker_feedback">1) Select File</div>
+                        </div>
+                        <div id="filelists_feedback" class="uploader-list"></div>
+                        <div class="upload-btn">
+                            <a id="ctlBtn_feedback">2) Start Upload</a>
+                        </div>
+                        <input type="hidden" id="filetarget_feedback" name="filetarget_feedback" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Link Video</div>
+                        </div>
+                        <div class="upload-btn">
+                            <a  href='@Url.Action("LinkToAssignment", "TeacherGeneral", new { fileId = Model.ID, redirect = Request.QueryString["redirect"], teacherId = Model.OwnerId })'                               
+                                class="mainbutton mainright-btn search-btn">Browse for Assignment</a>
+                            &nbsp;
+                                <a  href='@Url.Action("LinkToVIP", "TeacherGeneral", new { fileId = Model.ID, redirect = Request.QueryString["redirect"], teacherId = Model.OwnerId })'                               
+                                class="mainbutton mainright-btn search-btn">Browse for VIP</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="uploadfile_feedback" id="uploadfile_feedback" />
+            <input type="hidden" name="uploadfile" id="uploadfile" />
+
+            <div class="button-content">
+                <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit(this)">
+                @if (isSummary)
+                {
+                    <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                        Url.Action("TeacherFiles", "Summary"))" >Cancel</a>
+                }
+                else
+                {
+                    <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                        Url.Action("Index", "TeacherGeneral", null))" >Cancel</a>
+                }
+            </div>
+        </div>
+    </div>
+}

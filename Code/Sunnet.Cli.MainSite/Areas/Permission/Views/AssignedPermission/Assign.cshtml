@@ -1,0 +1,555 @@
+﻿@using Sunnet.Cli.Business.Permission.Models
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Framework.Permission
+@model Sunnet.Cli.Business.Permission.Models.RoleModel
+
+@{
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    //page list
+    var Pages = (ViewBag.Pages as List<PageModel>);
+    //authority list
+    var Authorities = (ViewBag.PackagePageAuthorityList as List<AuthorityWithSelectModel>);
+    AuthorityWithSelectModel authority;
+    Array authority_Enum = Enum.GetValues(typeof (Authority));
+    int count_Menu = 0; //check if it is the first menu
+    int count_Div = 0; //check if it is the first menu-page
+    ViewBag.Title = "Assign Permission";
+    var MenuAuthority = ViewBag.MenuAuthority as Dictionary<int, List<int>>;
+
+    var heightFromTop = 56;
+    var rowHeight = 27;
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Permission)
+}
+
+@section BreadPath
+{
+    @if (ViewBag.isCustom == true)
+    {
+        @(Html.ActionLink("Custom Package List", "Custom", "Package"))
+    }
+    else
+    {
+        @(Html.ActionLink("Default Package List", "Default", "Package"))
+    }
+    <i class="icon-angle-right"></i>Assign Permission
+}
+@section Styles{
+    <style type="text/css">
+        .fixed-columns-overflow {
+            margin-left: 380px;
+        }
+        .fixed-column:first-child > div, .fixed-column-title:first-child > div {
+            width: 30px;
+        }
+        .fixed-column:nth-child(2) > div, .fixed-column-title:nth-child(2) > div {
+            width: 350px;
+            left: 30px;
+        }
+        .nav-tab .tab-content table th.fixed-column-title, .nav-tab .tab-content table td.fixed-column {
+            padding: 0;
+        }
+        .fixed-column-title div {
+            top: 0px;
+            height: 30px;
+            background-color: #ffffff;
+            padding-top: 3px;
+            border-top: 1px solid #dddddd;
+        }
+        .fixed-column div {
+            height: 27px;
+            padding-top: 0px;
+        }
+    </style>
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var jsonArr;
+
+        //get assigned authorities
+        function GetPageAuthorities() {
+            jsonArr = "[";
+            $("tr").each(
+                function() {
+                    var num = 0;
+                    var pageauthority = "{";
+                    $(this).find("input[type=checkbox]").each(function() {
+                        if (this.checked == true) {
+                            if (num == 0) {
+                                pageauthority += '"PageId":"' + this.value + '","PageAuthority":"';
+                            } else {
+                                pageauthority += this.value + ";";
+                            }
+                            num = (num + 1);
+                        }
+                    });
+                    pageauthority += '"' + "},";
+
+                    if (pageauthority.length > 4) {
+                        jsonArr += pageauthority;
+                    }
+                }
+            );
+            jsonArr += "]";
+
+            $("#pageAuthorities").val(jsonArr);
+        }
+
+        function AuthorityClick(obj, parentId, ispage, ismenu, isindex) {
+            //if authority is checked，check menu and page based on  menu and page
+            var objpage = $(obj).attr("page");
+            var objmenu = $(obj).attr("menu");
+
+            //current page
+            var page = $("input[type=checkbox][menu=" + objmenu + "][page=" + objpage + "]:not([authority])");
+            //current menu
+            var menu = $("input[type=checkbox][menu=" + objmenu + "]:not([authority]):not([page])");
+
+            if ($(obj)[0].checked == true) {
+
+                //first menu checked
+                if (ismenu != undefined && ismenu != null) {
+                    $("input[type=checkbox][menu=" + objmenu + "]").each(
+                        function() {
+                            this.checked = "checked";
+                        }
+                    );
+                } else {
+                    //page checked
+                    if (ispage != undefined && ispage != null) {
+                        //checked authorities below the page
+                        $("input[type=checkbox][page=" + objpage + "][authority]").each(
+                            function() {
+                                this.checked = "checked";
+                            }
+                        );
+
+                        //checked authorities below the page
+                        $("input[type=checkbox][parentid=" + obj.value + "]").each(
+                            function() {
+                                this.checked = "checked";
+                            }
+                        );
+                    } else {
+                        //page checked
+                        page[0].checked = "checked";
+                        $("input[type=checkbox][index=" + objpage + "]")[0].checked = "checked";
+                    }
+                }
+
+                //the up menu
+                if (parentId != undefined && parentId != null) {
+                    $("input[type=checkbox][value=" + parentId + "]")[0].checked = "checked";
+                }
+
+                //menu checked            
+                menu[0].checked = "checked";
+            } else {
+                //first menu cancel
+                if (ismenu != undefined && ismenu != null) {
+                    $("input[type=checkbox][menu=" + objmenu + "]").each(
+                        function() {
+                            this.checked = "";
+                        }
+                    );
+                } else {
+                    //page cancel
+                    if ((ispage != undefined && ispage != null) || (isindex != undefined && isindex != null)) {
+                        //unchecked authorities of the page
+                        $("input[type=checkbox][page=" + objpage + "][authority]").each(
+                            function() {
+                                this.checked = "";
+                            }
+                        );
+
+                        $("input[type=checkbox][page=" + objpage + "]").each
+                        (
+                            function() {
+                                this.checked = "";
+                            }
+                        );
+
+                        //unchecked authorities below the page
+                        $("input[type=checkbox][parentid=" + obj.value + "]").each(
+                            function() {
+                                this.checked = "";
+                            }
+                        );
+                    } else {
+                        if ($("input[type=checkbox][menu=" + objmenu + "][page=" + objpage + "][authority]:checked").length == 0) {
+                            page[0].checked = "";
+                        }
+                    }
+
+                    //if the pages all above canceled,uncheck the up page
+                    if (parentId != undefined && parentId != null) {
+                        if ($("input[type=checkbox][menu=" + objmenu + "][parentid=" + parentId + "]:checked").length == 0) {
+                            $("input[type=checkbox][value=" + parentId + "]")[0].checked = "";
+                        }
+                    }
+
+                    //if the first menu is unchecked,unchecked the first menu
+                    if ($("input[type=checkbox][menu=" + objmenu + "][page]:checked").length == 0) {
+                        menu[0].checked = "";
+                    }
+                }
+
+            }
+        }
+
+        registerFormCallbacks("@(formId)", {
+            onPosted: function(response) {
+                redirectBack("index");
+            }
+        });
+    </script>
+}
+
+@using (Ajax.BeginForm("SaveInvitation", "AssignedPermission", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="right-content-top">
+        @if (ViewBag.isCustom == true) // if it is custom package
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Custom", "Package"))" >Back to Custom Package List</a>
+        }
+        else
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Default", "Package"))" >Back to Default Package List</a>
+        }
+    </div>
+
+    <div style="display: none">
+        <label class="hide" for="pageAuthorities">1</label>
+        @Html.TextBox("pageAuthorities");
+    </div>
+
+    <div class="form-group">
+    </div>
+    @Html.HiddenFor(model => model.ID)
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, new {@class = "control-label col-sm-2"})
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.Name, new {@class = "form-control", disabled = "disabled"})
+        </div>
+        @Html.LabelFor(model => model.UserType, new {@class = "control-label col-sm-2"})
+        <div class="col-sm-4">
+            @Html.TextBox("UserType", Model.UserType.ToDescription(), new {@class = "form-control", disabled = "disabled"})
+        </div>
+
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(r => r.Status, new {@class = "control-label col-sm-2"})
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.Status, new {@class = "form-control", disabled = "disabled"})
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Descriptions, new {@class = "control-label col-sm-2"})
+        <div class="col-sm-10">
+            @Html.TextAreaFor(model => model.Descriptions, new {@class = "form-control", disabled = "disabled", rows = 3})
+        </div>
+    </div>
+
+    <div class="main-content">
+        <form class="form-horizontal" role="form">
+
+            <div class="form-group">
+                <div class="nav-tab">
+
+                    @*binding the first menu*@
+                    <ul id="myTab" class="nav-container" role="tablist">
+                        @foreach (var page in Pages.FindAll(a => a.ParentID == 0))
+                        {
+                            <li class="@(count_Menu == 0 ? "active" : "")"><a href="#content@(page.ID)" role="tab" data-toggle="tab">@(page.Name)</a></li>
+                            count_Menu++;
+                        }
+                    </ul>
+
+                    @*binding the content of the menu*@
+                    <div id="myTabContent" class="tab-content">
+                        @foreach (var page in Pages.FindAll(a => a.ParentID == 0))
+                        {
+                            int menuAuthorityCount = MenuAuthority[page.ID].FindAll(p => p != (int) Authority.All).Count;
+                            <div class="tab-pane fade @(count_Div == 0 ? "in active" : "")" 
+                                id="content@(page.ID)" style="overflow-x: auto;">
+                                <div class="fixed-columns-container">
+                                    <div class="fixed-columns-overflow">
+                                        <table name="pagename" class="table table-striped table-hover" id="@page.ID" style="max-width: 2000px;">
+                                            <tbody>
+                                                <tr>
+                                                    <th class="fixed-column-title">
+                                                        <div>
+                                                            <span style="display: none">1</span>
+                                                        </div>
+                                                    </th>
+                                                    <th class="fixed-column-title" >
+                                                        <div>
+                                                            Name
+                                                        </div>
+                                                    </th>
+                                                    @if (Pages.FindAll(a => a.ParentID == page.ID).Count > 0)
+                                                    {
+                                                        //remove the 'ALL' element
+                                                        for (int i = 0; i < MenuAuthority[page.ID].Count; i++)
+                                                        {
+                                                            if ((Authority) (MenuAuthority[page.ID][i]) != Authority.All)
+                                                            {
+                                                                <th style="text-align: center; width: 160px;">
+                                                                    <div>@(((Authority) MenuAuthority[page.ID][i]).ToDescription())</div>
+                                                                </th>
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <th style="text-align: center; width: 160px;">
+                                                            <div>@Authority.All.ToDescription()</div>
+                                                        </th>
+                                                    }
+                                                    <th style="width:2000px;">  <span style="display: none">1</span></th>
+                                                </tr>
+                                                <tr id="defaultTr">
+                                                    <td align="center" class="fixed-column" style="width: 49px;">
+                                                        <div style="top:@(heightFromTop - rowHeight)px">
+                                                            @if (page.IsSelected)
+                                                            {
+                                                                <input style="vertical-align:middle" type="checkbox" id="memu@(page.ID)" value="@page.ID" menu="memu@(page.ID)" checked="checked"
+                                                                       onclick=" AuthorityClick(this, null, null, true); " />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input style="vertical-align:middle" type="checkbox" id="memu@(page.ID)" value="@page.ID" menu="memu@(page.ID)"
+                                                                       onclick=" AuthorityClick(this, null, null, true); " />
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td class="fixed-column" style="left: 49px; text-align: left; width: 330px;">
+                                                        <div style="top:@(heightFromTop - rowHeight)px">
+                                                            <label for="memu@(page.ID)" style="height: 20px; margin: 0px;">@page.Name</label>
+                                                        </div>
+                                                    </td>
+                                                    @if (Pages.FindAll(a => a.ParentID == page.ID).Count > 0)
+                                                    {
+                                                        for (int i = 0; i < menuAuthorityCount; i++)
+                                                        {
+                                                            <td>&nbsp;</td>
+                                                        }
+                                                    }
+                                                    else //if has no children ,show 'ALL' element
+                                                    {
+                                                    <td style="text-align: center">
+                                                        @Html.Label("", "&nbsp;", new {@class = "control-label hide", @for = "checkbox_menu_" + page.ID})
+                                                        @if (page.IsSelected)
+                                                        {
+                                                            <input style="vertical-align:middle" id="checkbox_menu_@(page.ID)" type="checkbox" value="@((int) Authority.All)" checked="checked"
+                                                                   menu="memu@(page.ID)" onclick=" AuthorityClick(this, null, null, true) "/>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input style="vertical-align:middle" id="checkbox_menu_@(page.ID)" type="checkbox" value="@((int) Authority.All)"
+                                                                   menu="memu@(page.ID)" onclick=" AuthorityClick(this, null, null, true) "/>
+                                                        }
+
+                                                    </td>
+                                                    }
+                                                    <td >&nbsp;</td>
+                                                </tr>
+
+                                                <!-- show the second page and menu -->
+                                                @{var currentTopIndex = -1;}
+                                                @foreach (var pageSecond in Pages.FindAll(a => a.ParentID == page.ID))
+                                                {
+                                                    currentTopIndex++;
+                                                    //if it is page
+                                                    if (pageSecond.IsPage)
+                                                    {
+                                                        <tr class="">
+                                                            <td align="center" class="fixed-column" >
+                                                                <div style="top:@(heightFromTop + currentTopIndex * rowHeight)px">
+                                                                    @if (pageSecond.IsSelected)
+                                                                    {
+                                                                        <input style="vertical-align:middle"  type="checkbox" id="@pageSecond.ID" value="@pageSecond.ID" 
+                                                                                menu="memu@(page.ID)" page="page@(pageSecond.ID)"
+                                                                               checked="checked" onclick=" AuthorityClick(this, null, true, null); " />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <input style="vertical-align:middle" type="checkbox" id="@pageSecond.ID" value="@pageSecond.ID"                                                                             
+                                                                               menu="memu@(page.ID)" page="page@(pageSecond.ID)"
+                                                                               onclick=" AuthorityClick(this, null, true, null); " />
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td class="fixed-column"  style="text-align: left">
+                                                                <div style="top:@(heightFromTop + currentTopIndex * rowHeight)px">
+                                                                    <label style="height: 20px; margin-left: 20px;" for="@(pageSecond.ID)">@(pageSecond.Name)</label>
+                                                                </div>
+                                                            </td>
+                                                            @for (int i = 0; i < MenuAuthority[page.ID].Count; i++)
+                                                            {
+                                                                var value = (Authority) MenuAuthority[page.ID][i];
+                                                                if (value != Authority.All) //remove all element
+                                                                {
+                                                                    if ((authority = Authorities.Find(r => r.PageId == pageSecond.ID
+                                                                                                           && r.ID == MenuAuthority[page.ID][i])) == null)
+                                                                    {
+                                                                        <td>&nbsp;</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (authority.IsSelected)
+                                                                        {
+                                                                            <td style="text-align: center">
+                                                                                @Html.Label("", "&nbsp;", new {@class = "control-label hide", @for = "checkbox_" + pageSecond.ID + "_" + authority.ID})
+                                                                                <input style="vertical-align:middle" id="checkbox_@(pageSecond.ID)_@(authority.ID)" type="checkbox" 
+                                                                                       title="@(((Authority)authority.ID).ToDescription())"
+                                                                                       value="@authority.ID" checked="checked" menu="memu@(page.ID)"
+                                                                                       page="page@(pageSecond.ID)" authority="authority@(authority.ID)"
+                                                                                       index='@(value == Authority.Index ? "page" : "")@(pageSecond.ID)'
+                                                                                       onclick='@(value == Authority.Index ? "AuthorityClick(this,null,null,null,true)" : "AuthorityClick(this)")' />
+                                                                            </td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="text-align: center">
+                                                                                @Html.Label("", "&nbsp;", new {@class = "control-label hide", @for = "checkbox_" + pageSecond.ID + "_" + authority.ID})
+                                                                                <input style="vertical-align:middle" id="checkbox_@(pageSecond.ID)_@(authority.ID)" type="checkbox" 
+                                                                                       value="@authority.ID" menu="memu@(page.ID)" title="@(((Authority)authority.ID).ToDescription())"
+                                                                                       page="page@(pageSecond.ID)" authority="authority@(authority.ID)"
+                                                                                       index='@(value == Authority.Index ? "page" : "")@(pageSecond.ID)'
+                                                                                       onclick='@(value == Authority.Index ? "AuthorityClick(this,null,null,null,true)" : "AuthorityClick(this)")' />
+                                                                            </td>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            <td >&nbsp;</td>
+                                                        </tr>
+                                                    }
+                                                    else 
+                                                    {
+                                                        <!-- if it is menu -->
+                                                        <tr class="datagrid-sub-title">
+                                                            <td class="fixed-column" >
+                                                                <div style="top:@(heightFromTop + currentTopIndex * rowHeight)px">
+                                                                    @if (pageSecond.IsSelected)
+                                                                    {
+                                                                        <input style="vertical-align:middle" type="checkbox" id="@pageSecond.ID" value="@pageSecond.ID" menu="memu@(page.ID)" page="page@(pageSecond.ID)"
+                                                                               checked="checked" onclick=" AuthorityClick(this, null, true, null); " />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <input style="vertical-align:middle" type="checkbox" id="@pageSecond.ID" value="@pageSecond.ID" menu="memu@(page.ID)" page="page@(pageSecond.ID)"
+                                                                               onclick=" AuthorityClick(this, null, true, null); " />
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td class="fixed-column" style="text-align: left">
+                                                                <div style="top:@(heightFromTop + currentTopIndex * rowHeight)px">
+                                                                    <label for="@(pageSecond.ID)" style="height: 20px; margin-left: 20px;">@(pageSecond.Name)</label>
+                                                                </div>
+                                                            </td>
+                                                            <td colspan="@(menuAuthorityCount)">&nbsp;</td>
+                                                            <td >&nbsp;</td>
+                                                        </tr>
+                                                    }
+                                                    foreach (var pageThird in Pages.FindAll(a => a.ParentID == pageSecond.ID))
+                                                    {
+                                                        currentTopIndex++;
+                                                        <!--//show the third page-->
+                                                        <tr class="">
+                                                            <td class="fixed-column" >
+                                                                <div style="top:@(heightFromTop + currentTopIndex * rowHeight)px">
+                                                                    @if (pageThird.IsSelected)
+                                                                    {
+                                                                        <input style="vertical-align:middle" type="checkbox" id="@pageThird.ID" value="@pageThird.ID" menu="memu@(page.ID)"
+                                                                               checked="checked" page="page@(pageThird.ID)" parentid="@pageSecond.ID"
+                                                                               onclick=" AuthorityClick(this, @(pageSecond.ID) , true, null); " />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <input style="vertical-align:middle" type="checkbox" id="@pageThird.ID" value="@pageThird.ID" menu="memu@(page.ID)"
+                                                                               page="page@(pageThird.ID)" parentid="@pageSecond.ID"
+                                                                               onclick=" AuthorityClick(this, @(pageSecond.ID) , true, null); " />
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td class="fixed-column" style="text-align: left">
+                                                                <div style="top:@(heightFromTop + currentTopIndex * rowHeight)px">
+                                                                    <label for="@pageThird.ID" style="height: 20px; padding-left:40px; margin: 0px;">@(pageThird.Name)</label>
+                                                                </div>
+                                                            </td>
+
+                                                            @for (int i = 0; i < MenuAuthority[page.ID].Count; i++)
+                                                            {
+                                                                var value = (Authority) MenuAuthority[page.ID][i];
+                                                                if (value != Authority.All)
+                                                                {
+                                                                    if ((authority = Authorities.Find(r => r.PageId == pageThird.ID
+                                                                                                           && r.ID == MenuAuthority[page.ID][i])) == null)
+                                                                    {
+                                                                        <td>&nbsp;</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (authority.IsSelected)
+                                                                        {
+                                                                            <td style="text-align: center">
+                                                                                @Html.Label("", "&nbsp;", new {@class = "control-label hide", @for = "checkbox_" + pageThird.ID + "_" + authority.ID})
+                                                                                <input style="vertical-align:middle" id="checkbox_@(pageThird.ID)_@(authority.ID)" type="checkbox" 
+                                                                                       value="@authority.ID" checked="checked" menu="memu@(page.ID)"
+                                                                                       title="@(((Authority)authority.ID).ToDescription())" page="page@(pageThird.ID)"
+                                                                                       authority="authority@(authority.ID)" parentid="@pageSecond.ID"
+                                                                                       index='@(value == Authority.Index ? "page" : "")@pageThird.ID'
+                                                                                       onclick='@(value == Authority.Index ? "AuthorityClick(this," + pageSecond.ID + ",null,null,true)" : "AuthorityClick(this," + pageSecond.ID + ")")' />
+                                                                            </td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td style="text-align: center">
+                                                                                @Html.Label("", "&nbsp;", new {@class = "control-label hide", @for = "checkbox_" + pageThird.ID + "_" + authority.ID})
+                                                                                <input style="vertical-align:middle" id="checkbox_@(pageThird.ID)_@(authority.ID)" type="checkbox" 
+                                                                                       value="@authority.ID" menu="memu@(page.ID)" title="@(((Authority)authority.ID).ToDescription())"
+                                                                                       page="page@(pageThird.ID)" authority="authority@(authority.ID)"
+                                                                                       parentid="@(pageSecond.ID)"
+                                                                                       index='@(value == Authority.Index ? "page" : "")@pageThird.ID'
+                                                                                       onclick='@(value == Authority.Index ? "AuthorityClick(this," + pageSecond.ID + ",null,null,true)" : "AuthorityClick(this," + pageSecond.ID + ")")' />
+                                                                            </td>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            <td >&nbsp;</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                            count_Div++;
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" class="mainbutton modal-btn submit-btn" value="Submit" onclick=" GetPageAuthorities() " />
+                <button class="mainbutton modal-btn cancel-btn" type="button" onclick=' redirectBack("index") '>Cancel</button>
+            </div>
+        </form>
+    </div>
+}

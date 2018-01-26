@@ -1,0 +1,8 @@
+﻿UPDATE CommunityRoles
+SET ECircle='RW',Beech='RW',Cpalls='RW',Coaching='RW',Materials='RW',Training='RW',
+ECircleCli='R',BeechCli='R',CpallsCli='R',CoachingCli='R',MaterialsCli='R',TrainingCli='R'
+WHERE RoleName IN ('educational specialist','district / community user')
+
+UPDATE CommunityRoles
+SET ECircle='R',ECircleRequest='RW'
+WHERE RoleName IN ('intervention support personnel','intervention manager','statistical user','superuser')

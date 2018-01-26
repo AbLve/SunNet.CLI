@@ -1,0 +1,505 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Framework
+@model Sunnet.Cli.Core.Ade.Entities.AssessmentLegendEntity
+@{
+    ViewBag.Title = "Assessment Legend";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<AssessmentLegendEntity> list = ViewBag.AssesmentLegends;
+    AssessmentLegendEntity studentLegend = ViewBag.studentLegend;
+    AssessmentLegendEntity classLegend = ViewBag.classLegend;
+    AssessmentLegendEntity parentLegend = ViewBag.parentLegend;
+    AssessmentLegendEntity engageLegend = ViewBag.engageLegend;
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/javascript">
+        var uploadColorform1 = null;
+        var uploadBlackWhiteform1 = null;
+        var uploadColorform2 = null;
+        var uploadBlackWhiteform2 = null;
+        var uploadColorform3 = null;
+        var uploadColorform4 = null;
+        +(function () {
+            registerFormCallbacks("form1", {
+                onPosted: function (response) {
+                    if (response.success) {
+                        SuccessDeal("form1", response);
+                    }
+                }
+            });
+            registerFormCallbacks("form2", {
+                onPosted: function (response) {
+                    if (response.success) {
+                        SuccessDeal("form2", response);
+                    }
+                }
+            });
+            registerFormCallbacks("form3", {
+                onPosted: function (response) {
+                    if (response.success) {
+                        SuccessDeal("form3", response);
+                    }
+                }
+            });
+            registerFormCallbacks("form4", {
+                onPosted: function (response) {
+                    if (response.success) {
+                        SuccessDeal("form4", response);
+                    }
+                }
+            });
+            uploadColorform1 = InitColor("form1");
+            uploadBlackWhiteform1 = InitBlackWhite("form1");
+        })();
+
+        function SuccessDeal(formObject, response) {
+            $("#" + formObject + " #ID").val(response.data.ID);
+            $("#" + formObject + " .delete").click();
+            $("#fileColorDiv" + formObject).show();
+            $("#fileColorName" + formObject).attr("href", '@(SFConfig.StaticDomain)' + "upload/" + response.data.ColorFilePath);
+            $("#fileColorName" + formObject).html(response.data.ColorFileName);
+            $("#ColorFilePath" + formObject).val(response.data.ColorFilePath);
+            $("#ColorFileName" + formObject).val(response.data.ColorFileName);
+
+            $("#fileBlackWhiteDiv" + formObject).show();
+            $("#fileBlackWhiteName" + formObject).attr("href", '@(SFConfig.StaticDomain)' + "upload/" + response.data.BlackWhiteFilePath);
+            $("#fileBlackWhiteName" + formObject).html(response.data.BlackWhiteFileName);
+            $("#BlackWhiteFilePath" + formObject).val(response.data.BlackWhiteFilePath);
+            $("#BlackWhiteFileName" + formObject).val(response.data.BlackWhiteFileName);
+        }
+
+        function InitColor(formObject) {
+            return SunnetWebUploader.CreateWebUploader({
+                pick: "#btnColor" + formObject,
+                container: "#dvColor" + formObject,
+                submitbutton: "#btnSubmit" + formObject,
+                targetField: "#ColorFilePath" + formObject,
+                accept: {
+                    extensions: "jpg,jpeg,gif,png,bmp",
+                    mimeTypes: "image/jpg,image/jpeg,image/gif,image/png,image/bmp"
+                }
+            });
+        }
+
+        function InitBlackWhite(formObject) {
+            return SunnetWebUploader.CreateWebUploader({
+                pick: "#btnBlackWhite" + formObject,
+                container: "#dvBlackWhite" + formObject,
+                submitbutton: "#btnSubmit" + formObject,
+                targetField: "#BlackWhiteFilePath" + formObject,
+                accept: {
+                    extensions: "jpg,jpeg,gif,png,bmp",
+                    mimeTypes: "image/jpg,image/jpeg,image/gif,image/png,image/bmp"
+                }
+            });
+        }
+
+        function Switch(object, formObject) {
+            if (formObject == "form2" && $("#" + formObject + " div[class='webuploader-pick']").length == 0) {
+                uploadColorform2 = InitColor(formObject);
+                uploadBlackWhiteform2 = InitBlackWhite(formObject);
+            } else if (formObject == "form3" && $("#" + formObject + " div[class='webuploader-pick']").length == 0) {
+                uploadColorform3 = InitColor(formObject);
+            } else if (formObject == "form4" && $("#" + formObject + " div[class='webuploader-pick']").length == 0) {
+                uploadColorform4 = InitColor(formObject);
+            }
+            $("li[role='presentation']").removeClass();
+            $(object).attr("class", "active");
+            $("#form1,#form2,#form3,#form4").hide();
+            $("#" + formObject).show();
+        }
+
+        function DeleteLegend(formObject, type) {
+            if (type == "color") {
+                $("#fileColorDiv" + formObject).hide();
+                $("#ColorFilePath" + formObject).val("");
+                $("#ColorFileName" + formObject).val("");
+            } else {
+                $("#fileBlackWhiteDiv" + formObject).hide();
+                $("#BlackWhiteFilePath" + formObject).val("");
+                $("#BlackWhiteFileName" + formObject).val("");
+            }
+        }
+
+        function Submit(sender, formObject) {
+            if (formObject == "form1") {
+                upload1(uploadColorform1, uploadBlackWhiteform1, formObject, sender);
+            } else if (formObject == "form2") {
+                upload1(uploadColorform2, uploadBlackWhiteform2, formObject, sender);
+            } else if (formObject == "form3") {
+                upload1(uploadColorform3, null, formObject, sender);
+            } else if (formObject == "form4") {
+                upload1(uploadColorform4, null, formObject, sender);
+            }
+        }
+
+        function upload1(objectColor, objectBlackWhite, formObject, sender) {
+            if (objectColor.getStats().queueNum > 0) {
+                var queueFiles = objectColor.getFiles("queued");
+                $("#ColorFileName" + formObject).val(queueFiles[0].name + "(" + WebUploader.formatSize(queueFiles[0].size) + ")");
+                $("#ColorFilePath" + formObject).val(queueFiles[0].name + "(" + WebUploader.formatSize(queueFiles[0].size) + ")");
+                $(sender).data("clicked", true);
+                if (objectColor.state == "ready") {
+                    objectColor.upload();
+                }
+                return false;
+            }
+            if (objectBlackWhite != null) {
+                if (objectBlackWhite.getStats().queueNum > 0) {
+                    var queueFiles = objectBlackWhite.getFiles("queued");
+                    $("#BlackWhiteFileName" + formObject).val(queueFiles[0].name + "(" + WebUploader.formatSize(queueFiles[0].size) + ")");
+                    $("#BlackWhiteFilePath" + formObject).val(queueFiles[0].name + "(" + WebUploader.formatSize(queueFiles[0].size) + ")");
+                    $(sender).data("clicked", true);
+                    if (objectBlackWhite.state == "ready") {
+                        objectBlackWhite.upload();
+                    }
+                    return false;
+                }
+            }
+            if ($("#" + formObject).valid()) {
+                $("#" + formObject).submit();
+            }
+            return false;
+        }
+        $("#btnSubmitform1").click(function () {
+            return Submit(this, 'form1');
+        });
+        $("#btnSubmitform2").click(function () {
+            return Submit(this, 'form2');
+        });
+        $("#btnSubmitform3").click(function () {
+            return Submit(this, 'form3');
+        });
+        $("#btnSubmitform4").click(function () {
+            return Submit(this, 'form4');
+        });
+    </script>
+}
+<ul class="nav nav-tabs">
+    <li role="presentation" class="active" onclick="Switch(this,'form1')"><a href="#">Student Summary</a></li>
+    <li role="presentation" onclick="Switch(this,'form2')"><a href="#">Class Summary</a></li>
+    <li role="presentation" onclick="Switch(this,'form3')"><a href="#">Parent Report</a></li>
+    <li role="presentation" onclick="Switch(this,'form4')"><a href="#">Engage UI</a></li>
+</ul>
+@using (Ajax.BeginForm("UploadLegend", "Assessment", null, PostFormHelper.DefaultAjaxOptions,
+                new
+                {
+                    @class = "form-horizontal",
+                    id = "form1"
+                }))
+{
+    @Html.HiddenFor(model => model.ID, new { @Value = studentLegend.ID })
+    @Html.HiddenFor(model => model.AssessmentId)
+    @Html.HiddenFor(model => model.LegendType, new { @Value = LegendTypeEnum.StudentSummary })
+    <div class="form-group" style="margin-top: 10px;">
+        <div class="col-sm-12">
+            Select image for report legend (Color) 
+            <span style="color: #247432;font-size: 12px;font-weight: bold;">(Minimum width 1200 pixels)</span>
+        </div>
+        <div class="col-sm-12">
+            <div id="dvColorform1" class="uploader-list pt-5"></div>
+            <div class="btns">
+                <div id="btnColorform1" for="ColorFilePathform1">File path of selected file</div>
+                <label for="ColorFilePathform1" style="display: none;">ColorFilePath</label>
+                <label for="ColorFileNameform1" style="display: none;">ColorFileName</label>
+                @Html.TextBoxFor(model => model.ColorFilePath, new { @style = "display:none", @class = "form-control validate", @Value = studentLegend.ColorFilePath, @id = "ColorFilePathform1" })
+                @Html.TextBoxFor(model => model.ColorFileName, new { @style = "display:none", @class = "form-control", @Value = studentLegend.ColorFileName, @id = "ColorFileNameform1" })
+            </div>
+            <div id="fileColorDivform1" style="display: @(string.IsNullOrEmpty(studentLegend.ColorFilePath) ? "none" : "")">
+                <a id="fileColorNameform1" href="@FileHelper.GetPreviewPathofUploadFile(studentLegend.ColorFilePath)" class="form-link4" target="_blank">
+                    @(string.IsNullOrEmpty(studentLegend.ColorFileName)?"legend": studentLegend.ColorFileName)
+                </a>
+                <span title="Remove this file"><a href="javascript:;" onclick="DeleteLegend('form1','color')"><i class="icon-trash icon-large"><span style="display: none;">delete legend</span></i></a></span>
+            </div>
+            @Html.ValidationMessageFor(model => model.ColorFilePath)
+        </div>
+        <div class="col-sm-12 mt-5">
+            Select image for report legend (Block & White) 
+            <span style="color: #247432;font-size: 12px;font-weight: bold;">(Minimum width 1200 pixels)</span>
+        </div>
+        <div class="col-sm-12">
+            <div id="dvBlackWhiteform1" class="uploader-list pt-5"></div>
+            <div class="btns">
+                <div id="btnBlackWhiteform1" for="BlackWhiteFilePathform1">File path of selected file</div>
+                <label for="BlackWhiteFilePathform1" style="display: none;">ColorFilePath</label>
+                <label for="BlackWhiteFileNameform1" style="display: none;">ColorFileName</label>
+                @Html.TextBoxFor(model => model.BlackWhiteFilePath, new { @style = "display:none", @class = "form-control required validate", @Value = studentLegend.BlackWhiteFilePath, @id = "BlackWhiteFilePathform1" })
+                @Html.TextBoxFor(model => model.BlackWhiteFileName, new { @style = "display:none", @class = "form-control", @Value = studentLegend.BlackWhiteFileName, @id = "BlackWhiteFileNameform1" })
+            </div>
+            <div id="fileBlackWhiteDivform1" style="display: @(string.IsNullOrEmpty(studentLegend.BlackWhiteFilePath) ? "none" : "")">
+                <a id="fileBlackWhiteNameform1" href="@FileHelper.GetPreviewPathofUploadFile(studentLegend.BlackWhiteFilePath)" class="form-link4" target="_blank">
+                    @(string.IsNullOrEmpty(studentLegend.BlackWhiteFileName) ? "legend" : studentLegend.BlackWhiteFileName)
+                </a>
+                <span title="Remove this file"><a href="javascript:;" onclick="DeleteLegend('form1','blackwhite')"><i class="icon-trash icon-large"><span style="display: none;">delete legend</span></i></a></span>
+            </div>
+            @Html.ValidationMessageFor(model => model.BlackWhiteFilePath)
+        </div>
+        <div class="col-sm-12 mt-5">
+            <label for="form1Text">Text to display with legend</label>
+        </div>
+        <div class="col-sm-12">
+            <div class="uploader-list pt-5"></div>
+            @Html.TextBoxFor(model => model.Text, new { @class = "form-control", @Value = studentLegend.Text, @id = "form1Text" })
+            @Html.ValidationMessageFor(model => model.Text)
+        </div>
+        <div class="col-sm-12 mt-5">
+            Text Position
+        </div>
+        <div class="col-sm-12">
+            <div class="uploader-list pt-5"></div>
+            @if (studentLegend.TextPosition == "Bottom")
+            {
+                @Html.RadioButtonFor(model => model.TextPosition, "Bottom", new { id = "form1TextPosition1", @checked = true })
+                <label for="form1TextPosition1" style="margin-right: 10px;">Bottom</label>
+                @Html.RadioButtonFor(model => model.TextPosition, "Top", new { id = "form1TextPosition2" })
+                <label for="form1TextPosition2">Top</label>
+                <br />@Html.ValidationMessageFor(model => model.TextPosition)
+            }
+            else
+            {
+                @Html.RadioButtonFor(model => model.TextPosition, "Bottom", new { id = "form1TextPosition1" })
+                <label for="form1TextPosition1" style="margin-right: 10px;">Bottom</label>
+                @Html.RadioButtonFor(model => model.TextPosition, "Top", new { id = "form1TextPosition2", @checked = true })
+                <label for="form1TextPosition2">Top</label>
+                <br />@Html.ValidationMessageFor(model => model.TextPosition)
+            }
+        </div>
+        <div class="col-sm-12" style="text-align: center; margin-top: 30px;">
+            <button class="mainbutton modal-btn submit-btn" id="btnSubmitform1" name="btnSubmit" type="button">Submit</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+}
+
+@using (Ajax.BeginForm("UploadLegend", "Assessment", null, PostFormHelper.DefaultAjaxOptions,
+                new
+                {
+                    @class = "form-horizontal",
+                    id = "form2",
+                    @style = "display: none"
+                }))
+{
+    @Html.HiddenFor(model => model.ID, new { @Value = classLegend.ID })
+    @Html.HiddenFor(model => model.AssessmentId)
+    @Html.HiddenFor(model => model.LegendType, new { @Value = LegendTypeEnum.ClassSummary })
+    <div class="form-group" style="margin-top: 10px;">
+        <div class="col-sm-12">
+            Select image for report legend (Color) 
+            <span style="color: #247432;font-size: 12px;font-weight: bold;">(Minimum width 1200 pixels)</span>
+        </div>
+        <div class="col-sm-12">
+            <div id="dvColorform2" class="uploader-list pt-5"></div>
+            <div class="btns">
+                <div id="btnColorform2" for="ColorFilePathform2">File path of selected file</div>
+                <label for="ColorFilePathform2" style="display: none;">ColorFilePath</label>
+                <label for="ColorFileNameform2" style="display: none;">ColorFileName</label>
+                @Html.TextBoxFor(model => model.ColorFilePath, new { @style = "display:none", @class = "form-control validate", @Value = classLegend.ColorFilePath, @id = "ColorFilePathform2" })
+                @Html.TextBoxFor(model => model.ColorFileName, new { @style = "display:none", @class = "form-control", @Value = classLegend.ColorFileName, @id = "ColorFileNameform2" })
+            </div>
+            <div id="fileColorDivform2" style="display: @(string.IsNullOrEmpty(classLegend.ColorFilePath) ? "none" : "")">
+                <a id="fileColorNameform2" href="@FileHelper.GetPreviewPathofUploadFile(classLegend.ColorFilePath)" class="form-link4" target="_blank">
+                    @(string.IsNullOrEmpty(classLegend.ColorFileName) ? "legend" : classLegend.ColorFileName)
+                </a>
+                <span title="Remove this file"><a href="javascript:void(0);" onclick="DeleteLegend('form2','color')"><i class="icon-trash icon-large"><span style="display: none;">delete legend</span></i></a></span>
+            </div>
+            @Html.ValidationMessageFor(model => model.ColorFilePath)
+        </div>
+        <div class="col-sm-12 mt-5">
+            Select image for report legend (Block & White) 
+            <span style="color: #247432;font-size: 12px;font-weight: bold;">(Minimum width 1200 pixels)</span>
+        </div>
+        <div class="col-sm-12">
+            <div id="dvBlackWhiteform2" class="uploader-list pt-5"></div>
+            <div class="btns">
+                <div id="btnBlackWhiteform2" for="BlackWhiteFilePathform2">File path of selected file</div>
+                <label for="BlackWhiteFilePathform2" style="display: none;">ColorFilePath</label>
+                <label for="BlackWhiteFileNameform2" style="display: none;">ColorFileName</label>
+                @Html.TextBoxFor(model => model.BlackWhiteFilePath, new { @style = "display:none", @class = "form-control required validate", @Value = classLegend.BlackWhiteFilePath, @id = "BlackWhiteFilePathform2" })
+                @Html.TextBoxFor(model => model.BlackWhiteFileName, new { @style = "display:none", @class = "form-control", @Value = classLegend.BlackWhiteFileName, @id = "BlackWhiteFileNameform2" })
+            </div>
+            <div id="fileBlackWhiteDivform2" style="display: @(string.IsNullOrEmpty(classLegend.BlackWhiteFilePath) ? "none" : "")">
+                <a id="fileBlackWhiteNameform2" href="@FileHelper.GetPreviewPathofUploadFile(classLegend.BlackWhiteFilePath)" class="form-link4" target="_blank">
+                    @(string.IsNullOrEmpty(classLegend.BlackWhiteFileName) ? "legend" : classLegend.BlackWhiteFileName)
+                </a>
+                <span title="Remove this file"><a href="javascript:;" onclick="DeleteLegend('form2','blackwhite')"><i class="icon-trash icon-large"><span style="display: none;">delete legend</span></i></a></span>
+            </div>
+            @Html.ValidationMessageFor(model => model.BlackWhiteFilePath)
+        </div>
+        <div class="col-sm-12 mt-5">
+            <label for="form2Text">Text to display with legend</label>
+        </div>
+        <div class="col-sm-12">
+            <div class="uploader-list pt-5"></div>
+            @Html.TextBoxFor(model => model.Text, new { @class = "form-control", @Value = classLegend.Text, @id = "form2Text" })
+            @Html.ValidationMessageFor(model => model.Text)
+        </div>
+        <div class="col-sm-12 mt-5">
+            Text Position
+        </div>
+        <div class="col-sm-12">
+            <div class="uploader-list pt-5"></div>
+            @if (classLegend.TextPosition == "Bottom")
+            {
+                @Html.RadioButtonFor(model => model.TextPosition, "Bottom", new { id = "form2TextPosition1", @checked = true })
+                <label for="form2TextPosition1" style="margin-right: 10px;">Bottom</label>
+                @Html.RadioButtonFor(model => model.TextPosition, "Top", new { id = "form2TextPosition2" })
+                <label for="form2TextPosition2">Top</label>
+                <br />@Html.ValidationMessageFor(model => model.TextPosition)
+            }
+            else
+            {
+                @Html.RadioButtonFor(model => model.TextPosition, "Bottom", new { id = "form2TextPosition1" })
+                <label for="form2TextPosition1" style="margin-right: 10px;">Bottom</label>
+                @Html.RadioButtonFor(model => model.TextPosition, "Top", new { id = "form2TextPosition2", @checked = true })
+                <label for="form2TextPosition2">Top</label>
+                <br />@Html.ValidationMessageFor(model => model.TextPosition)
+            }
+        </div>
+        <div class="col-sm-12" style="text-align: center; margin-top: 30px;">
+            <button class="mainbutton modal-btn submit-btn" id="btnSubmitform2" type="button">Submit</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+}
+
+@using (Ajax.BeginForm("UploadLegend", "Assessment", null, PostFormHelper.DefaultAjaxOptions,
+                new
+                {
+                    @class = "form-horizontal",
+                    id = "form3",
+                    @style = "display: none"
+                }))
+{
+    @Html.HiddenFor(model => model.ID, new { @Value = parentLegend.ID })
+    @Html.HiddenFor(model => model.AssessmentId)
+    @Html.HiddenFor(model => model.LegendType, new { @Value = LegendTypeEnum.ParentReport })
+    <div class="form-group" style="margin-top: 10px;">
+        <div class="col-sm-12">
+            Select image for parent report legend 
+            <span style="color: #247432;font-size: 12px;font-weight: bold;">(Minimum width 1200 pixels)</span>
+        </div>
+        <div class="col-sm-12">
+            <div id="dvColorform3" class="uploader-list pt-5"></div>
+            <div class="btns">
+                <div id="btnColorform3" for="ColorFilePathform3">File path of selected file</div>
+                <label for="ColorFilePathform3" style="display: none;">ColorFilePath</label>
+                <label for="ColorFileNameform3" style="display: none;">ColorFileName</label>
+                @Html.TextBoxFor(model => model.ColorFilePath, new { @style = "display:none", @class = "form-control validate", @Value = parentLegend.ColorFilePath, @id = "ColorFilePathform3" })
+                @Html.TextBoxFor(model => model.ColorFileName, new { @style = "display:none", @class = "form-control", @Value = parentLegend.ColorFileName, @id = "ColorFileNameform3" })
+            </div>
+            <div id="fileColorDivform3" style="display: @(string.IsNullOrEmpty(parentLegend.ColorFilePath) ? "none" : "")">
+                <a id="fileColorNameform3" href="@FileHelper.GetPreviewPathofUploadFile(parentLegend.ColorFilePath)" class="form-link4" target="_blank">
+                    @(string.IsNullOrEmpty(parentLegend.ColorFileName) ? "legend" : parentLegend.ColorFileName)
+                </a>
+                <span title="Remove this file"><a href="javascript:;" onclick="DeleteLegend('form3','color')"><i class="icon-trash icon-large"><span style="display: none;">delete legend</span></i></a></span>
+            </div>
+            @Html.ValidationMessageFor(model => model.ColorFilePath)
+        </div>
+        <div class="col-sm-12 mt-5">
+            <label for="form3Text">Text to display with legend</label>
+        </div>
+        <div class="col-sm-12">
+            <div class="uploader-list pt-5"></div>
+            @Html.TextBoxFor(model => model.Text, new { @class = "form-control", @Value = parentLegend.Text, @id = "form3Text" })
+            @Html.ValidationMessageFor(model => model.Text)
+        </div>
+        <div class="col-sm-12 mt-5">
+            Text Position
+        </div>
+        <div class="col-sm-12">
+            <div class="uploader-list pt-5"></div>
+            @if (parentLegend.TextPosition == "Bottom")
+            {
+                @Html.RadioButtonFor(model => model.TextPosition, "Bottom", new { id = "form3TextPosition1", @checked = true })
+                <label for="form3TextPosition1" style="margin-right: 10px;">Bottom</label>
+                @Html.RadioButtonFor(model => model.TextPosition, "Top", new { id = "form3TextPosition2" })
+                <label for="form3TextPosition2">Top</label>
+                <br />@Html.ValidationMessageFor(model => model.TextPosition)
+            }
+            else
+            {
+                @Html.RadioButtonFor(model => model.TextPosition, "Bottom", new { id = "form3TextPosition1" })
+                <label for="form3TextPosition1" style="margin-right: 10px;">Bottom</label>
+                @Html.RadioButtonFor(model => model.TextPosition, "Top", new { id = "form3TextPosition2", @checked = true })
+                <label for="form3TextPosition2">Top</label>
+                <br />@Html.ValidationMessageFor(model => model.TextPosition)
+            }
+        </div>
+        <div class="col-sm-12" style="text-align: center; margin-top: 30px;">
+            <button class="mainbutton modal-btn submit-btn" id="btnSubmitform3" type="button">Submit</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+}
+
+@using (Ajax.BeginForm("UploadLegend", "Assessment", null, PostFormHelper.DefaultAjaxOptions,
+                new
+                {
+                    @class = "form-horizontal",
+                    id = "form4",
+                    @style = "display: none"
+                }))
+{
+    @Html.HiddenFor(model => model.ID, new { @Value = engageLegend.ID })
+    @Html.HiddenFor(model => model.AssessmentId)
+    @Html.HiddenFor(model => model.LegendType, new { @Value = LegendTypeEnum.EngageUI })
+    <div class="form-group" style="margin-top: 10px;">
+        <div class="col-sm-12">
+            Select image for engage ui legend 
+            <span style="color: #247432;font-size: 12px;font-weight: bold;">(Minimum width 320 pixels)</span>
+        </div>
+        <div class="col-sm-12">
+            <div id="dvColorform4" class="uploader-list pt-5"></div>
+            <div class="btns">
+                <div id="btnColorform4" for="ColorFilePath">File path of selected file</div>
+                <label for="ColorFilePathform4" style="display: none;">ColorFilePath</label>
+                <label for="ColorFileNameform4" style="display: none;">ColorFileName</label>
+                @Html.TextBoxFor(model => model.ColorFilePath, new { @style = "display:none", @class = "form-control validate", @Value = engageLegend.ColorFilePath, @id = "ColorFilePathform4" })
+                @Html.TextBoxFor(model => model.ColorFileName, new { @style = "display:none", @class = "form-control", @Value = engageLegend.ColorFileName, @id = "ColorFileNameform4" })
+            </div>
+            <div id="fileColorDivform4" style="display: @(string.IsNullOrEmpty(engageLegend.ColorFilePath) ? "none" : "")">
+                <a id="fileColorNameform4" href="@FileHelper.GetPreviewPathofUploadFile(engageLegend.ColorFilePath)" class="form-link4" target="_blank">
+                    @(string.IsNullOrEmpty(engageLegend.ColorFileName) ? "legend" : engageLegend.ColorFileName)
+                </a>
+                <span title="Remove this file"><a href="javascript:;" onclick="DeleteLegend('form4','color')"><i class="icon-trash icon-large"><span style="display: none;">delete legend</span></i></a></span>
+            </div>
+            @Html.ValidationMessageFor(model => model.ColorFilePath)
+        </div>
+        <div class="col-sm-12 mt-5">
+            <label for="form4Text">Text to display with legend</label>
+        </div>
+        <div class="col-sm-12">
+            <div class="uploader-list pt-5"></div>
+            @Html.TextBoxFor(model => model.Text, new { @class = "form-control", @Value = engageLegend.Text, @id = "form4Text" })
+            @Html.ValidationMessageFor(model => model.Text)
+        </div>
+        <div class="col-sm-12 mt-5">
+            Text Position
+        </div>
+        <div class="col-sm-12">
+            <div class="uploader-list pt-5"></div>
+            @if (engageLegend.TextPosition == "Bottom")
+            {
+                @Html.RadioButtonFor(model => model.TextPosition, "Bottom", new { id = "form4TextPosition1", @checked = true })
+                <label for="form4TextPosition1" style="margin-right: 10px;">Bottom</label>
+                @Html.RadioButtonFor(model => model.TextPosition, "Top", new { id = "form4TextPosition2" })
+                <label for="form4TextPosition2">Top</label>
+                <br />@Html.ValidationMessageFor(model => model.TextPosition)
+            }
+            else
+            {
+                @Html.RadioButtonFor(model => model.TextPosition, "Bottom", new { id = "form4TextPosition1" })
+                <label for="form4TextPosition1" style="margin-right: 10px;">Bottom</label>
+                @Html.RadioButtonFor(model => model.TextPosition, "Top", new { id = "form4TextPosition2", @checked = true })
+                <label for="form4TextPosition2">Top</label>
+                <br />@Html.ValidationMessageFor(model => model.TextPosition)
+            }
+        </div>
+        <div class="col-sm-12" style="text-align: center; margin-top: 30px;">
+            <button class="mainbutton modal-btn submit-btn" id="btnSubmitform4" type="button">Submit</button>
+            <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+}

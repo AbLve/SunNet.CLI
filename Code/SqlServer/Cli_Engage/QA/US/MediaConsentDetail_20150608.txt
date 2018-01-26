@@ -1,0 +1,33 @@
+﻿ALTER procedure [dbo].[MediaConsentDetail]
+@communityIds varchar(max),
+@schoolIds varchar(max),
+@teacher varchar(200)
+AS
+begin
+declare @sql varchar(max)
+set @sql='select BC.Name as CommunityName,BS.Name as SchoolName,S.SchoolId as SchoolCode,
+(U.FirstName+'' ''+U.LastName) as TeacherName,T.TeacherId as TeacherCode,
+(Coachs.FirstName+'' ''+Coachs.LastName) as CoachName,
+Stu.FirstName+'' ''+Stu.LastName as StudentName,Stu.StudentId as StudentCode,Stu.Status as StudentStatus,Stu.IsMediaRelease as StudentMediaRelease,
+((case when T.CoachAssignmentWay=0 then '''' when T.CoachAssignmentWay=1 then ''Face-to-Face'' when T.CoachAssignmentWay=2 then ''Remote'' 
+else T.CoachAssignmentWayOther end)+'' ''+YIP.YearsInProject) as TargetStatus
+ from Students Stu
+left join StudentClassRelations SC on Stu.ID=SC.StudentId inner join Classes CL on CL.ID=SC.ClassId
+left join TeacherClassRelations TCL on CL.ID=TCL.ClassId inner join Teachers T on T.ID=TCL.TeacherId
+left join YearsInProjects YIP on YIP.ID=T.YearsInProjectId
+inner join Users U on U.ID=T.UserId left join (select * from Users where Role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+inner join Schools S on Stu.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join SchoolTypes ST on ST.ID=S.SchoolTypeId
+inner join Communities C on Stu.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId'
+set @sql+=' where SUBSTRING(ST.Name,1,4)!=''Demo'' and CL.LeadTeacherId=T.ID and Stu.Status=1 and U.Status=1 
+and CL.Status=1 and S.Status=1 and C.Status=1'
+if(@communityIds!='')
+	set @sql+=' and T.CommunityId in('+convert(varchar(max),@communityIds)+')'
+if(@schoolIds!='')
+	set @sql+=' and T.SchoolId in('+convert(varchar(max),@schoolIds)+')'
+if(@teacher!='')
+	set @sql+=' and ((U.FirstName+ '' ''+U.LastName) like ''%'+@teacher+'%'' or U.PrimaryEmailAddress like ''%'+@teacher+'%'')'
+
+set @sql+=' order by BC.Name '
+exec(@sql)
+end

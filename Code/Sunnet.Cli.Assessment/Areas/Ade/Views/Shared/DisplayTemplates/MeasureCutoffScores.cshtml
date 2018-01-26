@@ -1,0 +1,88 @@
+﻿@{
+    var wave = (byte)ViewData["wave"];
+    var enableWave = "wave" + wave;
+}
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th width="2%"></th>
+            <th width="*">Label</th>
+            <th width="5%">Color</th>
+            <th width="10%">Black&White</th>
+            <th width="5%">Group</th>
+            <th width="5%">Year</th>
+            <th width="5%">Month</th>
+            <th width="2%">to</th>
+            <th width="5%">Year</th>
+            <th width="5%">Month</th>
+            <th width="7%"></th>
+            <th width="15%" colspan="3">Total Score Range</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:{data:scores,as:'score'}">
+        <tr data-bind="css:{'has-error':score.hasError},if:score.Wave == @(wave),visible:score.Wave == @(wave)">
+            <td>
+                <span style="font-weight:bold" data-bind="text:(lineNum()+1)+'.'"></span>
+            </td>
+            <td>
+                <select data-bind="options:$root.benchmarks,optionsText:'LabelText',value:selectedBenchmark,event:{change:$root.benchmarkChange}"
+                        disabled="" class="form-control" title=" "></select>
+            </td>
+            <td>
+                <div style="border:solid 1px #c3c3c3; width:18px; height:18px; margin:0 auto;"
+                     data-bind="style:{background:selectedBenchmark().Color,color:selectedBenchmark().Color}"></div>
+            </td>
+            <td>
+                <span style="margin:0 auto;" data-bind="text:selectedBenchmark().BlackWhiteText"></span>
+                @*<select data-bind="options:$root.benchmarksWave@(wave),optionsText:'BlackWhiteText',value:selectedBenchmark"
+                        disabled="" class="form-control"></select>*@
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked:ShowOnGroup" readonly="" disabled="" title=" "/>
+            </td>
+            <td style="line-height: 25px;">
+                <input type="hidden" name="ID" data-bind="value:ID" />
+                <label class="hide" data-bind="attr:{for:'FromYear'+$index()}">From Year</label>
+                <input type="text" name="FromYear" class="form-control input-sm uint inputCenter"
+                       readonly="" disabled=""
+                       data-bind="value:FromYear,attr:{id:'FromYear'+$index()}"
+                       style="width: 50px; display: inline-block;">
+            </td>
+            <td style="line-height: 25px;">
+                <label class="hide" data-bind="attr:{for:'FromMonth'+$index()}">From Month</label>
+                <input type="text" name="FromMonth" class="form-control input-sm uint inputCenter"
+                       readonly="" disabled=""
+                       data-bind="value:FromMonth,attr:{id:'FromMonth'+$index()}"
+                       style="width: 50px; display: inline-block;">
+            </td>
+            <td>~</td>
+            <td style="line-height: 25px;">
+                <label class="hide" data-bind="attr:{for:'ToYear'+$index()}">To Year</label>
+                <input type="text" name="ToYear" class="form-control input-sm uint inputCenter"
+                       readonly="" disabled=""
+                       data-bind="value:ToYear,attr:{id:'ToYear'+$index()}"
+                       style="width: 50px; display: inline-block;">
+            </td>
+            <td style="line-height: 25px;">
+                <label class="hide" data-bind="attr:{for:'ToMonth'+$index()}">To Month</label>
+                <input type="text" name="ToMonth" class="form-control input-sm uint inputCenter"
+                       readonly="" disabled=""
+                       data-bind="value:ToMonth,attr:{id:'ToMonth'+$index()}"
+                       style="width: 50px; display: inline-block;">
+            </td>
+            <td></td>
+            <td>
+                <label class="hide" data-bind="attr:{for:'LowerScore'+$index()}">Score</label>
+                <input type="text" name="LowerScore" class="form-control input-sm inputCenter" readonly="" disabled="" maxlength="5"
+                       data-bind="value:LowerScore,attr:{id:'LowerScore'+$index()}"
+                       style="width: 50px; display: inline-block;">
+            </td>
+            <td>~</td>
+            <td>
+                <input type="text" name="HigherScore" class="form-control input-sm inputCenter" readonly="" disabled="" maxlength="5"
+                       data-bind="value:HigherScore,attr:{id:'HigherScore'+$index()}"
+                       style="width: 50px; display: inline-block;" title=" ">
+            </td>
+        </tr>
+    </tbody>
+</table>

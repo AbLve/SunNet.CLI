@@ -1,0 +1,121 @@
+﻿@using System.Collections.Generic
+@using Sunnet.Cli.Business.Students.Models
+@using Sunnet.Cli.MainSite.Models
+@model Sunnet.Cli.Business.Students.Models.StudentModel
+@{
+    ViewBag.Title = "School Reports";
+    IList<StudentModel> studentList = ViewBag.StudentList;
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.SchoolReport)
+}
+@section BreadPath
+{
+   <a href="/home/dashboard">Dashboard</a>&nbsp;<i class="icon-angle-right"></i>&nbsp;School Reports
+}
+<div class="" style="text-align: left;margin-top: 20px;">
+    <a id="lnkNewChild" href="/parent/parent/FindChildReport" data-toggle="modal" 
+                   data-target="#modalNormal"   class="mainbutton mainright-btn create-btn">Find Child's Report</a>
+     
+</div>
+<div class="modal-l-b"></div>
+   <ul id="myTab" class="nav-container" role="tablist">
+                        @foreach (var item in studentList)
+                        {
+                            <li class="@( item.ID== ViewBag.currentStudentId ? "active" : "")"><a  href="/parent/parent/SchoolReport?studentId=@item.ID" >@item.FirstName</a></li>
+                        }
+                    </ul>
+<div class="main-content main-content">
+    <div class="content-title">
+        Reports
+    </div>
+
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.ReportName"></td>
+                    <td data-bind="text: item.CreatedOn"></td>
+                    <td data-bind="text: item.StudentAge"></td> 
+                    <td>
+                        <a class="table-btn icon-folder-open view-btn"  data-bind="attr: { href: item.Url }" title="View school report"></a> 
+                        <a  class="table-btn icon-download-alt download-btn" data-bind="attr: { href: item.Url }" title="Download"></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Reports = {};
+        $(function() {
+            list_Reports = new ViewModel(
+                {
+                    instanceName: "list_Reports",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchSchoolReport")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: 'Redirect',
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: 'Redirect',
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: 'Redirect',
+                    deleteDataUrl: '@Html.Raw(Url.Action(""))',
+                    orderBy: "CreatedOn",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "Report Name",
+                            field: "ReportName",
+                            order: true,
+                            width: '35%'
+                        },
+                        {
+                            text: "Date",
+                            field: "CreatedOn",
+                            order: true,
+                            width: '20%'
+                        },
+                        {
+                            text: "Child's Age",
+                            field: "",
+                            order: false,
+                            width: '30%'
+                        },
+                        { text: "Action", width: '15%' }
+                    ],
+                    searchCriteria: {
+                        studentId: ko.observable(window.queryString("studentId"))
+                    }
+                }
+            );
+            list_Reports.search();
+            ko.applyBindings(list_Reports);
+            $("#lnkNewChild").attr("href", "/parent/parent/FindChildReport" + "?returnurl=@(Sunnet.Framework.SFConfig.MainSiteDomain)" + list_Reports.getLocation());
+        });
+    </script>
+}

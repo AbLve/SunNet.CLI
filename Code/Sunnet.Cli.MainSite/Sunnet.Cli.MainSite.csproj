@@ -1,0 +1,808 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3B566BD8-2F00-47BC-85BC-F8946B43528E}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sunnet.Cli.MainSite</RootNamespace>
+    <AssemblyName>Sunnet.Cli.MainSite</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\EF\6.0\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\EF\6.0\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="evohtmltopdf, Version=6.0.0.0, Culture=neutral, PublicKeyToken=e1fcbb86597de299, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\Pdf\6.16\evohtmltopdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap, Version=2.6.1.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\IoC\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="404.html" />
+    <Content Include="Areas\BUP\Models\BUP.txt" />
+    <Content Include="Areas\Invitation\Views\Public\Dashboard.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Content\Site.css" />
+    <Content Include="David.aspx" />
+    <Content Include="error.html" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="launch\index.html" />
+    <Content Include="resource\EmailTemplate\CLI_Template.xml" />
+    <Content Include="resource\EmailTemplate\NoPermission_Invite_Result_Template.xml" />
+    <Content Include="resource\EmailTemplate\NoPermission_Invite_Template.xml" />
+    <Content Include="resource\EmailTemplate\CommunityFeature_Template.xml" />
+    <Content Include="resource\EmailTemplate\ContactUS_Template.xml" />
+    <Content Include="resource\EmailTemplate\ParentInvitationPDF_Template.xml" />
+    <Content Include="resource\EmailTemplate\ParentInvitation_Template.xml" />
+    <Content Include="resource\EmailTemplate\PrincipalApplicant_5B_Template.xml" />
+    <Content Include="resource\EmailTemplate\TeacherApplicant_2B_Template.xml" />
+    <Content Include="resource\EmailTemplate\TeacherApplicant_4A_Template.xml" />
+    <Content Include="resource\EmailTemplate\TeacherApplicant_4B_Template.xml" />
+    <Content Include="resource\EmailTemplate\UserVerification_3A_Template.xml" />
+    <Content Include="resource\EmailTemplate\PrincipalApplicant_5A_Template.xml" />
+    <Content Include="resource\EmailTemplate\TeacherApplicant_1B_Template.xml" />
+    <Content Include="resource\EmailTemplate\TeacherApplicant_TBD_Template.xml" />
+    <Content Include="resource\EmailTemplate\TeacherInvitation_Template.xml" />
+    <Content Include="resource\EmailTemplate\TeacherApplicant_1A_Template.xml" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Areas\Demo\Views\web.config" />
+    <Content Include="Areas\Demo\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\Index.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\Slide.cshtml" />
+    <Content Include="Areas\Signup\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Signup\Views\SelectRole\Index.cshtml" />
+    <Content Include="Areas\Signup\Views\Parent\Index.cshtml" />
+    <Content Include="Areas\Signup\Views\Principal\CommunityInvitedRegister.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\Confirm.cshtml" />
+    <Content Include="Areas\Signup\Views\Teacher\Confirmation.cshtml" />
+    <Content Include="Areas\School\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Community\Views\web.config" />
+    <Content Include="resource\EmailTemplate\TeacherApplicant_2A_Template.xml" />
+    <Content Include="Areas\Invitation\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Invitation\Views\Teacher\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\Teacher\New.cshtml" />
+    <Content Include="Areas\Invitation\Views\Principal\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\Principal\New.cshtml" />
+    <Content Include="Areas\Invitation\Views\Community\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\Community\New.cshtml" />
+    <Content Include="Areas\Student\Views\web.config" />
+    <Content Include="Areas\Student\Views\Student\Index.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\AutoComplete.cshtml" />
+    <Content Include="Areas\School\Views\School\SchoolTypePartial.cshtml" />
+    <Content Include="Areas\Classroom\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Classroom\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Classroom\Views\Classroom\New.cshtml" />
+    <Content Include="Areas\Permission\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Class\Views\Class\AssignTeacher.cshtml" />
+    <Content Include="Areas\Permission\Views\Page\Index.cshtml" />
+    <Content Include="resource\EmailTemplate\AddSchool_To_InternalUser.xml" />
+    <Content Include="resource\EmailTemplate\AddSchool_Notification_Creator.xml" />
+    <Content Include="resource\EmailTemplate\AddSchoolRelation_To_InternalUser.xml" />
+    <Content Include="robot.txt" />
+    <Content Include="Areas\Profile\Views\web.config" />
+    <Content Include="Areas\Profile\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\SaveInternalUser.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\VideoCodingEdit.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\CoordCoachEdit.cshtml" />
+    <Content Include="Areas\Invitation\Views\Teacher\Partials\EditPartial.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\TeacherEdit.cshtml" />
+    <Content Include="Areas\Toolbox\Views\web.config" />
+    <Content Include="Areas\Invitation\Views\Auditor\Partials\EditPartial.cshtml" />
+    <Content Include="Areas\Invitation\Views\Community\Partials\EditPartial.cshtml" />
+    <Content Include="Areas\Invitation\Views\CommunitySpecialist\Partials\EditPartial.cshtml" />
+    <Content Include="Areas\Invitation\Views\Principal\Partials\EditPartial.cshtml" />
+    <Content Include="Areas\Invitation\Views\TRSSpecialist\Partials\EditPartial.cshtml" />
+    <Content Include="Areas\Invitation\Views\StateWide\Partials\EditPartial.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\AuditorEdit.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\StatewideEdit.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\CommunityEdit.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\CommunitySpecialistEdit.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\PrincipalEdit.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\SchoolSpecialistEdit.cshtml" />
+    <Content Include="Areas\Toolbox\Views\Toolbox\Index.cshtml" />
+    <Content Include="Areas\Toolbox\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\CommunityUser.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\Coordinator.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\FullAccess.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\Mentor.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\Principal.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\ReadOnly.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\ReadOnlyNotNotes.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\Specialist.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\Teacher.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\EditInternalUser.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\MySchool.cshtml" />
+    <Content Include="Areas\School\Views\School\SchoolProfile.cshtml" />
+    <Content Include="Areas\Community\Views\Community\CommunityProfile.cshtml" />
+    <Content Include="Areas\Student\Views\Student\ProfileIndex.cshtml" />
+    <Content Include="Areas\Student\Views\Student\ProfileView.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\ParentEdit.cshtml" />
+    <Content Include="Areas\Toolbox\Views\Toolbox\DropDownList.cshtml" />
+    <Content Include="Areas\Invitation\Views\Parent\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\Parent\New.cshtml" />
+    <Content Include="Areas\Invitation\Views\Parent\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\Parent\View.cshtml" />
+    <Content Include="Areas\DataProcess\Views\web.config" />
+    <Content Include="Areas\DataProcess\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\DataProcess\Views\DataProcess\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\Parent\Partials\EditPartial.cshtml" />
+    <Content Include="Areas\Student\Views\Student\AddChild.cshtml" />
+    <Content Include="Areas\Toolbox\Views\Toolbox\DropDownListOther.cshtml" />
+    <Content Include="Areas\Report\Views\web.config" />
+    <Content Include="Areas\Report\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Report\Views\Index\Index.cshtml" />
+    <Content Include="Areas\Report\Views\Index\DataExport.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\Files.cshtml" />
+    <Content Include="Areas\Report\Views\Index\FieldsCustom.cshtml" />
+    <Content Include="Areas\School\Views\School\Playgrounds.cshtml" />
+    <Content Include="Areas\School\Views\School\PlaygroundPopup.cshtml" />
+    <Content Include="Areas\School\Views\School\PlaygroundPopupView.cshtml" />
+    <Content Include="Areas\Invitation\Views\StateWide\AssignCommunity.cshtml" />
+    <Content Include="Areas\Report\Views\Index\CoachReport.cshtml" />
+    <Content Include="Areas\Report\Views\Index\QuarterlyReport.cshtml" />
+    <Content Include="Areas\Roster\Views\web.config" />
+    <Content Include="Areas\Roster\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Roster\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Roster\Views\Index\Index.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\CommunitySpecialist.cshtml" />
+    <Content Include="Areas\Report\Views\DataExport\Index.cshtml" />
+    <Content Include="Areas\Report\Views\DataExport\Circle.cshtml" />
+    <Content Include="Areas\Report\Views\DataExport\SelectMeasures.cshtml" />
+    <Content Include="Areas\Report\Views\Index\BeechReport.cshtml" />
+    <Content Include="Areas\Report\Views\Index\MediaConsentReport.cshtml" />
+    <Content Include="Areas\Report\Views\Index\PDReport.cshtml" />
+    <Content Include="Areas\Report\Views\DataExport\Export_Report.cshtml" />
+    <Content Include="Areas\Report\Views\Index\SelectDate.cshtml" />
+    <Content Include="Areas\Help\Views\web.config" />
+    <Content Include="Areas\Help\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Help\Views\Assessment\Offline.cshtml" />
+    <Content Include="Areas\School\Views\School\AssignCommunity.cshtml" />
+    <Content Include="Areas\Community\Views\Community\AssignSchools.cshtml" />
+    <Content Include="Areas\Class\Views\Class\AssignClassroom.cshtml" />
+    <Content Include="Areas\Classroom\Views\Classroom\AssignClasses.cshtml" />
+    <Content Include="Areas\StatusTracking\Views\web.config" />
+    <Content Include="Areas\StatusTracking\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\StatusTracking\Views\StatusTracking\Index.cshtml" />
+    <Content Include="Areas\StatusTracking\Views\StatusTracking\DetailView.cshtml" />
+    <Content Include="Areas\Invitation\Views\Public\AssignCommunity.cshtml" />
+    <Content Include="Areas\Invitation\Views\Public\AssignSchool.cshtml" />
+    <Content Include="Areas\BUP\Views\web.config" />
+    <Content Include="Areas\BUP\Views\BUP\Index.cshtml" />
+    <Content Include="Areas\BUP\Views\BUP\Community.cshtml" />
+    <Content Include="Areas\Community\Views\Community\EditNotes.cshtml" />
+    <Content Include="Areas\BUP\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\School\Views\School\VerifyBasicSchool.cshtml" />
+    <Content Include="Areas\Community\Views\Community\ViewNotes.cshtml" />
+    <Content Include="Areas\Invitation\Views\SchoolSpecialist\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\SchoolSpecialist\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\SchoolSpecialist\MyDelegate.cshtml" />
+    <Content Include="Areas\Invitation\Views\SchoolSpecialist\New.cshtml" />
+    <Content Include="Areas\Invitation\Views\SchoolSpecialist\Partials\EditPartial.cshtml" />
+    <Content Include="Areas\Invitation\Views\SchoolSpecialist\View.cshtml" />
+    <Content Include="Areas\Profile\Views\MyProfile\TRSSpecialistEdit.cshtml" />
+    <Content Include="Areas\Roster\Views\Index\UploadStudents.cshtml" />
+    <Content Include="Areas\Invitation\Views\Public\AssignClass.cshtml" />
+    <Content Include="Areas\Export\Views\web.config" />
+    <Content Include="Areas\Export\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Export\Views\Export\Index.cshtml" />
+    <Content Include="Areas\School\Views\School\VerifySelectedSchool.cshtml" />
+    <Content Include="Areas\Class\Views\Assigne\CommunitySpecialist.cshtml" />
+    <Content Include="Areas\Export\Views\Export\ReportTempList.cshtml" />
+    <Content Include="Areas\Invitation\Views\Public\TeacherAssignSchool.cshtml" />
+    <Content Include="Areas\Invitation\Views\Principal\PrincipalBES.cshtml" />
+    <Content Include="Areas\Invitation\Views\SchoolSpecialist\SchoolSpecialistBES.cshtml" />
+    <Content Include="Areas\Invitation\Views\CommunitySpecialist\CommunitySpecialistBES.cshtml" />
+    <Content Include="Areas\BUP\Views\School\Index.cshtml" />
+    <Content Include="Areas\UserVerification\Views\VerificationRequest\TRSSchoolVerification.cshtml" />
+    <Content Include="Areas\Invitation\Views\Teacher\TeacherBES.cshtml" />
+    <Content Include="Areas\Export\Views\Export\DowloadFile.cshtml" />
+    <Content Include="Areas\Class\Views\Assigne\ClassStudents.cshtml" />
+    <Content Include="Areas\Invitation\Views\InternalUser\AssignCoaches.cshtml" />
+    <Content Include="Areas\BUP\Views\Classroom\Index.cshtml" />
+    <Content Include="Areas\Export\Views\Export\FillTempName.cshtml" />
+    <Content Include="Areas\BUP\Views\Class\Index.cshtml" />
+    <Content Include="Areas\BUP\Views\Teacher\Index.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\views\CommunitySpecialist.cshtml" />
+    <Content Include="Areas\Community\Views\Community\CommunityNotes.cshtml" />
+    <Content Include="Areas\BUP\Views\Student\Index.cshtml" />
+    <Content Include="Areas\BUP\Views\CommunityUser\Index.cshtml" />
+    <Content Include="Areas\BUP\Views\Principal\Index.cshtml" />
+    <Content Include="Areas\Report\Views\Index\ServiceReport.cshtml" />
+    <Content Include="Areas\BUP\Views\Parent\Index.cshtml" />
+    <Content Include="Areas\BUP\Views\Statewide\Index.cshtml" />
+    <Content Include="Areas\BUP\Views\Auditor\Index.cshtml" />
+    <Content Include="Areas\School\Views\School\EditSchoolName.cshtml" />
+    <Content Include="Areas\Community\Views\Community\NewNote.cshtml" />
+    <Content Include="Areas\Community\Views\Community\EditNote.cshtml" />
+    <Content Include="Areas\School\Views\School\AssignUsersToSchool.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Community.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\School.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Classroom.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Class.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Teacher.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Student.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\CommunityUser.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Error.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Principal.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Parent.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Statewide.cshtml" />
+    <Content Include="Areas\BUP\Views\Public\Auditor.cshtml" />
+    <Content Include="Areas\Class\Views\Assigne\AssignUsersToClass.cshtml" />
+    <Content Include="Areas\Invitation\Views\Public\Delegate.cshtml" />
+    <Content Include="Areas\DataProcess\Views\DataProcess\ViewLog.cshtml" />
+    <Content Include="Areas\BUP\Views\Automation\Index.cshtml" />
+    <Content Include="Areas\BUP\Views\Automation\New.cshtml" />
+    <Content Include="Areas\BUP\Views\Automation\ViewInfo.cshtml" />
+    <Content Include="Areas\BUP\Views\Automation\Edit.cshtml" />
+    <Content Include="Areas\ToCac\Views\web.config" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Areas\ToCac\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\ToCac\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\ToCac\Views\Index\Index.cshtml" />
+    <Content Include="Areas\Help\Views\Index\Index.cshtml" />
+    <Content Include="Areas\Report\Views\DataExport\FillTempName.cshtml" />
+    <Content Include="Areas\Report\Views\DataExport\AssReportTempList.cshtml" />
+    <Content Include="Areas\Student\Views\Student\StudentSummaryReport.cshtml" />
+    <Content Include="Areas\Student\Views\Shared\NoData.cshtml" />
+    <Content Include="Areas\Student\Views\Shared\_Layout_Report.cshtml" />
+    <Content Include="Areas\TRSClass\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\TRSClass\Views\TRSClass\Index.cshtml" />
+    <Content Include="Areas\TRSClass\Views\web.config" />
+    <Content Include="Areas\TRSClass\Views\TRSClass\New.cshtml" />
+    <Content Include="Areas\Class\Views\Class\Edit.cshtml" />
+    <Content Include="Areas\TRSClass\Views\TRSClass\Edit.cshtml" />
+    <Content Include="Areas\TRSClass\Views\TRSClass\View.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\SecondaryCommunityEditTrs.cshtml" />
+    <Content Include="Areas\Invitation\Views\Public\AssignTrsSpecialistSchool.cshtml" />
+    <Content Include="Areas\Parent\Views\web.config" />
+    <Content Include="Areas\Parent\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Parent\Views\Index\MyConnections.cshtml" />
+    <Content Include="Areas\Parent\Views\Index\AddChild.cshtml" />
+    <Content Include="Areas\Parent\Views\Parent\Index.cshtml" />
+    <Content Include="Areas\Parent\Views\Index\Index.cshtml" />
+    <Content Include="Areas\Parent\Views\Index\AddParents.cshtml" />
+    <Content Include="Areas\Parent\Views\Parent\SchoolReport.cshtml" />
+    <Content Include="Areas\Parent\Views\Parent\FindChildReport.cshtml" />
+    <Content Include="Areas\Parent\Views\Index\EditChild.cshtml" />
+    <Content Include="Areas\Parent\Views\Index\ViewChild.cshtml" />
+    <Content Include="Areas\ToCac\Views\Index\MyActivityIndex.cshtml" />
+    <Content Include="Areas\ToCac\Views\Index\MyActivities.cshtml" />
+    <Content Include="Areas\ToCac\Views\Index\MyActivitiesPdf.cshtml" />
+    <Content Include="Areas\Roster\Views\Shared\_Partial_Pager.cshtml" />
+    <None Include="Properties\PublishProfiles\Hunk.pubxml" />
+    <None Include="Properties\PublishProfiles\Irving.pubxml" />
+    <None Include="Properties\PublishProfiles\MainSite.pubxml" />
+    <None Include="Properties\PublishProfiles\MainSite_David.pubxml" />
+    <Content Include="resource\XLSX\Community_Template.xlsx" />
+    <None Include="Properties\PublishProfiles\Sam.pubxml" />
+    <Content Include="resource\XLSX\Class Roster Template.xlsx" />
+    <Content Include="resource\XLSX\School_Template.xlsx" />
+    <Content Include="resource\XLSX\Classroom_Template.xlsx" />
+    <Content Include="resource\XLSX\Class_Template.xlsx" />
+    <Content Include="Views\Shared\_Modal_Layout.cshtml" />
+    <Content Include="Areas\Demo\Views\Products\Index.cshtml" />
+    <Content Include="Areas\Demo\Views\Products\Details.cshtml" />
+    <Content Include="Areas\Demo\Views\Products\Create.cshtml" />
+    <Content Include="Areas\Demo\Views\Products\Edit.cshtml" />
+    <Content Include="Areas\Demo\Views\Products\Delete.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\Twitter.cshtml" />
+    <Content Include="log4net.config" />
+    <Content Include="Areas\Demo\Views\Demo\Enum.cshtml" />
+    <Content Include="Areas\Signup\Views\web.config" />
+    <Content Include="Areas\School\Views\web.config" />
+    <Content Include="Areas\Signup\Views\Teacher\PrincipalInvitedRegister.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\Email.cshtml" />
+    <Content Include="Areas\Classroom\Views\web.config" />
+    <Content Include="Areas\Class\Views\web.config" />
+    <Content Include="Areas\Class\Views\Class\Index.cshtml" />
+    <Content Include="Areas\Class\Views\Class\New.cshtml" />
+    <Content Include="Areas\Class\Views\Class\Edit.cshtml" />
+    <Content Include="Areas\Classroom\Views\Classroom\Index.cshtml" />
+    <Content Include="Areas\Classroom\Views\Classroom\Edit.cshtml" />
+    <Content Include="Areas\School\Views\School\New.cshtml" />
+    <Content Include="Areas\School\Views\School\Index.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\TestNull.cshtml" />
+    <Content Include="Areas\Community\Views\Community\Index.cshtml" />
+    <Content Include="Areas\Community\Views\Community\New.cshtml" />
+    <Content Include="Areas\Community\Views\Community\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\web.config" />
+    <Content Include="Areas\Student\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Student\Views\Student\New.cshtml" />
+    <Content Include="Areas\School\Views\School\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\Teacher\Edit.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\Layout.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\Format.cshtml" />
+    <Content Include="Areas\Community\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Class\Views\_ViewStart.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Shared\_MasterData_LeftMenu.cshtml" />
+    <Content Include="Areas\Student\Views\Student\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\Principal\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\Community\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\Teacher\Equipment.cshtml" />
+    <Content Include="Areas\Demo\Views\Demo\Validate.cshtml" />
+    <Content Include="Areas\Invitation\Views\Teacher\Transaction.cshtml" />
+    <Content Include="Areas\Classroom\Views\Classroom\AssignedClasses.cshtml" />
+    <Content Include="Areas\School\Views\School\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\Teacher\AssignClass.cshtml" />
+    <Content Include="Areas\Classroom\Views\Classroom\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\Auditor\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\Auditor\New.cshtml" />
+    <Content Include="Areas\Invitation\Views\Auditor\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\StateWide\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\StateWide\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\StateWide\New.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\ReadOnly.cshtml" />
+    <Content Include="Areas\Community\Views\Community\View.cshtml" />
+    <Content Include="Areas\Class\Views\Class\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\CommunitySpecialist\New.cshtml" />
+    <Content Include="Areas\Invitation\Views\CommunitySpecialist\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\CommunitySpecialist\Edit.cshtml" />
+    <Content Include="Areas\Invitation\Views\TRSSpecialist\New.cshtml" />
+    <Content Include="Areas\Invitation\Views\TRSSpecialist\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\TRSSpecialist\Edit.cshtml" />
+    <Content Include="Areas\Student\Views\Student\View.cshtml" />
+    <Content Include="Areas\Community\Views\Community\Features.cshtml" />
+    <Content Include="Areas\Permission\Views\web.config" />
+    <Content Include="Areas\Permission\Views\Page\New.cshtml" />
+    <Content Include="Areas\Invitation\Views\InternalUser\Index.cshtml" />
+    <Content Include="Areas\Invitation\Views\InternalUser\New.cshtml" />
+    <Content Include="Areas\Invitation\Views\InternalUser\Edit.cshtml" />
+    <Content Include="Areas\Permission\Views\Page\Edit.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\FullAccess.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\Coordinator.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\Mentor.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\ReadOnlyNotNotes.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\CommunityUser.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\Specialist.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\Principal.cshtml" />
+    <Content Include="Areas\School\Views\School\Partials\Teacher.cshtml" />
+    <Content Include="Areas\Invitation\Views\InternalUser\View.cshtml" />
+    <Content Include="Areas\Permission\Views\Package\Default.cshtml" />
+    <Content Include="Areas\Permission\Views\Package\New.cshtml" />
+    <Content Include="Areas\Permission\Views\Package\Edit.cshtml" />
+    <Content Include="Areas\Permission\Views\AssignedPackage\Assign.cshtml" />
+    <Content Include="Areas\Invitation\Views\InternalUser\CoordCoachEquipment.cshtml" />
+    <Content Include="Areas\Community\Views\Community\FeaturesCli.cshtml" />
+    <Content Include="Areas\Permission\Views\AssignedPermission\Assign.cshtml" />
+    <Content Include="Areas\Signup\Views\Community\Index.cshtml" />
+    <Content Include="Areas\UserVerification\Views\web.config" />
+    <Content Include="Areas\UserVerification\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\UserVerification\Views\VerificationRequest\Index.cshtml" />
+    <Content Include="Areas\Signup\Views\Specialist\Index.cshtml" />
+    <Content Include="Areas\Signup\Views\Specialist\CommunityInvitedRegister.cshtml" />
+    <Content Include="Areas\Invitation\Views\InternalUser\AssignCommunity.cshtml" />
+    <Content Include="Areas\Signup\Views\Community\Confirmation.cshtml" />
+    <Content Include="Areas\Invitation\Views\Public\AssignPermission.cshtml" />
+    <Content Include="Areas\Permission\Views\Package\Index.cshtml" />
+    <Content Include="Areas\Permission\Views\Package\Custom.cshtml" />
+    <Content Include="Areas\Signup\Views\Teacher\TestSendEmailView.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Areas\UserVerification\Views\VerificationRequest\CommunityVerification.cshtml" />
+    <Content Include="Areas\UserVerification\Views\VerificationRequest\PrincipalVerification.cshtml" />
+    <Content Include="Areas\UserVerification\Views\VerificationRequest\TeacherVerification.cshtml" />
+    <Content Include="Areas\Invitation\Views\Principal\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\Auditor\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\Community\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\CommunitySpecialist\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\TRSSpecialist\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\StateWide\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\Teacher\View.cshtml" />
+    <Content Include="Areas\Invitation\Views\Community\MyDelegate.cshtml" />
+    <Content Include="Areas\Invitation\Views\CommunitySpecialist\MyDelegate.cshtml" />
+    <Content Include="Areas\Invitation\Views\Principal\MyDelegate.cshtml" />
+    <Content Include="Areas\Invitation\Views\TRSSpecialist\MyDelegate.cshtml" />
+    <Content Include="Areas\Student\Views\Student\ParentInvitations.cshtml" />
+    <None Include="Properties\PublishProfiles\Jack_Web_Deploy.pubxml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\BUP\BUPAreaRegistration.cs" />
+    <Compile Include="Areas\BUP\Controllers\AutomationController.cs" />
+    <Compile Include="Areas\BUP\Controllers\BUPController.cs" />
+    <Compile Include="Areas\BUP\Controllers\ClassController.cs" />
+    <Compile Include="Areas\BUP\Controllers\ClassroomController.cs" />
+    <Compile Include="Areas\BUP\Controllers\CommunityUserController.cs" />
+    <Compile Include="Areas\BUP\Controllers\PrincipalController.cs" />
+    <Compile Include="Areas\BUP\Controllers\PublicController.cs" />
+    <Compile Include="Areas\BUP\Controllers\SchoolController.cs" />
+    <Compile Include="Areas\BUP\Controllers\StudentController.cs" />
+    <Compile Include="Areas\BUP\Controllers\TeacherController.cs" />
+    <Compile Include="Areas\BUP\Controllers\ParentController.cs" />
+    <Compile Include="Areas\BUP\Controllers\StatewideController.cs" />
+    <Compile Include="Areas\BUP\Controllers\AuditorController.cs" />
+    <Compile Include="Areas\Classroom\ClassroomAreaRegistration.cs" />
+    <Compile Include="Areas\Classroom\Controllers\ClassroomController.cs" />
+    <Compile Include="Areas\Class\ClassAreaRegistration.cs" />
+    <Compile Include="Areas\Class\Controllers\AssigneController.cs" />
+    <Compile Include="Areas\Class\Controllers\ClassController.cs" />
+    <Compile Include="Areas\Community\CommunityAreaRegistration.cs" />
+    <Compile Include="Areas\Community\Controllers\CommunityController.cs" />
+    <Compile Include="Areas\DataProcess\Controllers\DataProcessController.cs" />
+    <Compile Include="Areas\DataProcess\DataProcessAreaRegistration.cs" />
+    <Compile Include="Areas\Export\Controllers\ExportController.cs" />
+    <Compile Include="Areas\Export\ExportAreaRegistration.cs" />
+    <Compile Include="Areas\Help\Controllers\AssessmentController.cs" />
+    <Compile Include="Areas\Help\Controllers\IndexController.cs" />
+    <Compile Include="Areas\Help\HelpAreaRegistration.cs" />
+    <Compile Include="Areas\Invitation\Controllers\AuditorController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\CommunityController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\CommunitySpecialistController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\ParentController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\PublicController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\InternalUserController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\PrincipalController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\TRSSpecialistController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\StateWideController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\TeacherController.cs" />
+    <Compile Include="Areas\Invitation\Controllers\SchoolSpecialistController.cs" />
+    <Compile Include="Areas\Invitation\InvitationAreaRegistration.cs" />
+    <Compile Include="Areas\Parent\Controllers\IndexController.cs" />
+    <Compile Include="Areas\Parent\Controllers\ParentController.cs" />
+    <Compile Include="Areas\Parent\ParentAreaRegistration.cs" />
+    <Compile Include="Areas\Permission\Controllers\AssignedPackageController.cs" />
+    <Compile Include="Areas\Permission\Controllers\AssignedPermissionController.cs" />
+    <Compile Include="Areas\Permission\Controllers\PackageController.cs" />
+    <Compile Include="Areas\Permission\Controllers\PageController.cs" />
+    <Compile Include="Areas\Permission\PermissionAreaRegistration.cs" />
+    <Compile Include="Areas\Profile\Controllers\MyProfileController.cs" />
+    <Compile Include="Areas\Profile\ProfileAreaRegistration.cs" />
+    <Compile Include="Areas\Report\Controllers\DataExportController.cs" />
+    <Compile Include="Areas\Report\Controllers\IndexController.cs" />
+    <Compile Include="Areas\Report\ReportAreaRegistration.cs" />
+    <Compile Include="Areas\Roster\Controllers\IndexController.cs" />
+    <Compile Include="Areas\Roster\RosterAreaRegistration.cs" />
+    <Compile Include="Areas\School\Controllers\SchoolController.cs" />
+    <Compile Include="Areas\Demo\Controllers\DemoController.cs" />
+    <Compile Include="Areas\Demo\Controllers\ProductsController.cs" />
+    <Compile Include="Areas\Demo\DemoAreaRegistration.cs" />
+    <Compile Include="Areas\Demo\Models\IEntity.cs" />
+    <Compile Include="Areas\Demo\Models\OrderDbContext.cs" />
+    <Compile Include="Areas\Demo\Models\Person.cs" />
+    <Compile Include="Areas\Demo\Models\Products.cs" />
+    <Compile Include="Areas\School\SchoolAreaRegistration.cs" />
+    <Compile Include="Areas\Signup\Controllers\CommunityController.cs" />
+    <Compile Include="Areas\Signup\Controllers\ParentController.cs" />
+    <Compile Include="Areas\Signup\Controllers\PrincipalController.cs" />
+    <Compile Include="Areas\Signup\Controllers\SelectRoleController.cs" />
+    <Compile Include="Areas\Signup\Controllers\SpecialistController.cs" />
+    <Compile Include="Areas\Signup\Controllers\TeacherController.cs" />
+    <Compile Include="Areas\Signup\SignupAreaRegistration.cs" />
+    <Compile Include="Areas\Student\Controllers\StudentController.cs" />
+    <Compile Include="Areas\Student\Models\MeasureGroup.cs" />
+    <Compile Include="Areas\Student\StudentAreaRegistration.cs" />
+    <Compile Include="Areas\ToCac\Controllers\IndexController.cs" />
+    <Compile Include="Areas\ToCac\ToCacAreaRegistration.cs" />
+    <Compile Include="Areas\Toolbox\Controllers\ToolboxController.cs" />
+    <Compile Include="Areas\Toolbox\Models\DesEnum.cs" />
+    <Compile Include="Areas\Toolbox\ToolboxAreaRegistration.cs" />
+    <Compile Include="Areas\StatusTracking\Controllers\StatusTrackingController.cs" />
+    <Compile Include="Areas\StatusTracking\StatusTrackingAreaRegistration.cs" />
+    <Compile Include="Areas\TRSClass\TRSClassAreaRegistration.cs" />
+    <Compile Include="Areas\UserVerification\Controllers\VerificationRequestController.cs" />
+    <Compile Include="Areas\UserVerification\UserVerificationAreaRegistration.cs" />
+    <Compile Include="Areas\TRSClass\Controllers\TRSClassController.cs" />
+    <Compile Include="Controllers\Apis\MessagesController.cs" />
+    <Compile Include="Controllers\Apis\TwitterController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\UpdateClusterController.cs" />
+    <Compile Include="David.aspx.cs">
+      <DependentUpon>David.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ContactUsModel.cs" />
+    <Compile Include="Models\Leftmenu_MainSite.cs" />
+    <Compile Include="Models\Leftmenu_Report.cs" />
+    <Compile Include="Models\LinkHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_html5shiv.cshtml" />
+    <Content Include="Views\Shared\_Partial_Public_Right_HNTF.cshtml" />
+    <Content Include="Views\Shared\_Partial_Slides.cshtml" />
+    <Content Include="Views\Shared\_Partial_Menu.cshtml" />
+    <Content Include="StructureMap.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Shared\_Partial_Pager.cshtml" />
+    <Content Include="Views\Shared\_Layout_Base.cshtml" />
+    <Content Include="Views\Shared\_Layout_Public.cshtml" />
+    <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Views\Shared\_Partial_MenuBase.cshtml" />
+    <Content Include="Views\Shared\_Layout_FullContent.cshtml" />
+    <Content Include="Views\Home\Invite.cshtml" />
+    <Content Include="Views\Shared\_Layout_Signup.cshtml" />
+    <Content Include="Views\Home\InviteVerification.cshtml" />
+    <Content Include="Views\Shared\404.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Home\LogOut.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Enum.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\List.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\String.cshtml" />
+    <Content Include="Views\Error\nonauthorized.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\NoData.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\decimal.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Int32.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Int64.cshtml" />
+    <Content Include="Views\Home\Invalidaccount.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\DateTime.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\EmailAddress.cshtml" />
+    <Content Include="Views\Shared\_Report_LeftMenu.cshtml" />
+    <Content Include="Views\Home\Approve.cshtml" />
+    <Content Include="Views\Home\Deny.cshtml" />
+    <Content Include="Views\Home\GoogleAccount.cshtml" />
+    <Content Include="Views\Shared\_Layout_LogOut.cshtml" />
+    <Content Include="Views\Shared\_Layout_ReportQueue.cshtml" />
+    <Content Include="resource\XLSX\Student_Template.xlsx" />
+    <Content Include="resource\XLSX\Teacher_Template.xlsx" />
+    <Content Include="resource\XLSX\CommunityUser_Template.xlsx" />
+    <Content Include="resource\XLSX\Principal_Template.xlsx" />
+    <Content Include="resource\XLSX\Parent_Template.xlsx" />
+    <Content Include="resource\XLSX\Statewide_Template.xlsx" />
+    <Content Include="resource\XLSX\Auditor_Template.xlsx" />
+    <Content Include="resource\XLSX\CommunitySpecialist_Template.xlsx" />
+    <Content Include="resource\XLSX\SchoolSpecialist_Template.xlsx" />
+    <Content Include="Views\Home\Search.cshtml" />
+    <None Include="Properties\PublishProfiles\TX-KEA_Main.pubxml" />
+    <Content Include="user-guides\circle-pm-faqs.pdf" />
+    <Content Include="user-guides\circle-pm-user-guide-v8.24.15.pdf" />
+    <Content Include="user-guides\eCIRCLE-Facilitator-Application.pdf" />
+    <Content Include="user-guides\Parent-Report-BW.pdf" />
+    <Content Include="user-guides\Parent-Report-color.pdf" />
+    <Content Include="user-guides\Parent-Report-English-BW-v11.13.15.pdf" />
+    <Content Include="user-guides\Parent-Report-English-Color-v11.13.15.pdf" />
+    <Content Include="user-guides\Parent-Report-Spanish-BW-v11.13.15.pdf" />
+    <Content Include="user-guides\Parent-Report-Spanish-Color-v11.13.15.pdf" />
+    <Content Include="user-guides\TSR-Online-CIRCLE-Progress-Monitoring.pptx" />
+    <Content Include="user-guides\TSR-Online-Getting-Started-FINAL.pdf" />
+    <Content Include="Views\Shared\_Partial_Public_Menu.cshtml" />
+    <Content Include="Views\Home\Demo.cshtml" />
+    <Content Include="Views\Home\MoodleGlobalCookie.cshtml" />
+    <Content Include="resource\Pdf\Parent_Report_English.pdf" />
+    <Content Include="resource\Pdf\Parent_Report_SPA.pdf" />
+    <Content Include="Views\Home\Invite_orig.cshtml" />
+    <Content Include="Views\Home\InviteSunNet.cshtml" />
+    <Content Include="Views\Home\Maintenance.cshtml" />
+    <None Include="Properties\PublishProfiles\Xiaowu.pubxml" />
+    <Content Include="resource\XLSX\Single_Roster_Template.xlsx" />
+    <Content Include="Views\UpdateCluster\Index.cshtml" />
+    <Content Include="Views\Shared\_Layout_Dashboard.cshtml" />
+    <Content Include="Views\UpdateCluster\View.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\BUP\Views\Shared\" />
+    <Folder Include="Areas\Classroom\Models\" />
+    <Folder Include="Areas\Class\Models\" />
+    <Folder Include="Areas\Class\Views\Shared\" />
+    <Folder Include="Areas\Community\Models\" />
+    <Folder Include="Areas\Community\Views\Shared\" />
+    <Folder Include="Areas\DataProcess\Models\" />
+    <Folder Include="Areas\DataProcess\Views\Shared\" />
+    <Folder Include="Areas\Demo\Views\Shared\" />
+    <Folder Include="Areas\Export\Models\" />
+    <Folder Include="Areas\Export\Views\Shared\" />
+    <Folder Include="Areas\Help\Models\" />
+    <Folder Include="Areas\Help\Views\Shared\" />
+    <Folder Include="Areas\Invitation\Models\" />
+    <Folder Include="Areas\LoginUp\" />
+    <Folder Include="Areas\Models\" />
+    <Folder Include="Areas\Parent\Models\" />
+    <Folder Include="Areas\Parent\Views\Shared\" />
+    <Folder Include="Areas\Permission\Models\" />
+    <Folder Include="Areas\Permission\Views\Shared\" />
+    <Folder Include="Areas\Profile\Models\" />
+    <Folder Include="Areas\Profile\Views\Shared\" />
+    <Folder Include="Areas\Report\Models\" />
+    <Folder Include="Areas\Report\Views\Shared\" />
+    <Folder Include="Areas\Roster\Models\" />
+    <Folder Include="Areas\School\Models\" />
+    <Folder Include="Areas\School\Views\Shared\" />
+    <Folder Include="Areas\Signup\Models\" />
+    <Folder Include="Areas\Signup\Views\Shared\" />
+    <Folder Include="Areas\StatusTracking\Models\" />
+    <Folder Include="Areas\StatusTracking\Views\Shared\" />
+    <Folder Include="Areas\ToCac\Models\" />
+    <Folder Include="Areas\Toolbox\Views\Shared\" />
+    <Folder Include="Areas\TRSClass\Models\" />
+    <Folder Include="Areas\TRSClass\Views\Shared\" />
+    <Folder Include="Areas\UserVerification\Models\" />
+    <Folder Include="Areas\UserVerification\Views\Shared\" />
+    <Folder Include="Scripts\" />
+    <Folder Include="Views\Base\" />
+    <Folder Include="Views\Messages\" />
+    <Folder Include="Views\Shared\EditorTemplates\" />
+    <Folder Include="Views\Twitter\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sunnet.Cli.Business\Sunnet.Cli.Business.csproj">
+      <Project>{c6616ca8-1f8a-403a-8726-0b333071dad4}</Project>
+      <Name>Sunnet.Cli.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Cli.Core\Sunnet.Cli.Core.csproj">
+      <Project>{aef8d87a-9af5-47e1-bd90-f77fc916affe}</Project>
+      <Name>Sunnet.Cli.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Cli.Impl\Sunnet.Cli.Impl.csproj">
+      <Project>{0c8f14ca-5530-4a9d-9875-f1cf91974a88}</Project>
+      <Name>Sunnet.Cli.Impl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Cli.UIBase\Sunnet.Cli.UIBase.csproj">
+      <Project>{81e9aca3-4391-4ff4-abdd-3c36e6989088}</Project>
+      <Name>Sunnet.Cli.UIBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sunnet.Framework\Sunnet.Framework.csproj">
+      <Project>{14a83fe3-67ab-4bd7-b171-870de20f5bf1}</Project>
+      <Name>Sunnet.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>14406</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

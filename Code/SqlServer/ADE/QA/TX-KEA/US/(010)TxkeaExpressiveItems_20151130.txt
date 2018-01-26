@@ -1,0 +1,13 @@
+﻿alter table TxkeaExpressiveItems  alter column InstructionText varchar(1000) not null
+go
+
+
+
+if not exists(select * from syscolumns where id=object_id('TxkeaExpressiveItems') and name='LayoutId')
+  alter table TxkeaExpressiveItems  add LayoutId int 
+  go
+  update TxkeaExpressiveItems set LayoutId = 0 where LayoutId is null
+  go
+  alter table TxkeaExpressiveItems  alter column  LayoutId int not null
+
+

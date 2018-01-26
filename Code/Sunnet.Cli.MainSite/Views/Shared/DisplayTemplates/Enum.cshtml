@@ -1,0 +1,18 @@
+﻿@model Enum
+@{
+    var result = Model.ToDescription();
+    result = result == "0" ? "" : result;
+    }
+
+@if (string.IsNullOrEmpty(result))
+{
+    <label class="control-label-text">
+        <span style="display: none;">wave</span>
+    </label>
+}
+else
+{
+    <label class="control-label-text">
+        @result
+    </label>
+}

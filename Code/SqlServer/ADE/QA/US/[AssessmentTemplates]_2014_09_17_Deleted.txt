@@ -1,0 +1,10 @@
+﻿
+GO
+
+ALTER TABLE [dbo].[Assessments] DROP CONSTRAINT [FK_Assessments_AssessmentTemplates]
+GO
+
+drop table [dbo].[AssessmentTemplates]
+
+
+ALTER TABLE [dbo].[Assessments] drop column [TemplateId]

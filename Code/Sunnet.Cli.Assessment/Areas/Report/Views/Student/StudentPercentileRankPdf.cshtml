@@ -1,0 +1,104 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Student Summary";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    var sources = ViewData["Datas"] as Dictionary<int, List<ReportRowModel>>;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var isFirstPage = true;
+    var gray = Request.Form["Gray"];
+}
+
+
+@foreach (var source in sources)
+{
+    var datas = source.Value;
+
+    <table style="width: 100%" class='header @(isFirstPage ? "" : "newpager")'>
+        <thead>
+            <tr>
+                <td>
+                    <table cellpadding="0" cellspacing="0" class="noborder header">
+                        <tr>
+                            <td></td>
+                            <td style="font-size: 14px; font-weight: bold;" colspan="3">@(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+                                @(ViewBag.Title)<br />(Percentile Rank)</td>
+                            <td>
+                                <img src="@(DomainHelper.AssessmentDomain)images/cli_logo.png" style="width: 150px; height: 60px; vertical-align: middle;" alt="cli_logo" /></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; width: 180px; vertical-align: top;" colspan="2">Community:&nbsp;@(ViewBag.District)
+                            </td>
+                            <td style="vertical-align: top;">&nbsp;</td>
+                            <td style="text-align: right; width: 180px; vertical-align: top;" colspan="2">Assessment Language:&nbsp;@ViewBag.Language
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; vertical-align: top;" colspan="2">School:&nbsp;@ViewBag.School
+                            </td>
+                            <td>&nbsp;</td>
+                            <td style="text-align: right; vertical-align: top;" colspan="2">Class:&nbsp;@ViewBag.Class</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; vertical-align: top;" colspan="2">School year:&nbsp;@ViewBag.ScoolYear
+                            </td>
+                            <td>&nbsp;</td>
+                            <td style="text-align: right; vertical-align: top;" colspan="2">Teacher:&nbsp;@Html.Raw(ViewBag.Teacher)</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 180px; height: 40px;"></td>
+                            <td style="width: 50px;"></td>
+                            <td></td>
+                            <td style="width: 50px;"></td>
+                            <td style="width: 180px;"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <table cellpadding="0" cellspacing="0" class='report-data table_border'>
+        <tr style="page-break-inside: avoid">
+            <td colspan="@(datas[1].Cells.Count + 1)"><strong>Student: @datas[0].Cells.First().Text</strong></td>
+        </tr>
+        <tr>
+            @for (var j = 0; j < datas[1].Cells.Count; j++)
+            {
+                <td rowspan="@(datas[1][j].Rowspan)"
+                    colspan="@(datas[1][j].Colspan)">
+                    <strong>
+                        @(datas[1][j].Text.ToString().CutString((datas[1][j].Colspan > 1 ? datas[1][j].Colspan : 4) * 6))
+                    </strong>
+                </td>
+            }
+        </tr>
+        @for (var i = 2; i < datas.Count; i++)
+        {
+            <tr style="page-break-inside: avoid">
+                @for (var j = 0; j < datas[i].Cells.Count; j++)
+                {
+                    <td rowspan="@(datas[i][j].Rowspan)"
+                        colspan="@(datas[i][j].Colspan)">
+                        @*<span>
+                            @(datas[i][j].Text.ToString())
+                        </span>*@
+                        @if (gray == "gray")
+                        {
+                            <span @((!string.IsNullOrEmpty(datas[i][j].Background) && datas[i][j].Text.ToString()!="-" && datas[i][j].Text.ToString()!="N/A") ? "class=" + datas[i][j].Background : "")>
+                                @(datas[i][j].Text.ToString())
+                            </span>
+                        }
+                        else
+                        {
+                            <span @((!string.IsNullOrEmpty(datas[i][j].Background) && datas[i][j].Text.ToString()!="-" && datas[i][j].Text.ToString()!="N/A") ? "style=background:" + datas[i][j].Color + ";" + " class=spancolor" : "")>
+                                @(datas[i][j].Text.ToString())
+                            </span>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+    isFirstPage = false;
+}

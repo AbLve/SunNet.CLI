@@ -1,0 +1,668 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.CoordCoachEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Cli.Core.Users.Enums
+@{
+    ViewBag.Title = "Edit CLI User";
+    IEnumerable<SelectItemModel> certificateList = ViewBag.CertificateList;
+    certificateList = certificateList.Where(e => e.Selected == true).ToList();
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#User_GoogleId").rules("add", { required: true, messages: { required: "The User Name is required." } });
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("index");
+                }
+            });
+
+            SwitchRole('@((int)Model.User.Role)');
+            $("#User_Role").change(function () {
+                var selectedValue = $(this).val();
+                SwitchRole(selectedValue);
+            })
+
+            if ($("#Ethnicity :selected").text() == "Other")
+                $("#EthnicityOther").attr("type", "text");
+            if ($("#PrimaryLanguageId :selected").text() == "Other")
+                $("#PrimaryLanguageOther").attr("type", "text");
+            if ($("#SecondaryLanguageId :selected").text() == "Other")
+                $("#SecondaryLanguageOther").attr("type", "text");
+            if ($("#CoachingType :selected").text() == "Other")
+                $("#CoachingTypeOther").attr("type", "text");
+            if ($("#FundedThrough :selected").text() == "Other")
+                $("#FundedThroughOther").attr("type", "text");
+            if ($("#FundedThrough :selected").text() == "UTH Employee") {
+                $("#dvAccountSponsor").css("display", "none");
+                $("#dvEmployer").css("display", "none");
+            }
+
+            $("#Ethnicity").change(function () {
+                if ($("#Ethnicity :selected").text() == "Other")
+                    $("#EthnicityOther").attr("type", "text");
+                else {
+                    $("#EthnicityOther").val("");
+                    $("#EthnicityOther").attr("type", "hidden");
+                }
+            })
+            $("#PrimaryLanguageId").change(function () {
+                if ($("#PrimaryLanguageId :selected").text() == "Other")
+                    $("#PrimaryLanguageOther").attr("type", "text");
+                else {
+                    $("#PrimaryLanguageOther").val("");
+                    $("#PrimaryLanguageOther").attr("type", "hidden");
+                }
+            })
+            $("#SecondaryLanguageId").change(function () {
+                if ($("#SecondaryLanguageId :selected").text() == "Other")
+                    $("#SecondaryLanguageOther").attr("type", "text");
+                else {
+                    $("#SecondaryLanguageOther").val("");
+                    $("#SecondaryLanguageOther").attr("type", "hidden");
+                }
+            })
+            if ('@ViewBag.OtherAccess' == "R" && '@Model.User.Role' == '@Role.Mentor_coach') {
+                $("#CoachingType,#FundedThrough,#User_Status").change(function (index) {
+                    $("#CoachingType").val('@Model.CoachingType.GetValue()');
+                    $("#FundedThrough").val('@Model.FundedThrough.GetValue()');
+                    $("#User_Status").val('@Model.User.Status.GetValue()');
+                })
+                $("#FTE").click(function () {
+                    $("#FTE").val('@Model.FTE');
+                })
+            }
+            else {
+                $("#CoachingType").change(function () {
+                    if ($("#CoachingType :selected").text() == "Other")
+                        $("#CoachingTypeOther").attr("type", "text");
+                    else {
+                        $("#CoachingTypeOther").val("");
+                        $("#CoachingTypeOther").attr("type", "hidden");
+                    }
+                })
+                $("#FundedThrough").change(function () {
+                    if ($("#FundedThrough :selected").text() == "UTH Employee") {
+                        $("#dvAccountSponsor").css("display", "none");
+                        $("#dvEmployer").css("display", "none");
+                        $("#AccountSponsor").val("");
+                        $("#Employer").val("");
+                        $("#FundedThroughOther").val("");
+                        $("#FundedThroughOther").attr("type", "hidden");
+                    }
+                    else {
+                        if ($("#FundedThrough :selected").text() == "Other") {
+                            $("#FundedThroughOther").attr("type", "text");
+                        }
+                        else {
+                            $("#FundedThroughOther").val("");
+                            $("#FundedThroughOther").attr("type", "hidden");
+                        }
+                        $("#dvAccountSponsor").css("display", "");
+                        $("#dvEmployer").css("display", "");
+                    }
+                })
+            }
+
+            $("#dvCertificate input[type='radio']").click(function (event) {
+                var $container = $("#txtCers");
+                if ($container.length == 0) {
+                    $container = $("<input type='hidden' name='certificates' id='txtCers'/>").appendTo($("#@(formId)"));
+                }
+                var values = "";
+
+                $("#dvCertificate input[type='radio']").each(function (index, radio) {
+                    var $r = $(radio);
+                    if ($r[0].checked) {
+                        values += $r.val() + ",";
+                    }
+                });
+                $container.val(values);
+            })
+        });
+
+        function SwitchRole(selectedValue) {
+            if (selectedValue == '@((int)InternalRole.Mentor_coach)' || selectedValue == '@((int)InternalRole.Coordinator)') {
+                $(".dvCoordCoach").show();
+                $(".dvCoordCoachVideo").show();
+            }
+            else if (selectedValue == '@((int)InternalRole.Video_coding_analyst)') {
+                $(".dvCoordCoach").hide();
+                $(".dvCoordCoachVideo").show();
+            }
+            else {
+                $(".dvCoordCoach").hide();
+                $(".dvCoordCoachVideo").hide();
+            }
+        }
+
+        var viewModel = {
+            selectedCounty: ko.observable(@Model.OfficeCountyId),
+            countiesOptions: ko.observableArray([]),
+            selectedState: ko.observable(@Model.OfficeStateId),
+
+            mailSelectedCounty: ko.observable(@Model.HomeMailingCountyId),
+            mailCountiesOptions: ko.observableArray([]),
+            mailSelectedState: ko.observable(@Model.HomeMailingStateId)
+        };
+        viewModel.selectedState.subscribe(function (state) {
+            $.getJSON('/Invitation/Public/GetCountiesByStateId',
+                { stateId: state },
+                function (data) {
+                    viewModel.countiesOptions.removeAll();
+                    viewModel.countiesOptions.push.apply(viewModel.countiesOptions, data);
+                    viewModel.selectedCounty(@Model.OfficeCountyId);
+                });
+        });
+            viewModel.mailSelectedState.subscribe(function (state) {
+                $.getJSON('/Invitation/Public/GetCountiesByStateId',
+                 { stateId: state },
+                 function (data) {
+                     viewModel.mailCountiesOptions.removeAll();
+                     viewModel.mailCountiesOptions.push.apply(viewModel.mailCountiesOptions, data);
+                     viewModel.mailSelectedCounty(@Model.HomeMailingCountyId);
+                 });
+            });
+        ko.applyBindings(viewModel);
+
+        function changeInactive(v) {
+            $form = $("#@(formId)");
+            if ($(v).val() == "2") {
+                $.post("/Invitation/Public/Inactive?id=@(Model.User.ID)", function (result) {
+                    if (result) {
+                        $form.data("_source", $form.serialize());
+                        $.when(showMessage("success", "The user has been inactive.")).done(function () { redirectBack("index"); });
+                    } else {
+                        showMessage("fail");
+                    }
+                });
+            }
+        }
+    </script>
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.CLIUser)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("CLI User Management", "Index", "InternalUser"))
+    <i class="icon-angle-right"></i>@(Model.User.FirstName + " " + Model.User.LastName)
+}
+
+@using (Ajax.BeginForm("Save", "InternalUser", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()  
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.SchoolYear)
+    @Html.HiddenFor(model => model.User.ID)
+    @Html.HiddenFor(model => model.User.StatusDate)  
+    @Html.HiddenFor(model => model.User.Sponsor)
+    @Html.HiddenFor(model => model.User.InvitationEmail)
+    @Html.HiddenFor(model => model.User.EmailExpireTime)      
+    @Html.HiddenFor(model => model.User.Notes) 
+    @Html.HiddenFor(model => model.User.CreatedOn)
+    @Html.HiddenFor(model => model.IsAssessmentEquipment)
+    <input type='hidden' name='certificates' id='txtCers' value="@ViewBag.CertificateText" />
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to User List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.Role, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(model => model.User.Role, (IEnumerable<SelectListItem>)ViewBag.InternalUserOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.User.Role)
+                </div>
+                @Html.Label("User_GoogleId", "User Name", new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.GoogleId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.User.GoogleId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.FirstName, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.User.FirstName)
+                </div>
+                @Html.LabelFor(model => model.User.MiddleName, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.MiddleName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.LastName, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.User.LastName)
+                </div>
+                @Html.LabelFor(model => model.User.PreviousLastName, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.PreviousLastName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.Status, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @if (ViewBag.StatusAccess == "R" && Model.User.Role == Role.Mentor_coach)
+                    {
+                        @Html.DropDownListFor(model => model.User.Status, Model.User.Status.ToSelectList(), new { @class = "form-control", @readonly = "readonly" })     
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.User.Status, Model.User.Status.ToSelectList(), new { @class = "form-control", onchange = "changeInactive(this);" })
+                    }
+                    @Html.ValidationMessageFor(model => model.User.Status)
+                </div>
+                @Html.LabelFor(model => model.User.StatusDate, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    <p>@Model.User.StatusDate.ToShortDateString()</p>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.PrimaryEmailAddress, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.PrimaryEmailAddress, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.User.PrimaryEmailAddress)
+                </div>
+                @Html.LabelFor(model => model.User.SecondaryEmailAddress, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.SecondaryEmailAddress, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.User.SecondaryEmailAddress)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.PrimaryPhoneNumber, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.PrimaryPhoneNumber, new { @class = "form-control _homephone" })
+                    @Html.ValidationMessageFor(model => model.User.PrimaryPhoneNumber)
+                </div>
+                @Html.LabelFor(model => model.User.PrimaryNumberType, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.EnumDropDownListFor(model => model.User.PrimaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.User.PrimaryNumberType)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.SecondaryPhoneNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.SecondaryPhoneNumber, new { @class = "form-control _homephone" })
+                </div>
+                @Html.LabelFor(model => model.User.SecondaryNumberType, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.EnumDropDownListFor(model => model.User.SecondaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group dvCoordCoachVideo">
+                @Html.LabelFor(model => model.PrimaryLanguageId, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(e => e.PrimaryLanguageId, (IEnumerable<SelectListItem>)ViewBag.Language, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.PrimaryLanguageOther, new { @class = "form-control", type = "hidden" })
+                </div>
+                @Html.LabelFor(model => model.SecondaryLanguageId, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(e => e.SecondaryLanguageId, (IEnumerable<SelectListItem>)ViewBag.Language, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.SecondaryLanguageOther, new { @class = "form-control", type = "hidden" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.FaxNumber, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.User.FaxNumber, new { @class = "_phone form-control" })
+                </div>
+            </div>
+            <div class="form-group dvCoordCoach">
+                @Html.LabelFor(model => model.BirthDate, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @if (Model.BirthDate != null)
+                    {
+                        @Html.TextBoxFor(model => model.BirthDate, new { @class = "form-control date", @Value = DateTime.Parse(Model.BirthDate.ToString()).FormatDateString() })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.BirthDate, new { @class = "form-control date" })
+                    }
+                </div>
+
+                <span class="col-sm-3 control-label required">@Html.DisplayNameFor(model => model.Gender)</span>
+                <div class="col-sm-3">
+                    @Html.RadioButtonFor(model => model.Gender, Gender.Male, new { id = "Gender1" })
+                    @Html.Label("", Gender.Male.ToDescription(), new { @for = "Gender1" })
+                    @Html.RadioButtonFor(model => model.Gender, Gender.Female, new { id = "Gender2" })
+                    @Html.Label("", Gender.Female.ToDescription(), new { @for = "Gender2" })
+                    <br />@Html.ValidationMessageFor(model => model.Gender)
+                </div>
+            </div>
+            <div class="form-group dvCoordCoach">
+                @Html.LabelFor(model => model.Ethnicity, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.EnumDropDownListFor(model => model.Ethnicity, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.EthnicityOther, new { @class = "form-control", type = "hidden" })
+                </div>
+                @Html.LabelFor(model => model.VendorCode, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.VendorCode, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group dvCoordCoach">
+                @Html.LabelFor(model => model.CLIFundingId, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(e => e.CLIFundingId, (IEnumerable<SelectListItem>)ViewBag.Funding, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="content-title dvCoordCoach">Contact Information</div>
+        <div class="content-body dvCoordCoach">
+            <div class="form-group">
+                @Html.LabelFor(model => model.OfficeAddress1, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(model => model.OfficeAddress1, new { @class = "form-control m-b", placeholder = "Office Address 1*" })
+                    @Html.ValidationMessageFor(model => model.OfficeAddress1)
+                    @Html.LabelFor(model => model.OfficeAddress2, null, new { @class = "control-label hide" })
+                    @Html.TextBoxFor(model => model.OfficeAddress2, new { @class = "form-control m-b", placeholder = "Office Address2(optional)" })
+                    <div class="col-lg-3 m-l-n">
+                        @Html.LabelFor(model => model.OfficeCity, null, new { @class = "control-label hide" })
+                        @Html.TextBoxFor(model => model.OfficeCity, new { @class = "form-control m-b", placeholder = "Office City" })
+                        @Html.ValidationMessageFor(model => model.OfficeCity)
+                    </div>
+                    <div class="col-lg-3 m-l-n">
+                        @Html.LabelFor(model => model.OfficeStateId, null, new { @class = "control-label hide" })
+                        @Html.DropDownListFor(model => model.OfficeStateId, (IEnumerable<SelectListItem>)ViewBag.State,
+                            new { @class = "form-control", placeholder = "State*", data_bind = "value:selectedState" })
+                        @Html.ValidationMessageFor(model => model.OfficeStateId)
+                    </div>
+                    <div class="col-lg-3 m-l-n">
+                        @Html.LabelFor(model => model.OfficeCountyId, null, new { @class = "control-label hide" })
+                        @Html.DropDownListFor(model => model.OfficeCountyId, (IEnumerable<SelectListItem>)ViewBag.County,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "County*",
+                                data_bind = "options: countiesOptions, optionsText: 'Text', optionsValue: 'Value',value:selectedCounty"
+                            })
+                        @Html.ValidationMessageFor(model => model.OfficeCountyId)
+                    </div>
+                    <div class="col-lg-3 m-l-n">
+                        @Html.LabelFor(model => model.OfficeZip, null, new { @class = "control-label hide" })
+                        @Html.TextBoxFor(model => model.OfficeZip, new { @class = "form-control _num_5", placeholder = "Office Zip*" })
+                        @Html.ValidationMessageFor(model => model.OfficeZip)
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-3 control-label required">@Html.DisplayNameFor(model => model.OfficeIsReceiveFedEx)</span>
+                <div class="col-sm-9">
+                    @Html.RadioButtonFor(model => model.OfficeIsReceiveFedEx, true, new { id = "OfficeIsReceiveFedEx1" })
+                    @Html.Label("", ViewTextHelper.BoolInTexts[true], new { @for = "OfficeIsReceiveFedEx1" })
+                    @Html.RadioButtonFor(model => model.OfficeIsReceiveFedEx, false, new { id = "OfficeIsReceiveFedEx2" })
+                    @Html.Label("", ViewTextHelper.BoolInTexts[false], new { @for = "OfficeIsReceiveFedEx2" })
+                </div>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-3 control-label required">@Html.DisplayNameFor(model => model.OfficeIsReceiveMail)</span>
+
+                <div class="col-sm-9">
+                    @Html.RadioButtonFor(model => model.OfficeIsReceiveMail, true, new { id = "OfficeIsReceiveMail1" })
+                    @Html.Label("", ViewTextHelper.BoolInTexts[true], new { @for = "OfficeIsReceiveMail1" })
+                    @Html.RadioButtonFor(model => model.OfficeIsReceiveMail, false, new { id = "OfficeIsReceiveMail2" })
+                    @Html.Label("", ViewTextHelper.BoolInTexts[false], new { @for = "OfficeIsReceiveMail2" })
+                </div>
+            </div>
+
+            <div class="form-horizontal" role="form">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.HomeMailingAddress1, null, new { @class = "col-sm-3 control-label required" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(model => model.HomeMailingAddress1, new { @class = "form-control m-b", placeholder = "Home Mailing Address 1*" })
+                        @Html.ValidationMessageFor(model => model.HomeMailingAddress1)
+                        @Html.LabelFor(model => model.HomeMailingAddress2, null, new { @class = "control-label hide" })
+                        @Html.TextBoxFor(model => model.HomeMailingAddress2, new { @class = "form-control m-b", placeholder = "Home Mailing Address2(optional)" })
+                        <div class="col-lg-3 m-l-n">
+                            @Html.LabelFor(model => model.HomeMailingCity, null, new { @class = "control-label hide" })
+                            @Html.TextBoxFor(model => model.HomeMailingCity, new { @class = "form-control", placeholder = "Home Mailing City*" })
+                            @Html.ValidationMessageFor(model => model.HomeMailingCity)
+                        </div>
+                        <div class="col-lg-3 m-l-n">
+                            @Html.LabelFor(model => model.HomeMailingStateId, null, new { @class = "control-label hide" })
+                            @Html.DropDownListFor(model => model.HomeMailingStateId, (IEnumerable<SelectListItem>)ViewBag.State,
+                            new { @class = "form-control", placeholder = "State*", data_bind = "value:mailSelectedState" })
+                            @Html.ValidationMessageFor(model => model.HomeMailingStateId)
+                        </div>
+                        <div class="col-lg-3 m-l-n">
+                            @Html.LabelFor(model => model.HomeMailingCountyId, null, new { @class = "control-label hide" })
+                            @Html.DropDownListFor(model => model.HomeMailingCountyId, (IEnumerable<SelectListItem>)ViewBag.County,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "County*",
+                                data_bind = "options: mailCountiesOptions, optionsText: 'Text', optionsValue: 'Value',value:mailSelectedCounty"
+                            })
+                            @Html.ValidationMessageFor(model => model.HomeMailingCountyId)
+                        </div>
+                        <div class="col-lg-3 m-l-n">
+                            @Html.LabelFor(model => model.HomeMailingZip, null, new { @class = "control-label hide" })
+                            @Html.TextBoxFor(model => model.HomeMailingZip, new { @class = "form-control _num_5", placeholder = "Home Mailing Zip*" })
+                            @Html.ValidationMessageFor(model => model.HomeMailingZip)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <span class="col-sm-3 control-label required">@Html.DisplayNameFor(model => model.HomeIsReceiveFedEx)</span>
+                <div class="col-sm-9">
+                    @Html.RadioButtonFor(model => model.HomeIsReceiveFedEx, true, new { id = "HomeIsReceiveFedEx1" })
+                    @Html.Label("", ViewTextHelper.BoolInTexts[true], new { @for = "HomeIsReceiveFedEx1" })
+                    @Html.RadioButtonFor(model => model.HomeIsReceiveFedEx, false, new { id = "HomeIsReceiveFedEx2" })
+                    @Html.Label("", ViewTextHelper.BoolInTexts[false], new { @for = "HomeIsReceiveFedEx2" })
+                </div>
+            </div>
+            <div class="form-group">
+
+                <span class="col-sm-3 control-label required">@Html.DisplayNameFor(model => model.HomeIsReceiveMail)</span>
+                <div class="col-sm-9">
+                    @Html.RadioButtonFor(model => model.HomeIsReceiveMail, true, new { id = "HomeIsReceiveMail1" })
+                    @Html.Label("", ViewTextHelper.BoolInTexts[true], new { @for = "HomeIsReceiveMail1" })
+                    @Html.RadioButtonFor(model => model.HomeIsReceiveMail, false, new { id = "HomeIsReceiveMail2" })
+                    @Html.Label("", ViewTextHelper.BoolInTexts[false], new { @for = "HomeIsReceiveMail2" })
+                    @Html.RadioButtonFor(model => model.HomeIsReceiveMail, 0, new { id = "MediaRelease3", @class = "hide" })
+                    <label class="hide" for="MediaRelease3">MediaRelease3</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-title dvCoordCoach">Professional Information</div>
+        <div class="content-body dvCoordCoach">
+            <div class="form-group">
+                @Html.LabelFor(model => model.TotalYearsCoaching, null, new { @class = "col-sm-5 control-label" })
+                <div class="col-sm-7">
+                    @Html.TextBoxFor(model => model.TotalYearsCoaching, new { @class = "_num_2 form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.EducationLevel, null, new { @class = "col-sm-5 control-label" })
+                <div class="col-sm-7">
+                    @Html.EnumDropDownListFor(model => model.EducationLevel, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-5 control-label">Certificates and Credentials (check all that apply)</span>
+                <div class="col-sm-7" id="dvCertificate">
+                    @foreach (var item in certificateList)
+                    {
+                        <span class="col-lg-8 control-label m-l-n m-b">@item.Name</span>
+                        <div class="col-lg-4 m-l-n m-b">
+                            <label class="radio-inline">
+                                <input type="radio" name="certificate@(item.ID)" @(Model.User.Certificates.Where(e => e.ID == item.ID).Count() > 0 ? "checked='checked'" : "") value="@item.ID">
+                                Yes</label>
+                            <label class="radio-inline">
+                                <input type="radio" name="certificate@(item.ID)" @(Model.User.Certificates.Where(e => e.ID == (item.ID + 1)).Count() > 0 ? "checked='checked'" : "") value="@(item.ID + 1)">
+                                No</label>
+                        </div>
+                    }
+                </div>
+            </div>
+            @if (ViewBag.OtherAccess == "R" && Model.User.Role == Role.Mentor_coach)
+            {
+                <div class="form-group">
+                    <label class="col-sm-5 control-label">Project Manager Assignment (if any)</label>
+                    <div class="col-sm-3">
+                        <label class="control-label-text">@(ViewBag.PMName)</label>
+                    </div>
+                    @Html.LabelFor(model => model.CoachingType, null, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-2">
+                        @Html.EnumDropDownListFor(model => model.CoachingType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control", @readonly = "readonly" })
+                        @Html.TextBoxFor(model => model.CoachingTypeOther, new { @class = "form-control", type = "hidden", @readonly = "readonly" })
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    @Html.LabelFor(model => model.F2FAvailableHours, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.F2FAvailableHours, new { @class = "_number form-control", @float = 2, type = "hidden", @readonly = "readonly" })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RemAvailableCycle, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.RemAvailableCycle, new { @class = "_number form-control", @float = 2, type = "hidden", @readonly = "readonly" })
+                    </div>
+                </div>
+                
+                
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FTE, null, new { @class = "col-sm-5 control-label required" })
+                    <div class="col-sm-7">
+                        @Html.TextBoxFor(model => model.FTE, new { @class = "_number form-control", @float = 2, @readonly = "readonly" })
+                        @Html.ValidationMessageFor(model => model.FTE)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FundedThrough, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-7">
+                        @Html.EnumDropDownListFor(model => model.FundedThrough, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control", @readonly = "readonly" })
+                        @Html.TextBoxFor(model => model.FundedThroughOther, new { @class = "form-control", type = "hidden", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="form-group" id="dvAccountSponsor">
+                    @Html.LabelFor(model => model.AccountSponsor, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-7">
+                        @Html.TextBoxFor(model => model.AccountSponsor, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="form-group" id="dvEmployer">
+                    @Html.LabelFor(model => model.Employer, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-7">
+                        @Html.TextBoxFor(model => model.Employer, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label class="col-sm-5 control-label">Project Manager Assignment (if any)</label>
+                    <div class="col-sm-3">
+                        <label class="control-label-text">@(ViewBag.PMName)</label>
+                    </div>
+                    @Html.LabelFor(model => model.CoachingType, null, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-2">
+                        @Html.EnumDropDownListFor(model => model.CoachingType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.CoachingTypeOther, new { @class = "form-control", type = "hidden" })
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    @Html.LabelFor(model => model.F2FAvailableHours, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.F2FAvailableHours, new { @class = "_number form-control", @float = 2 })
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RemAvailableCycle, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.RemAvailableCycle, new { @class = "_number form-control", @float = 2 })
+
+                    </div>
+                </div>
+                
+                
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FTE, null, new { @class = "col-sm-5 control-label required" })
+                    <div class="col-sm-7">
+                        @Html.TextBoxFor(model => model.FTE, new { @class = "_number form-control", @float = 2 })
+                        @Html.ValidationMessageFor(model => model.FTE)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FundedThrough, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-7">
+                        @Html.EnumDropDownListFor(model => model.FundedThrough, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.FundedThroughOther, new { @class = "form-control", type = "hidden" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AccountSponsor, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-7">
+                        @Html.TextBoxFor(model => model.AccountSponsor, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Employer, null, new { @class = "col-sm-5 control-label" })
+                    <div class="col-sm-7">
+                        @Html.TextBoxFor(model => model.Employer, new { @class = "form-control" })
+                    </div>
+                </div>
+            }
+            @if (ViewBag.NoteAccess == "R" && Model.User.Role == Role.Mentor_coach)
+            {      
+                <div class="content-title"></div>
+                <div class="content-body">
+                    <div class="form-group">
+                        @Html.Label("CoordCoachNotes", (Model.User.Role == Role.Coordinator ? "Coordinator Notes" : "Coach Notes"), new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextAreaFor(model => model.CoordCoachNotes, new { @class = "form-control", @readonly = "true", style = "height:70px; margin:0px; padding:0px;" })
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (ViewBag.NoteAccess == "X" && Model.User.Role == Role.Mentor_coach)
+            {
+                @Html.HiddenFor(e => e.CoordCoachNotes, new { PlaceHolder = "Limit to 600 characters." })
+            }
+            else
+            {    
+                <div class="content-title"></div>
+                <div class="content-body">
+                    <div class="form-group">
+                        @Html.Label("CoordCoachNotes", (Model.User.Role == Role.Coordinator ? "Coordinator Notes" : "Coach Notes"), new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10">
+                            @Html.TextAreaFor(model => model.CoordCoachNotes, new { @class = "form-control", style = "height:70px; margin:0px; padding:0px;" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit">
+            <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+        </div>
+    </div>
+}
+

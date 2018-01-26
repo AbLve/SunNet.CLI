@@ -1,0 +1,76 @@
+﻿
+@using Sunnet.Cli.Business.Cpalls
+@{
+    
+    var title = ViewData["title"];
+    var communityName = ViewData["communityName"];
+    var language = ViewData["language"];
+    var schoolName = ViewData["schoolName"];
+    var className = ViewData["className"];
+    var schoolYear = ViewData["schoolYear"];
+    var waveNum = ViewData["wave"];
+    var teacherName = ViewData["teacherName"];
+    
+    var report = ViewData["report"] as ReportList;
+    var breakPager = (bool)ViewData["breakPager"];
+    Layout = null;
+   
+}
+
+<table cellpadding="0" cellspacing="0" class='@(breakPager ? "newpager" : "") report-data table_border'>
+ <tr style="page-break-inside: avoid">
+            <td colspan="2">Measure</td>
+            <td>Number of Students</td>
+            <td>Students Excluded</td>
+            <td>Students Tested</td>
+            <td>Students not Tested</td>
+            <td>% of Students Tested</td>
+        </tr>
+        @if (report != null)
+        {
+            foreach (Wave wave in report.ModelList.Keys)
+            {
+                if (!report.ModelList[wave].Any())
+                {
+                    continue;
+                }
+                foreach (var measure in report.ModelList[wave])
+                {
+                    if (measure.Children != null && measure.Children.Any())
+                    {
+                        <tr style="page-break-inside: avoid">
+                            <td rowspan="@measure.Children.Count">@measure.MeasureName</td>
+                            <td>@Html.Raw(measure.Children[0].MeasureName)<br />@Html.Raw(measure.Children[0].RelatedName)</td>
+                            <td class="td-center">@report.Num</td>
+                            <td class="td-center">@measure.Children[0].Exclude</td>
+                            <td class="td-center">@measure.Children[0].Completion</td>
+                            <td class="td-center">@measure.Children[0].Incompletion</td>
+                            <td class="td-center">@measure.Children[0].CompletionPercent%</td>
+                        </tr>
+                        for (int i = 1; i < measure.Children.Count; i++)
+                        {
+                            <tr style="page-break-inside: avoid">
+                                <td>@Html.Raw(measure.Children[i].MeasureName)<br />@Html.Raw(measure.Children[i].RelatedName)</td>
+                                <td class="td-center">@report.Num</td>
+                                <td class="td-center">@measure.Children[i].Exclude</td>
+                                <td class="td-center">@measure.Children[i].Completion</td>
+                                <td class="td-center">@measure.Children[i].Incompletion</td>
+                                <td class="td-center">@measure.Children[i].CompletionPercent%</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr style="page-break-inside: avoid">
+                            <td colspan="2">@Html.Raw(measure.MeasureName)<br />@Html.Raw(measure.RelatedName)</td>
+                            <td class="td-center">@report.Num</td>
+                            <td class="td-center">@measure.Exclude</td>
+                            <td class="td-center">@measure.Completion</td>
+                            <td class="td-center">@measure.Incompletion</td>
+                            <td class="td-center">@measure.CompletionPercent%</td>
+                        </tr>
+                    }
+                }
+            }
+        }
+</table>

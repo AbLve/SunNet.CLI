@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "Verify School";
+    Layout = "~/Views/Shared/_Layout_FullContent.cshtml";
+ 
+}
+@using Sunnet.Cli.Core.Communities.Entities
+@model Sunnet.Cli.Business.Schools.Models.SchoolModel
+@section Scripts
+{
+    <script type="text/javascript">
+        function Approve()
+        {
+            var url = window.location.href;
+            $.post("ApproveSelectedSchool", { msg: "@ViewBag.msg", urlStr: url }, function (data)
+            {
+                if (data.success) {
+                    showMessage("success", " Operation successed.");
+                }
+                else
+                {
+                    showMessage("fail", data.msg);
+                }
+            }, "json");
+        }
+
+        function Deny()
+        {
+            var url = window.location.href;
+            $.post("DenySelectedSchool", { msg: "@ViewBag.msg", urlStr: url }, function (data)
+            {
+                if (data.success)
+                {
+                    showMessage("success", " Operation successed.");
+                }
+                else
+                {
+                    showMessage("fail", data.msg);
+                }
+            }, "json");
+        }
+    </script>
+}
+<div class="main-con">
+    <div class="dashboard-text">
+        <h3>Welcome to CLI Engage!</h3>
+   @if (ViewBag.isValid)
+   {
+   <p>@Model.SchoolName</p>
+   } 
+    </div>
+    <div class="dashboard-text">
+        <p>
+            @ViewBag.Content
+        </p>
+    </div>
+   @if (ViewBag.isValid)
+             {
+                 <div class="dashboard-text">
+                     <p>
+          
+                         <button class="mainbutton modal-btn submit-btn" onclick="return Approve()" type="submit">Approve</button>
+                         <button class="mainbutton modal-btn cancel-btn" type="button" onclick="return Deny()">Deny</button>
+       
+        
+                     </p>
+                 </div>
+     }
+</div>

@@ -1,0 +1,73 @@
+﻿@{
+    Layout = "~/Areas/Cpalls/Views/Shared/_Layout_Cpalls_Report.cshtml";
+    var Model = ViewBag.Model as ExecCpallsAssessmentModel;
+}
+
+<div class="item-main-header item-view-header">
+    <div class="main-content top-form" style="margin-top: 0px;">
+        <form class="form-horizontal" role="form">
+            <label class=" control-label">Student</label>&nbsp;
+            <p class="form-control-static">@(Model.Student.Name)</p>
+            <label class="control-label">DOB</label>&nbsp;
+            <p class="form-control-static">
+                @(Model.Student.Birthday.FormatDateString())
+            </p>
+            <label class="control-label">Class</label>&nbsp;
+            <p class="form-control-static">@(Model.Class.Name)</p>
+
+            <label class="control-label">School</label>&nbsp;
+            <p class="form-control-static">@(Model.SchoolName)</p>
+
+            <label class="control-label">Age Group</label>
+            @(Html.Raw("&nbsp;"))
+            <p class="form-control-static">@(Model.Measures.First().AgeGroup)</p>
+
+            <br />
+            <label class="control-label">Date</label>&nbsp;
+            <p class="form-control-static">@(Model.Measures.First().UpdatedOn.FormatDateString())</p>
+
+            <label class="control-label">School year</label>&nbsp;
+            <p class="form-control-static">@(Model.SchoolYear)</p>
+
+            <label class="control-label">Wave</label>&nbsp;
+            <p class="form-control-static">@(Model.Wave.ToDescription())</p>
+
+            <label class="control-label">Test</label>&nbsp;
+            <p class="form-control-static">@(Model.Name)</p>
+            @if (Model.Measures.First().TotalScored)
+            {
+                <label class="control-label">Score</label>
+                @(Html.Raw("&nbsp;"))
+                <p class="form-control-static">
+                    @(Model.Measures.First().Goal.ToPrecisionString(2)
+                    + "/"
+                    + Model.Measures.First().TotalScore.ToPrecisionString(2))
+                </p>
+
+                <label class="control-label">Benchmark</label>
+                @(Html.Raw("&nbsp;"))
+                <p class="form-control-static">
+                    @(Model.Measures.First().Benchmark >= 0
+                    ? (Model.Measures.First().TotalScore >= Model.Measures.First().Benchmark
+                        ? "Met" :
+                        "Not Met")
+                    : "N/A")
+                </p>
+            }
+            <br />
+            <label class="control-label">Comment</label>&nbsp;
+            <p class="form-control-static">
+                @(Model.Measures.First().Comment)
+            </p>
+        </form>
+
+
+
+
+
+
+    </div>
+</div>
+<div class="item-main-body item-view-body">
+    @Html.Raw(ViewBag.ResultHtml)
+</div>

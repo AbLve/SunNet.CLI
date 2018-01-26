@@ -1,0 +1,37 @@
+﻿/****** Object:  StoredProcedure [dbo].[TeacherMissingCEC]    Script Date: 2015/4/13 10:53:33 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[TeacherMissingCEC]
+	@CecAssessmentId int,
+	@SchoolYear varchar(5),
+	@Wave int
+AS
+BEGIN
+ select t.ID ,t.UserId ,tUser.FirstName as Teacher_FirstName , tUser.LastName as Teacher_LastName 
+, coachUser.FirstName as Coach_FirstName ,coachUser.LastName as Coach_LastName
+, basicC.Name as CommunityName , basicS.Name as SchoolName
+from [dbo].[Cli_Engage__Teachers] t
+inner join [dbo].[Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+inner join [dbo].[Cli_Engage__Users] coachUser on coachUser.ID = t.CoachId and coachUser.Status = 1
+inner join [dbo].[Cli_Engage__Schools] s on s.ID = t.SchoolId
+inner join [dbo].[Cli_Engage__BasicSchools] basicS on basicS.ID = s.BasicSchoolId
+inner join [dbo].[Cli_Engage__Communities] c on c.ID = t.CommunityId
+inner join [dbo].[Cli_Engage__BasicCommunities] basicC on basicC.ID = c.BasicCommunityId
+where 
+t.ID not in(select TeacherId from [CecHistories] where SchoolYear = @SchoolYear and wave = @Wave)
+order by CommunityName
+
+END
+
+GO
+
+

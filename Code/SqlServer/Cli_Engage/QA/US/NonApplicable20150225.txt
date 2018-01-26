@@ -1,0 +1,10 @@
+﻿IF NOT EXISTS ( select * from States where Name = 'Non Applicable')
+insert States values('Non Applicable',GETDATE(),GETDATE())
+go
+
+IF NOT EXISTS ( select * from Counties where Name = 'Non Applicable')
+insert Counties 
+select 
+'Non Applicable',GETDATE(),GETDATE(),
+(select id from States where Name = 'Non Applicable'),
+'Non Applicable'

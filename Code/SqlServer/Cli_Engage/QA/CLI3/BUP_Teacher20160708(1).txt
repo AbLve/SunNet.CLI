@@ -1,0 +1,375 @@
+﻿ALTER PROCEDURE [dbo].[BUP_Teacher]
+	@BUPTeacherID int,
+	@CreatedBy int,
+	@InvitationEmail bit
+AS
+BEGIN
+	  SET XACT_ABORT ON;
+
+	  DECLARE @Action tinyint
+      DECLARE @CommunityName varchar(200)
+      DECLARE @CommunityEngageID varchar(50)
+      DECLARE @SchoolName varchar(200)
+      DECLARE @SchoolEngageID varchar(50)
+      DECLARE @FirstName varchar(140)
+      DECLARE @MiddleName varchar(140)
+      DECLARE @LastName varchar(140)
+      DECLARE @TeacherEngageID varchar(50)
+      DECLARE @TeacherInternalId varchar(50)
+      DECLARE @PrimaryPhoneNumber varchar(50)
+      DECLARE @PrimaryNumberType tinyint
+      DECLARE @PrimaryEmailAddress varchar(50)
+      DECLARE @SecondaryEmailAddress varchar(50)
+      DECLARE @ClassName varchar(150)
+      DECLARE @ClassEngageID varchar(32)
+      DECLARE @ClassroomName varchar(50)
+      DECLARE @ClassroomEngageID varchar(32)
+	  DECLARE @Teacher_TSDS_ID varchar(50)
+	  DECLARE @Teacher_Status tinyint
+	
+	  DECLARE @SchoolId INT
+	  DECLARE @CommunityId INT
+	  DECLARE @TeacherId INT --teachers 表Id
+	  DECLARE @UserId INT --users 表Id
+	  DECLARE @ClassId INT -- classes 表id
+
+	BEGIN TRY
+	  BEGIN TRANSACTION;
+		 SELECT   @Action=[Action],@CommunityName=[CommunityName],@CommunityEngageID=[CommunityEngageID],@SchoolName=[SchoolName],@SchoolEngageID=[SchoolEngageID]
+		  ,@FirstName=[FirstName],@MiddleName=[MiddleName],@LastName=[LastName],@TeacherEngageID=[TeacherEngageID],@TeacherInternalId=[TeacherInternalId]
+		  ,@PrimaryPhoneNumber=[PrimaryPhoneNumber],@PrimaryNumberType=[PrimaryNumberType],@PrimaryEmailAddress=[PrimaryEmailAddress]
+		  ,@SecondaryEmailAddress=[SecondaryEmailAddress],@ClassName=[ClassName],@ClassEngageID=[ClassEngageID],@ClassroomName=[ClassroomName]
+		  ,@ClassroomEngageID=[ClassroomEngageID],@Teacher_TSDS_ID=[Teacher_TSDS_ID],@Teacher_Status=[TeacherStatus]
+		 FROM [dbo].[BUP_Teachers] WHERE ID = @BUPTeacherID
+
+		 SELECT @CommunityId =ID FROM Communities  WHERE CommunityId=@CommunityEngageID
+
+		 IF(@Action = 1) --when insert, school must be active
+			SELECT @SchoolId=s.Id FROM Schools s INNER JOIN CommunitySchoolRelations r ON r.SchoolId=s.id
+				WHERE s.SchoolId = @SchoolEngageID AND r.CommunityId = @CommunityId	AND s.Status=1
+		 ELSE
+			SELECT @SchoolId=s.Id FROM Schools s INNER JOIN CommunitySchoolRelations r ON r.SchoolId=s.id
+				WHERE s.SchoolId = @SchoolEngageID AND r.CommunityId = @CommunityId
+		
+		 IF(@TeacherEngageID != '')
+			SELECT @TeacherId =t.ID, @UserId=u.ID, 
+			@FirstName= CASE @FirstName WHEN '' THEN u.FirstName ELSE @FirstName END,
+			@LastName= CASE @LastName WHEN '' THEN u.LastName ELSE @LastName END,
+			@PrimaryEmailAddress= CASE @PrimaryEmailAddress WHEN '' THEN u.PrimaryEmailAddress ELSE @PrimaryEmailAddress END
+			FROM Teachers t
+			INNER JOIN Users u
+			on t.UserId = u.ID
+			INNER JOIN UserComSchRelations uc
+			on uc.UserId=u.ID 
+			WHERE t.TeacherId=@TeacherEngageID
+
+		IF(@ClassEngageID != '')
+			SELECT @ClassId=ID FROM Classes WHERE ClassId=@ClassEngageID AND SchoolId = @SchoolId AND Status=1 AND IsDeleted=0
+
+		--INSERT
+		IF(@Action = 1) BEGIN
+			IF(@CommunityId IS NULL) 
+				 UPDATE [BUP_Teachers] SET Status=5 , Remark ='Community Engage ID is not in Communities' WHERE ID = @BUPTeacherID
+			ELSE BEGIN
+			   IF(@SchoolId IS NULL)
+					UPDATE [BUP_Teachers] SET Status=5 , Remark ='School Engage ID is not in Schools' WHERE ID = @BUPTeacherID				
+				ELSE BEGIN		
+					IF(EXISTS (SELECT ID FROM Users WHERE FirstName=@FirstName AND LastName=@LastName 
+					AND PrimaryEmailAddress= @PrimaryEmailAddress AND Status=1 AND Role!=145 AND IsDeleted=0))
+						UPDATE 	BUP_Teachers SET Status=5 ,Remark ='One user has been existed with different role ' WHERE ID = @BUPTeacherID	
+					ELSE
+					BEGIN
+						SELECT @UserId = ID FROM Users WHERE FirstName=@FirstName AND LastName=@LastName 
+						AND PrimaryEmailAddress= @PrimaryEmailAddress AND Status=1 AND Role=145 AND IsDeleted=0
+						IF(@UserId IS NULL)		
+						BEGIN
+							INSERT INTO [dbo].[Users]
+							([Role]
+							,[GoogleId]
+							,[FirstName]
+							,[MiddleName]
+							,[LastName]
+							,[PreviousLastName]
+							,[Status]
+							,[StatusDate]
+							,[PrimaryEmailAddress]
+							,[SecondaryEmailAddress]
+							,[PrimaryPhoneNumber]
+							,[PrimaryNumberType]
+							,[SecondaryPhoneNumber]
+							,[SecondaryNumberType]
+							,[FaxNumber]
+							,[CreatedOn]
+							,[UpdatedOn]
+							,[IsDeleted]
+							,[Sponsor]
+							,[InvitationEmail]
+							,[EmailExpireTime]
+							,[Notes]
+							,[gmail]
+							,[IsSyncLms]
+							,[InternalID])
+							VALUES
+							( 145--<Role, tinyint,>
+							,''-- <GoogleId, varchar(50),>
+							,@FirstName --, varchar(140),>
+							,@MiddleName --, varchar(140),>
+							,@LastName --, varchar(140),>
+							,''--<PreviousLastName, varchar(140),>
+							,1--<BUPEntityStatus(Activate,Inactivate,Delete), tinyint,>
+							,GETDATE() --<StatusDate, datetime,>
+							,@PrimaryEmailAddress --, varchar(50),>
+							,@SecondaryEmailAddress --, varchar(50),>
+							,@PrimaryPhoneNumber --, varchar(50),>
+							,@PrimaryNumberType --, tinyint,>
+							,'' --, varchar(50),>
+							,0--<SecondaryNumberType, tinyint,>
+							,''--<FaxNumber, varchar(50),>
+							,GETDATE()--<CreatedOn, datetime,>
+							,GETDATE()--<UpdatedOn, datetime,>
+							,0--<IsDeleted, bit,>
+							,1--<Sponsor, int,>
+							,(case when @InvitationEmail=1 then 2 else 1 end)--<InvitationEmail, tinyint,>
+							,'1753/1/1' --<EmailExpireTime, datetime,>
+							,'BUP' --<Notes, varchar(100),>
+							,'' --<gmail, varchar(200),>
+							,0 --<IsSyncLms, bit,>
+							,@TeacherInternalId
+							)
+
+							SELECT @UserId = SCOPE_IDENTITY()
+
+							INSERT INTO [dbo].[Teachers]
+							([UserId]
+							,[TeacherId]
+							,[SchoolYear]
+							,[BirthDate]
+							,[Gender]
+							,[HomeMailingAddress]
+							,[HomeMailingAddress2]
+							,[City]
+							,[CountyId]
+							,[StateId]
+							,[Zip]
+							,[Ethnicity]
+							,[EthnicityOther]
+							,[PrimaryLanguageId]
+							,[PrimaryLanguageOther]
+							,[SecondaryLanguageId]
+							,[SecondaryLanguageOther]
+							,[TotalTeachingYears]
+							,[AgeGroupOther]
+							,[CurrentAgeGroupTeachingYears]
+							,[TeacherType]
+							,[TeacherTypeOther]
+							,[PDOther]
+							,[EducationLevel]
+							,[CoachId]
+							,[CoachAssignmentWay]
+							,[CoachAssignmentWayOther]
+							,[ECIRCLEAssignmentWay]
+							,[ECIRCLEAssignmentWayOther]
+							,[YearsInProjectId]
+							,[CoreAndSupplemental]
+							,[CoreAndSupplemental2]
+							,[CoreAndSupplemental3]
+							,[CoreAndSupplemental4]
+							,[VendorCode]
+							,[CoachingHours]
+							,[EmployedBy]
+							,[CLIFundingId]
+							,[MediaRelease]
+							,[IsAssessmentEquipment]
+							,[TeacherNotes]
+							,[ReqCycles]
+							,[TeacherTSDSID])
+							VALUES
+							(@UserId --<UserId, int,>
+							,'' -- <TeacherId, varchar(50),>
+							,dbo.GetSchoolYear() --<SchoolYear, varchar(10),>
+							,'1753/1/1' --<BirthDate, datetime,>
+							, 1 --<Gender, tinyint,>
+							,''--<HomeMailingAddress, varchar(200),>
+							,''--<HomeMailingAddress2, varchar(200),>
+							,''--<City, varchar(200),>
+							,0--<CountyId, int,>
+							,0--<StateId, int,>
+							,''--<Zip, varchar(5),>
+							,0--<Ethnicity, tinyint,>
+							,''--<EthnicityOther, varchar(100),>
+							,0--<PrimaryLanguageId, int,>
+							,''--<PrimaryLanguageOther, varchar(100),>
+							,0--<SecondaryLanguageId, int,>
+							,''--<SecondaryLanguageOther, varchar(100),>
+							,0--<TotalTeachingYears, int,>
+							,''--<AgeGroupOther, varchar(100),>
+							,0--<CurrentAgeGroupTeachingYears, int,>
+							,0--<TeacherType, tinyint,>
+							,''--<TeacherTypeOther, varchar(100),>
+							,''--<PDOther, varchar(100),>
+							,0--<EducationLevel, tinyint,>
+							,0--<CoachId, int,>
+							,0--<CoachAssignmentWay, tinyint,>
+							,''--<CoachAssignmentWayOther, varchar(100),>
+							,0--<ECIRCLEAssignmentWay, tinyint,>
+							,''--<ECIRCLEAssignmentWayOther, varchar(100),>
+							,0--<YearsInProjectId, int,>
+							,''--<CoreAndSupplemental, varchar(140),>
+							,''--<CoreAndSupplemental2, varchar(140),>
+							,''--<CoreAndSupplemental3, varchar(140),>
+							,''--<CoreAndSupplemental4, varchar(140),>
+							,0--<VendorCode, int,>
+							,0--<CoachingHours, decimal(18,2),>
+							,0--<EmployedBy, tinyint,>
+							,0--<CLIFundingId, int,>
+							,0--<MediaRelease, tinyint,>
+							,0--<IsAssessmentEquipment, bit,>
+							,''--<TeacherNotes, varchar(600),>
+							,0--<ReqCycles, decimal(18,2),>
+							,@Teacher_TSDS_ID
+							)
+							SELECT @TeacherId = SCOPE_IDENTITY()
+
+							INSERT INTO UserComSchRelations(UserId,CommunityId,SchoolId,Status,CreatedBy,CreatedOn,UpdatedBy,UpdatedOn)
+							VALUES(@UserId,@CommunityId,@SchoolId,1,@CreatedBy,GETDATE(),@CreatedBy,GETDATE())
+
+							IF(@ClassEngageID!='')
+							BEGIN
+								IF(@ClassId IS NULL)
+								BEGIN
+									UPDATE [BUP_Teachers] SET Status=5 , Remark ='Class Engage ID is not in Classes' WHERE ID = @BUPTeacherID
+								END
+								ELSE BEGIN
+									IF(NOT EXISTS (SELECT * FROM TeacherClassRelations WHERE TeacherId=@TeacherId AND ClassId=@ClassId))
+									BEGIN
+										INSERT INTO TeacherClassRelations SELECT @TeacherId,@ClassId 
+										IF(NOT EXISTS (SELECT * FROM TeacherClassRelations WHERE ClassId=@ClassId))
+											Update Classes set LeadTeacherId=@TeacherId where ID=@ClassId
+									END
+								END	--END INSERT 
+							END
+						END						
+						ELSE  -- duplicate 
+							UPDATE 	BUP_Teachers SET Status=5 ,Remark ='No duplicate user was created' WHERE ID = @BUPTeacherID						
+					END	
+			    END
+			END
+		END  --END ACTION=1
+
+		--UPDATE
+		IF(@Action = 2) BEGIN	
+			IF(@CommunityId IS NULL)
+				UPDATE [BUP_Teachers] SET Status=5 , Remark ='Community Engage ID is not in Communities' WHERE ID = @BUPTeacherID
+			ELSE
+				BEGIN
+				IF(@SchoolId IS NULL)
+					UPDATE [BUP_Teachers] SET Status=5 , Remark ='School Engage ID is not in Schools' WHERE ID = @BUPTeacherID	
+				ELSE
+					BEGIN
+						IF(@TeacherId IS NULL)
+							UPDATE [BUP_Teachers] SET Status=5 , Remark ='Teacher Engage ID is not in Teachers' WHERE ID = @BUPTeacherID
+						ELSE BEGIN
+							IF(EXISTS (SELECT ID FROM Users WHERE FirstName=@FirstName AND LastName=@LastName 
+								AND PrimaryEmailAddress= @PrimaryEmailAddress AND Status=1 AND ID != @UserId AND IsDeleted=0))
+									UPDATE 	BUP_Teachers SET Status=5 ,Remark ='Duplicate user found' WHERE ID = @BUPTeacherID	
+							ELSE
+								BEGIN
+									UPDATE [dbo].[Users] SET 
+										[FirstName] =  CASE WHEN @FirstName != '' THEN @FirstName ELSE FirstName END
+										,[MiddleName] =  CASE WHEN @MiddleName='*CLEAR*' THEN '' WHEN @MiddleName != '' THEN @MiddleName ELSE MiddleName END
+										,[LastName] =  CASE WHEN @LastName != '' THEN @LastName ELSE LastName END
+										,[PrimaryEmailAddress] =  CASE WHEN @PrimaryEmailAddress != '' THEN @PrimaryEmailAddress ELSE PrimaryEmailAddress END
+										,[SecondaryEmailAddress] = CASE WHEN @SecondaryEmailAddress='*CLEAR*' THEN '' WHEN @SecondaryEmailAddress != '' THEN @SecondaryEmailAddress ELSE SecondaryEmailAddress END
+										,[PrimaryPhoneNumber] =  CASE WHEN @PrimaryPhoneNumber != '' THEN @PrimaryPhoneNumber ELSE PrimaryPhoneNumber END
+										,[PrimaryNumberType] = CASE WHEN @PrimaryNumberType = 127 THEN 0 WHEN @PrimaryNumberType>0 THEN @PrimaryNumberType ELSE PrimaryNumberType END 
+										,[InternalID]= CASE @TeacherInternalId WHEN '*CLEAR*' THEN '' WHEN '' THEN InternalID ELSE @TeacherInternalId END
+										,[UpdatedOn] = getdate(),[Status]=(case when @Teacher_Status=1 then 1 when @Teacher_Status=2 then 2 else [Status] end)
+										,IsDeleted=(case when @Teacher_Status=3 then 1 else 0 end)
+										WHERE ID =@UserId
+									UPDATE [dbo].[Teachers] SET TeacherTSDSID=(case when @Teacher_TSDS_ID!='' then @Teacher_TSDS_ID else TeacherTSDSID end) where UserId=@UserId
+									IF(@SchoolEngageID!='')
+										BEGIN
+											IF(@SchoolId IS NULL)
+											BEGIN
+												UPDATE [BUP_Teachers] SET Status=5 , Remark ='School Engage ID is not in Schools' WHERE ID = @BUPTeacherID
+											END
+											ELSE BEGIN
+												IF(NOT EXISTS(SELECT * FROM dbo.UserComSchRelations AS UCSR WHERE UCSR.UserId=@UserId AND UCSR.SchoolId=@SchoolId))
+													BEGIN
+													INSERT INTO dbo.UserComSchRelations SELECT @UserId ,@CommunityId ,@SchoolId ,1 ,@CreatedBy ,GETDATE() ,@CreatedBy ,GETDATE() ,3
+													END
+												IF(@ClassEngageID!='')
+												BEGIN
+													IF(@ClassId IS NULL)
+													BEGIN
+														UPDATE [BUP_Teachers] SET Status=5 , Remark ='Class Engage ID is not in Classes' WHERE ID = @BUPTeacherID
+													END
+													ELSE BEGIN
+														IF(NOT EXISTS (SELECT * FROM TeacherClassRelations WHERE TeacherId=@TeacherId AND ClassId=@ClassId))
+														BEGIN
+															INSERT INTO TeacherClassRelations SELECT @TeacherId,@ClassId 
+															IF(NOT EXISTS (SELECT * FROM TeacherClassRelations WHERE ClassId=@ClassId))
+																Update Classes set LeadTeacherId=@TeacherId where ID=@ClassId
+														END
+													END	
+												END
+											END
+										END
+									IF(@Teacher_Status=3)
+										BEGIN
+											DELETE TeacherClassRelations WHERE TeacherId=@TeacherId
+										END
+								END
+							END  				 	
+					END
+			END
+		END
+
+		--DELETE
+		IF(@Action = 3)BEGIN
+			IF(@CommunityId IS NULL)
+				UPDATE [BUP_Teachers] SET Status=5 , Remark ='Community Engage ID is not in Communities' WHERE ID = @BUPTeacherID					
+			ELSE
+				BEGIN 						
+					IF(@SchoolId IS NULL)
+						UPDATE [BUP_Teachers] SET Status=5 , Remark ='School Engage ID is not in Schools' WHERE ID = @BUPTeacherID
+					ELSE BEGIN
+					   IF(@TeacherId IS NULL)
+							UPDATE [BUP_Teachers] SET Status=5 , Remark ='Teacher Engage ID is not in Teachers' WHERE ID = @BUPTeacherID
+						ELSE BEGIN
+							SELECT @ClassId=ID FROM Classes WHERE ClassId=@ClassEngageID AND SchoolId = @SchoolId AND IsDeleted=0
+							IF(@ClassId IS NULL)
+								BEGIN
+									IF((SELECT COUNT(UCSR.ID) FROM dbo.UserComSchRelations AS UCSR WHERE UCSR.UserId=@UserId AND UCSR.SchoolId!=0)=1)
+										UPDATE [BUP_Teachers] SET Status=5 , Remark ='Teachers must have at least one School' WHERE ID = @BUPTeacherID
+									ELSE BEGIN
+										DELETE dbo.UserComSchRelations WHERE UserId=@UserId AND SchoolId=@SchoolId
+										DELETE dbo.TeacherClassRelations WHERE ClassId IN(SELECT C.ID FROM dbo.Classes AS C WHERE C.SchoolId=@SchoolId)
+									END
+								END
+							ELSE BEGIN
+								DELETE TeacherClassRelations WHERE TeacherId=@TeacherId AND ClassId=@ClassId
+								IF((select LeadTeacherId from Classes where ID=@ClassId)=@TeacherId)
+									Update Classes set LeadTeacherId=0 where ID=@ClassId
+								END
+						END
+					END
+				END
+		END
+		UPDATE BUP_Teachers SET Status = 3 WHERE ID = @BUPTeacherID AND Status = 1;
+	  COMMIT TRANSACTION ;
+	END TRY
+
+	BEGIN CATCH
+		IF (XACT_STATE()) = -1
+		BEGIN			
+			ROLLBACK TRANSACTION;
+			UPDATE BUP_Teachers SET Remark = ERROR_MESSAGE() ,Status = 4 WHERE ID = @BUPTeacherID
+		END;
+
+		IF (XACT_STATE()) = 1
+		BEGIN
+			COMMIT TRANSACTION;   
+		END;
+	END CATCH 
+END

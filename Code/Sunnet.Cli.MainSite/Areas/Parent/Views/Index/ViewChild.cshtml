@@ -1,0 +1,103 @@
+﻿@model ChildListModel
+@using Sunnet.Cli.Business.Students.Models
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Edit Child";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response) {
+                    if (response.success) {
+                        window.showMessage("success", response.msg);
+                        redirectBack("/Parent/Index/MyConnections");
+                    }
+                }
+            });
+        })();
+    </script>
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Sunnet.Cli.MainSite.Models.Leftmenu_MainSite.My_Profile)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("My Connections", "MyConnections", "Index"))
+    <i class="icon-angle-right"></i>View Child
+}
+
+@using (Ajax.BeginForm("SaveParentChild", "Index", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{     
+    @Html.AntiForgeryToken()
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            @Html.HiddenFor(model => model.ID)
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.FirstName)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.LastName)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.BirthDate, new { @class = "col-sm-4 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.BirthDate)
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolCity, null, new { @class = "col-sm-4 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolCity)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolZip, null, new { @class = "col-sm-4 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolZip)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolName, null, new { @class = "col-sm-4 control-label" })
+                <div class="col-sm-4">
+                 @Html.DisplayFor(model => model.SchoolName)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3">
+                    <a href="javascript:void(0);" style="text-decoration: underline;">Receive my child's school reports
+                    </a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">PIN provided by Teacher</label>
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.PINCode)
+                </div>
+            </div>
+        </div>
+        <div class="button-content">
+            <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back</a>
+        </div>
+    </div>
+}
+

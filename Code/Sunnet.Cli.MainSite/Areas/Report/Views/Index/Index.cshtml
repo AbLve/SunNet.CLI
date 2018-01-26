@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Reports";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Reports)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Reports", "Index", "Index"))
+}
+
+<div class="right-content-top right-report-main">
+    @if (ViewBag.DataExport)
+    {
+        <a class="mainbutton mainright-btn nav-btn" href="javascript:void(0);" onclick="javascript:window.showMessage('warning', 'Coming Soon');">Data Export</a><span>Create a customized report based on your personal selections for fields from different pages in Engage.</span>
+    }
+</div>
+<div class="right-reports-con">
+    <ul>
+        @if(ViewBag.CIRCLEDataExport){
+        <li>
+            <a class="mainbutton mainright-btn nav-btn" href='@Url.Action("Circle", "DataExport")'>Student Results Export</a><span>Generates Excel files with assessment Student results.</span></li>
+        }
+        @if(ViewBag.BeechReports){
+        <li>
+            <button type="button" class="mainbutton mainright-btn create-btn" onclick="javascript:location.href='/Report/Index/BeechReport'">BEECH Reports</button><span>Report provides a list of BEECH sites in CLI Engage and the student age range counts listed on the School page. </span></li>
+        }
+        @if(ViewBag.ParticipationCounts){
+        <li>
+            <button type="button" class="mainbutton mainright-btn create-btn" onclick="javascript:location.href='/Report/Index/QuarterlyReport'">Participation Counts</button><span>Generates tables showing participation counts and community counts within specified time periods.</span></li>
+        }
+        @if(ViewBag.MentorCoachReport ){
+        <li>
+            <button type="button" class="mainbutton mainright-btn create-btn" onclick="javascript:location.href='/Report/Index/CoachReport'">Coach Report</button><span>Report shows assigned teacher list for each selected Coach user. Coach assignment is identified on the Teacher page.</span></li>
+        }
+        @if(ViewBag.EverServiced ){
+        <li>
+            <button type="button" class="mainbutton mainright-btn create-btn" onclick="javascript:location.href='/Report/Index/ServiceReport'">Service Report</button><span>Report provides list of Schools with Classroom, Teacher, and Student Counts <strong>Ever Serviced</strong> across multiple years or for <strong>Currently Serving</strong>  sites in CLI Engage.</span></li>
+        }
+        @*@if(ViewBag.CurrentlyServing ){
+        <li>
+            <button type="button" class="mainbutton mainright-btn create-btn" onclick="javascript:location.href='/Report/Index/GetCurrentSchoolReport'">Currently Serving</button><span>Report provides list of Schools with Classroom, Teacher, and Student Counts <strong>Ever Serviced</strong> across multiple years or for <strong>Currently Serving</strong>  sites in CLI Engage.</span></li>
+        }
+        @if(ViewBag.ByESCRegion ){
+        <li>
+            <button type="button" class="mainbutton mainright-btn create-btn" onclick="javascript:window.showMessage('warning', 'hold');">By ESC Region</button><span>Should hold this until ‘Many to Many relationships’ done.</span></li>
+        }*@
+        @if(ViewBag.PDReports){
+        <li>
+            <button type="button" class="mainbutton mainright-btn create-btn" onclick="javascript:location.href='/Report/Index/PDReport'">Online Courses Report</button><span>This report text this report text</span></li>
+        }
+        @if(ViewBag.CoachingHoursbyCommunitys){
+        <li>
+            <button type="button" class="mainbutton mainright-btn create-btn" onclick="javascript:location.href='/Report/Index/CoachingHoursbyCommunity'">Coaching Load by Community</button><span>Generates table showing the Available Hours/Cycles, the Requested Hours/Cycles, and the Unused or Excess Hours/Cycles by Community/District.</span></li>
+        }
+        @if(ViewBag.TeacherTurnoverReport){
+        <li>
+            <a class="mainbutton mainright-btn  nav-btn" href='@Url.Action("SelectDate")'>Teacher Turnover Report</a><span>Report provides tables on the first sheet and a list of teachers on the second sheet that have dropped (inactivate) in Engage during a specified time period.</span></li>
+        }
+        @if(ViewBag.TSRMediaConsentReports){
+        <li>
+            <button type="button" class="mainbutton mainright-btn create-btn" onclick="javascript:location.href='/Report/Index/MediaConsentReport'">TSR Media Consent Reports</button><span>Report provides a Percent Report on first sheet with a list of classes and the percent of Yes, Refused, and No (Missing) Student Consents in Engage. The second sheet is a Student List with a class roster for individual student consent status.</span></li>
+        }
+    </ul>
+</div>

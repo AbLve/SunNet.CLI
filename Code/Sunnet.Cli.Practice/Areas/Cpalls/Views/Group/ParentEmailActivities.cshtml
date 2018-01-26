@@ -1,0 +1,152 @@
+﻿@model Sunnet.Cli.Business.Students.Models.ParentStudentListModel
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Students.Models
+@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Cli.Core.Common.Enums
+@{
+    ViewBag.Title = "Home Activities - " + ViewBag.MeasureName;
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<AdeLinkEntity> activities = ViewBag.Activities;
+    List<ParentStudentListModel> students = ViewBag.Students;
+}
+
+<style>
+    .alert {
+        width: 400px;
+    }
+</style>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response) {
+                    if (response.success) {
+                        window.showMessage("successOnlyMsg", "Email has been sent.");
+                        closeModal($("#@(formId)"));
+                    }
+                }
+            });
+        })();
+
+        function BeforeSubmit() {
+            if ($("[name='activities']:checked").length == 0) {
+                window.showMessage("fail", "Select at least one activity.");
+                return false;
+            }
+            if ($("[name='students']:checked").length == 0) {
+                window.showMessage("fail", "Select at least one recipient.");
+                return false;
+            }
+            var msg = "<div style='text-align:left'>You will send an email to the selected Parents and to your personal email with the links to the Home Activities that you selected." +
+                "<br /><br />  Do you want to continue?</div>";
+            $.when(window.waitingConfirm(msg, "Yes, send email", "Cancel")).done(function () {
+                $("#@(formId)").submit();
+            });
+        }
+
+        function SelectAll() {
+            if ($("#chkSelectAll").prop("checked")) {
+                $("input[name='students']:not([disabled])").prop("checked", true);
+            } else {
+                $("input[name='students']").prop("checked", false);
+            }
+        }
+    </script>
+}
+@using (Ajax.BeginForm("SendParentEmailActivities", "Group", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        autocomplete = "off",
+        id = formId
+    }))
+{
+    @Html.LabelFor(model => model.StudentId, new { @class = "hide" })
+    @Html.TextBoxFor(model => model.StudentId, new { @class = "form-control", @Value = "0", @style = "display:none;" })
+    @Html.ValidationMessageFor(model => model.StudentId)
+    @Html.AntiForgeryToken()
+
+    <div class="content-title">Select the Home Activities that you want to share with Parents.</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            @foreach (var activity in activities.Where(e => e.LinkType == 1 && e.Status == EntityStatus.Active))
+                            {
+                                <div class="col-sm-12" style="text-align: left;">
+                                    <label for="activity@(activity.ID)"><span style="display: none">1</span></label>
+                                    <input type="checkbox" class="required" id="activity@(activity.ID)" name="activities" value="@activity.Link" />
+                                    <input type="hidden" name="activityNames" value="@activity.DisplayText" />
+                                    &nbsp;
+                                    <a target="_blank" href="@activity.Link">@activity.DisplayText</a>
+                                </div>
+
+                            }
+                            <div style="text-align: left;">
+                                @Html.ValidationMessage("activities", "Activity links is required.")
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="content-title">Select the Parents that will receive an email with the selected activities.</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">
+                        <input type="checkbox" id="chkSelectAll" onclick="SelectAll();" />
+                        <label for="chkSelectAll" style="font-weight: bold; margin-bottom: 0;">Select All</label>
+                    </th>
+                    <th style="width: 40%;">Student
+                    </th>
+                    <th>Parent email
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in students)
+                {
+                    <tr>
+                        <td>
+                            <label for="students@(item.StudentId)"><span style="display: none">student</span></label>
+                            @if (string.IsNullOrEmpty(item.ParentPrimaryEmail))
+                            {
+                                <input type="checkbox" id="students@(item.StudentId)" name="students" class="required" disabled="disabled"
+                                       value="@(item.ChildFirstName + " " + item.ChildLastName + ";"+item.ParentFirstName + " "+item.ParentLastName+";"+item.ParentPrimaryEmail  )" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="students@(item.StudentId)" name="students" class="required"
+                                       value="@(item.ChildFirstName + " " + item.ChildLastName + ";"+item.ParentFirstName + " "+item.ParentLastName+";"+item.ParentPrimaryEmail  )" />
+                            }
+                        </td>
+                        <td>
+                            <span class="@item.Color">@item.Goal</span>
+                            @(item.ChildFirstName + " " + item.ChildLastName)
+                        </td>
+                        <td>
+                            @(string.IsNullOrEmpty(item.ParentPrimaryEmail) ? "No Parent email" : item.ParentPrimaryEmail)
+                            <input name="parentEmails" value="@item.ParentPrimaryEmail" type="hidden" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer">
+        <input type="button" onclick="BeforeSubmit()" class="mainbutton mainright-btn submit-btn" value="Send by Email" id="btnSubmit">
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

@@ -1,0 +1,62 @@
+﻿
+insert CommunityAssessmentRelations
+select ID,-3,1,1,getdate(),getdate(),1, Beech, 0 from Communities where BeechCli=1;
+go
+
+insert CommunityAssessmentRelations
+select ID,-3,1,1,getdate(),getdate(),1, Beech, 1 from Communities where BeechRequest=1;
+go
+
+insert CommunityAssessmentRelations
+select ID,-2,1,1,getdate(),getdate(),1, '', 0 from Communities where TexasRisingStar=1;
+go
+
+select * into Communities_Features from [dbo].[Communities]
+go
+
+---comment
+alter table Communities drop column [ECircle];
+go
+alter table Communities drop column [Beech];
+go
+alter table Communities drop column Cpalls;
+go
+alter table Communities drop column Coaching;
+go
+alter table Communities drop column Materials;
+go
+alter table Communities drop column Training;
+go
+
+------------------request & 
+alter table Communities drop column ECircleRequest;
+go
+alter table Communities drop column ECircleCli;
+go
+alter table Communities drop column BeechRequest;
+go
+alter table Communities drop column BeechCli;
+go
+alter table Communities drop column CpallsRequest;
+go
+alter table Communities drop column CpallsCli;
+go
+alter table Communities drop column CoachingRequest;
+go
+alter table Communities drop column CoachingCli;
+go
+alter table Communities drop column MaterialsRequest;
+go
+alter table Communities drop column MaterialsCli;
+go
+alter table Communities drop column TrainingRequest;
+go
+alter table Communities drop column TrainingCli;
+go
+declare @name varchar(50) 
+select @name=b.name from syscolumns a,sysobjects b where a.id=object_id('[Communities]') 
+and b.id=a.cdefault and a.name='TexasRisingStar' 
+and b.name like 'DF%' 
+exec('alter table Communities drop constraint '+@name) 
+go
+alter table Communities drop column TexasRisingStar

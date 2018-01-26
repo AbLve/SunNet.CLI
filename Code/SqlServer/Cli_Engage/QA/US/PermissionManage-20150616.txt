@@ -1,0 +1,48 @@
+﻿
+
+
+-- 说明：此文件执行后，需要删除掉主站点Web.config中配置的ProtectedFiles目录下的CacheFileDependency_Permission.txt文件，用来清除缓存
+
+
+SET IDENTITY_INSERT Permission_Pages ON
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3745,'School Specialist',1,3700,'',10,1,'School Specialist',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+
+update Permission_Pages set Name='TRS Specialist',Url='/Invitation/TRSSpecialist/Index',Descriptions='TRS Specialist' where id=3740
+
+
+
+
+SET IDENTITY_INSERT Permission_Roles ON
+
+insert into Permission_Roles(ID,Name,Descriptions,CreatedOn,UpdatedOn,Status,UserType,IsDefault)
+values(18,'School Specialist','School Specialist',GETDATE(),GETDATE(),1,133,1)
+
+SET IDENTITY_INSERT Permission_Roles OFF
+
+
+update Permission_Roles set Name='TRS Specialist',Descriptions='TRS Specialist' where ID=16
+
+
+delete Permission_PageAuthorities where PageId=3745
+insert into Permission_PageAuthorities
+select 3745,ActionId from Permission_PageAuthorities where PageId=3740
+
+
+delete Permission_RolePageAuthorities where RoleId=18
+insert into Permission_RolePageAuthorities 
+select 18,PageId,PageAction,GETDATE(),GETDATE() from Permission_RolePageAuthorities where RoleId=16
+
+
+delete Permission_RolePageAuthorities where PageId=3745
+insert into Permission_RolePageAuthorities
+select RoleId,3745,PageAction,GETDATE(),GETDATE() from Permission_RolePageAuthorities where PageId=3740
+
+
+
+
+
+

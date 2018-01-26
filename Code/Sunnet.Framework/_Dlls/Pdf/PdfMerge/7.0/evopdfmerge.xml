@@ -1,0 +1,638 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>evopdfmerge</name>
+    </assembly>
+    <members>
+        <member name="F:HiQPdfPrv.Pdf.Security.SecurityHandlers.Standard">
+            <summary>
+            The built-in password-based security handler.
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.EncryptionAlgorithm">
+            <summary>
+            The encryption algorithm
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.EncryptionAlgorithm.RC4">
+            <summary>
+            RC4 encryption algorithm
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.EncryptionAlgorithm.AES">
+            <summary>
+            AES encryption algorithm
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.EncryptionKeySize">
+            <summary>
+            The length of the encryption key
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.EncryptionKeySize.EncryptKey256Bit">
+            <summary>
+            A 256 bit length.
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.EncryptionKeySize.EncryptKey128Bit">
+            <summary>
+            A 128 bit length.
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.EncryptionKeySize.EncryptKey40Bit">
+            <summary>
+            A 40 bit length.
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.MergeImageFormat">
+            <summary>
+            The supporter image formats
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.MergeImageFormat.Bmp">
+            <summary>
+            Bmp
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.MergeImageFormat.Gif">
+            <summary>
+            Gif
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.MergeImageFormat.Jpeg">
+            <summary>
+            Jpeg
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.MergeImageFormat.Png">
+            <summary>
+            Png
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.MergeImageFormat.Tiff">
+            <summary>
+            Tiff
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.RenderImageFormatConverter">
+            <summary>
+            This class converts a MergeImageFormat to System.Drawing.ImageFormat
+            </summary>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.RenderImageFormatConverter.GetImageFormat(EvoPdf.PdfMerge.MergeImageFormat)">
+            <summary>
+            Converts a MergeImageFormat to System.Drawing.ImageFormat
+            </summary>
+            <param name="format">The MergeImageFormat to convert</param>
+            <returns>The converted ImageFormat</returns>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.MergePDFException">
+            <summary>
+            This class represents the exceptions that can be thrown by the PDF Merge library 
+            </summary>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.MergePDFException.#ctor(System.String)">
+            <summary>
+            Constructs an exception object with the given error message that can be thrown by the PDF Merge library
+            </summary>
+            <param name="message">The exception message</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.MergePDFException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructs an exception object with the given error message and inner exception that can be thrown by the PDF Merge library
+            </summary>
+            <param name="message">The exception message</param>
+            <param name="innerException">The exception which produced this exception</param>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.PDFCompressionLevel">
+            <summary>
+            This enumration represents the possible compression levels that can be used in the PDF documents created by the PDF Merge library
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PDFCompressionLevel.AboveNormal">
+            <summary>
+            Better compression but takes more time to compress
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PDFCompressionLevel.BelowNormal">
+            <summary>
+            Something middle between normal and BestSpeed compressions
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PDFCompressionLevel.Best">
+            <summary>
+            Use the best compression but takes more time to compress
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PDFCompressionLevel.BestSpeed">
+            <summary>
+            The compression speed is high but the compression percentage is low
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PDFCompressionLevel.NoCompression">
+            <summary>
+            Does not do any compression
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PDFCompressionLevel.Normal">
+            <summary>
+            Use normal compression, a balance between compression speed and resulted size
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.PdfDocumentInfo">
+            <summary>
+            This class encapsulates the options to control the merged PDF document
+            description (author, title, keywords, etc). The PDFMerge class defines 
+            a reference to an object of this type
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfDocumentInfo.AuthorName">
+            <summary>
+            Gets or sets name of the document author.
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfDocumentInfo.CreatedDate">
+            <summary>
+            Gets or sets the date and time when the document was created.
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfDocumentInfo.Keywords">
+            <summary>
+            Gets or sets document keywords.
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfDocumentInfo.Application">
+            <summary>
+            Gets or sets the name of the application that produced this document
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfDocumentInfo.Subject">
+            <summary>
+            Gets or sets the subject of the PDF document.
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfDocumentInfo.Title">
+            <summary>
+            Gets or sets document title.
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.PdfDocumentOptions">
+            <summary>
+            This class encapsulates the options to control the PDF document
+            redering process. The PDFMerge class define 
+            a reference to an object of this type
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfDocumentOptions.PdfPageOrientation">
+            <summary>
+            This property controls the PDF page orientation
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfDocumentOptions.PdfCompressionLevel">
+            <summary>
+            This property controls the compression level of the rendered PDF document
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfDocumentOptions.PdfPageSize">
+            <summary>
+            This property controls the size of the rendered PDF document
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.PDFMerge">
+            <summary>
+            PDF Merge manager
+            </summary>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.#ctor">
+            <summary>
+            Merge using default PDF document options
+            </summary>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.#ctor(EvoPdf.PdfMerge.PdfDocumentOptions)">
+            <summary>
+            Merge using the specified PDF document options
+            </summary>
+            <param name="pdfDocumentOptions">The merged PDF document options</param>       
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendPDFFile(System.String)">
+            <summary>
+            Appends an existing PDF document
+            </summary>
+            <param name="pdfFileFullPath">The full file path of the existing PDF document</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendPDFFile(System.String,System.Int32)">
+            <summary>
+            Appends pages from the specified source document starting from zero based page index
+            in the source document.
+            </summary>
+            <param name="pdfFileFullPath">The full path of the document to be appended</param>
+            <param name="startIndex">The zero based index of the page from the source document from where to start appending pages</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendPDFFile(System.String,System.Int32,System.Int32)">
+            <summary>
+            Appends at most length pages from the specified source document starting from zero based index
+            startIndex in the source document.
+            </summary>
+            <param name="pdfFileFullPath">The full path of the document to be appended</param>
+            <param name="startIndex">The zero based index of the page from the source document from where to start appending pages</param>
+            <param name="length">The number of pages to be taken from the source document and appended to the merged document. If the specified length is
+            bigger than the available number of pages starting from the specified start page index, only the available number of pages will be appended.</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendPDFFile(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Appends at most length pages from the specified password protected source document starting from zero based index
+            startIndex in the source document.
+            </summary>
+            <param name="pdfFileFullPath">The full path of the document to be appended</param>
+            <param name="password">The password to open the appended document. If this argument is null no password will be used.</param>
+            <param name="startIndex">The zero based index of the page from the source document from where to start appending pages</param>
+            <param name="length">The number of pages to be taken from the source document and appended to the merged document. If the specified length is
+            bigger than the available number of pages starting from the specified start page index, only the available number of pages will be appended.
+            If the length is negative e.g -1, all the PDF pages available from startIndex will be appended to the merged document.</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendEmptyPage">
+            <summary>
+            Appends an empty page to merged PDF document
+            </summary>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendPDFStream(System.IO.Stream)">
+            <summary>
+            Appends a PDF stream given by the method parameter to the merged PDF document
+            </summary>
+            <param name="pdfStream">The PDF stream to be appended</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendPDFStream(System.IO.Stream,System.Int32)">
+            <summary>
+            Appends pages from the specified source document starting from zero based page index
+            in the source document.
+            </summary>
+            <param name="pdfStream">The PDF stream to be appended</param>
+            <param name="startIndex">The zero based index of the page from the source document from where to start appending pages</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendPDFStream(System.IO.Stream,System.Int32,System.Int32)">
+            <summary>
+            Appends at most length pages from the specified source document starting from zero based index
+            startIndex in the source document.
+            </summary>
+            <param name="pdfStream">The PDF stream to be appended</param>
+            <param name="startIndex">The zero based index of the page from the source document from where to start appending pages</param>
+            <param name="length">The number of pages to be taken from the source document and appended to the merged document. If the specified length is
+            bigger than the available number of pages starting from the specified start page index, only the available number of pages will be appended.</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendPDFStream(System.IO.Stream,System.String,System.Int32,System.Int32)">
+            <summary>
+            Appends at most length pages from the specified password protected source document starting from zero based index
+            startIndex in the source document.
+            </summary>
+            <param name="pdfStream">The PDF stream to be appended</param>
+            <param name="password">The password to open the appended document. If this argument is null no password will be used.</param>
+            <param name="startIndex">The zero based index of the page from the source document from where to start appending pages</param>
+            <param name="length">The number of pages to be taken from the source document and appended to the merged document. If the specified length is
+            bigger than the available number of pages starting from the specified start page index, only the available number of pages will be appended.
+            If the length is negative e.g -1, all the PDF pages available from startIndex will be appended to the merged document.</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendImageFile(System.String)">
+            <summary>
+            Append an existing image file given by the method parameter to the merge result
+            </summary>
+            <param name="imageFileFullPath">The full file path of the existing image file</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.AppendImageObject(System.Drawing.Image)">
+            <summary>
+            Append a System.Drawing.Image object given by the method parameter to the merge result
+            </summary>
+            <param name="img">The image object</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.GetCurrentPageCount">
+            <summary>
+            Retrieves the number of pages of current PDF document
+            </summary>
+            <returns>The number of pages of current PDF document</returns>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.RenderMergedPDFDocument">
+            <summary>
+            Renders the merged document into memory buffer and returns that buffer.
+            </summary>
+            <returns>The rendered document bytes.</returns>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.SaveMergedPDFToFile(System.String)">
+            <summary>
+            Saves the merged PDF document into the specified disk file.
+            </summary>
+            <param name="outFile">The full path of the file where to save the rendered PDF document.</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.SaveMergedPDFToStream(System.IO.Stream)">
+            <summary>
+            Saves the merged PDF document into the specified stream.
+            </summary>
+            <param name="outPdfStream">The output stream where to save the merged PDF document.</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.GetPageCount(System.String)">
+            <summary>
+            A fast method in PDF Merge library to obtain the page count of a PDF document from the given file path.
+            </summary>
+            <param name="pdfFilePath">The path of the PDF file for which to get the page count.</param>
+            <returns>The number of pages in the specified PDF document.</returns>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMerge.GetPageCount(System.IO.Stream)">
+            <summary>
+            A fast method in PDF Merge library to obtain the page count of a PDF document from the given stream.
+            </summary>
+            <param name="pdfStream">The stream containing the PDF document for which to get the page count.</param>
+            <returns>The number of pages in the specified PDF document.</returns>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PDFMerge.LicenseKey">
+            <summary>
+            Gets or sets the license key to be used by the PDF Merge library
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PDFMerge.SecurityOptions">
+            <summary>
+            Gets the PDF security options object of the merged PDF document. This object properties
+            allow the control of the merged document encryption, password protection, print and copy rigths, etc
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PDFMerge.DocumentInfo">
+            <summary>
+            Gets or sets the info object of the merged PDF document. This object properties allow the control
+            of the merged document information like author, title, creation date, etc
+            </summary>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMergeDocument.GetPageCount(System.String)">
+            <summary>
+            A fast method in PDF Merge library to obtain the page count of a PDF document from the specified file path.
+            </summary>
+            <param name="pdfFilePath">The path of the PDF file for which to get the page count.</param>
+            <returns>The number of pages in the specified PDF document.</returns>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMergeDocument.GetPageCount(System.IO.Stream)">
+            <summary>
+            A fast method in PDF Merge library to obtain the page count of a PDF document from the specified stream.
+            </summary>
+            <param name="pdfStream">The stream containing the PDF document for which to get the page count.</param>
+            <returns>The number of pages in the specified PDF document.</returns>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMergeDocument.RenderMergedPDFDocument">
+            <summary>
+            Renders the merged PDF document to a byte array.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMergeDocument.SaveMergedPDFToStream(System.IO.Stream)">
+            <summary>
+            Saves the merge PDF document to the specified stream.
+            </summary>
+            <param name="outPdfStream">The stream where to save the merged PDF document.</param>
+        </member>
+        <member name="M:EvoPdf.PdfMerge.PDFMergeDocument.SaveMergedPDFToFile(System.String)">
+            <summary>
+            Saves the rendered PDF document from into the specified 
+            disk file
+            </summary>
+            <param name="outFile">The full path of the file where to save the rendered PDF document</param>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PDFMergeDocument.LicenseKey">
+            <summary>
+            Gets or sets the license key to be used by the PDF Merge library
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.PDFPageOrientation">
+            <summary>
+            PDF page orientation
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PDFPageOrientation.Portrait">
+            <summary>
+            Portrait
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PDFPageOrientation.Landscape">
+            <summary>
+            Landscape
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.PdfPageSize">
+            <summary>
+            The PDF document size
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.Letter">
+            <summary>
+            Letter format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.Note">
+            <summary>
+            Note format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.Legal">
+            <summary>
+            Legal format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A0">
+            <summary>
+            A0 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A1">
+            <summary>
+            A1 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A2">
+            <summary>
+            A2 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A3">
+            <summary>
+            A3 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A4">
+            <summary>
+            A4 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A5">
+            <summary>
+            A5 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A6">
+            <summary>
+            A6 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A7">
+            <summary>
+            A7 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A8">
+            <summary>
+            A8 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A9">
+            <summary>
+            A9 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.A10">
+            <summary>
+            A0 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.B0">
+            <summary>
+            B0 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.B1">
+            <summary>
+            B1 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.B2">
+            <summary>
+            B2 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.B3">
+            <summary>
+            B3 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.B4">
+            <summary>
+            B4 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.B5">
+            <summary>
+            B5 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.ArchE">
+            <summary>
+            ArchE format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.ArchD">
+            <summary>
+            ArchD format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.ArchC">
+            <summary>
+            ArchC format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.ArchB">
+            <summary>
+            ArchB format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.ArchA">
+            <summary>
+            ArchA format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.Flsa">
+            <summary>
+            Flsa format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.HalfLetter">
+            <summary>
+            HalfLetter format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.Letter11x17">
+            <summary>
+            11x17 format
+            </summary>
+        </member>
+        <member name="F:EvoPdf.PdfMerge.PdfPageSize.Ledger">
+            <summary>
+            Ledger format
+            </summary>
+        </member>
+        <member name="T:EvoPdf.PdfMerge.PdfSecurityOptions">
+            <summary>
+            This class encapsulates the options to control the 
+            security options of the merged PDF document. The PDFMerge class defines 
+            a reference to an object of this type
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.CanAssembleDocument">
+            <summary>
+            Can assemble the document (create bookmarks, thumbnail images or insert, rotate, delete
+            pages). This property has effect when a 128 bit key is used.
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.CanCopyContent">
+            <summary>
+            Can copy the document content. 
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.CanCopyAccessibilityContent">
+            <summary>
+            Can copy the document accessibility content 
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.CanEditAnnotations">
+            <summary>
+            Can edit PDF document annotations. 
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.CanEditContent">
+            <summary>
+            Can edit PDF document content. 
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.CanFillFormFields">
+            <summary>
+            Can fill the form fields. This property has effect when a 128 bit key is used. To disable form filling the CanEditContent and CanEditAnnotations must be set on false.
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.CanPrint">
+            <summary>
+            Can print the document. 
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.CanPrintHighResolution">
+            <summary>
+            Can print in high resolution
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.KeySize">
+            <summary>
+            The dimension of the encryption key. By default a 128 bit key is used.
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.EncryptionAlgorithm">
+            <summary>
+            The encryption algorithm. The default algorithm is RC4.
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.OwnerPassword">
+            <summary>
+            The password required to change permissions of the PDF document like printing or editing.
+            If the OwnerPassword property is an empty string and the UserPassword is not empty,
+            the OwnerPassword will be automatically assigned with the value from UserPassword and when the PDF document is opened in the viewer using the user password (which is also the owner password) 
+            all the operations like printing, copying, etc will be allowed.
+            </summary>
+        </member>
+        <member name="P:EvoPdf.PdfMerge.PdfSecurityOptions.UserPassword">
+            <summary>
+            The password required to open the PDF document. If the OwnerPassword property is an empty string and the UserPassword is not empty,
+            the OwnerPassword will be automatically assigned with the value from UserPassword and when the PDF document is opened in the viewer using the user password (which is also the owner password) 
+            all the operations like printing, copying, etc will be allowed.
+            </summary>
+        </member>
+    </members>
+</doc>

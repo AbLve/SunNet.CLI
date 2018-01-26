@@ -1,0 +1,13 @@
+﻿
+drop table CoordCoachEquipments
+GO
+
+CREATE TABLE [dbo].[CoordCoachEquipments](
+	[ID] [int] IDENTITY(1,1) primary key NOT NULL,
+	[CoordCoachId] [int] NOT NULL,
+	[EquipmentId] [int] NOT NULL,
+	[SerialNumber] [varchar](140) NOT NULL,
+	[UTHealthTag] [varchar](140) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ )

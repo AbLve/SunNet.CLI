@@ -1,0 +1,260 @@
+﻿@{
+    ViewBag.Title = "CEC";
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a><i class="icon-angle-right"></i>
+    <a href="@Url.Action("Index", "CEC")?assessmentId=@ViewBag.AssessmentId">Teacher</a>
+    <i class="icon-angle-right"></i>Classroom Environment Checklist
+}
+<div class="right-content-top">
+</div>
+<form class="form-horizontal" role="form">
+    <div class="form-group">
+        <label class="control-label" style="text-align: left; float: left; margin-right: 20px; margin-left: 15px;" for="assessmentDate"><span class="redtext">*</span>Assessment Date</label>
+        <div style="width: 150px; float: left; margin-right: 20px;">
+            <input type="text" value="" id="assessmentDate" class="form-control date" />
+        </div>
+        <label class="control-label" style="text-align: left; float: left; margin-right: 20px;" for="selectWave"><span class="redtext">*</span>Wave</label>
+        <div style="width: 150px; float: left; margin-right: 20px;">
+            @Html.DropDownList("selectWave", (IEnumerable<SelectListItem>)ViewBag.WaveOptions, new { id = "selectWave", @class = "form-control" })
+        </div>
+        <div style="float: left; margin-left: 20px;">
+            <p style="color: #333; font-size: 16px;"><strong>School Year: @(ViewBag.SchoolYear) </strong></p>
+        </div>
+    </div>
+</form>
+
+<div class="modal-l-b"></div>
+
+<table class="table table-striped table-hover">
+    <tbody data-bind="foreach: items">
+        <tr>
+            <td colspan="3" style="text-align: left; font-size: 15px; font-weight: bold; padding-left: 10px;" data-bind="text: MeasureName"></td>
+           <td data-bind="foreach: Links" style="text-align:left">
+                <p><a target="_blank" data-bind="text: DisplayText, attr: { href: Link }" class="form-link3"></a></p>
+            </td>
+        </tr>
+        <!-- ko if:  Childer != null -->
+        <!-- ko foreach: Childer -->
+        <tr>
+            <td colspan="3" style="text-align: left; font-size: 13px; font-weight: bold; padding-left: 30px;" data-bind="text: MeasureName"></td>
+            <td data-bind="foreach: Links" style="text-align:left">
+                <p><a target="_blank" data-bind="text: DisplayText, attr: { href: Link }" class="form-link3"></a></p>
+            </td>
+        </tr>
+        <tr>
+            <th width="3%"><span style="display: none">#</span></th>
+            <th width="15%">Area</th>
+            <th>Description</th>
+            <th width="10%" style="text-align: left">Response</th>
+            <th width="15%" style="text-align: left">Photograph Links</th>
+        </tr>
+        <!-- ko foreach: List -->
+        <tr>
+            <td data-bind="text:$index()+1+'.'"></td>
+            <td style="text-align: left; padding-left: 50px;">
+                <!-- ko if:  IsRequired -->
+                <label style="color: red;">*</label>
+                <!-- /ko --> 
+                <!-- ko if:  !IsRequired -->
+                <label style="color: red; padding-right: 5px;"></label>
+                <!-- /ko -->
+                <label data-bind="text:Area" style="width: 90%"></label>
+            </td>
+            <td style="text-align: left;">
+                <div data-bind="html: Description"></div>
+            </td>
+            <td>
+                <div class="divAnswer" data-bind="foreach: { data: Answer }">
+                    <label style="width: 100%; float: left; text-align: left; cursor: pointer;">
+                        <!-- ko if: Selected -->
+                        <input type="radio" data-bind="attr: { name: 'radio' + $parent.ItemId, ID: AnswerId, parentId: $parent.ItemId, checked: 'checked',_isRequired:$parent.IsRequired,_itemName:$parent.Area }" class="radioAnswer" />
+                        <!-- /ko -->
+                        <!-- ko if: !Selected -->
+                        <input type="radio" data-bind="attr: { name: 'radio' + $parent.ItemId, ID: AnswerId, parentId: $parent.ItemId,_isRequired:$parent.IsRequired,_itemName:$parent.Area }" class="radioAnswer" />
+                        <!-- /ko -->
+                        <span data-bind="html: Text"></span>
+
+                    </label>
+                </div>
+            </td>
+            <td data-bind="foreach: Links" style="text-align:left">
+                <p><a target="_blank" data-bind="text: DisplayText, attr: { href: Link }" class="form-link3"></a></p>
+            </td>
+        </tr>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- ko if:  Childer == null -->
+        <tr>
+            <th width="3%"><span style="display: none">#</span></th>
+            <th width="15%">Area</th>
+            <th>Description</th>
+            <th width="10%" style="text-align: left">Response</th>
+            <th width="15%" style="text-align: left">Photograph Links</th>
+        </tr>
+        <!-- ko foreach: List -->
+        <tr>
+            <td data-bind="text:$index()+1+'.'"></td>
+            <td style="text-align: left; padding-left: 50px;">
+                <!-- ko if:  IsRequired -->
+                <label style="color: red;">*</label>
+                <!-- /ko --> 
+                <!-- ko if:  !IsRequired -->
+                <label style="color: red; padding-right: 5px;"></label>
+                <!-- /ko -->
+                <label data-bind="text:Area" style="width: 90%"></label>
+            </td>
+            <td style="text-align: left;">
+                <div data-bind="html: Description"></div>
+            </td>
+            <td>
+                <div class="divAnswer" data-bind="foreach: { data: Answer }">
+                    <label style="width: 100%; float: left; text-align: left; cursor: pointer;">
+                        <!-- ko if: Selected -->
+                        <input type="radio" data-bind="attr: { name: 'radio' + $parent.ItemId, ID: AnswerId, parentId: $parent.ItemId, checked: 'checked',_isRequired:$parent.IsRequired,_itemName:$parent.Area }" class="radioAnswer" />
+                        <!-- /ko -->
+                        <!-- ko if: !Selected -->
+                        <input type="radio" data-bind="attr: { name: 'radio' + $parent.ItemId, ID: AnswerId, parentId: $parent.ItemId,_isRequired:$parent.IsRequired,_itemName:$parent.Area  }" class="radioAnswer" />
+                        <!-- /ko -->
+                        <span data-bind="html: Text"></span>
+                    </label>
+                </div>
+            </td>
+         <td data-bind="foreach: Links" style="text-align:left">
+                <p><a target="_blank" data-bind="text: DisplayText, attr: { href: Link }" class="form-link3"></a></p>
+            </td>
+        </tr>
+        <!-- /ko -->
+        <!-- /ko -->
+    </tbody>
+    <tbody>
+        <tr>
+            <td colspan="5" style="text-align: center">
+                <button class="mainbutton modal-btn submit-btn" type="submit" id="btnSubmit" data-bind="click: save">Submit</button>
+
+                <a class="mainbutton modal-btn cancel-btn" type="button" href="@Url.Action("Index", "CEC")?assessmentId=@ViewBag.AssessmentId">Cancel</a>
+                <a id="cecReport" target="_blank" class="mainbutton modal-btn submit-btn" style="display: inline-block;">Go to CEC Report </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var vm = {};
+        var wave = eval($("#selectWave").val());
+        var teacherId = eval('@ViewBag.teacherId');
+        var assessmentId = eval('@ViewBag.assessmentId');
+        var ViewModel = function() {
+            var self = this;
+            self.items = ko.observableArray();
+            self.search = function() {
+                $.getJSON('@Url.Action("ShowItems")', { teacherId: teacherId, assessmentId: assessmentId, wave: wave },
+                    function(result) {
+                        if (result && result.success) {
+                            if (result.msg && result.msg != "") {
+                                $("#btnSubmit").hide();
+                                $("#btnCancel").hide();
+                                $("#cecReport").show();
+                                $("#cecReport").attr("href", '@Url.Action("CECReport", "CEC")?year=@(ViewBag.Year)&teacherId=@(Request.QueryString["teacherId"])&assessmentId=@(Request.QueryString["assessmentId"])&wave='
+                                    + $("#selectWave").val());
+
+                                $("#assessmentDate").val(result.msg);
+                            } else {
+                                $("#btnSubmit").show();
+                                $("#btnCancel").show();
+                                $("#assessmentDate").val();
+                                $("#cecReport").hide();
+                            }
+                            self.items(result.data);
+                        } else {
+                            self.items(null);
+                            $("#btnSubmit").hide();
+                            $("#btnCancel").hide();
+                            $("#cecReport").hide();
+                        }
+                    });
+            };
+            self.save = function() {
+                if (Validate()) {
+                    var itemAnswer = "";
+                    var itemAnswerTmp = [];
+                    $.each($(":radio"), function(index, item) {
+                        if ($(item).prop("checked")) {
+                            itemAnswer += $(item).attr("parentId") + "," + $(item).prop("id") + "&";
+                            itemAnswerTmp.push($(item).prop("id"));
+                        }
+                    });
+
+                    $.getJSON("@Url.Action("Save")", {
+                        teacherId: teacherId,
+                        assessmentId: assessmentId,
+                        assessmentDate: $("#assessmentDate").val(),
+                        wave: wave,
+                        itemAnswer: itemAnswer
+                    }, function(response) {
+                        if (response.success == true) {
+                            window.showMessage("success");
+                            $("#btnSubmit").hide();
+                            $("#btnCancel").hide();
+                            $("#cecReport").show();
+                            $("#cecReport").attr("href", '@Url.Action("CECReport", "CEC")?year=@(ViewBag.Year)&teacherId=@(Request.QueryString["teacherId"])&assessmentId=@(Request.QueryString["assessmentId"])&wave='
+                                + $("#selectWave").val());
+                        } else {
+                            window.showMessage("fail", response.msg);
+                        }
+                    });
+                }
+            };
+        };
+
+        function Validate() {
+            if ($.trim($("#assessmentDate").val()).length == 0) {
+                window.showMessage("hint", "EnterAssessmentDate");
+                return false;
+            }
+
+            var itemMsg = "";
+            $.each($(".divAnswer"), function (index, item) {
+                if ($(item).find("[_isRequired=true]").is(":checked")==false) {
+                    $.each($(item).find("[_isRequired=true]"), function (childIndex, childItem) {
+                        //var itemName = $(this).attr("_itemName");
+                        //itemMsg = itemMsg + itemName + "; ";
+                        itemMsg = itemMsg + (index + 1) + "; ";
+                        return false;
+                    });
+                }
+            });
+            if (itemMsg.length > 0) {
+                itemMsg = itemMsg.substring(0, itemMsg.lastIndexOf(';'));
+                itemMsg = "<br\><span style='color:#000'>The following items require a score before proceeding:<br /><br />Item " + itemMsg + "<span>";
+                window.showMessage("warning", itemMsg);
+                return false;
+            } 
+
+            return true;
+        };
+
+        $(document).ready(function() {
+            vm = new ViewModel();
+            ko.applyBindings(vm);
+            vm.search();
+
+            $("#selectWave").change(function() {
+                if ($(this).val() > 0) {
+                    wave = eval($(this).val());
+                    $("#assessmentDate").val("");
+                    vm.search();
+                }
+            });
+        });
+    </script>
+
+}

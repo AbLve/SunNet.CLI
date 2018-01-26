@@ -1,0 +1,12 @@
+﻿
+drop table ApplicantEmails
+CREATE TABLE [dbo].[ApplicantEmails](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ApplicantId] [int] NOT NULL,
+	[EmailAddress] [varchar](50) NOT NULL,
+	[EmailContent] [text] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL
+)
+
+

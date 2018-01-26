@@ -1,0 +1,167 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.CommunityUserEntity
+@using System.Web.Optimization
+@using Sunnet.Cli.Core.Users.Entities
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Users.Enums
+@using Sunnet.Cli.Business.Permission.Models
+@using Sunnet.Cli.MainSite.Models
+@{
+    ViewBag.Title = "My Profile";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    bool isCommunitySpecialist = ViewBag.RoleType == Role.Community_Specialist_Delegate;
+    string navigationText = isCommunitySpecialist ? "My Delegate" : "Community/District Specialist";
+}
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $form = $("#@(formId)");
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response) {
+                    if (response.success) {
+                        if (typeof response.data == "string") {
+                            if (response.data == "waiting") {
+                                promise = window.waitingAlert("warning", response.msg);
+                            } else {
+                                promise = window.showMessage("success", response.msg);
+                            }
+                        } else if (response.data == null) {
+                            $.when(window.showMessage("success", response.msg)).done(function () {
+                                if ("@(ViewBag.IsFirst)" == "True") {
+                                    redirectBack("/home/Dashboard");
+                                }
+                            });
+                        } else if (typeof response.data == "object") {
+                            if (response.data.type == "continue") {
+                                $.when(window.waitingConfirm(response.msg, "Continue", "Cancel")).done(function () {
+                                    $form.find("#confirm").val(true);
+                                    $form.submit();
+                                }).fail(function () {
+                                    $form.find("#confirm").val(false);
+                                });
+                            }
+                        }
+                } else {
+                    window.showMessage("fail", response.msg);
+                }
+            if ($("#PrimaryLanguageId :selected").text() == "Other")
+                $("#PrimaryLanguageOther").attr("type", "text");
+            if ($("#PositionId :selected").text() == "Other")
+                $("#PositionOther").attr("type", "text");
+
+            $("#PrimaryLanguageId").change(function () {
+                if ($("#PrimaryLanguageId :selected").text() == "Other")
+                    $("#PrimaryLanguageOther").attr("type", "text");
+                else {
+                    $("#PrimaryLanguageOther").val("");
+                    $("#PrimaryLanguageOther").attr("type", "hidden");
+                }
+            })
+            $("#PositionId").change(function () {
+                if ($("#PositionId :selected").text() == "Other")
+                    $("#PositionOther").attr("type", "text");
+                else {
+                    $("#PositionOther").val("");
+                    $("#PositionOther").attr("type", "hidden");
+                }
+            })
+            if ($("#UserInfo_Status").val() == "@((int)EntityStatus.Inactive)")
+                $("#SaveInvite").hide();
+            $("#UserInfo_Status").change(function () {
+                if ($("#UserInfo_Status").val() == "@((int)EntityStatus.Inactive)")
+                    $("#SaveInvite").hide();
+                else
+                    $("#SaveInvite").show();
+            })
+
+            $("#dvCertificate input[type='radio']").click(function (event) {
+                var $container = $("#txtCers");
+                if ($container.length == 0) {
+                    $container = $("<input type='hidden' name='certificates' id='txtCers'/>").appendTo($("#@(formId)"));
+                }
+                var values = "";
+
+                $("#dvCertificate input[type='radio']").each(function (index, radio) {
+                    var $r = $(radio);
+                    if ($r[0].checked) {
+                        values += $r.val() + ",";
+                    }
+                });
+                $container.val(values);
+            })
+            $("#SaveInvite").click(function () {
+                $("<input type='hidden' name='isInvite' id='isInvite' value='true' />").appendTo($("#@(formId)"));
+            })
+
+            NotSameAddress();
+
+            AccessControl();
+        });
+
+        function AccessControl() {
+            if ("@ViewBag.Readonly" == "R") {
+                $("#BirthDate").add("#Gender1").add("#Gender2").add("#PrimaryLanguageId").add("#TotalYearCurrentRole")
+                    .add("#EducationLevel").add("#TotalYearCurrentRole")
+                .each(function () {
+                    $(this).prop("disabled", "true");
+                });
+                $("#dvCertificate").find("*").prop("disabled", true);
+            }
+        }
+
+        function NotSameAddress() {
+            $("#Address").val('@Model.Address');
+            $("#Address2").val('@Model.Address2');
+            $("#City").val('@Model.City');
+            viewModel.defaultCounty(@Model.CountyId);
+            viewModel.selectedState(@Model.StateId);
+            $("#Zip").val('@Model.Zip');
+        }
+
+        var viewModel = {
+            defaultCounty: ko.observable(@Model.CountyId),
+            selectedCounty: ko.observable(@Model.CountyId),
+            countiesOptions: ko.observableArray([]),
+            selectedState: ko.observable(@Model.StateId)
+        };
+        viewModel.selectedState.subscribe(function (state) {
+            $.getJSON('/Invitation/Public/GetCountiesByStateId', { stateId: state }, function (data) {
+                viewModel.countiesOptions.removeAll();
+                viewModel.countiesOptions.push.apply(viewModel.countiesOptions, data);
+                viewModel.selectedCounty(viewModel.defaultCounty());
+            });
+        });
+        ko.applyBindings(viewModel);
+    </script>
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.My_Profile)
+}
+
+@section BreadPath
+{
+    @(Model.UserInfo.FirstName + " " + Model.UserInfo.LastName)
+}
+
+@using (Ajax.BeginForm("SaveCommunitySpecialist", "MyProfile", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    <div class="main-content">
+        @Html.Partial("~/Areas/Invitation/Views/CommunitySpecialist/Partials/EditPartial.cshtml")
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit">
+        </div>
+
+        @Html.HiddenFor(model=>model.CommunityNotes)
+    </div>
+}

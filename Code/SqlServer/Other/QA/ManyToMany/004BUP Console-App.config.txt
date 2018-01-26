@@ -1,0 +1,25 @@
+﻿BUP Automation控制台程序的App.config添加以下节点
+
+
+<!-- BUP Automation控制台程序下的邮件模板目录-->
+<add key="TempPath" value="E:\tfs\SunNet.CLI\Code\BUP\EmailTemplate\" />
+
+<!-- 邮件发送人地址-->
+<add key="FromEmailAddress" value="xujingfei123@163.com" />
+
+<!-- 是否为测试模式-->
+<add key="TestMode" value="1" />
+
+<!-- 测试模式收件人地址-->
+<add key="TestModeEmail" value="joex@sunnet.us" />
+
+
+configuration节点下添加以下节点
+<!-- 邮件发送者配置-->
+<system.net>
+    <mailSettings>
+      <smtp from="xujingfei123@163.com">
+        <network host="smtp.163.com" password="xjf456xjf456" userName="xujingfei123@163.com" defaultCredentials="false" />
+      </smtp>
+    </mailSettings>
+</system.net>

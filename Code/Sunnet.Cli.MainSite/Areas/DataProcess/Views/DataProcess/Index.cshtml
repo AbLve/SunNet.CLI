@@ -1,0 +1,312 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.MainSite.Models;
+@model Sunnet.Cli.Core.DataProcess.Entities.DataGroupEntity
+@{
+    ViewBag.Title = "Process Data";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.BUP)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Data Management", "Index", "BUP", new { Area = "BUP" }, null))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;Single Roster
+}
+@Html.ValidationSummary()
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn"
+       href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "BUP", new { Area = "BUP" }))">Back to Data Management</a>
+</div>
+<div class="modal-l-b"></div>
+@using (Html.BeginForm("Index", "DataProcess", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", id = "form1" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.Label("txtCommunity", "Community/District", new { @class = "control-label col-sm-2 required" })
+        <div class="col-sm-4">
+            @Html.TextBox("txtCommunity", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#CommunityId",
+           data_remote = Url.Action("GetCommunitySelectListForSearch"),
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtCommunity",
+           name = "txtCommunity",
+           placeholder = "Enter key text to search",
+           @for = "CommunityId",
+           data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}"
+       })
+            <input value="" class="form-control required validate" data-val="true" id="CommunityId" name="CommunityId" placeholder="Selected Community" type="hidden">
+            <input id="isActiveCommunity" name="isActiveCommunity" type="hidden" value="False">
+            @Html.ValidationMessage("CommunityId")
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2 required" for="dataFile">Data File(Excel)</label>
+        <div class="col-sm-4">
+            <input type="file" id="dataFile" name="dataFile" class="required form-control" />
+            @Html.ValidationMessage("dataFile")
+            <p class="redtext">The maximum records are 10,000.</p>
+        </div>
+        <div class="col-sm-3">
+            <a class="form-link2" href="/resource/XLSX/Single_Roster_Template.xlsx" target="_blank">Single Roster Template.xlsx</a>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="control-label col-sm-2 required">Send Invitation to new Teachers</div>
+        <fieldset>
+            <legend style="display:none">Send Invitation to new Teachers</legend>
+            <div class="col-sm-4">
+                <input type="radio" name="Invitation" id="InvitationYes" value="1" checked="checked" />&nbsp;<label for="InvitationYes">Yes</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="Invitation" id="InvitationNo" value="2" />&nbsp;<label for="InvitationNo"> No, will do it manually</label>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="form-group">
+        <div class="control-label col-sm-2 required">Classroom Option</div>
+        <fieldset>
+            <legend style="display:none">Classroom Option</legend>
+            <div class="col-sm-10">
+                <input type="radio" name="createClassroom" id="noClassroom" value="0" checked="checked" />&nbsp;<label for="noClassroom">Create Classes Only (for most Teachers)</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="createClassroom" id="classroom" value="1" />&nbsp;<label for="classroom">Create Classes and Classrooms (only for special projects)</label>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="form-group">
+        <div class=" col-sm-2"></div>
+        <div class="col-sm-3">
+            <button class="mainbutton modal-btn submit-btn" type="submit" onclick="return Submit();">Submit</button>
+        </div>
+    </div>
+}
+
+<div class="main-content main-content">
+    <div class="content-title">Process Data</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th rowspan="2">Batch#</th>
+                    <th rowspan="2"># of Records</th>
+                    <th colspan="3" class="tab-td-b-l">School</th>
+                    <th colspan="3" class="tab-td-b-l">Teacher</th>
+                    <th colspan="3" class="tab-td-b-l tab-td-b-r">Student</th>
+                    <th rowspan="2">File Name</th>
+                    <th rowspan="2">Date</th>
+                    <th rowspan="2">Status</th>
+                    <th rowspan="2">Invitation</th>
+                    <th rowspan="2">Action</th>
+                </tr>
+                <tr>
+                    <th class="tab-td-b-l">Total</th>
+                    <th class="">Success</th>
+                    <th class="tab-td-b-r">Fail</th>
+                    <th class="tab-td-b-l">Total</th>
+                    <th class="">Success</th>
+                    <th class="tab-td-b-r">Fail</th>
+                    <th class="tab-td-b-l">Total</th>
+                    <th class="">Success</th>
+                    <th class="tab-td-b-r">Fail</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.ID"></td>
+                    <td data-bind="text: item.RecordCount"></td>
+                    <td data-bind="text: item.SchoolTotal" class="tab-td-b-l"></td>
+                    <td data-bind="text: item.SchoolSuccess" class=""></td>
+                    <!-- ko if: (item.SchoolFail>0) -->
+                    <td data-bind="text: item.SchoolFail" class="tab-td-b-r" style="color: #e40404"></td>
+                    <!-- /ko-->
+                    <!-- ko if: (item.SchoolFail==0) -->
+                    <td data-bind="text: item.SchoolFail" class="tab-td-b-r"></td>
+                    <!-- /ko-->
+                    <td data-bind="text: item.TeacherTotal" class="tab-td-b-l"></td>
+                    <td data-bind="text: item.TeacherSuccess" class=""></td>
+                    <!-- ko if: (item.TeacherFail>0) -->
+                    <td data-bind="text: item.TeacherFail" class="tab-td-b-r" style="color: #e40404"></td>
+                    <!-- /ko-->
+                    <!-- ko if: (item.TeacherFail==0) -->
+                    <td data-bind="text: item.TeacherFail" class="tab-td-b-r"></td>
+                    <!-- /ko-->
+                    <td data-bind="text: item.StudentTotal" class="tab-td-b-l"></td>
+                    <td data-bind="text: item.StudentSuccess" class=""></td>
+                    <!-- ko if: (item.StudentFail>0) -->
+                    <td data-bind="text: item.StudentFail" class="tab-td-b-r" style="color: #e40404"></td>
+                    <!-- /ko-->
+                    <!-- ko if: (item.StudentFail==0) -->
+                    <td data-bind="text: item.StudentFail" class="tab-td-b-r"></td>
+                    <!-- /ko-->
+                    <td data-bind="text: item.OriginFileName" style="max-width: 200px; word-break: break-word"></td>
+                    <td data-bind="text: item.CreatedOn"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td data-bind="text: item.SendInvitation ? 'Yes' : 'No'"></td>
+                    <td>
+                        <!-- ko if: (item.Status.value() == 0) -->
+                        <a class="table-btn icon-play start-btn" data-bind="click: $root.dataProcessStart" href="#" title="Process"></a>
+
+                        <a class="table-btn icon-trash trash-btn" href="#" title="Delete" data-bind="click: $root.deleteGroup"></a>
+                        <!-- /ko-->
+                        <!-- ko if: (item.Status.value() >=3 && (item.SchoolFail >0 || item.TeacherFail>0 || item.StudentFail>0)) -->
+                        <a class="table-btn icon-comment comment-btn" data-bind="attr: { href: $root.viewLog(item)}"
+                           data-toggle="modal" data-target="#modalNormal" href="#"></a>
+                        <!-- /ko-->
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 20 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+@section Scripts
+{
+    @Scripts.Render("~/scripts/jquery_form")
+    <script type="text/javascript">
+        var list_Package = {};
+        $(function () {
+            list_Package = new ViewModel(
+                {
+                    instanceName: "list_Package",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchDefault")))',
+                    deleteDataUrl: '@Html.Raw(Url.Action("Delete"))',
+                    orderBy: "CreatedOn",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    searchCriteria: {
+
+                    }
+                },
+                {
+                    dataProcessor: function (items) {
+                        for (var i = 0; i < items.length; i++) {
+                            if (typeof (items[i].Status.value) == "number") {
+                                items[i].Status.value = ko.observable(items[i].Status.value);
+                            }
+                            if (typeof (items[i].Status.text) == "string") {
+                                items[i].Status.text = ko.observable(items[i].Status.text);
+                            }
+                        }
+                        return items;
+                    },
+
+                    dataProcessStart: function (item, event) {
+                        jQuery.when(waitingConfirm("<p style='text-align:left'> Are you sure you want to process the data? <br>Notice: If Yes, the data will begin Queued. Please check the results here shortly.</p>", "Yes", "No")).done(function () {
+                            item.Status.value(1);
+                            item.Status.text("Queued");
+                            jQuery.ajax({
+                                url: "/DataProcess/DataProcess/process/",
+                                type: "post",
+                                data: { ID: item.ID },
+                                beforeSend: function () { },
+                                success: function () {
+                                    window.showMessage('warning', '<p style="text-align:left">Your changes may take up to 1 hour to be reflected on the Assessments.<br />' +
+                                        '<span style="font-weight:bold;">DO NOT</span> process again to prevent duplicates.</p>');
+                                }
+                            });
+                        }).fail(function () {
+                        });
+
+                    },
+                    deleteGroup: function (item, event) {
+                        $.when(window.waitingConfirm("dataprocess_Delete_Confirm", "Delete", "No")).done(function () {
+                            $.post('@Url.Action("Delete", "DataProcess")', {
+                                id: item.ID
+                            }, function (response) {
+                                if (response.success) {
+                                    $.when(window.showMessage("success")).done(function () {
+                                        list_Package.search();
+                                    });
+                                }
+                            }, "json");
+                        });
+                    },
+                    viewLog: function (data) {
+                        return "@Html.Raw(Url.Action("ViewLog"))" + "?id=" + data.ID;
+                    }
+                }
+            );
+
+            list_Package.search();
+            ko.applyBindings(list_Package);
+        });
+
+        function Submit() {
+            if ($("#form1").valid()) {
+                $("#form1").ajaxSubmit({
+                    url: "@Url.Action("Index", "DataProcess")",
+                    type: "post",
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                            window.IRUMessage('success', response.msg);
+                            list_Package.search();
+                            $("#form1")[0].reset();
+                        } else {
+                            window.IRUMessage('fail', response.msg);
+                        }
+                    },
+                    error: function (response) {
+                        window.IRUMessage('fail', response.msg);
+                    }
+                });
+            }
+
+            return false;
+        }
+        window.IRUMessage = function (name, messageContent, debugMessage) {
+            var deffered = $.Deferred();
+            var message = {};
+            if (messageContent in window._message_) {
+                messageContent = window._message_[messageContent];
+            }
+            if (name == "debug" && !window._message_["debug"])
+                name = "fail";
+            if (name == "debug" && window._message_["debug"]) {
+                messageContent = debugMessage;
+            }
+            if (window._message_[name]) {
+                jQuery.extend(message, window._message_[name]);
+            }
+            message.error = "<br/>" + (messageContent || "");
+            var htmlTemp = "<div class='alert alert-<%this.className%> alert-dismissable fade in'  role='alert'>" +
+                "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" +
+                "<i class='<% this.iconClass %> fa-2x'></i>" +
+                "<p style='margin-top:-10px'><% this.error %></p>" +
+                "<p> <button type='button' class='mainbutton _ok btn btn-<%this.className%>' data-dismiss='alert' aria-hidden='true'>OK</button></p>" +
+                "</div>";
+            var html = TemplateEngine(htmlTemp, message);
+            var $messager = jQuery(html).attr("id", "message_" + name).appendTo(messageHelper.getContainer());
+            return deffered.promise();
+        };
+        var messageHelper = (function () {
+            var containerId = "#messageContainer";
+            return {
+                getContainer: function () {
+                    var $messageContainer = jQuery(containerId);
+                    if (!$messageContainer.length) {
+                        $messageContainer = jQuery("<div id='messageContainer' class='message-Container'></div>")
+                            .appendTo("body");
+                    }
+                    $messageContainer.children().each(function () {
+                        //$(this).alert("close");
+                        $(this).hide();
+                    });
+                    return $messageContainer;
+                }
+            }
+        })();
+    </script>
+}

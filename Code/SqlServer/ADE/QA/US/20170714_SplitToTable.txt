@@ -1,0 +1,25 @@
+Create FUNCTION [dbo].[SplitToTable]
+ (
+     @SplitString nvarchar(max)
+ )
+ RETURNS @SplitStringsTable TABLE
+ (
+ id int
+ )
+ AS
+ BEGIN
+     DECLARE @CurrentIndex int;
+     DECLARE @NextIndex int;
+     DECLARE @ReturnText nvarchar(max);
+     SELECT @CurrentIndex=1;
+     WHILE(@CurrentIndex<=len(@SplitString))
+         BEGIN
+             SELECT @NextIndex=charindex(',',@SplitString,@CurrentIndex);
+             IF(@NextIndex=0 OR @NextIndex IS NULL)
+                 SELECT @NextIndex=len(@SplitString)+1;
+                 SELECT @ReturnText=substring(@SplitString,@CurrentIndex,@NextIndex-@CurrentIndex);
+                 INSERT INTO @SplitStringsTable(id) VALUES(@ReturnText);
+                 SELECT @CurrentIndex=@NextIndex+1;
+             END
+     RETURN;
+ END

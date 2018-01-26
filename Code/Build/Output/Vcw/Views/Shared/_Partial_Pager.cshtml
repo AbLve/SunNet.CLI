@@ -1,0 +1,38 @@
+﻿@{
+    Layout = null;
+}
+<div class="content-footer" data-bind="visible: totalPageCount() > 0">
+    <div class="col-sm-6 table-info" data-bind="visible: !miniPager">
+        Showing <strong class="text-muted" data-bind="text: showFromRecord"></strong> to <strong class="text-muted" data-bind="    text: showToRecord"></strong> of <strong class="text-muted" data-bind="    text: recordCount"></strong> entries.
+        Display<label class="hide" for="ddlDisplayPerPage">Display</label>
+        <select class="input-sm" id="ddlDisplayPerPage" name="ddlDisplayPerPage" data-bind="options: displayPerPageOptions,
+    optionsText: 'text',
+    value: displayPerPage"></select>
+        per page.<br />
+    </div>
+      <div class="" data-bind="css:{'col-sm-12':miniPager,'col-sm-6':!miniPager}">
+        <ul class="pagination tables-paginate">
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == 1 }">
+                <a data-bind="    click: function (data, event) { $root.trunPage(1, event); }" href="#">First</a>
+            </li>
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == 1 }">
+                <a data-bind="click: function (data, event) { $root.trunPage('-1', event); }" href="#">Previous</a>
+            </li>
+            <!-- ko foreach:{data:pages,as:'page'}-->
+            <li data-bind="css: { active: $root.currentPageIndex() == page.value }, click: $root.trunPage">
+                <a href="javascript:;" data-bind="text: page.text"></a>
+            </li>
+            <!-- /ko -->
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == totalPageCount() }">
+                <a data-bind="click: function (data, event) { $root.trunPage('+1', event); }" href="#">Next</a>
+            </li>
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == totalPageCount() }">
+                <a data-bind="click: function (data, event) { $root.trunPage(-1, event); }" href="#">Last</a>
+            </li>
+
+        </ul>
+    </div>
+</div>
+@*<button class="btn btn-default" data-bind="visible: hasMore, event: { click: loadMore }">load more</button>
+<br />*@
+

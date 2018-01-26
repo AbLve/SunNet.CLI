@@ -1,0 +1,16 @@
+﻿@{
+    Layout = null;
+}
+<div class="col-sm-6 col-md-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Log&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;
+            <span data-bind="text:network.online()?'Online':'Offline'"></span>&nbsp;
+            <span data-bind="visible:network.online(),text:network.logged()?'[Logged in]':''"></span>&nbsp;
+            <span data-bind="text:network.date(),visible:network.online()">
+            </span>
+        </div>
+        <div class="panel-body panel-body-log" id="log_Container">
+        </div>
+    </div>
+</div>

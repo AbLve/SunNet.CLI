@@ -1,0 +1,21 @@
+﻿ReportQueueService App.config(文件名为: ReportQueue.exe.config)
+1, 新增节点 configuration->connectionStrings->MainReadonlyDbContext
+值为 只读的 Main数据库连接字符串
+<add name="MainReadonlyDbContext" connectionString="" providerName="System.Data.SqlClient" /> 
+
+2, 新增节点 configuration->connectionStrings->AdeReadonlyDbContext
+值为 只读的 Ade数据库连接字符串
+<add name="AdeReadonlyDbContext" connectionString="" providerName="System.Data.SqlClient" /> 
+
+3, 新增节点 configuration->appSettings->ProcessTypes
+值为 当前程序处理的 报表类型
+ <!--
+    SummaryWithAverge_Community = 1
+    Percentage_Community = 2
+    Community_Completion_Report = 3
+    CIRCLE_Data_Export = 4
+    -->
+<add key="ProcessTypes" value="1,2,3,4" />
+
+4, 本次更新之前, 需要运行之前版本的程序, 然后选择 [Uninstall Service]  卸载之前的服务.
+因为这次的程序修改之后, 有可能配置多个服务, 那么每个服务名将会关联 处理类型 以避免重复.

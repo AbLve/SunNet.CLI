@@ -1,0 +1,89 @@
+﻿ 
+GO
+/****** Object:  Trigger [dbo].[tgr_ClassRoom_update]    Script Date: 2015/7/22 18:55:15 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER TRIGGER [dbo].[tgr_ClassRoom_update]
+on [dbo].[Classrooms]
+    for update 
+as
+	CREATE TABLE #Tmp  
+		(
+			ClassroomID   int ,
+			OldStatus  tinyint,   
+			NewStatus  tinyint,
+			OldKitId int,
+			NewKitId int,
+			OldPart1KitId int,
+			NewPart1KitId int,
+			OldPart2KitId int,
+			NewPart2KitId int,
+			OldStartupKitId int,
+			NewStartupKitId int,
+			OldCurriculumId int,
+			NewCurriculumId int,
+			OldNeedCurriculumId int,
+			NewNeedCurriculumId int,
+			OldDevelopingTalkersKitId int,
+			NewDevelopingTalkersKitId int,
+			OldFccKitId int,
+			NewFccKitId int
+		);
+	  INSERT INTO #Tmp  SELECT  
+	        ID, 
+			Status ,   
+			''  ,
+			KitId ,
+			'' ,
+			Part1KitId ,
+			'' ,
+			Part2KitId ,
+			'' ,
+			StartupKitId ,
+			'' ,
+			CurriculumId ,
+			'' ,
+			NeedCurriculumId ,
+			'' ,
+			DevelopingTalkersKitId ,
+			'' ,
+			FccKitId ,''  FROM deleted; 
+
+	  UPDATE #Tmp SET 
+	            NewStatus = B.Status, 
+				NewKitId=B.KitId ,
+				NewPart1KitId =B.Part1KitId ,
+				NewPart2KitId =B.Part2KitId ,
+				NewStartupKitId =B.StartupKitId ,
+				NewCurriculumId =B.CurriculumId ,
+				NewNeedCurriculumId =B.NeedCurriculumId ,
+				NewDevelopingTalkersKitId =B.DevelopingTalkersKitId ,
+				NewFccKitId =B.FccKitId 
+	          FROM #Tmp A ,inserted B WHERE A.ClassroomID = B.ID
+	   
+	 
+	BEGIN
+	UPDATE Classrooms SET StatusDate = GETDATE() FROM #Tmp A,Classrooms B WHERE A.ClassroomID= B.ID AND A.OldStatus != A.NewStatus;
+    INSERT  ClassroomStatusHistories  SELECT  Classrooms.ID , Classrooms.Status, Classrooms.StatusDate FROM Classrooms JOIN #Tmp ON Classrooms.ID =#Tmp.ClassroomID  WHERE #Tmp.OldStatus != #Tmp.NewStatus;
+
+	UPDATE Classrooms SET KitUpdatedOn = GETDATE() FROM #Tmp A,Classrooms B WHERE A.ClassroomID= B.ID AND A.OldKitId != A.NewKitId;
+
+	UPDATE Classrooms SET Part1KitUpdatedOn = GETDATE() FROM #Tmp A,Classrooms B WHERE A.ClassroomID= B.ID AND A.OldPart1KitId != A.NewPart1KitId;
+
+    UPDATE Classrooms SET Part2KitUpdatedOn = GETDATE() FROM #Tmp A,Classrooms B WHERE A.ClassroomID= B.ID AND A.OldPart2KitId != A.NewPart2KitId;
+
+	UPDATE Classrooms SET StartupKitUpdatedOn = GETDATE() FROM #Tmp A,Classrooms B WHERE A.ClassroomID= B.ID AND A.OldStartupKitId != A.NewStartupKitId;
+
+    UPDATE Classrooms SET CurriculumUpdatedOn = GETDATE() FROM #Tmp A,Classrooms B WHERE A.ClassroomID= B.ID AND A.OldCurriculumId != A.NewCurriculumId;
+
+    UPDATE Classrooms SET NeedCurriculumUpdatedOn = GETDATE() FROM #Tmp A,Classrooms B WHERE A.ClassroomID= B.ID AND A.OldNeedCurriculumId != A.NewNeedCurriculumId;
+
+    UPDATE Classrooms SET DevelopingTalkersKitUpdatedOn = GETDATE() FROM #Tmp A,Classrooms B WHERE A.ClassroomID= B.ID AND A.OldDevelopingTalkersKitId != A.NewDevelopingTalkersKitId;
+
+    UPDATE Classrooms SET FccKitUpdatedOn = GETDATE() FROM #Tmp A,Classrooms B WHERE A.ClassroomID= B.ID AND A.OldFccKitId != A.NewFccKitId;
+	END
+	     
+

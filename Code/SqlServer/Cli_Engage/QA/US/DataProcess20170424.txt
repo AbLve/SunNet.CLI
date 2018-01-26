@@ -1,0 +1,764 @@
+﻿ALTER PROCEDURE [dbo].[DataProcess] 
+	@DataProcessId INT,
+	@InvitationEmail BIT,
+	@CreatedBy INT,
+	@CommunityId INT,
+	@CreateClassroom BIT
+AS
+BEGIN
+	SET XACT_ABORT ON;
+
+	DECLARE @SchoolName VARCHAR(500)
+	DECLARE @SchoolInternalId VARCHAR(100)
+	DECLARE @TeacherFirstName VARCHAR(150)
+	DECLARE @TeacherMiddleName VARCHAR(150)
+	DECLARE @TeacherLastName VARCHAR(150)
+	DECLARE @TeacherInternalId VARCHAR(150)
+	DECLARE @TeacherPhoneNumber VARCHAR(50)
+	DECLARE @TeacherPhoneType TINYINT
+	DECLARE @TeacherPrimaryEmail VARCHAR(150)
+	DECLARE @ClassDayType TINYINT
+	DECLARE @ClassLevel TINYINT
+	DECLARE @StudentFirstName VARCHAR(150)
+	DECLARE @StudentMiddleName VARCHAR(150)
+	DECLARE @StudentLastName VARCHAR(150)
+	DECLARE @StudentInternalId VARCHAR(100)
+	DECLARE @StudentTsdsId VARCHAR(100)
+	DECLARE @StudentGradeLevel TINYINT
+	DECLARE @StudentLanguage TINYINT
+	DECLARE @StudentBirthdate DATETIME
+	DECLARE @StudentGender TINYINT
+	DECLARE @StudentEthnicity TINYINT
+	DECLARE @Action TINYINT
+
+
+	DECLARE @BasicSchoolId INT
+	DECLARE @SchoolId INT
+	DECLARE @TeacherId INT
+	DECLARE @TeacherUserId INT
+	DECLARE @ClassroomName VARCHAR(200)
+	DECLARE @ClassroomId INT
+	DECLARE @StudentId INT	
+	DECLARE @NameDuplicate BIT = 0
+	DECLARE @ParentCode INT -- 随机生成的ParentCode
+
+	BEGIN TRY
+		BEGIN TRANSACTION;
+
+			SELECT @SchoolName=[SchoolName],@SchoolInternalId=[SchoolInternalId],
+			@TeacherFirstName=[TeacherFirstName],@TeacherMiddleName=[TeacherMiddleName],
+			 @TeacherLastName=[TeacherLastName],@TeacherInternalId=[TeacherInternalId],
+			 @TeacherPhoneNumber=[TeacherPhoneNumber],@TeacherPhoneType=[TeacherPhoneType],
+			 @TeacherPrimaryEmail=[TeacherPrimaryEmail],@ClassDayType=[ClassDayType],@ClassLevel=[ClassLevel],
+			 @StudentFirstName=[StudentFirstName],@StudentMiddleName=[StudentMiddleName],@StudentLastName=[StudentLastName],
+			 @StudentInternalId=[StudentInternalId],@StudentTsdsId=[StudentTsdsId],@StudentGradeLevel=[StudentGradeLevel],
+			 @StudentLanguage=[StudentLanguage],@StudentBirthdate=[StudentBirthdate],
+			 @StudentGender=[StudentGender],@StudentEthnicity=[StudentEthnicity],@Action=Action FROM DataProcesses WHERE ID=@DataProcessId
+
+			 --insert school
+			SELECT @BasicSchoolId = ID FROM BasicSchools WHERE Name = @SchoolName AND SchoolNumber=@SchoolInternalId AND STATUS=1 --David 09/04/2015, Need to combine with school number 
+			
+			IF(@BasicSchoolId IS NOT NULL)
+			BEGIN
+				IF(EXISTS(SELECT ID FROM SCHOOLS WHERE Name=@SchoolName))  -- same name exists in Engage, but still exists in basicschools
+					BEGIN
+						UPDATE DataProcesses SET Remark = 'School duplicate found.'
+						,Status = 5 WHERE ID = @DataProcessId
+						SET @NameDuplicate = 1;
+					END
+				ELSE
+				BEGIN
+					 INSERT INTO [dbo].[Schools]
+					   ([SchoolId]
+					   ,[BasicSchoolId]
+					   ,[Status]
+					   ,[StatusDate]
+					   ,[SchoolYear]
+					   ,[ESCName]
+					   ,[ParentAgencyId]
+					   ,[PhysicalAddress1]
+					   ,[PhysicalAddress2]
+					   ,[City]
+					   ,[CountyId]
+					   ,[StateId]
+					   ,[Zip]
+					   ,[PhoneNumber]
+					   ,[PhoneType]
+					   ,[SchoolTypeId]
+					   ,[SubTypeId]
+					   ,[ClassroomCount3Years]
+					   ,[ClassroomCount4Years]
+					   ,[ClassroomCount34Years]
+					   ,[ClassroomCountKinder]
+					   ,[ClassroomCountgrade]
+					   ,[ClassroomCountOther]
+					   ,[ClassroomCountEarly]
+					   ,[ClassroomCountInfant]
+					   ,[ClassroomCountToddler]
+					   ,[ClassroomCountPreSchool]
+					   ,[AtRiskPercent]
+					   ,[FundingId]
+					   ,[TrsLastStatusChange]
+					   ,[PrimarySalutation]
+					   ,[PrimaryName]
+					   ,[PrimaryTitleId]
+					   ,[PrimaryPhone]
+					   ,[PrimaryPhoneType]
+					   ,[PrimaryEmail]
+					   ,[SecondarySalutation]
+					   ,[SecondaryName]
+					   ,[SecondaryTitleId]
+					   ,[SecondaryPhoneNumber]
+					   ,[SecondaryPhoneType]
+					   ,[SecondaryEmail]
+					   ,[Latitude]
+					   ,[Longitude]
+					   ,[IsSamePhysicalAddress]
+					   ,[MailingAddress1]
+					   ,[MailingAddress2]
+					   ,[MailingCity]
+					   ,[MailingCountyId]
+					   ,[MailingStateId]
+					   ,[MailingZip]
+					   ,[SchoolSize]
+					   ,[IspId]
+					   ,[ISPOther]
+					   ,[InternetSpeed]
+					   ,[InternetType]
+					   ,[WirelessType]
+					   ,[Notes]
+					   ,[CreatedOn]
+					   ,[UpdatedOn]
+					   ,[SchoolNumber]
+					   ,[FacilityType]
+					   ,[TrsAssessorId]
+					   ,[TrsTaStatus]
+					   ,[StarStatus]
+					   ,[DfpsNumber]
+					   ,[OwnerFirstName]
+					   ,[OwnerLastName]
+					   ,[OwnerEmail]
+					   ,[OwnerPhone]
+					   ,[NAEYC]
+					   ,[CANASA]
+					   ,[NECPA]
+					   ,[NACECCE]
+					   ,[NAFCC]
+					   ,[ACSI]
+					   ,[RegulatingEntity]
+					   ,[USMilitary]
+					   ,[VSDesignation]
+					   ,[StarDate]
+					   ,[RecertificatedBy]
+					   ,[EnableAutoAssign4Star]
+					   ,[Name]
+					   ,CreateBy
+					   ,UpdateBy
+					   ,CreateFrom
+					   ,UpdateFrom)
+					VALUES
+					   (''--, --varchar(10),>
+					   ,@BasicSchoolId --, int,>
+					   ,1 --<Status, tinyint,>
+					   ,getdate() -- <StatusDate, datetime,>
+					   ,dbo.GetSchoolYear() --<SchoolYear, varchar(10),>
+					   ,0--<ESCName, int,>
+					   ,0--<ParentAgencyId, int,>
+					   ,''--<PhysicalAddress1, varchar(500),>
+					   ,''--<PhysicalAddress2, varchar(500),>
+					   ,''--<City, varchar(50),>
+					   ,0--<CountyId, int,>
+					   ,0--<StateId, int,>
+					   ,''--<Zip, varchar(10),>
+					   ,''--<PhoneNumber, varchar(15),>
+					   ,0--<PhoneType, tinyint,>
+					   ,0--<SchoolTypeId, int,>
+					   ,0--<SubTypeId, int,>
+					   ,0--<ClassroomCount3Years, int,>
+					   ,0--<ClassroomCount4Years, int,>
+					   ,0--<ClassroomCount34Years, int,>
+					   ,0--<ClassroomCountKinder, int,>
+					   ,0--<ClassroomCountgrade, int,>
+					   ,0--<ClassroomCountOther, int,>
+					   ,0--<ClassroomCountEarly, int,>
+					   ,0--<ClassroomCountInfant, int,>
+					   ,0--<ClassroomCountToddler, int,>
+					   ,0--<ClassroomCountPreSchool, int,>
+					   ,0--<AtRiskPercent, int,>
+					   ,0--<FundingId, int,>
+					   ,'1753/1/1'--<TrsLastStatusChange, datetime,>
+					   ,0--<PrimarySalutation, tinyint,>
+					   ,''--<PrimaryName, varchar(150),>
+					   ,0--<PrimaryTitleId, int,>
+					   ,''--<PrimaryPhone, varchar(50),>
+					   ,0--<PrimaryPhoneType, tinyint,>
+					   ,''--<PrimaryEmail, varchar(150),>
+					   ,0--<SecondarySalutation, tinyint,>
+					   ,''--<SecondaryName, varchar(150),>
+					   ,0--<SecondaryTitleId, int,>
+					   ,''--<SecondaryPhoneNumber, varchar(15),>
+					   ,0--<SecondaryPhoneType, tinyint,>
+					   ,''--<SecondaryEmail, varchar(150),>
+					   ,''--<Latitude, varchar(50),>
+					   ,''--<Longitude, varchar(50),>
+					   ,0--<IsSamePhysicalAddress, bit,>
+					   ,''--<MailingAddress1, varchar(500),>
+					   ,''--<MailingAddress2, varchar(500),>
+					   ,''--<MailingCity, varchar(500),>
+					   ,0---<MailingCountyId, int,>
+					   ,0--<MailingStateId, int,>
+					   ,''--<MailingZip, varchar(15),>
+					   ,0--<SchoolSize, int,>
+					   ,0--<IspId, int,>
+					   ,''--<ISPOther, varchar(50),>
+					   ,0--<InternetSpeed, tinyint,>
+					   ,0--<InternetType, tinyint,>
+					   ,0--<WirelessType, tinyint,>
+					   ,''--<Notes, varchar(600),>
+					   ,getdate()--<CreatedOn, datetime,>
+					   ,getdate()--<UpdatedOn, datetime,>
+					   ,@SchoolInternalId--<SchoolNumber, varchar(100),>
+					   ,0--<FacilityType, tinyint,>
+					   ,0--<TrsAssessorId, int,>
+					   ,''--<TrsTaStatus, varchar(500),>
+					   ,0--<StarStatus, tinyint,>
+					   ,''--<DfpsNumber, varchar(100),>
+					   ,''--<OwnerFirstName, varchar(100),>
+					   ,''--<OwnerLastName, varchar(100),>
+					   ,''--<OwnerEmail, varchar(100),>
+					   ,''--<OwnerPhone, varchar(20),>
+					   ,0--<NAEYC, bit,>
+					   ,0--<CANASA, bit,>
+					   ,0--<NECPA, bit,>
+					   ,0--<NACECCE, bit,>
+					   ,0--<NAFCC, bit,>
+					   ,0--<ACSI, bit,>
+					   ,0--<RegulatingEntity, tinyint,>
+					   ,0--<USMilitary, bit,>
+					   ,0--<VSDesignation, tinyint,>
+					   ,'1753/1/1'--<StarDate, datetime,>
+					   ,'1753/1/1'--<RecertificatedBy, datetime,>
+					   ,0--<EnableAutoAssign4Star, bit,>
+					   ,@SchoolName--<Name, varchar(500),>
+					   ,@CreatedBy
+					   ,@CreatedBy
+					   ,'DataProcess'
+					   ,''
+					   )
+
+					 SELECT @SchoolId = SCOPE_IDENTITY()
+
+					 UPDATE BasicSchools SET Status=2,UpdatedOn=GETDATE() WHERE ID=@BasicSchoolId AND Status=1 --David 09/04/2015, only status=1 can be updated
+
+					 INSERT INTO CommunitySchoolRelations([CommunityId],[SchoolId],[Status],[CreatedBy],[CreatedOn],[UpdatedOn],[UpdatedBy])
+					 VALUES(@CommunityId,@SchoolId,1,@CreatedBy,GETDATE(),GETDATE(),@CreatedBy)
+				END
+			END  
+			ELSE
+				SELECT @SchoolId= S.ID FROM Schools S INNER JOIN BasicSchools BS ON S.BasicSchoolId=BS.ID INNER JOIN CommunitySchoolRelations CS   
+				ON S.ID=CS.SchoolId AND CS.CommunityId=@CommunityId AND (BS.SchoolNumber=@SchoolInternalId OR S.SchoolId=@SchoolInternalId) AND BS.Name=@SchoolName
+			
+			IF(@NameDuplicate = 0)
+			BEGIN
+				IF(@SchoolId IS NOT NULL)
+				BEGIN
+					
+					--update school status into active when it's status is inactive
+					UPDATE dbo.Schools SET Status=1,StatusDate=GETDATE(),
+					UpdatedOn=GETDATE(),UpdateBy=@CreatedBy,UpdateFrom='DataProcess'
+					WHERE ID=@SchoolId AND Status=2 
+
+					--insert teacher
+					SELECT @TeacherUserId = ID FROM Users WHERE FirstName=@TeacherFirstName 
+					AND LastName=@TeacherLastName AND PrimaryEmailAddress=@TeacherPrimaryEmail AND Status=1
+
+					IF(@TeacherUserId IS NULL)
+						BEGIN
+							INSERT INTO dbo.Users
+								( Role ,
+								  GoogleId ,
+								  FirstName ,
+								  MiddleName ,
+								  LastName ,
+								  PreviousLastName ,
+								  Status ,
+								  StatusDate ,
+								  PrimaryEmailAddress ,
+								  SecondaryEmailAddress ,
+								  PrimaryPhoneNumber ,
+								  PrimaryNumberType ,
+								  SecondaryPhoneNumber ,
+								  SecondaryNumberType ,
+								  FaxNumber ,
+								  CreatedOn ,
+								  UpdatedOn ,
+								  IsDeleted ,
+								  Sponsor ,
+								  InvitationEmail ,
+								  EmailExpireTime ,
+								  Notes ,
+								  gmail ,
+								  IsSyncLms ,
+								  InternalID
+								)
+						   VALUES  ( 145 , -- Role - tinyint
+								  '' , -- GoogleId - varchar(50)
+								  @TeacherFirstName , -- FirstName - varchar(140)
+								  @TeacherMiddleName , -- MiddleName - varchar(140)
+								  @TeacherLastName , -- LastName - varchar(140)
+								  '' , -- PreviousLastName - varchar(140)
+								  1 , -- Status - tinyint
+								  GETDATE() , -- StatusDate - datetime
+								  @TeacherPrimaryEmail , -- PrimaryEmailAddress - varchar(50)
+								  '' , -- SecondaryEmailAddress - varchar(50)
+								  @TeacherPhoneNumber , -- PrimaryPhoneNumber - varchar(50)
+								  @TeacherPhoneType , -- PrimaryNumberType - tinyint
+								  '' , -- SecondaryPhoneNumber - varchar(50)
+								  0 , -- SecondaryNumberType - tinyint
+								  '' , -- FaxNumber - varchar(50)
+								  GETDATE() , -- CreatedOn - datetime
+								  GETDATE() , -- UpdatedOn - datetime
+								  0 , -- IsDeleted - bit
+								  @CreatedBy , -- Sponsor - int
+								  (case when @InvitationEmail=1 then 2 else 1 end) , -- InvitationEmail - tinyint
+								  '1753/1/1' , -- EmailExpireTime - datetime
+								  'BatchImport' , -- Notes - varchar(100)
+								  '' , -- gmail - varchar(200)
+								  0 , -- IsSyncLms - bit
+								  @TeacherInternalId  -- InternalID - varchar(32)
+								)							
+
+							SELECT @TeacherUserId = SCOPE_IDENTITY()
+
+							INSERT INTO dbo.Teachers
+								( UserId ,
+								  TeacherId ,
+								  SchoolYear ,
+								  BirthDate ,
+								  Gender ,
+								  HomeMailingAddress ,
+								  HomeMailingAddress2 ,
+								  City ,
+								  CountyId ,
+								  StateId ,
+								  Zip ,
+								  Ethnicity ,
+								  EthnicityOther ,
+								  PrimaryLanguageId ,
+								  PrimaryLanguageOther ,
+								  SecondaryLanguageId ,
+								  SecondaryLanguageOther ,
+								  TotalTeachingYears ,
+								  AgeGroupOther ,
+								  CurrentAgeGroupTeachingYears ,
+								  TeacherType ,
+								  TeacherTypeOther ,
+								  PDOther ,
+								  EducationLevel ,
+								  CoachId ,
+								  CoachAssignmentWay ,
+								  CoachAssignmentWayOther ,
+								  ECIRCLEAssignmentWay ,
+								  ECIRCLEAssignmentWayOther ,
+								  YearsInProjectId ,
+								  CoreAndSupplemental ,
+								  CoreAndSupplemental2 ,
+								  CoreAndSupplemental3 ,
+								  CoreAndSupplemental4 ,
+								  VendorCode ,
+								  CoachingHours ,
+								  EmployedBy ,
+								  CLIFundingId ,
+								  MediaRelease ,
+								  IsAssessmentEquipment ,
+								  TeacherNotes ,
+								  ReqCycles
+								)
+						      VALUES  ( @TeacherUserId , -- UserId - int
+								  '' , -- TeacherId - varchar(50)
+								  dbo.GetSchoolYear() , -- SchoolYear - varchar(10)
+								  '1753/1/1' , -- BirthDate - datetime
+								  0 , -- Gender - tinyint
+								  '' , -- HomeMailingAddress - varchar(200)
+								  '' , -- HomeMailingAddress2 - varchar(200)
+								  '' , -- City - varchar(200)
+								  0 , -- CountyId - int
+								  0 , -- StateId - int
+								  '' , -- Zip - varchar(5)
+								  0 , -- Ethnicity - tinyint
+								  '' , -- EthnicityOther - varchar(100)
+								  0 , -- PrimaryLanguageId - int
+								  '' , -- PrimaryLanguageOther - varchar(100)
+								  0 , -- SecondaryLanguageId - int
+								  '' , -- SecondaryLanguageOther - varchar(100)
+								  0 , -- TotalTeachingYears - int
+								  '' , -- AgeGroupOther - varchar(100)
+								  0 , -- CurrentAgeGroupTeachingYears - int
+								  0 , -- TeacherType - tinyint
+								  '' , -- TeacherTypeOther - varchar(100)
+								  '' , -- PDOther - varchar(100)
+								  0 , -- EducationLevel - tinyint
+								  0 , -- CoachId - int
+								  0 , -- CoachAssignmentWay - tinyint
+								  '' , -- CoachAssignmentWayOther - varchar(100)
+								  0 , -- ECIRCLEAssignmentWay - tinyint
+								  '' , -- ECIRCLEAssignmentWayOther - varchar(100)
+								  0 , -- YearsInProjectId - int
+								  '' , -- CoreAndSupplemental - varchar(140)
+								  '' , -- CoreAndSupplemental2 - varchar(140)
+								  '' , -- CoreAndSupplemental3 - varchar(140)
+								  '' , -- CoreAndSupplemental4 - varchar(140)
+								  0 , -- VendorCode - int
+								  0 , -- CoachingHours - decimal
+								  0 , -- EmployedBy - tinyint
+								  0 , -- CLIFundingId - int
+								  0 , -- MediaRelease - tinyint
+								  0 , -- IsAssessmentEquipment - bit
+								  '' , -- TeacherNotes - varchar(600)
+								  0  -- ReqCycles - decimal
+								)
+			
+							SELECT @TeacherId = SCOPE_IDENTITY()	
+
+						END  --IF(@TeacherUserId IS NULL)
+					ELSE --select teacher under this community and school
+						SELECT top 1 @TeacherId= t.ID FROM Teachers t 
+						INNER JOIN dbo.Users u
+						ON t.UserId=u.ID
+						--INNER JOIN dbo.UserComSchRelations uc
+						--ON uc.UserId=u.ID AND (uc.SchoolId=@SchoolId OR uc.CommunityId=@CommunityId)
+						WHERE u.ID=@TeacherUserId
+					
+					IF(@TeacherId IS NULL)  -- can not find teacher under this community and school
+						BEGIN
+							UPDATE DataProcesses SET Remark = 'Teacher duplicate found.'
+							,Status = 5 WHERE ID = @DataProcessId
+						END
+					ELSE
+						BEGIN
+							--create relationship (community-school-teacher)
+							IF(NOT EXISTS(SELECT * FROM UserComSchRelations WHERE SchoolId=@SchoolId AND UserId=@TeacherUserId 
+								AND CommunityId = @CommunityId))
+							INSERT INTO UserComSchRelations(UserId,CommunityId,SchoolId,Status,CreatedBy,CreatedOn,UpdatedBy,UpdatedOn)
+							VALUES(@TeacherUserId,@CommunityId,@SchoolId,1,@CreatedBy,GETDATE(),@CreatedBy,GETDATE())
+																	
+							--insert student
+							DECLARE @IFExistsStudent bit=1;
+
+							IF(@Action=1)
+							BEGIN
+								IF(@StudentInternalId != '')
+									BEGIN
+										SELECT @StudentId = s.ID FROM dbo.Students s
+											INNER JOIN dbo.SchoolStudentRelations ss
+											ON s.ID=ss.StudentId
+											INNER JOIN dbo.Schools school
+											ON ss.SchoolId= school.ID
+											INNER JOIN dbo.CommunitySchoolRelations csr
+											ON school.ID=csr.SchoolId
+											INNER JOIN dbo.Communities com
+											ON com.ID=csr.CommunityId  AND com.ID=@CommunityId
+											WHERE s.LocalStudentID=@StudentInternalId AND s.FirstName=@StudentFirstName
+											AND s.LastName=@StudentLastName AND s.BirthDate=@StudentBirthdate
+										IF (@StudentId IS NULL)
+										 SET @IFExistsStudent=0;	
+									END
+								ELSE
+									BEGIN
+										SELECT @StudentId = s.ID FROM dbo.Students s
+											INNER JOIN dbo.SchoolStudentRelations ss
+											ON s.ID=ss.StudentId
+											INNER JOIN dbo.Schools school
+											ON ss.SchoolId= school.ID
+											INNER JOIN dbo.CommunitySchoolRelations csr
+											ON school.ID=csr.SchoolId
+											INNER JOIN dbo.Communities com
+											ON com.ID=csr.CommunityId  AND com.ID=@CommunityId
+											WHERE s.FirstName=@StudentFirstName
+											AND s.LastName=@StudentLastName AND s.BirthDate=@StudentBirthdate
+										 IF (@StudentId IS NULL)
+											SET @IFExistsStudent=0;	
+									END
+								IF(@IFExistsStudent=0)
+									BEGIN
+										--生成一个不存在的随机数
+										SET @ParentCode = CAST(ceiling(rand() * 90000000 + 10000000) AS INT);
+										WHILE((SELECT COUNT(1) FROM dbo.Students WHERE ParentCode = @ParentCode) > 0)
+										  BEGIN
+											SET @ParentCode = CAST(ceiling(rand() * 90000000 + 10000000) AS INT);
+										  END
+										INSERT INTO dbo.Students
+											( StudentId ,
+											  FirstName ,
+											  MiddleName ,
+											  LastName ,
+											  Status ,
+											  StatusDate ,
+											  SchoolYear ,
+											  BirthDate ,
+											  Gender ,
+											  Ethnicity ,
+											  EthnicityOther ,
+											  PrimaryLanguageId ,
+											  PrimaryLanguageOther ,
+											  SecondaryLanguageId ,
+											  SecondaryLanguageOther ,
+											  IsSendParent ,
+											  IsMediaRelease ,
+											  Notes ,
+											  CreatedOn ,
+											  UpdatedOn ,
+											  ParentCode ,
+											  AssessmentLanguage ,
+											  LocalStudentID ,
+											  TSDSStudentID ,
+											  GradeLevel,
+											  IsDeleted 
+											)
+										VALUES  
+											( '' , -- StudentId - varchar(12)
+												@StudentFirstName , -- FirstName - varchar(140)
+												@StudentMiddleName , -- MiddleName - varchar(140)
+												@StudentLastName , -- LastName - varchar(140)
+												1 , -- Status - tinyint
+												GETDATE() , -- StatusDate - datetime
+												dbo.GetSchoolYear() , -- SchoolYear - varchar(50)
+												@StudentBirthdate , -- BirthDate - datetime
+												@StudentGender , -- Gender - tinyint
+												@StudentEthnicity , -- Ethnicity - tinyint
+												'' , -- EthnicityOther - varchar(100)
+												0 , -- PrimaryLanguageId - int
+												'' , -- PrimaryLanguageOther - varchar(100)
+												0 , -- SecondaryLanguageId - int
+												'' , -- SecondaryLanguageOther - varchar(100)
+												0 , -- IsSendParent - bit
+												0 , -- IsMediaRelease - tinyint
+												'' , -- Notes - varchar(600)
+												GETDATE() , -- CreatedOn - datetime
+												GETDATE() , -- UpdatedOn - datetime
+												@ParentCode , -- ParentCode - varchar(50)
+												@StudentLanguage , -- AssessmentLanguage - tinyint
+												@StudentInternalId , -- LocalStudentID - varchar(100)
+												@StudentTsdsId , -- TSDSStudentID - varchar(100)
+												@StudentGradeLevel,  -- GradeLevel - tinyint
+												0 -- IsDeleted
+											  )							
+							
+										SELECT @StudentId = SCOPE_IDENTITY();
+							
+										IF(@StudentInternalId = '')	
+											UPDATE Students SET LocalStudentID = StudentId WHERE ID = @StudentId;
+									
+										--only create relationship with current school
+										INSERT INTO SchoolStudentRelations([SchoolId],[StudentId],[Status],
+											[CreatedBy],[CreatedOn],[UpdatedOn],[UpdatedBy])
+										VALUES(@SchoolId,@StudentId,1,@CreatedBy,GETDATE(),GETDATE(),@CreatedBy)
+									END
+								ELSE
+								BEGIN
+									UPDATE DataProcesses SET Remark = 'Student duplicate found.'
+										,Status = 5, RemarkType=3 WHERE ID = @DataProcessId	
+										return
+								END
+							END
+							ELSE--update student information
+							BEGIN
+								select top 1 @StudentId=S.ID from Students S inner join SchoolStudentRelations SSR on SSR.StudentId=S.ID 
+								where LocalStudentID=(case when @StudentInternalId='' then LocalStudentID else @StudentInternalId end) 
+								and SSR.SchoolId in (select SchoolId from CommunitySchoolRelations where CommunityId=@CommunityId)
+								UPDATE Students set FirstName=@StudentFirstName,MiddleName=@StudentMiddleName,LastName=@StudentLastName,
+								GradeLevel=(case when @StudentGradeLevel=0 then GradeLevel else @StudentGradeLevel end),
+								BirthDate=@StudentBirthdate,
+								Gender=(case when @StudentGender=0 then Gender else @StudentGender end)
+								,Ethnicity=(case when @StudentEthnicity=0 then Ethnicity else @StudentEthnicity end),
+								TSDSStudentID=(case when @StudentTsdsId='' then TSDSStudentID else @StudentTsdsId end)
+								,AssessmentLanguage=(case when @StudentLanguage=0 then AssessmentLanguage else @StudentLanguage end)
+								where ID=@StudentId
+								set @IFExistsStudent=0
+							END				
+					
+							--create class only for current school
+							DECLARE @CreatedClass INT
+							--insert class	and create relationship(student-class)
+							DECLARE @newStudentId INT
+							SET @newStudentId= CASE @IFExistsStudent WHEN 0 THEN @StudentId ELSE 0 END;
+							EXECUTE DataProcessClass @CommunityId,@SchoolId,@TeacherId,@TeacherUserId,@TeacherFirstName,@TeacherLastName,
+							@ClassDayType,@ClassLevel,@newStudentId,@Action,@CreatedBy,@CreatedClass OUTPUT	
+							
+							IF(@CreateClassroom=1)
+							BEGIN	
+								--create classroom only for current school
+								IF(EXISTS(SELECT * FROM Users U INNER JOIN UserComSchRelations UC
+									ON U.ID=UC.UserId AND UC.SchoolId=@SchoolId AND U.LastName=@TeacherLastName
+									AND U.ID != @TeacherUserId))
+									BEGIN
+										IF(EXISTS(SELECT * FROM Users U INNER JOIN UserComSchRelations UC
+										ON U.ID=UC.UserId AND UC.SchoolId=@SchoolId AND U.LastName=@TeacherLastName 
+										AND SUBSTRING(U.FirstName,1,1)=SUBSTRING(@TeacherFirstName,1,1)
+										AND U.ID != @TeacherUserId))
+											SET @ClassroomName=@TeacherFirstName+' '+@TeacherLastName+'''s';
+										ELSE
+											SET @ClassroomName=SUBSTRING(@TeacherFirstName,1,1)+' '+@TeacherLastName+'''s';
+									END
+								 ELSE
+									SET @ClassroomName=@TeacherLastName+'''s';
+						 
+								 SET @ClassroomName=@ClassroomName+' Classroom';
+
+								IF NOT EXISTS(SELECT * FROM Classrooms WHERE Name=@ClassroomName AND SchoolId = @SchoolId)
+								BEGIN
+									INSERT INTO dbo.Classrooms
+										( ClassroomId ,
+											SchoolId ,
+											Name ,
+											Status ,
+											StatusDate ,
+											SchoolYear ,
+											InterventionStatus ,
+											InterventionOther ,
+											FundingId ,
+											KitId ,
+											KitUpdatedOn ,
+											FcNeedKitId ,
+											FcFundingId ,
+											Part1KitId ,
+											Part1KitUpdatedOn ,
+											Part1NeedKitId ,
+											Part1FundingId ,
+											Part2KitId ,
+											Part2KitUpdatedOn ,
+											Part2NeedKitId ,
+											Part2FundingId ,
+											StartupKitId ,
+											StartupKitUpdatedOn ,
+											StartupNeedKitId ,
+											StartupKitFundingId ,
+											CurriculumId ,
+											CurriculumUpdatedOn ,
+											NeedCurriculumId ,
+											NeedCurriculumUpdatedOn ,
+											CurriculumFundingId ,
+											DevelopingTalkersKitId ,
+											DevelopingTalkersKitUpdatedOn ,
+											DevelopingTalkersNeedKitId ,
+											DevelopingTalkerKitFundingId ,
+											FccKitId ,
+											FccKitUpdatedOn ,
+											FccNeedKitId ,
+											FccKitFundingId ,
+											InternetSpeed ,
+											InternetType ,
+											WirelessType ,
+											IsUsingInClassroom ,
+											ComputerNumber ,
+											IsInteractiveWhiteboard ,
+											MaterialsNotes ,
+											TechnologyNotes ,
+											CreatedOn ,
+											UpdatedOn ,
+											TypeOfClassroom ,
+											LCchildrenNumber ,
+											LCchildrenTypeId ,
+											ClassroomInternalID
+										)
+									VALUES  ( '' , -- ClassroomId - varchar(32)
+										@SchoolId , -- SchoolId - int
+										@ClassroomName , -- Name - varchar(50)
+										1 , -- Status - tinyint
+										GETDATE() , -- StatusDate - datetime
+										dbo.GetSchoolYear() , -- SchoolYear - varchar(5)
+										0 , -- InterventionStatus - tinyint
+										'' , -- InterventionOther - varchar(150)
+										0 , -- FundingId - int
+										0 , -- KitId - int
+										'1753/1/1' , -- KitUpdatedOn - datetime
+										0 , -- FcNeedKitId - int
+										0 , -- FcFundingId - int
+										0 , -- Part1KitId - int
+										'1753/1/1' , -- Part1KitUpdatedOn - datetime
+										0 , -- Part1NeedKitId - int
+										0 , -- Part1FundingId - int
+										0 , -- Part2KitId - int
+										'1753/1/1' , -- Part2KitUpdatedOn - datetime
+										0 , -- Part2NeedKitId - int
+										0 , -- Part2FundingId - int
+										0 , -- StartupKitId - int
+										'1753/1/1' , -- StartupKitUpdatedOn - datetime
+										0 , -- StartupNeedKitId - int
+										0 , -- StartupKitFundingId - int
+										0 , -- CurriculumId - int
+										'1753/1/1' , -- CurriculumUpdatedOn - datetime
+										0 , -- NeedCurriculumId - int
+										'1753/1/1' , -- NeedCurriculumUpdatedOn - datetime
+										0 , -- CurriculumFundingId - int
+										0 , -- DevelopingTalkersKitId - int
+										'1753/1/1' , -- DevelopingTalkersKitUpdatedOn - datetime
+										0 , -- DevelopingTalkersNeedKitId - int
+										0 , -- DevelopingTalkerKitFundingId - int
+										0 , -- FccKitId - int
+										'1753/1/1' , -- FccKitUpdatedOn - datetime
+										0 , -- FccNeedKitId - int
+										0 , -- FccKitFundingId - int
+										0 , -- InternetSpeed - tinyint
+										0 , -- InternetType - tinyint
+										0 , -- WirelessType - tinyint
+										0 , -- IsUsingInClassroom - bit
+										0 , -- ComputerNumber - int
+										0 , -- IsInteractiveWhiteboard - bit
+										'' , -- MaterialsNotes - varchar(600)
+										'' , -- TechnologyNotes - varchar(600)
+										GETDATE() , -- CreatedOn - datetime
+										GETDATE() , -- UpdatedOn - datetime
+										0 , -- TypeOfClassroom - tinyint
+										0 , -- LCchildrenNumber - int
+										0 , -- LCchildrenTypeId - int
+										''  -- ClassroomInternalID - varchar(32)
+										)						
+
+									SELECT @ClassroomId = SCOPE_IDENTITY()
+								END
+								ELSE 
+								BEGIN
+									SELECT top 1 @ClassroomId=ID FROM Classrooms WHERE Name=@ClassroomName AND SchoolId = @SchoolId
+								END
+
+								--create relationship (class-classroom)
+								IF(@CreatedClass > 0)
+								BEGIN
+									IF NOT EXISTS(SELECT * FROM ClassroomClassRelations WHERE ClassroomId=@ClassroomId AND ClassId = @CreatedClass)
+									BEGIN
+										INSERT INTO ClassroomClassRelations(ClassroomId,ClassId,Status,CreatedBy,CreatedOn,UpdatedOn,UpdatedBy)
+										VALUES(@ClassroomId,@CreatedClass,1,@CreatedBy,GETDATE(),GETDATE(),@CreatedBy)
+									END
+								END 
+							END                      
+				END
+			END
+				ELSE
+					BEGIN
+						UPDATE DataProcesses SET Remark = 'The School does not belong to the Community or District.'
+							,Status = 5 WHERE ID = @DataProcessId
+					END
+			END
+
+			UPDATE DataProcesses SET Status = 3 WHERE ID = @DataProcessId AND Status=1
+			
+		COMMIT TRANSACTION ;
+	END TRY
+
+
+	BEGIN CATCH
+
+		IF (XACT_STATE()) = -1
+		BEGIN			
+			ROLLBACK TRANSACTION;
+			UPDATE DataProcesses SET Remark = ERROR_MESSAGE() ,Status = 4 WHERE ID = @DataProcessId
+		END;
+
+		IF (XACT_STATE()) = 1
+		BEGIN
+			COMMIT TRANSACTION;   
+		END;
+	END CATCH 
+
+END

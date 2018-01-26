@@ -1,0 +1,5 @@
+--Delete CommunityId in Classrooms
+GO
+SELECT * INTO Classrooms_0603 FROM Classrooms
+GO
+ALTER TABLE dbo.Classrooms DROP COLUMN CommunityId

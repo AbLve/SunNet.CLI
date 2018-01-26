@@ -1,0 +1,8 @@
+﻿DELETE FROM mdl_user_info_data WHERE fieldid IN (SELECT id FROM mdl_user_info_field WHERE shortname IN ('CollaborativeTools','ADE','CIRCLEActivityCollection','BEECH','TexasRisingStar','OnlineCourses'));
+
+UPDATE mdl_user_info_field SET datatype='checkbox' WHERE shortname='CollaborativeTools';
+UPDATE mdl_user_info_field SET datatype='checkbox' WHERE shortname='ADE';
+UPDATE mdl_user_info_field SET datatype='checkbox' WHERE shortname='CIRCLEActivityCollection';
+UPDATE mdl_user_info_field SET datatype='checkbox' WHERE shortname='BEECH';
+UPDATE mdl_user_info_field SET datatype='checkbox' WHERE shortname='TexasRisingStar';
+UPDATE mdl_user_info_field SET datatype='checkbox' WHERE shortname='OnlineCourses';

@@ -1,0 +1,51 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    int preId = int.Parse(string.IsNullOrEmpty(Request.QueryString["id"]) ? "0" : Request.QueryString["id"]);
+    ViewBag.Title = "Save As";
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function CopyLayout()
+        {
+            if ( $( "#layoutName" ).val() )
+            {
+                var layoutName = $( "#layoutName" ).val();
+                $.post(
+                    "/Layout/Layout/SaveAs",
+                    { id: @(preId), name: layoutName },
+                    function (result)
+                    {
+                        var oResult=JSON.parse(result);
+                        if (!oResult.Message && oResult.AppendData) {
+                            showMessage("success");
+                            setTimeout(function(){
+                                location.href="@(Url.Action("Edit"))"+"?ID="+oResult.AppendData;
+                            },400);
+                        }
+                        else {
+                            showMessage("fail",oResult.Message);
+                        }
+                    } );
+            }
+            else {
+                showMessage("hint","Please enter Layout Name");
+            }
+        }
+    </script>
+}
+
+<div id="div_copy">
+    <div class="form-group">
+        <label style="width:100%;text-align:center;font-size:larger" for="layoutName">Please enter Layout Name</label>
+    </div>
+    <div class="form-group">
+        <input type="text" class="required form-control" id="layoutName" name="layoutName" />
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" onclick="CopyLayout()">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+</div>

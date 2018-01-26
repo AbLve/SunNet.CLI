@@ -1,0 +1,23 @@
+﻿if not exists(select * from syscolumns where id=object_id('Schools') and name='USMilitary')
+	alter table Schools add USMilitary bit 
+go
+update Schools set USMilitary = 0 
+go
+alter table Schools alter column USMilitary bit not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='VSDesignation')
+	alter table Schools add VSDesignation tinyint 
+go
+update Schools set VSDesignation = 0 
+go
+alter table Schools alter column VSDesignation tinyint not null
+go
+
+if not exists(select * from syscolumns where id=object_id('Schools') and name='StarDate')
+	alter table Schools add StarDate datetime 
+go
+update Schools set StarDate = '1753-01-01' 
+go
+alter table Schools alter column StarDate datetime not null
+go

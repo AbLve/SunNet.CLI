@@ -1,0 +1,262 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.CoachFileModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Vcw.Enums
+@using System.Web.Optimization
+@using Sunnet.Framework.Extensions
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.PM_Coaches)
+}
+
+@{
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("PM Coaches", "Index", "CoachGeneral"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;
+    @(Html.ActionLink("Coach Assignments", "Index", "CoachAssignment"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    @(Html.ActionLink("Assignment Files", "ViewAssignmentFiles", "CoachAssignment", new { id = Model.AssignmentId }, null))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;    
+    Upload File
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    <script type="text/javascript">
+        var contextOther = '@((int)ContextEnum.Other)';
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "ViewAssignmentFiles/" + Model.AssignmentId)");
+                }
+            });
+        })
+
+            function getUploaderPrefix() {
+                return "@(ViewBag.EncryptUserID)_";
+            }
+    </script>
+}
+@using (Ajax.BeginForm("UploadVideo", "CoachAssignment", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.AssignmentId)
+    @Html.HiddenFor(model => model.OwnerId)
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" 
+        href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("ViewAssignmentFiles", "CoachAssignment", new { id = Model.AssignmentId }))" >Back to Assignment</a>
+    </div>
+    <div class="form-group"></div>
+    <div class="form-group">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="col-sm-3">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            @Html.LabelFor(model => model.IdentifyFileName, new { @class = "control-label required" })
+                        </div>
+                        <div class="inputtext-con">
+                            @Html.TextBoxFor(model => model.IdentifyFileName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.IdentifyFileName)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label required">
+                                Upload File 
+                                (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                                <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                            </div>
+                        </div>
+                        <div class="upload-btn">
+                            <div id="picker">1) Select File to Upload</div>
+                        </div>
+                        <div id="filelists" class="uploader-list"></div>
+                        <div class="upload-btn">
+                            <a id="ctlBtn">2) Start Upload</a>
+                        </div>
+                        <input type="hidden" id="filetarget" />
+                        <label for="filetarget">&nbsp;</label>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <label class="control-label" for="DateRecorded">Date Video Recorded</label>
+                        </div>
+                        <div class="inputtext-con">
+                            @Html.TextBoxFor(m => m.DateRecorded, new { @class = "form-control date" })
+                            @Html.ValidationMessageFor(m => m.DateRecorded)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Video language</div>
+                        </div>
+                        <div class="checkbox-con">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(m => m.Language, LanguageEnum.English, new { @value = LanguageEnum.English, id = "Language_English" })
+                                @LanguageEnum.English.ToDescription()
+                            </label>
+                        </div>
+                        <div class="checkbox-con">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(m => m.Language, LanguageEnum.Bilingual, new { @value = LanguageEnum.Bilingual, id = "Language_Bilingual" })
+                                @LanguageEnum.Bilingual.ToDescription()
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="col-sm-3">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Video Context</div>
+                        </div>
+                        @foreach (ContextEnum item in Enum.GetValues(typeof(ContextEnum)))
+                        {
+                            if (item != ContextEnum.None)
+                            {
+                                if (item == ContextEnum.Other)
+                                {
+                            <div class="checkbox-con">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="Context"  value="@(item.GetValue())" />@item.ToDescription()
+                                </label>
+                                <label>
+                                    @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control", disabled = "disabled" })
+                                </label>
+                                @Html.ValidationMessageFor(model => model.ContextOther)
+                            </div>
+                                }
+                                else
+                                {
+                            <div class="checkbox-con">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="Context" value="@(item.GetValue())" />@item.ToDescription()
+                                </label>
+                            </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Video Content</div>
+                        </div>
+
+                        @foreach (ContentEnum item in Enum.GetValues(typeof(ContentEnum)))
+                        {
+                            if (item != ContentEnum.None)
+                            {
+                                if (item == ContentEnum.Other)
+                                {
+                            <div class="checkbox-con">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="Content" id="content-other" 
+                                            onclick="ContentClick(this)" value="@item.GetValue()">@item.ToDescription()
+                                    &nbsp;&nbsp;
+                                </label>
+                                <label>
+                                    @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control", @disabled = "disabled" })
+                                </label>
+                                @Html.ValidationMessageFor(model => model.ContentOther)
+                            </div>
+                                }
+                                else
+                                {
+                            <div class="checkbox-con">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="Content" value="@item.GetValue()">@item.ToDescription()
+                                </label>
+                            </div>
+                                }
+                            }
+
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Coaching Strategies</div>
+                        </div>
+                        @foreach (StrategyEnum item in Enum.GetValues(typeof(StrategyEnum)))
+                        {
+                            if (item != StrategyEnum.None)
+                            {
+                            <div class="checkbox-con checkbox-con-double">
+                                <label class="radio-inline" for="strategy_@(item)" >
+                                    @Html.RadioButtonFor(m => m.StrategyId, item, new { @value = item, id = "strategy_" + item }) @item.ToDescription()</label>
+                            </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-6">
+            <div class="content-con">
+                <div class="content-title3">
+                    <div class="control-label">
+                        Coaching Objectives
+                        <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                    </div>
+                    <label class="hide" for="Objectives">&nbsp;</label>
+                </div>
+                <div class="textarea-con">
+                    @Html.TextAreaFor(m => m.Objectives, new { @class = "form-control", row = "2" })
+                    @Html.ValidationMessageFor(m => m.Objectives)
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="content-con">
+                <div class="content-title3">
+                    <div class="control-label">
+                        Coaching Effectiveness
+                        <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                    </div>
+                    <label class="hide" for="Effectiveness">&nbsp;</label>
+                </div>
+                <div class="textarea-con">
+                    @Html.TextAreaFor(m => m.Effectiveness, new { @class = "form-control", row = "2" })
+                    @Html.ValidationMessageFor(m => m.Effectiveness)
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="uploadfiles" id="uploadfiles" />
+    <div class="modal-footer">
+        <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit_new(this);">
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal"
+            onclick='redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "ViewAssignmentFiles/" + Model.AssignmentId)");' >
+            Cancel</button>
+    </div>
+}

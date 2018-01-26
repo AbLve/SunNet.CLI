@@ -1,0 +1,22 @@
+﻿
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[AddAssessmentToPermission]
+@assessmentId int,
+@assessmentLabel varchar(100)
+AS
+BEGIN
+		SET IDENTITY_INSERT Permission_Pages ON;
+		INSERT Permission_Pages (ID, Name,Ispage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+		values(10000 + @assessmentId, @assessmentLabel,1,2100,'',1,1,'',getdate(),getdate());
+		SET IDENTITY_INSERT Permission_Pages OFF
+		; insert Permission_PageAuthorities (PageId,ActionId) 
+		values(10000 + @assessmentId,1);
+		insert Permission_PageAuthorities (PageId,ActionId) 
+		values(10000 + @assessmentId,4096);
+end
+
+GO

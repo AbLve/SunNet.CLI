@@ -1,0 +1,84 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.StateWideEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Business.Permission.Models
+@using Sunnet.Cli.MainSite.Models
+
+@{
+    ViewBag.Title = "My Profile";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            if ($("#PrimaryLanguageId :selected").text() == "Other")
+                $("#PrimaryLanguageOther").attr("type", "text");
+            if ($("#PositionId :selected").text() == "Other")
+                $("#PositionOther").attr("type", "text");
+
+            $("#PrimaryLanguageId").change(function () {
+                if ($("#PrimaryLanguageId :selected").text() == "Other")
+                    $("#PrimaryLanguageOther").attr("type", "text");
+                else {
+                    $("#PrimaryLanguageOther").val("");
+                    $("#PrimaryLanguageOther").attr("type", "hidden");
+                }
+            })
+            $("#PositionId").change(function () {
+                if ($("#PositionId :selected").text() == "Other")
+                    $("#PositionOther").attr("type", "text");
+                else {
+                    $("#PositionOther").val("");
+                    $("#PositionOther").attr("type", "hidden");
+                }
+            })
+            if ($("#UserInfo_Status").val() == "@((int)Sunnet.Cli.Core.Common.Enums.EntityStatus.Inactive)")
+                $("#SaveInvite").hide();
+            $("#UserInfo_Status").change(function () {
+                if ($("#UserInfo_Status").val() == "@((int)Sunnet.Cli.Core.Common.Enums.EntityStatus.Inactive)")
+                    $("#SaveInvite").hide();
+                else
+                    $("#SaveInvite").show();
+            })
+            $("#SaveInvite").click(function () {
+                $("<input type='hidden' name='isInvite' id='isInvite' value='true' />").appendTo($("#@(formId)"));
+            })
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    if ("@(ViewBag.IsFirst)" == "True") {
+                        redirectBack("/home/Dashboard");
+                    }
+                }
+            })
+        })();
+    </script>
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.My_Profile)
+}
+
+@section BreadPath
+{
+    @(Model.UserInfo.FirstName + " " + Model.UserInfo.LastName)
+}
+
+@using (Ajax.BeginForm("SaveStateWide", "MyProfile", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    <div class="main-content">
+        @Html.Partial("~/Areas/Invitation/Views/StateWide/Partials/EditPartial.cshtml")
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit">
+        </div>
+        @Html.HiddenFor(model=>model.StateWideNotes)
+    </div>
+}

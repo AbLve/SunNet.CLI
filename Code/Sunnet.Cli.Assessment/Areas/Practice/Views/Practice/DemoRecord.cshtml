@@ -1,0 +1,71 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.UIBase.Models 
+@{
+    ViewBag.Title = "Practice Class";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section Scripts
+ {
+    @Scripts.Render("~/scripts/jquery_form")
+    <script type="text/javascript" language="javascript">
+
+        function BeforeSubmit() {
+            if ("@ViewBag.assessmentId" <= 0) {
+                window.showMessage("fail", "Assessment is required.");
+                return false;
+            }
+            $.when(window.waitingConfirm("All values for all students for all measures must be included in this upload. Would you like to continue with the upload?", "Yes", "No")).done(function () {
+                $("#@(formId)").find("#confirm").val(true);
+                subForm();
+            }).fail(function () {
+                $("#@(formId)").find("#confirm").val(false);
+            });
+         }
+
+         function subForm()
+         {
+             $("#@(formId)").ajaxSubmit({
+                 success: function (data)
+                 {
+                     var res = JSON.parse(data);
+                     if (res.success == true)
+                     {
+                         showMessage("success");
+                         setTimeout('closeModal("#@(formId)");', 1000);
+
+                     } else
+                     {
+                         showMessage("fail", res.msg);
+                     }
+                 }
+             });
+         }
+    </script>
+}
+@using (Ajax.BeginForm("UploadDemoRoster", "Practice", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    enctype = "multipart/form-data",
+    @class = "form-horizontal",
+    role = "form",
+    id = formId
+}))
+{  @Html.AntiForgeryToken()
+    @Html.Hidden("confirm", false)
+    <div class="form-group">
+        <label class="control-label col-sm-5 required" for="dataFile">Upload Demo Roster upload for Assesment</label>
+        <div class="col-sm-5">
+            <input type="file" id="dataFile" name="dataFile" class="required form-control"/>
+            @Html.ValidationMessage("dataFile")
+            <a class="form-link2" href="/resources/XLSX/Demo_Class_Template.xlsx" target="_blank">Demo Roster Template.xlsx</a>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <input type="hidden" value="@ViewBag.assessmentId" id="assessmentId" name="assessmentId" /> 
+        <button class="mainbutton modal-btn submit-btn" onclick="BeforeSubmit()" type="button">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+
+}

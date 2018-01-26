@@ -1,0 +1,78 @@
+﻿ 
+
+/****** Object:  Table [dbo].[CommunityRoles]    Script Date: 2014/9/9 12:15:17 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[CommunityRoles](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[RoleName] [varchar](2) NOT NULL,
+	[CommunityId] [varchar](2) NOT NULL,
+	[BasicCommunityId] [varchar](2) NOT NULL,
+	[Status] [varchar](2) NOT NULL,
+	[StatusDate] [varchar](2) NOT NULL,
+	[SchoolYear] [varchar](2) NOT NULL,
+	[FundingId] [varchar](2) NOT NULL,
+	[PhysicalAddress1] [varchar](2) NOT NULL,
+	[PhysicalAddress2] [varchar](2) NOT NULL,
+	[City] [varchar](2) NOT NULL,
+	[CountyId] [varchar](2) NOT NULL,
+	[StateId] [varchar](2) NOT NULL,
+	[Zip] [varchar](2) NOT NULL,
+	[PhoneNumber] [varchar](2) NOT NULL,
+	[PhoneNumberType] [varchar](2) NOT NULL,
+	[PrimarySalutation] [varchar](2) NOT NULL,
+	[PrimaryName] [varchar](2) NOT NULL,
+	[PrimaryTitleId] [varchar](2) NOT NULL,
+	[PrimaryPhone] [varchar](2) NOT NULL,
+	[PrimaryPhoneType] [varchar](2) NOT NULL,
+	[PrimaryEmail] [varchar](2) NOT NULL,
+	[SecondarySalutation] [varchar](2) NOT NULL,
+	[SecondaryName] [varchar](2) NOT NULL,
+	[SecondaryTitleId] [varchar](2) NOT NULL,
+	[SecondaryPhone] [varchar](2) NOT NULL,
+	[SecondaryPhoneType] [varchar](2) NOT NULL,
+	[SecondaryEmail] [varchar](2) NOT NULL,
+	[WebAddress] [varchar](2) NOT NULL,
+	[MouStatus] [varchar](2) NOT NULL,
+	[MouDocument] [varchar](2) NOT NULL,
+	[Notes] [varchar](2) NOT NULL,
+	[CreatedOn] [varchar](2) NOT NULL,
+	[UpdatedOn] [varchar](2) NOT NULL,
+	[ECircle] [varchar](2) NOT NULL,
+	[Beech] [varchar](2) NOT NULL,
+	[Cpalls] [varchar](2) NOT NULL,
+	[Coaching] [varchar](2) NOT NULL,
+	[Materials] [varchar](2) NOT NULL,
+	[Training] [varchar](2) NOT NULL,
+	[ECircleRequest] [varchar](2) NOT NULL,
+	[ECircleCli] [varchar](2) NOT NULL,
+	[BeechRequest] [varchar](2) NOT NULL,
+	[BeechCli] [varchar](2) NOT NULL,
+	[CpallsRequest] [varchar](2) NOT NULL,
+	[CpallsCli] [varchar](2) NOT NULL,
+	[CoachingRequest] [varchar](2) NOT NULL,
+	[CoachingCli] [varchar](2) NOT NULL,
+	[MaterialsRequest] [varchar](2) NOT NULL,
+	[MaterialsCli] [varchar](2) NOT NULL,
+	[TrainingRequest] [varchar](2) NOT NULL,
+	[TrainingCli] [varchar](2) NOT NULL,
+ CONSTRAINT [PK_CommunityRoles] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

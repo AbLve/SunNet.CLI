@@ -1,0 +1,69 @@
+﻿
+update Permission_Pages set IsPage=0 where ID=3909
+go
+
+
+delete Permission_PageAuthorities where PageId = 3909
+go
+
+
+delete Permission_RolePageAuthorities where PageId = 3909
+go
+
+
+SET IDENTITY_INSERT Permission_Pages ON
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3911,'Data Export',1,3909,'',1,1,'Data Export',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3912,'CIRCLE Data Export',1,3909,'',2,1,'CIRCLE Data Export',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3913,'Beech Reports',1,3909,'',3,1,'Beech Reports',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3914,'Participation Counts',1,3909,'',4,1,'Participation Counts',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3915,'Mentor/Coach Report',1,3909,'',5,1,'Mentor/Coach Report',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3916,'Ever Serviced',1,3909,'',6,1,'Ever Serviced',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3917,'Currently Serving',1,3909,'',7,1,'Currently Serving',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3918,'By ESC Region',1,3909,'',8,1,'By ESC Region',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3919,'PD Reports',1,3909,'',9,1,'PD Reports',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3920,'Coaching Hours by Communitys',1,3909,'',10,1,'Coaching Hours by Community',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3921,'Teacher Turnover Report',1,3909,'',11,1,'TSR Turnover Report',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3922,'TSR Media Consent Reports',1,3909,'',12,1,'TSR Media Consent Reports',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+go
+
+
+
+insert into Permission_PageAuthorities values(3911,1)
+insert into Permission_PageAuthorities values(3912,1)
+insert into Permission_PageAuthorities values(3913,1)
+insert into Permission_PageAuthorities values(3914,1)
+insert into Permission_PageAuthorities values(3915,1)
+insert into Permission_PageAuthorities values(3916,1)
+insert into Permission_PageAuthorities values(3917,1)
+insert into Permission_PageAuthorities values(3918,1)
+insert into Permission_PageAuthorities values(3919,1)
+insert into Permission_PageAuthorities values(3920,1)
+insert into Permission_PageAuthorities values(3921,1)
+insert into Permission_PageAuthorities values(3922,1)
+go

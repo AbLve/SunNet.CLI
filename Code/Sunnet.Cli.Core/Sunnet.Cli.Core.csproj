@@ -1,0 +1,958 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AEF8D87A-9AF5-47E1-BD90-F77FC916AFFE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sunnet.Cli.Core</RootNamespace>
+    <AssemblyName>Sunnet.Cli.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\Sunnet.Framework\_Dlls\EF\6.0\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Sunnet.Framework\_Dlls\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap, Version=2.6.1.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Sunnet.Framework\_Dlls\IoC\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdeDbContext.cs" />
+    <Compile Include="AdeReadonlyContext.cs" />
+    <Compile Include="AdeUnitOfWorkContext.cs" />
+    <Compile Include="Ade\AdeDataService.cs" />
+    <Compile Include="Ade\AdeSqlService.cs" />
+    <Compile Include="Ade\AdeService.cs" />
+    <Compile Include="Ade\Configurations\BenchmarkCnfg.cs" />
+    <Compile Include="Ade\Configurations\BranchingScoreCnfg.cs" />
+    <Compile Include="Ade\Configurations\Items\ChecklistItemCnfg.cs" />
+    <Compile Include="Ade\Configurations\Items\DirectionItemCnfg.cs" />
+    <Compile Include="Ade\Configurations\Items\TxkeaExpressiveItemCnfg.cs" />
+    <Compile Include="Ade\Configurations\Items\TxkeaReceptiveItemCnfg.cs" />
+    <Compile Include="Ade\Configurations\Items\TypedResponseItemCnfg.cs" />
+    <Compile Include="Ade\Configurations\ScoreAgeOrWaveBandsCnfg.cs" />
+    <Compile Include="Ade\Configurations\ScoreCnfg.cs" />
+    <Compile Include="Ade\Configurations\ScoreMeasureOrDefineCoefficientsCnfg.cs" />
+    <Compile Include="Ade\Configurations\TxkeaBupLogCnfg.cs" />
+    <Compile Include="Ade\Configurations\TxkeaBupTaskCnfg.cs" />
+    <Compile Include="Ade\Configurations\TxkeaExpressiveImageCnfg.cs" />
+    <Compile Include="Ade\Configurations\TxkeaExpressiveResponseOptionCnfg.cs" />
+    <Compile Include="Ade\Configurations\TxkeaExpressiveResponseCnfg.cs" />
+    <Compile Include="Ade\Configurations\TxkeaLayoutCnfg.cs" />
+    <Compile Include="Ade\Configurations\Items\ObservableChoiceItemCnfg.cs" />
+    <Compile Include="Ade\Configurations\Items\ObservableEntryItemCnfg.cs" />
+    <Compile Include="Ade\Configurations\TypedResponseCnfg.cs" />
+    <Compile Include="Ade\Configurations\TypedResponseOptionCnfg.cs" />
+    <Compile Include="Ade\Configurations\WaveLogCnfg.cs" />
+    <Compile Include="Ade\Configurations\AssessmentReportCnfg.cs" />
+    <Compile Include="Ade\Configurations\AssessmentLegendCnfg.cs" />
+    <Compile Include="Ade\Entities\BenchmarkEntity.cs" />
+    <Compile Include="Ade\Entities\BranchingScoreEntity.cs" />
+    <Compile Include="Ade\Entities\Items\ChecklistItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\DirectionItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\TxkeaExpressiveItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\TxkeaReceptiveItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\TypedResponseItemEntity.cs" />
+    <Compile Include="Ade\Entities\ScoreAgeOrWaveBandsEntity.cs" />
+    <Compile Include="Ade\Entities\ScoreEntity.cs" />
+    <Compile Include="Ade\Entities\ScoreMeasureOrDefineCoefficientsEntity.cs" />
+    <Compile Include="Ade\Entities\TxkeaBupLogEntity.cs" />
+    <Compile Include="Ade\Entities\TxkeaBupTaskEntity.cs" />
+    <Compile Include="Ade\Entities\TxkeaExpressiveImageEntity.cs" />
+    <Compile Include="Ade\Entities\TxkeaExpressiveResponseOptionEntity.cs" />
+    <Compile Include="Ade\Entities\TxkeaExpressiveResponseEntity.cs" />
+    <Compile Include="Ade\Entities\TxkeaLayoutEntity.cs" />
+    <Compile Include="Ade\Entities\Items\ObservableChoiceEntity.cs" />
+    <Compile Include="Ade\Entities\Items\ObservableEntryEntity.cs" />
+    <Compile Include="Ade\Entities\TypedResponseOptionEntity.cs" />
+    <Compile Include="Ade\Entities\TypedResponseEntity.cs" />
+    <Compile Include="Ade\Entities\WaveLogEntity.cs" />
+    <Compile Include="Ade\Entities\AssessmentReportEntity.cs" />
+    <Compile Include="Ade\Entities\AssessmentLegendEntity.cs" />
+    <Compile Include="Ade\Enums\AnswerType.cs" />
+    <Compile Include="Ade\Enums\AssessmentLanguage.cs" />
+    <Compile Include="Ade\Enums\AssessmentType.cs" />
+    <Compile Include="Ade\Configurations\AdeLinkCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\AnswerCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\AssessmentCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\Items\CecItemCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\Items\CotItemCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\CutOffScoreCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\ItemBaseCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\MeasureCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\Items\MultipleChoicesItemCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\Items\PaItemCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\Items\QuadrantItemCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\Items\RapidExpressiveItemCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\Items\ReceptiveItemCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Configurations\Items\ReceptivePromptItemCnfg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Entities\AdeLinkEntity.cs" />
+    <Compile Include="Ade\Entities\AnswerEntity.cs" />
+    <Compile Include="Ade\Entities\AssessmentEntity.cs" />
+    <Compile Include="Ade\Entities\Items\CecItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\CotItemEntity.cs" />
+    <Compile Include="Ade\Entities\CutOffScoreEntity.cs" />
+    <Compile Include="Ade\Entities\ItemBaseEntity.cs" />
+    <Compile Include="Ade\Entities\MeasureEntity.cs" />
+    <Compile Include="Ade\Entities\Items\MultipleChoicesItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\PaItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\QuadrantItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\RapidExpressiveItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\ReceptiveItemEntity.cs" />
+    <Compile Include="Ade\Entities\Items\ReceptivePromptItemEntity.cs" />
+    <Compile Include="Ade\Enums\BackgroundFillType.cs" />
+    <Compile Include="Ade\Enums\BlackWhiteStyle.cs" />
+    <Compile Include="Ade\Enums\BreakCondition.cs" />
+    <Compile Include="Ade\Enums\CecItemsDirection.cs" />
+    <Compile Include="Ade\Enums\CotLevel.cs" />
+    <Compile Include="Ade\Enums\ImageType.cs" />
+    <Compile Include="Ade\Enums\LockStatus.cs" />
+    <Compile Include="Ade\Enums\ScoringType.cs" />
+    <Compile Include="Ade\Enums\SelectionType.cs" />
+    <Compile Include="Ade\Enums\TxkeaBupStatus.cs" />
+    <Compile Include="Ade\Enums\TxkeaBupType.cs" />
+    <Compile Include="Ade\Enums\TxkeaExpressiveResponoseType.cs" />
+    <Compile Include="Ade\Enums\TypedResponseType.cs" />
+    <Compile Include="Ade\Enums\ReportTypeEnum.cs" />
+    <Compile Include="Ade\Enums\ReportEnum.cs" />
+    <Compile Include="Ade\Enums\LegendTypeEnum.cs" />
+    <Compile Include="Ade\IAdeSqlContract.cs" />
+    <Compile Include="Ade\IAdeContract.cs" />
+    <Compile Include="Ade\IAdeDataContract.cs" />
+    <Compile Include="Ade\Interfaces\IAdeLinkRpst.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Interfaces\IAnswerRpst.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Interfaces\IAssessmentRpst.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Interfaces\IBenchmarkRpst.cs" />
+    <Compile Include="Ade\Interfaces\IBranchingScoreRpst.cs" />
+    <Compile Include="Ade\Interfaces\ICutOffScoreRpst.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Interfaces\IItemBaseRpst.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Interfaces\IMeasureRpst.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ade\Enums\OrderType.cs" />
+    <Compile Include="Ade\Enums\ItemShowType.cs" />
+    <Compile Include="Ade\Enums\ItemType.cs" />
+    <Compile Include="Ade\Interfaces\IScoreAgeOrWaveBandsRpst.cs" />
+    <Compile Include="Ade\Interfaces\IScoreMeasureOrDefineCoefficientsRpst.cs" />
+    <Compile Include="Ade\Interfaces\IScoreRpst.cs" />
+    <Compile Include="Ade\Interfaces\ITxkeaBupLogRpst.cs" />
+    <Compile Include="Ade\Interfaces\ITxkeaBupTaskRpst.cs" />
+    <Compile Include="Ade\Interfaces\ITxkeaLayoutRpst.cs" />
+    <Compile Include="Ade\Interfaces\IWaveLogRpst.cs" />
+    <Compile Include="Ade\Interfaces\IAssessmentReportRpst.cs" />
+    <Compile Include="Ade\Interfaces\IAssessmentLegendRpst.cs" />
+    <Compile Include="Ade\Models\BaseItemModel.cs" />
+    <Compile Include="Ade\Models\BaseMeasureModel.cs" />
+    <Compile Include="Ade\Models\ChildMeasureModel.cs" />
+    <Compile Include="Ade\Models\ItemModel.cs" />
+    <Compile Include="Ade\Models\ParentMeasureModel.cs" />
+    <Compile Include="BUP\BUPService.cs" />
+    <Compile Include="BUP\Configurations\AutomationSettingEntityCnfg.cs" />
+    <Compile Include="BUP\Configurations\BUPTaskEntityCnfg.cs" />
+    <Compile Include="BUP\Entities\AutomationSettingEntity.cs" />
+    <Compile Include="BUP\Entities\BUPTaskEntity.cs" />
+    <Compile Include="BUP\Enums\BUPAction.cs" />
+    <Compile Include="BUP\Enums\BUPProcessType.cs" />
+    <Compile Include="BUP\Enums\BUPStatus.cs" />
+    <Compile Include="BUP\Enums\BUPType.cs" />
+    <Compile Include="BUP\Enums\BUPEntityStatus.cs" />
+    <Compile Include="BUP\IBUPContract.cs" />
+    <Compile Include="BUP\Interfaces\IAutomationSettingRpst.cs" />
+    <Compile Include="BUP\Interfaces\IBUPTaskRpst.cs" />
+    <Compile Include="BUP\Models\BUPClassModel.cs" />
+    <Compile Include="BUP\Models\BUPClassroomModel.cs" />
+    <Compile Include="BUP\Models\BUPCommunityModel.cs" />
+    <Compile Include="BUP\Models\BUPCommunityUserModel.cs" />
+    <Compile Include="BUP\Models\BUPPrincipalModel.cs" />
+    <Compile Include="BUP\Models\BUPSchoolModel.cs" />
+    <Compile Include="BUP\Models\BUPStudentModel.cs" />
+    <Compile Include="BUP\Models\BUPTeacherModel.cs" />
+    <Compile Include="BUP\Models\BUPParentModel.cs" />
+    <Compile Include="BUP\Models\BUPStatewideModel.cs" />
+    <Compile Include="BUP\Models\BUPAuditorModel.cs" />
+    <Compile Include="CAC\CACService.cs" />
+    <Compile Include="CAC\Configurations\CACCnfg.cs" />
+    <Compile Include="CAC\Entities\ActivityHistoryEntity.cs" />
+    <Compile Include="CAC\Entities\MyActivityEntity.cs" />
+    <Compile Include="CAC\ICACContract.cs" />
+    <Compile Include="CAC\Interfaces\ICACRpst.cs" />
+    <Compile Include="Cec\CecService.cs" />
+    <Compile Include="Cec\Configurations\CecHistoryCnfg.cs" />
+    <Compile Include="Cec\Configurations\CecResultCnfg.cs" />
+    <Compile Include="Cec\Entities\CecHistoryEntity.cs" />
+    <Compile Include="Cec\Entities\CecResultEntity.cs" />
+    <Compile Include="Cec\ICecContract.cs" />
+    <Compile Include="Cec\Interfaces\ICecHistoryRpst.cs" />
+    <Compile Include="Cec\Interfaces\ICecResultRpst.cs" />
+    <Compile Include="Cec\Models\CECCompletionModel.cs" />
+    <Compile Include="Cec\Models\CECTeacherModel.cs" />
+    <Compile Include="Cec\Models\TeacherMissingCECModel.cs" />
+    <Compile Include="Classes\ClassService.cs" />
+    <Compile Include="Classes\Configurations\ClassCnfg.cs" />
+    <Compile Include="Classes\Configurations\ClassRoleCnfg.cs" />
+    <Compile Include="Classes\Configurations\ClassroomClassCnfg.cs" />
+    <Compile Include="Classes\Configurations\MonitoringToolCnfg.cs" />
+    <Compile Include="Classes\Configurations\ClassLevelCnfg.cs" />
+    <Compile Include="Classes\Entites\ClassEntity.cs" />
+    <Compile Include="Classes\Entites\ClassLanguageEntity.cs" />
+    <Compile Include="Classes\Entites\ClassRoleEntity.cs" />
+    <Compile Include="Classes\Entites\ClassroomClassEntity.cs" />
+    <Compile Include="Classes\Entites\MonitoringToolEntity.cs" />
+    <Compile Include="Classes\Entites\ClassLevelEntity.cs" />
+    <Compile Include="Classes\Interfaces\IClassLevelRpst.cs" />
+    <Compile Include="Common\Enums\ExportEntityStatus.cs" />
+    <Compile Include="Communities\Configurations\V_CommunityCnfg.cs" />
+    <Compile Include="Communities\Entities\V_CommunityEntity.cs" />
+    <Compile Include="Cot\Configurations\CotStgGroupCnfg.cs" />
+    <Compile Include="Cot\Configurations\CotStgGroupItemCnfg.cs" />
+    <Compile Include="Cot\Entities\CotStgGroupEntity.cs" />
+    <Compile Include="Cot\Entities\CotStgGroupItemEntity.cs" />
+    <Compile Include="Cot\Interfaces\ICotStgGroupItemRpst.cs" />
+    <Compile Include="Cot\Interfaces\ICotStgGroupRpst.cs" />
+    <Compile Include="Cot\Models\CotStgGroupItemModel.cs" />
+    <Compile Include="Cpalls\Configurations\CustomGroupMyActivityCnfg.cs" />
+    <Compile Include="Cpalls\Configurations\MeasureClassGroupCnfg.cs" />
+    <Compile Include="Ade\Configurations\PercentileRankLookupCnfg.cs" />
+    <Compile Include="Ade\Entities\PercentileRankLookupEntity.cs" />
+    <Compile Include="Cpalls\Entities\CustomGroupMyActivityEntity.cs" />
+    <Compile Include="Cpalls\Entities\MeasureClassGroupEntity.cs" />
+    <Compile Include="Cpalls\Interfaces\ICustomGroupMyActivityRpst.cs" />
+    <Compile Include="Cpalls\Interfaces\IMeasureClassGroupRpst.cs" />
+    <Compile Include="Ade\Interfaces\IPercentileRankLookupRpst.cs" />
+    <Compile Include="Cpalls\Models\Report\SchoolPercentileRankModel.cs" />
+    <Compile Include="DataProcess\Enums\DataProcessAction.cs" />
+    <Compile Include="MasterData\Configurations\CountryCnfg.cs" />
+    <Compile Include="MasterData\Entities\CountryEntity.cs" />
+    <Compile Include="MasterData\Interfaces\ICountryRpst.cs" />
+    <Compile Include="Practices\Configurations\PracticeGroupMyActivityCnfg.cs" />
+    <Compile Include="Practices\Configurations\PracticeStudentGroupCnfg.cs" />
+    <Compile Include="Practices\Configurations\PracticeMeasureGroupCnfg.cs" />
+    <Compile Include="Practices\Configurations\CliAdeAssessmentCnfg.cs" />
+    <Compile Include="Practices\Configurations\DemoStudentCnfg.cs" />
+    <Compile Include="Practices\Configurations\CliAdeMeasureCnfg.cs" />
+    <Compile Include="Practices\Configurations\CliAdeItemBaseCnfg.cs" />
+    <Compile Include="Practices\Configurations\PracticeStudentAssessmentCnfg.cs" />
+    <Compile Include="Practices\Configurations\PracticeStudentItemCnfg.cs" />
+    <Compile Include="Practices\Configurations\PracticeStudentMeasureCnfg.cs" />
+    <Compile Include="Practices\Entites\CliAdeAssessmentEntity.cs" />
+    <Compile Include="Practices\Entites\PracticeGroupMyActivityEntity.cs" />
+    <Compile Include="Practices\Entites\DemoStudentEntity.cs" />
+    <Compile Include="Practices\Entites\CliAdeMeasureEntity.cs" />
+    <Compile Include="Practices\Entites\CliAdeItemBaseEntity.cs" />
+    <Compile Include="Practices\Entites\PracticeMeasureGroupEntity.cs" />
+    <Compile Include="Practices\Entites\PracticeStudentAssessmentEntity.cs" />
+    <Compile Include="Practices\Entites\PracticeStudentGroupEntity.cs" />
+    <Compile Include="Practices\Entites\PracticeStudentItemEntity.cs" />
+    <Compile Include="Practices\Entites\PracticeStudentMeasureEntity.cs" />
+    <Compile Include="Practices\Interfaces\IPracticeGroupMyActivityRpst.cs" />
+    <Compile Include="Practices\Interfaces\IDemoStudentRpst.cs" />
+    <Compile Include="Practices\Interfaces\IPracticeMeasureStudentRpst.cs" />
+    <Compile Include="Practices\Interfaces\IPracticeMeasureGroupRpst.cs" />
+    <Compile Include="Practices\Interfaces\IPracticeStudentAssessmentRpst.cs" />
+    <Compile Include="Practices\Interfaces\IPracticeStudentItemRpst.cs" />
+    <Compile Include="Practices\Interfaces\IPracticeStudentMeasureRpst.cs" />
+    <Compile Include="Practices\IPracticeContract.cs" />
+    <Compile Include="Practices\PracticeService.cs" />
+    <Compile Include="Reports\Configurations\ParentReportCnfg.cs" />
+    <Compile Include="Reports\Entities\ParentReportEntity.cs" />
+    <Compile Include="Reports\Interfaces\IParentReportRpst.cs" />
+    <Compile Include="Schools\Enums\StarAssessmentType.cs" />
+    <Compile Include="Students\Configurations\ChildCnfg.cs" />
+    <Compile Include="Students\Configurations\ParentChildCnfg.cs" />
+    <Compile Include="Students\Configurations\StudentDOBCnfg.cs" />
+    <Compile Include="Students\Configurations\V_ChildCnfg.cs" />
+    <Compile Include="Students\Entities\ChildEntity.cs" />
+    <Compile Include="Students\Entities\ParentChildEntity.cs" />
+    <Compile Include="Students\Entities\StudentDOBEntity.cs" />
+    <Compile Include="Students\Entities\V_ChildEntity.cs" />
+    <Compile Include="Students\Enums\StudentDOBStatus.cs" />
+    <Compile Include="Students\Interfaces\IChildRpst.cs" />
+    <Compile Include="Students\Interfaces\IParentChildRpst.cs" />
+    <Compile Include="Students\Interfaces\IStudentDOBRpst.cs" />
+    <Compile Include="Students\Interfaces\IV_ChildRpst.cs" />
+    <Compile Include="TRSClasses\Enums\ClassCountType.cs" />
+    <Compile Include="Classes\Enums\Classlevel.cs" />
+    <Compile Include="Classes\Enums\ClassType.cs" />
+    <Compile Include="Classes\Enums\RiskType.cs" />
+    <Compile Include="Classes\Enums\DayType.cs" />
+    <Compile Include="Classes\Enums\EquipmentType.cs" />
+    <Compile Include="Classes\Enums\StudentNumberType.cs" />
+    <Compile Include="TRSClasses\Enums\TrsAgeArea.cs" />
+    <Compile Include="TRSClasses\Enums\TRSClassofType.cs" />
+    <Compile Include="Classes\IClassContract.cs" />
+    <Compile Include="Classes\Interfaces\IClassRoleRpst.cs" />
+    <Compile Include="Classes\Interfaces\IClassroomClassRpst.cs" />
+    <Compile Include="Classes\Interfaces\IClassRpst.cs" />
+    <Compile Include="Classes\Interfaces\IMonitoringToolRpst.cs" />
+    <Compile Include="Classrooms\ClassroomService.cs" />
+    <Compile Include="Classrooms\Configurations\ClassroomCnfg.cs" />
+    <Compile Include="Classrooms\Configurations\KitCnfg.cs" />
+    <Compile Include="Classrooms\Configurations\ClassroomRoleCnfg.cs" />
+    <Compile Include="TRSClasses\Configurations\CHChildrenCnfg.cs" />
+    <Compile Include="TRSClasses\Configurations\CHChildrenResultCnfg.cs" />
+    <Compile Include="TRSClasses\Entites\CHChildrenEntity.cs" />
+    <Compile Include="Classrooms\Entites\ClassroomEntity.cs" />
+    <Compile Include="Classrooms\Entites\KitEntity.cs" />
+    <Compile Include="Classrooms\Entites\ClassroomRoleEntity.cs" />
+    <Compile Include="TRSClasses\Entites\CHChildrenResultEntity.cs" />
+    <Compile Include="Classrooms\Enums\ClassroomType.cs" />
+    <Compile Include="Classrooms\Enums\InterventionStatus.cs" />
+    <Compile Include="Classrooms\IClassroomContract.cs" />
+    <Compile Include="Classrooms\Interfaces\IClassroomRpst.cs" />
+    <Compile Include="Classrooms\Interfaces\IKitRpst.cs" />
+    <Compile Include="Classrooms\Interfaces\IClassroomRoleRpst.cs" />
+    <Compile Include="TRSClasses\Interfaces\ICHChildrenRpst.cs" />
+    <Compile Include="TRSClasses\Interfaces\ICHChildrenResultRpst.cs" />
+    <Compile Include="Common\Enums\AgeGroup.cs" />
+    <Compile Include="Common\Enums\Gender.cs" />
+    <Compile Include="Common\Enums\InternetSpeed.cs" />
+    <Compile Include="Common\Enums\TransactionType.cs" />
+    <Compile Include="Common\Enums\EntityStatus.cs" />
+    <Compile Include="Common\Enums\InternetType.cs" />
+    <Compile Include="Common\Enums\PhoneType.cs" />
+    <Compile Include="Common\Enums\UserSalutation.cs" />
+    <Compile Include="Common\Enums\IdSearchType.cs" />
+    <Compile Include="Common\Enums\WireLessType.cs" />
+    <Compile Include="Common\Enums\AccessType.cs" />
+    <Compile Include="Communities\CommunityService.cs" />
+    <Compile Include="Communities\Configurations\BasicCommunityCnfg.cs" />
+    <Compile Include="Communities\Configurations\CommunityAssessmentRelationsCnfg.cs" />
+    <Compile Include="Communities\Configurations\CommunityCnfg.cs" />
+    <Compile Include="Communities\Configurations\CommunityNotesCnfg.cs" />
+    <Compile Include="Communities\Configurations\CommunityRoleCnfg.cs" />
+    <Compile Include="Communities\Entities\BasicCommunityEntity.cs" />
+    <Compile Include="Communities\Entities\CommunityAssessmentRelationsEntity.cs" />
+    <Compile Include="Communities\Entities\CommunityEntity.cs" />
+    <Compile Include="Communities\Entities\CommunityNotesEntity.cs" />
+    <Compile Include="Communities\Entities\CommunityRoleEntity.cs" />
+    <Compile Include="Communities\ICommunityContract.cs" />
+    <Compile Include="Communities\Interfaces\IBasicCommunityRpst.cs" />
+    <Compile Include="Communities\Interfaces\ICommunityAssessmentRelationsRpst.cs" />
+    <Compile Include="Communities\Interfaces\ICommunityNotesRpst.cs" />
+    <Compile Include="Communities\Interfaces\ICommunityRpst.cs" />
+    <Compile Include="Communities\Interfaces\ICommunityRoleRpst.cs" />
+    <Compile Include="Cot\Configurations\CotAssessmentCnfg.cs" />
+    <Compile Include="Cot\Configurations\CotAssessmentWaveItemCnfg.cs" />
+    <Compile Include="Cot\Configurations\CotAssessmentItemCnfg.cs" />
+    <Compile Include="Cot\Configurations\CotStgReportCnfg.cs" />
+    <Compile Include="Cot\Configurations\CotStgReportItemCnfg.cs" />
+    <Compile Include="Cot\Configurations\CotWaveCnfg.cs" />
+    <Compile Include="Cot\CotService.cs" />
+    <Compile Include="Cot\Entities\CotStgReportItemEntity.cs" />
+    <Compile Include="Cot\Entities\TeacherMissingCOTModel.cs" />
+    <Compile Include="Cot\Enums\Wave.cs" />
+    <Compile Include="Cot\Models\AssessmentTeacherModel.cs" />
+    <Compile Include="Cot\Models\COTCECCompletionModel.cs" />
+    <Compile Include="Cot\Models\CotTeacherModel.cs" />
+    <Compile Include="Cot\Entities\CotAssessmentEntity.cs" />
+    <Compile Include="Cot\Entities\CotAssessmentWaveItemEntity.cs" />
+    <Compile Include="Cot\Entities\CotAssessmentItemEntity.cs" />
+    <Compile Include="Cot\Entities\CotStgReportEntity.cs" />
+    <Compile Include="Cot\Entities\CotWaveEntity.cs" />
+    <Compile Include="Cot\Enums\CotStatus.cs" />
+    <Compile Include="Cot\Enums\CotStgReportStatus.cs" />
+    <Compile Include="Cot\Enums\CotWaveStatus.cs" />
+    <Compile Include="Cot\ICotContract.cs" />
+    <Compile Include="Cot\Interfaces\ICotAssessmentWaveItemRpst.cs" />
+    <Compile Include="Cot\Interfaces\ICotAssessmentItemRpst.cs" />
+    <Compile Include="Cot\Interfaces\ICotAssessmentRpst.cs" />
+    <Compile Include="Cot\Interfaces\ICotStgReportRpst.cs" />
+    <Compile Include="Cot\Interfaces\ICotWaveRpst.cs" />
+    <Compile Include="Cot\Models\STGR_CompletionModel.cs" />
+    <Compile Include="Cot\Models\TeacherMissingSTGRModel.cs" />
+    <Compile Include="Cpalls\Configurations\CpallsClassCnfg.cs" />
+    <Compile Include="Cpalls\Configurations\CpallsClassMeasureCnfg.cs" />
+    <Compile Include="Cpalls\Configurations\CpallsSchoolCnfg.cs" />
+    <Compile Include="Cpalls\Configurations\CpallsSchoolMeasureCnfg.cs" />
+    <Compile Include="Cpalls\Configurations\CpallsStudentGroupCnfg.cs" />
+    <Compile Include="Cpalls\Configurations\StudentAssessmentCnfg.cs" />
+    <Compile Include="Cpalls\Configurations\StudentItemCnfg.cs" />
+    <Compile Include="Cpalls\Configurations\StudentMeasureCnfg.cs" />
+    <Compile Include="Cpalls\Configurations\UserShownMeasuresCnfg.cs" />
+    <Compile Include="Cpalls\CpallsService.cs" />
+    <Compile Include="Cpalls\Entities\CpallsStudentGroupEntity.cs" />
+    <Compile Include="Cpalls\Entities\UserShownMeasuresEntity.cs" />
+    <Compile Include="Cpalls\Interfaces\ICpallsStudentGroupRpst.cs" />
+    <Compile Include="Cpalls\Interfaces\IUserShownMeasuresRpst.cs" />
+    <Compile Include="Cpalls\Models\ClassMeasureGoalModel.cs" />
+    <Compile Include="Cpalls\Models\Report\ClassRecordModel.cs" />
+    <Compile Include="Cpalls\Models\Report\CompletionMeasureModel.cs" />
+    <Compile Include="Cpalls\Models\Report\ReportMeasureHeaderModel.cs" />
+    <Compile Include="Cpalls\Models\Report\SchoolRecordModel.cs" />
+    <Compile Include="Cpalls\Models\Report\StudentRecordModel.cs" />
+    <Compile Include="Cpalls\Models\Report\WaveFinishedOnModel.cs" />
+    <Compile Include="Cpalls\Models\StudentMeasureGoalModel.cs" />
+    <Compile Include="Cpalls\Entities\CpallsClassEntity.cs" />
+    <Compile Include="Cpalls\Entities\CpallsClassMeasureEntity.cs" />
+    <Compile Include="Cpalls\Entities\CpallsSchoolEntity.cs" />
+    <Compile Include="Cpalls\Entities\CpallsSchoolMeasureEntity.cs" />
+    <Compile Include="Cpalls\Models\SchoolMeasureGoalModel.cs" />
+    <Compile Include="Cpalls\Entities\StudentAssessmentEntity.cs" />
+    <Compile Include="Cpalls\Entities\StudentItemEntity.cs" />
+    <Compile Include="Cpalls\Entities\StudentMeasureEntity.cs" />
+    <Compile Include="Cpalls\Enums\CpallsStatus.cs" />
+    <Compile Include="Cpalls\Enums\Wave.cs" />
+    <Compile Include="Cpalls\ICpallsContract.cs" />
+    <Compile Include="Cpalls\Interfaces\ICpallsClassMeasureRpst.cs" />
+    <Compile Include="Cpalls\Interfaces\ICpallsClassRpst.cs" />
+    <Compile Include="Cpalls\Interfaces\ICpallsSchoolMeasureRpst.cs" />
+    <Compile Include="Cpalls\Interfaces\ICpallsSchoolRpst.cs" />
+    <Compile Include="Cpalls\Interfaces\IStudentAssessmentRpst.cs" />
+    <Compile Include="Cpalls\Interfaces\IStudentItemRpst.cs" />
+    <Compile Include="Cpalls\Interfaces\IStudentMeasureRpst.cs" />
+    <Compile Include="DataProcess\Configurations\DataCommunityCnfg.cs" />
+    <Compile Include="DataProcess\Configurations\DataGroupCnfg.cs" />
+    <Compile Include="DataProcess\Configurations\DataSchoolCnfg.cs" />
+    <Compile Include="DataProcess\Configurations\DataStudentCnfg.cs" />
+    <Compile Include="DataProcess\DataProcessService.cs" />
+    <Compile Include="DataProcess\Entities\DataCommunityEntity.cs" />
+    <Compile Include="DataProcess\Entities\DataGroupEntity.cs" />
+    <Compile Include="DataProcess\Entities\DataSchoolEntity.cs" />
+    <Compile Include="DataProcess\Entities\DataStudentEntity.cs" />
+    <Compile Include="DataProcess\IDataProcessContract.cs" />
+    <Compile Include="DataProcess\Interfaces\IDataCommunityRpst.cs" />
+    <Compile Include="DataProcess\Interfaces\IDataGroupRpst.cs" />
+    <Compile Include="DataProcess\Interfaces\IDataSchoolRpst.cs" />
+    <Compile Include="DataProcess\Interfaces\IDataStudentRpst.cs" />
+    <Compile Include="DataProcess\Models\RecordRemarkModel.cs" />
+    <Compile Include="EFReadonlyContext.cs" />
+    <Compile Include="Export\Configurations\ExportInfoCnfg.cs" />
+    <Compile Include="Export\Configurations\FieldMapCnfg.cs" />
+    <Compile Include="Export\Configurations\ReportTemplateCnfg.cs" />
+    <Compile Include="Export\Entities\ExportInfoEntity.cs" />
+    <Compile Include="Export\Entities\FieldMapEntity.cs" />
+    <Compile Include="Export\Entities\ReportTemplateEntity.cs" />
+    <Compile Include="Export\Enums\ExportFileType.cs" />
+    <Compile Include="Export\Enums\ExportInfoStatus.cs" />
+    <Compile Include="Export\Enums\FrequencyUnitType.cs" />
+    <Compile Include="Export\Enums\ReceiveFileBy.cs" />
+    <Compile Include="Export\Enums\RowID.cs" />
+    <Compile Include="Export\ExportService.cs" />
+    <Compile Include="Export\IExportContract.cs" />
+    <Compile Include="Export\Interfaces\IExportInfoRpst.cs" />
+    <Compile Include="Export\Interfaces\IFieldMapRpst.cs" />
+    <Compile Include="Export\Interfaces\IReportTemplateRpst.cs" />
+    <Compile Include="Log\Configurations\OperationLogCnfg.cs" />
+    <Compile Include="Log\Entities\OperationLogEntity.cs" />
+    <Compile Include="Log\Interfaces\IOperationLogRpst.cs" />
+    <Compile Include="Log\IOperationLogContract.cs" />
+    <Compile Include="Log\OperationLogService.cs" />
+    <Compile Include="MasterData\Configurations\CurriculumCnfg.cs" />
+    <Compile Include="MasterData\Configurations\TitleCnfg.cs" />
+    <Compile Include="MasterData\Entities\CurriculumEntity.cs" />
+    <Compile Include="MasterData\Entities\TitleEntity.cs" />
+    <Compile Include="MasterData\Interfaces\ICurriculumRpst.cs" />
+    <Compile Include="MasterData\Interfaces\ITitleRpst.cs" />
+    <Compile Include="Observable\Configurations\ObservableAssessmentCnfg.cs" />
+    <Compile Include="Observable\Enums\ReportStatus.cs" />
+    <Compile Include="Observable\IObservableContract.cs" />
+    <Compile Include="Observable\ObservableService.cs" />
+    <Compile Include="Observable\Entities\ObservableAssessmentEntity.cs" />
+    <Compile Include="Observable\Entities\ObservableAssessmentItemEntity.cs" />
+    <Compile Include="Observable\Entities\ObservableItemsHistoryEntity.cs" />
+    <Compile Include="Observable\Interfaces\IObservableAssessmentItemRpst.cs" />
+    <Compile Include="Permission\Configurations\AssignedPackageCnfg.cs" />
+    <Compile Include="Permission\Configurations\AuthorityCnfg.cs" />
+    <Compile Include="Permission\Configurations\DisabledUserRoleCnfg.cs" />
+    <Compile Include="Permission\Configurations\PageCnfg.cs" />
+    <Compile Include="Permission\Configurations\PermissionRoleCnfg.cs" />
+    <Compile Include="Permission\Configurations\RolePageAuthorityCnfg.cs" />
+    <Compile Include="Permission\Configurations\UserAuthorityCnfg.cs" />
+    <Compile Include="Permission\Entities\AssignedPackageEntity.cs" />
+    <Compile Include="Permission\Entities\AuthorityEntity.cs" />
+    <Compile Include="Permission\Entities\DisabledUserRoleEntity.cs" />
+    <Compile Include="Permission\Entities\PageEntity.cs" />
+    <Compile Include="Permission\Entities\PermissionRoleEntity.cs" />
+    <Compile Include="Permission\Entities\RolePageAuthorityEntity.cs" />
+    <Compile Include="Permission\Entities\UserAuthorityEntity.cs" />
+    <Compile Include="Permission\Interfaces\IAssignedPackageRpst.cs" />
+    <Compile Include="Permission\Interfaces\IAuthorityRpst.cs" />
+    <Compile Include="Permission\Interfaces\IDisabledUserRoleRpst.cs" />
+    <Compile Include="Permission\Interfaces\IPageRpst.cs" />
+    <Compile Include="Permission\Interfaces\IRolePageAuthorityRpst.cs" />
+    <Compile Include="Permission\Interfaces\IPermissionRoleRpst.cs" />
+    <Compile Include="Permission\Interfaces\IUserAuthorityRpst.cs" />
+    <Compile Include="Permission\IPermissionContract.cs" />
+    <Compile Include="Permission\PermissionService.cs" />
+    <Compile Include="Reports\Configurations\AssessmentReportTemplateCnfg.cs" />
+    <Compile Include="Reports\Configurations\ReportQueueCnfg.cs" />
+    <Compile Include="Reports\Configurations\SchoolViewCnfg.cs" />
+    <Compile Include="Reports\Entities\AssessmentReportTemplateEntity.cs" />
+    <Compile Include="Reports\Entities\ReportQueueEntity.cs" />
+    <Compile Include="Reports\Entities\SchoolViewEntity.cs" />
+    <Compile Include="Reports\Interfaces\IAssessmentReportTemplateRpst.cs" />
+    <Compile Include="Reports\Models\BeechReportModel.cs" />
+    <Compile Include="Reports\Models\CircleDataExportStudentItemModel.cs" />
+    <Compile Include="Reports\Models\CircleDataExportStudentMeasureModel.cs" />
+    <Compile Include="Reports\Models\CircleDataExportStudentModel.cs" />
+    <Compile Include="Reports\Models\CoachingHoursbyCommunityModel.cs" />
+    <Compile Include="Reports\Models\CoachReportModel.cs" />
+    <Compile Include="Reports\Models\ReportTemplateIdsModel.cs" />
+    <Compile Include="Reports\Models\ServiceReportModel.cs" />
+    <Compile Include="Reports\Models\QuarterlyReportModel.cs" />
+    <Compile Include="Reports\Enums\DataExportStatus.cs" />
+    <Compile Include="Reports\Models\MediaConsentPercentModel.cs" />
+    <Compile Include="Reports\Models\MediaConsentDetailModel.cs" />
+    <Compile Include="Reports\Enums\ReportQueueStatus.cs" />
+    <Compile Include="Reports\Enums\ReportQueueType.cs" />
+    <Compile Include="Reports\Interfaces\IReportQueueRpst.cs" />
+    <Compile Include="Reports\Interfaces\ISchoolViewRpst.cs" />
+    <Compile Include="Reports\IReportContract.cs" />
+    <Compile Include="Reports\Models\Community_Mentor_TeacherModel.cs" />
+    <Compile Include="Reports\Models\CountbyCommunityModel.cs" />
+    <Compile Include="Reports\Models\CountbyFacilityTypeMode.cs" />
+    <Compile Include="Reports\Models\CountTeacherbyCommunityModel.cs" />
+    <Compile Include="Reports\Models\TeacherSchoolTypeModel.cs" />
+    <Compile Include="Reports\Models\PDReportModel.cs" />
+    <Compile Include="Reports\Models\TurnoverTeacherModel.cs" />
+    <Compile Include="Reports\ReportService.cs" />
+    <Compile Include="Schools\Configurations\CommunitySchoolRelationsCnfg.cs" />
+    <Compile Include="Schools\Configurations\PlaygroundCnfg.cs" />
+    <Compile Include="Schools\Configurations\SchoolRoleCnfg.cs" />
+    <Compile Include="Schools\Configurations\SchoolStudentRelationCnfg.cs" />
+    <Compile Include="Schools\Configurations\TrsProviderCnfg.cs" />
+    <Compile Include="Schools\Configurations\ParentAgencyCnfg.cs" />
+    <Compile Include="Schools\Entities\CommunitySchoolRelationsEntity.cs" />
+    <Compile Include="Schools\Entities\SchoolRoleEntity.cs" />
+    <Compile Include="Schools\Entities\SchoolStudentRelationEntity.cs" />
+    <Compile Include="Schools\Entities\TrsProviderEntity.cs" />
+    <Compile Include="Schools\Entities\IspEntity.cs" />
+    <Compile Include="Schools\Entities\ParentAgencyEntity.cs" />
+    <Compile Include="Schools\Entities\PlaygroundEntity.cs" />
+    <Compile Include="Schools\Enums\FacilityType.cs" />
+    <Compile Include="Schools\Interfaces\ICommunitySchoolRelationsRpst.cs" />
+    <Compile Include="Schools\Interfaces\ISchoolStudentRelationRpst.cs" />
+    <Compile Include="Schools\Interfaces\ITrsProviderRpst.cs" />
+    <Compile Include="Schools\Interfaces\IParentAgencyRpst.cs" />
+    <Compile Include="Schools\Interfaces\IPlaygroundRpst.cs" />
+    <Compile Include="Schools\Interfaces\ISchoolRoleRpst.cs" />
+    <Compile Include="StatusTracking\Enums\StatusEnum.cs" />
+    <Compile Include="StatusTracking\Enums\StatusType.cs" />
+    <Compile Include="Students\Configurations\StudentRoleCnfg.cs" />
+    <Compile Include="Students\Entities\StudentRoleEntity.cs" />
+    <Compile Include="Students\Enums\StudentGradeLevel.cs" />
+    <Compile Include="Students\Interfaces\IStudentRoleRpst.cs" />
+    <Compile Include="Students\Model\ClassCompletionReport.cs" />
+    <Compile Include="Students\Enums\MediaRelease.cs" />
+    <Compile Include="Students\Model\StudentModel.cs" />
+    <Compile Include="StatusTracking\Configurations\StatusTrackingCnfg.cs" />
+    <Compile Include="StatusTracking\Entities\StatusTrackingEntity.cs" />
+    <Compile Include="StatusTracking\Interfaces\IStatusTrackingRpst.cs" />
+    <Compile Include="StatusTracking\IStatusTrackingContract.cs" />
+    <Compile Include="StatusTracking\StatusTrackingService.cs" />
+    <Compile Include="Trs\Configurations\TRSAnswerCnfg.cs" />
+    <Compile Include="Trs\Configurations\TRSAssessmentCnfg.cs" />
+    <Compile Include="Trs\Configurations\TRSAssessmentItemCnfg.cs" />
+    <Compile Include="Trs\Configurations\TRSAssessmentClassCnfg.cs" />
+    <Compile Include="Trs\Configurations\TRSEventLogCnfg.cs" />
+    <Compile Include="Trs\Configurations\TRSEventLogFileCnfg.cs" />
+    <Compile Include="Trs\Configurations\TRSNotificationCnfg.cs" />
+    <Compile Include="Trs\Configurations\TrsStarCnfg.cs" />
+    <Compile Include="Trs\Configurations\TRSItemAnswerCnfg.cs" />
+    <Compile Include="Trs\Configurations\TRSItemCnfg.cs" />
+    <Compile Include="Trs\Configurations\TRSSubcategoryCnfg.cs" />
+    <Compile Include="Trs\Entities\TRSAnswerEntity.cs" />
+    <Compile Include="Trs\Entities\TRSAssessmentEntity.cs" />
+    <Compile Include="Trs\Entities\TRSAssessmentItemEntity.cs" />
+    <Compile Include="Trs\Entities\TRSAssessmentClassEntity.cs" />
+    <Compile Include="Trs\Entities\TRSEventLogEntity.cs" />
+    <Compile Include="Trs\Entities\TRSEventLogFileEntity.cs" />
+    <Compile Include="Trs\Entities\TRSNotificationEntity.cs" />
+    <Compile Include="Trs\Entities\TrsStarEntity.cs" />
+    <Compile Include="Trs\Entities\TRSItemAnswerEntity.cs" />
+    <Compile Include="Trs\Entities\TRSItemEntity.cs" />
+    <Compile Include="Trs\Entities\TRSSubcategoryEntity.cs" />
+    <Compile Include="Trs\Enums\EventLogType.cs" />
+    <Compile Include="Trs\Enums\ItemAgeGroup.cs" />
+    <Compile Include="Trs\Enums\SyncAnswerType.cs" />
+    <Compile Include="Trs\Enums\TrsAccreditation.cs" />
+    <Compile Include="Trs\Enums\TrsAssessmentType.cs" />
+    <Compile Include="Trs\Enums\TRSCategoryEnum.cs" />
+    <Compile Include="Trs\Enums\TrsEventType.cs" />
+    <Compile Include="Trs\Enums\TRSFacilityEnum.cs" />
+    <Compile Include="Trs\Enums\TRSFilterEnum.cs" />
+    <Compile Include="Trs\Enums\TRSItemTypeEnum.cs" />
+    <Compile Include="Trs\Enums\TRSStarDisplayEnum.cs" />
+    <Compile Include="Trs\Enums\TRSStarEnum.cs" />
+    <Compile Include="Trs\Enums\TRSStatusEnum.cs" />
+    <Compile Include="Trs\Enums\TrsTaStatus.cs" />
+    <Compile Include="Trs\Interfaces\ITRSAnswerRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITRSAssessmentItemRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITRSAssessmentRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITRSAssessmentClassRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITRSEventLogFileRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITRSEventLogRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITRSNotificationRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITrsStarRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITRSItemAnswerRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITRSItemRpst.cs" />
+    <Compile Include="Trs\Interfaces\ITRSSubcategoryRpst.cs" />
+    <Compile Include="Trs\ITRSContract.cs" />
+    <Compile Include="Trs\TRSService.cs" />
+    <Compile Include="Tsds\Configurations\TsdsAssessmentFileCnfg.cs" />
+    <Compile Include="Tsds\Configurations\TsdsMapCnfg.cs" />
+    <Compile Include="Tsds\Configurations\TsdsCnfg.cs" />
+    <Compile Include="Tsds\Entities\TsdsAssessmentFileEntity.cs" />
+    <Compile Include="Tsds\Entities\TsdsMapEntity.cs" />
+    <Compile Include="Tsds\Entities\TsdsEntity.cs" />
+    <Compile Include="Tsds\Interfaces\ITsdsAssessmentFileRpst.cs" />
+    <Compile Include="Tsds\Interfaces\ITsdsMapRpst.cs" />
+    <Compile Include="Tsds\Interfaces\ITsdsRpst.cs" />
+    <Compile Include="Tsds\ITsdsContract.cs" />
+    <Compile Include="Tsds\TsdsService.cs" />
+    <Compile Include="UpdateClusters\Configurations\MessageCenterCnfg.cs" />
+    <Compile Include="UpdateClusters\Configurations\NewFeaturedCnfg.cs" />
+    <Compile Include="UpdateClusters\Configurations\SystemUpdateCnfg.cs" />
+    <Compile Include="UpdateClusters\Entities\MessageCenterEntity.cs" />
+    <Compile Include="UpdateClusters\Entities\NewFeaturedEntity.cs" />
+    <Compile Include="UpdateClusters\Entities\SystemUpdateEntity.cs" />
+    <Compile Include="UpdateClusters\Interfaces\IMessageCenterRpst.cs" />
+    <Compile Include="UpdateClusters\Interfaces\INewFeaturedRpst.cs" />
+    <Compile Include="UpdateClusters\Interfaces\ISystemUpdateRpst.cs" />
+    <Compile Include="UpdateClusters\IUpdateClusterContract.cs" />
+    <Compile Include="UpdateClusters\UpdateClusterService.cs" />
+    <Compile Include="Users\Configurations\CertificateCnfg.cs" />
+    <Compile Include="Users\Configurations\CoordCoachCnfg.cs" />
+    <Compile Include="Users\Configurations\CoordCoachEquipmentCnfg.cs" />
+    <Compile Include="Users\Configurations\CoordCoachRoleCnfg.cs" />
+    <Compile Include="Users\Configurations\IntManaCoachRelationCnfg.cs" />
+    <Compile Include="Users\Configurations\ParentStudentRelationCnfg.cs" />
+    <Compile Include="Users\Configurations\PrincipalRoleCnfg.cs" />
+    <Compile Include="Users\Configurations\TeacherRoleCnfg.cs" />
+    <Compile Include="Users\Configurations\TeacherTransactionCnfg.cs" />
+    <Compile Include="Users\Configurations\UserComSchRelationCnfg.cs" />
+    <Compile Include="Users\Configurations\VideoCodingCnfg.cs" />
+    <Compile Include="Users\Configurations\UserClassRelationCnfg.cs" />
+    <Compile Include="Users\Configurations\Sy_UserBaseCnfg.cs" />
+    <Compile Include="Users\Entities\CertificateEntity.cs" />
+    <Compile Include="Users\Entities\CoordCoachEntity.cs" />
+    <Compile Include="Users\Entities\CoordCoachEquipmentEntity.cs" />
+    <Compile Include="Users\Entities\CoordCoachRoleEntity.cs" />
+    <Compile Include="Users\Entities\EmailLogEntity.cs" />
+    <Compile Include="Users\Entities\IntManaCoachRelationEntity.cs" />
+    <Compile Include="Users\Entities\ParentStudentRelationEntity.cs" />
+    <Compile Include="Users\Entities\PrincipalRoleEntity.cs" />
+    <Compile Include="Users\Entities\TeacherRoleEntity.cs" />
+    <Compile Include="Users\Entities\TeacherTransactionEntity.cs" />
+    <Compile Include="Users\Entities\VideoCodingEntity.cs" />
+    <Compile Include="Users\Entities\UserComSchRelationEntity.cs" />
+    <Compile Include="Users\Entities\UserClassRelationEntity.cs" />
+    <Compile Include="Users\Entities\Synonyms\Sy_UserBaseEntity.cs" />
+    <Compile Include="Users\Enums\DistrictInviteRole.cs" />
+    <Compile Include="Users\Enums\Equipment.cs" />
+    <Compile Include="Users\Enums\FundedThrough.cs" />
+    <Compile Include="Users\Enums\InternalRole.cs" />
+    <Compile Include="Users\Enums\Role.cs" />
+    <Compile Include="Users\Interfaces\ICertificateRpst.cs" />
+    <Compile Include="MasterData\IMasterDataContract.cs" />
+    <Compile Include="MasterData\MasterDataServer.cs" />
+    <Compile Include="Schools\Configurations\BasicSchoolCnfg.cs" />
+    <Compile Include="Schools\Configurations\SchoolTypeCnfg.cs" />
+    <Compile Include="Schools\Entities\BasicSchoolEntity.cs" />
+    <Compile Include="Schools\Entities\SchoolTypeEntity.cs" />
+    <Compile Include="Schools\Interfaces\IBasicSchoolRpst.cs" />
+    <Compile Include="Schools\Interfaces\ISchoolTypeRpst.cs" />
+    <Compile Include="Students\Configurations\StudentCnfg.cs" />
+    <Compile Include="Students\Entities\StudentEntity.cs" />
+    <Compile Include="Students\Interfaces\IStudentRpst.cs" />
+    <Compile Include="Students\IStudentContract.cs" />
+    <Compile Include="Students\StudentService.cs" />
+    <Compile Include="Users\Configurations\AffiliationCnfg.cs" />
+    <Compile Include="Users\Entities\AffiliationEntity.cs" />
+    <Compile Include="Users\Enums\AssessmentType.cs" />
+    <Compile Include="Users\Enums\TeacherType.cs" />
+    <Compile Include="Users\Enums\EmployedBy.cs" />
+    <Compile Include="Users\Interfaces\IAffiliationRpst.cs" />
+    <Compile Include="Users\Interfaces\ICoordCoachEquipmentRpst.cs" />
+    <Compile Include="Users\Interfaces\ICoordCoachRoleRpst.cs" />
+    <Compile Include="Users\Interfaces\ICoordCoachRpst.cs" />
+    <Compile Include="Users\Interfaces\IIntManaCoachRelationRpst.cs" />
+    <Compile Include="Users\Interfaces\IParentStudentRelationRpst.cs" />
+    <Compile Include="Users\Interfaces\IPrincipalRoleRpst.cs" />
+    <Compile Include="Users\Interfaces\ITeacherTransactionRpst.cs" />
+    <Compile Include="Users\Interfaces\IVideoCodingRpst.cs" />
+    <Compile Include="Users\Interfaces\ITeacherRoleRpst.cs" />
+    <Compile Include="Users\Interfaces\IUserComSchRelationRpst.cs" />
+    <Compile Include="Users\Interfaces\IUserClassRelationRpst.cs" />
+    <Compile Include="Users\UserObjectService.cs" />
+    <Compile Include="Users\UserServicePartial.cs" />
+    <Compile Include="Users\Configurations\YearsInProjectCnfg.cs" />
+    <Compile Include="Users\Entities\YearsInProjectEntity.cs" />
+    <Compile Include="Users\Interfaces\IYearsInProjectRpst.cs" />
+    <Compile Include="Users\Configurations\PositionCnfg.cs" />
+    <Compile Include="Users\Entities\PositionEntity.cs" />
+    <Compile Include="Users\Interfaces\IPositionRpst.cs" />
+    <Compile Include="Users\Configurations\ProfessionalDevelopmentCnfg.cs" />
+    <Compile Include="Users\Entities\ProfessionalDevelopmentEntity.cs" />
+    <Compile Include="Users\Interfaces\IProfessionalDevelopmentRpst.cs" />
+    <Compile Include="MasterData\Configurations\LanguageCnfg.cs" />
+    <Compile Include="MasterData\Entities\LanguageEntity.cs" />
+    <Compile Include="MasterData\Interfaces\ILanguageRpst.cs" />
+    <Compile Include="CoreServiceBase.cs" />
+    <Compile Include="MasterData\Configurations\CountyCnfg.cs" />
+    <Compile Include="MasterData\Entities\CountyEntity.cs" />
+    <Compile Include="MasterData\Interfaces\ICountyRpst.cs" />
+    <Compile Include="DomainFacade.cs" />
+    <Compile Include="EFUnitOfWorkContext.cs" />
+    <Compile Include="MasterData\Configurations\FundingCnfg.cs" />
+    <Compile Include="MasterData\Entities\FundingEntity.cs" />
+    <Compile Include="MasterData\Interfaces\IFundingRpst.cs" />
+    <Compile Include="MainDbContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Schools\Configurations\SchoolCnfg.cs" />
+    <Compile Include="Schools\Entities\SchoolEntity.cs" />
+    <Compile Include="Schools\Interfaces\ISchoolRpst.cs" />
+    <Compile Include="Schools\ISchoolContract.cs" />
+    <Compile Include="Schools\SchoolService.cs" />
+    <Compile Include="MasterData\Configurations\StateCnfg.cs" />
+    <Compile Include="MasterData\Entities\StateEntity.cs" />
+    <Compile Include="MasterData\Interfaces\IStateRpst.cs" />
+    <Compile Include="Users\Configurations\ApplicantCnfg.cs" />
+    <Compile Include="Users\Configurations\ApplicantContactCnfg.cs" />
+    <Compile Include="Users\Configurations\ApplicantEmailCnfg.cs" />
+    <Compile Include="Users\Configurations\AuditorCnfg.cs" />
+    <Compile Include="Users\Configurations\DisCommunityCnfg.cs" />
+    <Compile Include="Users\Configurations\PrincipalCnfg.cs" />
+    <Compile Include="Users\Configurations\StateWideCnfg.cs" />
+    <Compile Include="Users\Configurations\TeacherAgeGroupCnfg.cs" />
+    <Compile Include="Users\Configurations\TeacherEquipmentRelationCnfg.cs" />
+    <Compile Include="Users\Configurations\UserBaseCnfg.cs" />
+    <Compile Include="Users\Configurations\ParentCnfg.cs" />
+    <Compile Include="Users\Configurations\RegistorLogCnfg.cs" />
+    <Compile Include="Users\Entities\ApplicantContactEntity.cs" />
+    <Compile Include="Users\Entities\ApplicantEmailEntity.cs" />
+    <Compile Include="Users\Entities\ApplicantEntity.cs" />
+    <Compile Include="Users\Entities\AuditorEntity.cs" />
+    <Compile Include="Users\Entities\CommunityUserEntity.cs" />
+    <Compile Include="Users\Entities\EmailReplaceBodyEntity.cs" />
+    <Compile Include="Users\Entities\ParentEntity.cs" />
+    <Compile Include="Users\Entities\PrincipalEntity.cs" />
+    <Compile Include="Users\Entities\StateWideEntity.cs" />
+    <Compile Include="Users\Entities\TeacherAgeGroupEntity.cs" />
+    <Compile Include="Users\Entities\TeacherEquipmentRelationEntity.cs" />
+    <Compile Include="Users\Entities\UserBaseEntity.cs" />
+    <Compile Include="Users\Entities\TeacherEntity.cs" />
+    <Compile Include="Users\Entities\UserStatusEnum.cs" />
+    <Compile Include="Users\Entities\RegistorLogEntity.cs" />
+    <Compile Include="Users\Enums\EducationLevel.cs" />
+    <Compile Include="Users\Enums\Ethnicity.cs" />
+    <Compile Include="Users\Enums\ParentRelation.cs" />
+    <Compile Include="Users\Interfaces\IApplicantContactRpst.cs" />
+    <Compile Include="Users\Interfaces\IApplicantEmailRpst.cs" />
+    <Compile Include="Users\Interfaces\IApplicantRpst.cs" />
+    <Compile Include="Users\Interfaces\IAuditorRpst.cs" />
+    <Compile Include="Users\Interfaces\IDisCommunityRpst.cs" />
+    <Compile Include="Users\Interfaces\IPrincipalRpst.cs" />
+    <Compile Include="Users\Interfaces\IStateWideRpst.cs" />
+    <Compile Include="Users\Interfaces\ITeacherEquipmentRelationRpst.cs" />
+    <Compile Include="Users\Interfaces\ITeacherRpst.cs" />
+    <Compile Include="Users\Interfaces\IUserBaseRpst.cs" />
+    <Compile Include="Users\Interfaces\IParentRpst.cs" />
+    <Compile Include="Users\Interfaces\IRegistorLogRpst.cs" />
+    <Compile Include="Users\Interfaces\ITeacherAgeGroupRpst.cs" />
+    <Compile Include="Users\IUserContract.cs" />
+    <Compile Include="Users\UserService.cs" />
+    <Compile Include="PracticeDbContext.cs" />
+    <Compile Include="VcwDbContext.cs" />
+    <Compile Include="PracticeUnitOfWorkContext.cs" />
+    <Compile Include="VCWUnitOfWorkContext.cs" />
+    <Compile Include="Vcw\Configurations\AssignmentCnfg.cs" />
+    <Compile Include="Vcw\Configurations\AssignmentContentCnfg.cs" />
+    <Compile Include="Vcw\Configurations\AssignmentContextCnfg.cs" />
+    <Compile Include="Vcw\Configurations\AssignmentFileCnfg.cs" />
+    <Compile Include="Vcw\Configurations\AssignmentReportCnfg.cs" />
+    <Compile Include="Vcw\Configurations\AssignmentStrategyCnfg.cs" />
+    <Compile Include="Vcw\Configurations\AssignmentUploadTypeCnfg.cs" />
+    <Compile Include="Vcw\Configurations\AssignmentWatchFileCnfg.cs" />
+    <Compile Include="Vcw\Configurations\Assignment_Content_DataCnfg.cs" />
+    <Compile Include="Vcw\Configurations\CoachingStrategy_DataCnfg.cs" />
+    <Compile Include="Vcw\Configurations\FileCnfg.cs" />
+    <Compile Include="Vcw\Configurations\FileContentCnfg.cs" />
+    <Compile Include="Vcw\Configurations\FileSelectionCnfg.cs" />
+    <Compile Include="Vcw\Configurations\FileSharedCnfg.cs" />
+    <Compile Include="Vcw\Configurations\FileStrategyCnfg.cs" />
+    <Compile Include="Vcw\Configurations\SessionCnfg.cs" />
+    <Compile Include="Vcw\Configurations\Synonym\TeacherCnfg.cs" />
+    <Compile Include="Vcw\Configurations\Synonym\UserCnfg.cs" />
+    <Compile Include="Vcw\Configurations\UploadTypeCnfg.cs" />
+    <Compile Include="Vcw\Configurations\Context_DataCnfg.cs" />
+    <Compile Include="Vcw\Configurations\Video_Content_DataCnfg.cs" />
+    <Compile Include="Vcw\Configurations\Video_Language_DataCnfg.cs" />
+    <Compile Include="Vcw\Configurations\Video_SelectionList_DataCnfg.cs" />
+    <Compile Include="Vcw\Configurations\VIPDocumentCnfg.cs" />
+    <Compile Include="Vcw\Configurations\WaveCnfg.cs" />
+    <Compile Include="Vcw\Entities\AssignmentContentEntity.cs" />
+    <Compile Include="Vcw\Entities\AssignmentContextEntity.cs" />
+    <Compile Include="Vcw\Entities\AssignmentEntity.cs" />
+    <Compile Include="Vcw\Entities\AssignmentFileEntity.cs" />
+    <Compile Include="Vcw\Entities\AssignmentReportEntity.cs" />
+    <Compile Include="Vcw\Entities\AssignmentStrategyEntity.cs" />
+    <Compile Include="Vcw\Entities\AssignmentUploadTypeEntity.cs" />
+    <Compile Include="Vcw\Entities\AssignmentWatchFileEntity.cs" />
+    <Compile Include="Vcw\Entities\Assignment_Content_DataEntity.cs" />
+    <Compile Include="Vcw\Entities\CoachingStrategy_DataEntity.cs" />
+    <Compile Include="Vcw\Entities\FileContentEntity.cs" />
+    <Compile Include="Vcw\Entities\FileStrategyEntity.cs" />
+    <Compile Include="Vcw\Entities\SessionEntity.cs" />
+    <Compile Include="Vcw\Entities\Synonym\TeacherEntity.cs" />
+    <Compile Include="Vcw\Entities\Synonym\UserEntity.cs" />
+    <Compile Include="Vcw\Entities\UploadTypeEntity.cs" />
+    <Compile Include="Vcw\Entities\Vcw_FileEntity.cs" />
+    <Compile Include="Vcw\Entities\FileSelectionEntity.cs" />
+    <Compile Include="Vcw\Entities\FileSharedEntity.cs" />
+    <Compile Include="Vcw\Entities\Context_DataEntity.cs" />
+    <Compile Include="Vcw\Entities\Video_Content_DataEntity.cs" />
+    <Compile Include="Vcw\Entities\Video_Language_DataEntity.cs" />
+    <Compile Include="Vcw\Entities\Video_SelectionList_DataEntity.cs" />
+    <Compile Include="Vcw\Entities\VIPDocumentEntity.cs" />
+    <Compile Include="Vcw\Entities\WaveEntity.cs" />
+    <Compile Include="Vcw\Enums\AssignmentStatus.cs" />
+    <Compile Include="Vcw\Enums\AssignmentTypeEnum.cs" />
+    <Compile Include="Vcw\Enums\FileStatus.cs" />
+    <Compile Include="Vcw\Enums\FileTypeEnum.cs" />
+    <Compile Include="Vcw\Enums\SharedUserTypeEnum.cs" />
+    <Compile Include="Vcw\Enums\UploadUserTypeEnum.cs" />
+    <Compile Include="Vcw\Interfaces\IAssignmentContentRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IAssignmentContextRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IAssignmentFileRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IAssignmentReportRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IAssignmentRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IAssignmentStrategyRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IAssignmentUploadTypeRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IAssignmentWatchFileRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IAssignment_Content_DataRpst.cs" />
+    <Compile Include="Vcw\Interfaces\ICoachingStrategy_DataRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IFileContentRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IFileRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IFileSelectionRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IFileSharedRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IFileStrategyRpst.cs" />
+    <Compile Include="Vcw\Interfaces\ISessionRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IUploadTypeRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IContext_DataRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IVideo_Content_DataRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IVideo_Language_DataRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IVideo_SelectionList_DataRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IVIPDocumentRpst.cs" />
+    <Compile Include="Vcw\Interfaces\IWaveRpst.cs" />
+    <Compile Include="Vcw\Interfaces\Synonym\ITeacherRpst.cs" />
+    <Compile Include="Vcw\Interfaces\Synonym\IUserRpst.cs" />
+    <Compile Include="Vcw\IVcwContract.cs" />
+    <Compile Include="Vcw\VcwService.cs" />
+    <Compile Include="TRSClasses\TRSClassService.cs" />
+    <Compile Include="TRSClasses\Configurations\TRSClassCnfg.cs" />
+    <Compile Include="TRSClasses\Entites\TRSClassEntity.cs" />
+    <Compile Include="TRSClasses\ITRSClassContract.cs" />
+    <Compile Include="TRSClasses\Interfaces\ITRSClassRpst.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sunnet.Framework\Sunnet.Framework.csproj">
+      <Project>{14a83fe3-67ab-4bd7-b171-870de20f5bf1}</Project>
+      <Name>Sunnet.Framework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Users\Configurations\TeacherCnfg.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Schools\Configurations\IspCnfg.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Schools\Interfaces\IIspRpst.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CAC\Enums\" />
+    <Folder Include="Cec\Enums\" />
+    <Folder Include="Observable\Models\" />
+    <Folder Include="Reports\Ade\" />
+    <Folder Include="Trs\Models\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

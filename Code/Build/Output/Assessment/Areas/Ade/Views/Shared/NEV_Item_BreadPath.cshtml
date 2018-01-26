@@ -1,0 +1,20 @@
+﻿@model  ItemModel
+
+@(Html.ActionLink("Assessment", "Index", "Assessment"))
+<i class="icon-angle-right"></i>
+@Html.ActionLink(Model.Measure.AssessmentLabel, "Detail", "Assessment", new { id = Model.Measure.AssessmentId }, null)
+@if (Model.Measure.Parent != null && Model.Measure.Parent.ID != 1)
+{
+    <i class="icon-angle-right"></i>
+    @Model.Measure.Parent.Label
+}
+<i class="icon-angle-right"></i>
+@Html.ActionLink(Model.Measure.Label, "Detail", "Measure", new { id = Model.MeasureId }, null)
+@if (Model.ID < 1)
+{
+    <i class="icon-angle-right"></i>@("New")<i class="icon-angle-right"></i>@Model.Type.ToDescription()
+}
+else
+{
+    <i class="icon-angle-right"></i>@(Model.Label)
+}

@@ -1,0 +1,179 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Schools.Models.SchoolModel
+@{
+    ViewBag.Title = Model.SchoolName +  " Playgrounds";
+   Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formIdPage = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View) + "1";
+    var formId2 = PostFormHelper.GetFormId(Html.ViewContext.View) + "2";
+}   
+
+@Html.AntiForgeryToken()
+
+ 
+        <form class="form-horizontal clearfix" role="form">
+            <div id="@formId">
+                <div class="tab-content tab-d" style="padding-top: 0px;">
+                    <div class="content-title">
+                        Playgrounds
+                    </div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr data-bind="foreach: { data: headers, as: 'header' }">
+                                <!-- ko if: ($index() === 0)-->
+                                <th>Select one playground
+                                </th>
+
+                                <!-- /ko-->
+                                <!-- ko if: (header.order === true)-->
+
+                                <!-- /ko-->
+                                <!-- ko if: (header.order === false) -->
+
+                                <!-- /ko-->
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                            <tr>
+                                <td>
+                                    <input type="radio" name="chkPlayground"  data-bind="value: item.ID, attr: { id: 'chkPlayground' + $index() }, checked: $root.selectedPlayground">
+                                    <label data-bind="text: item.Name, attr: { for: 'chkPlayground' + $index() }"></label>
+                                </td>
+                            </tr> 
+                        </tbody>
+                        @Html.Display("e", "NoData", new { Colspan = 2 })
+                    </table>
+
+                </div>
+                <div class="tab-d-m" style="text-align: center;">
+                </div>
+            </div>
+
+            <div class="tab-content tab-d" id="@formId2" style="padding-top: 0px;">
+                <div class="content-title">Assigned TRS Classes</div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr data-bind="foreach: { data: headers, as: 'header' }">
+                            <!-- ko if: ($index() === 0)-->
+                             
+                            <!-- /ko-->
+                            <!-- ko if: (header.order === true)-->
+                            <th data-bind="style: { width: width }">
+                                <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                            </th>
+                            <!-- /ko-->
+                            <!-- ko if: (header.order === false) -->
+                            <th data-bind="text: text, style: { width: width }"></th>
+                            <!-- /ko-->
+
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                        <tr>
+                            <td data-bind="text: item.TRSClassName"></td>
+
+                        </tr>
+                    </tbody>
+                    @Html.Display("e", "NoData", new { Colspan = 2 })
+                </table>
+                @Html.Partial("_Partial_Pager")
+            </div>
+        </form>
+ 
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        var list_Playgrounds = {};
+        var list_TRSClasses = {};
+        $(function() {
+
+            InitList = function() {
+                list_Playgrounds.search();
+                list_TRSClasses.search();
+            }
+            list_Playgrounds = new ViewModel(
+                {
+                    instanceName: "list_Playgrounds",
+                    modalId: "modalNormal",
+                    viewType: "Redirect",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("GetPlaygrounds")))',
+                    orderBy: "Name",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "Playground",
+                            field: "Name",
+                            order: true,
+                            width: '70%'
+                        }
+                    ],
+                    miniPager: true,
+                    searchCriteria: {
+                        schoolId: ko.observable("@Model.ID")
+                    }
+                },
+                {
+                    SelectedPlayGround: function(item) {
+                        list_TRSClasses.search();
+                        return "";
+                    },
+                    resetPages: function() {
+                        $("#chkPlayground0").attr("checked", "checked");
+                    },
+                    ajaxDone: function() {
+                        if (list_Playgrounds.pageRecords().length > 0) {
+                            if (list_Playgrounds.pageRecords()[0].data.length > 0) {
+                                list_TRSClasses.searchCriteria.playgroundId(list_Playgrounds.pageRecords()[0].data[0].ID);
+                                list_TRSClasses.search();
+                            }
+                        }
+                    },
+                    selectedPlayground: ko.observable(0)
+                }
+            );
+            list_Playgrounds.selectedPlayground.subscribe(function(playgroundId) {
+                list_TRSClasses.searchCriteria.playgroundId(playgroundId);
+                list_TRSClasses.search();
+            });
+            list_TRSClasses = new ViewModel(
+                {
+                    instanceName: "list_TRSClasses",
+                    modalId: "modalNormal",
+                    viewType: "Redirect",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("GetAssignedTRSClasses")))',
+                    orderBy: "TRSClassName",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    miniPager: true,
+                    headers: [
+                        {
+                            text: "TRS Class Name",
+                            field: "Name",
+                            order: true,
+                            width: '70%'
+                        }
+                    ],
+                    searchCriteria: {
+                        playgroundId: ko.observable(0),
+                        schoolId: ko.observable("@Model.ID"),
+                        name: ko.observable("")
+                    }
+                }
+            );
+            list_Playgrounds.search();
+            list_TRSClasses.search();
+            ko.applyBindings(list_Playgrounds, document.getElementById("@formId"));
+            ko.applyBindings(list_TRSClasses, document.getElementById("@formId2"));
+        });
+    </script>
+}

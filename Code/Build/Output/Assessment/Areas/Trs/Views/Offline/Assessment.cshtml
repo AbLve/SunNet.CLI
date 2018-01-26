@@ -1,0 +1,662 @@
+﻿@model Sunnet.Cli.Business.Trs.Models.TrsAssessmentModel
+@using System.Web.Optimization
+@using Sunnet.Cli.Core.Trs
+@{
+    ViewBag.Title = "TRS Assessment Offline";
+    Layout = "~/Views/Shared/_Layout_Offline.cshtml";
+}
+@section Styles{
+    @Styles.Render("~/css/assessment/offline")
+    @Styles.Render("~/css/trs/offline")
+    <style type="text/css">
+        .form-control-d {
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0) inset;
+            color: #666;
+            display: inline-block;
+            font-size: 13px;
+            height: 26px;
+            padding: 2px 4px;
+            transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+        }
+
+        .control-label-con {
+            float: left;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+
+        .tooltip-inner {
+            max-width: 600px;
+        }
+
+        table.trs-items caption {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        table.trs-items th.scores {
+            text-align: left;
+            width: 110px;
+        }
+
+        table.trs-items th.scores-na {
+            width: 80px;
+        }
+
+        table.trs-items td.scores {
+            text-align: left;
+        }
+
+            table.trs-items td.scores input {
+                float: left;
+            }
+
+            table.trs-items td.scores label {
+                display: inline-block;
+                float: left;
+                width: 70px;
+            }
+
+        table.trs-items td.scores-na label {
+            width: 50px;
+        }
+
+        table.trs-items td.scores label {
+            border: solid 1px rgba(255, 255, 255, 0);
+            padding: 2px;
+        }
+
+            table.trs-items td.scores label:hover {
+                border: solid 1px #ddd;
+            }
+
+        .panel-heading {
+            padding: 0;
+        }
+
+        .panel-title a {
+            display: inline-block;
+            padding: 10px 15px;
+            width: 100%;
+        }
+
+        .scrollUp {
+            position: fixed;
+            right: 20px;
+            top: 75%;
+            width: 140px;
+            z-index: 2147483647;
+        }
+
+            .scrollUp a {
+                background-color: #333333;
+                border: none;
+                border-bottom: 1px #000 solid;
+                color: #eee;
+                display: inline-block;
+                height: 40px;
+                line-height: 40px;
+                opacity: .8;
+                text-align: left;
+                text-decoration: none;
+                width: 130px;
+            }
+
+                .scrollUp a i {
+                    background-color: #42b357;
+                    border: solid 1px #333333;
+                    display: inline-block;
+                    height: 100%;
+                    text-align: center;
+                    vertical-align: top;
+                    width: 40px;
+                }
+
+                .scrollUp a:hover {
+                    background-color: #444444;
+                }
+
+        .item-desc {
+            -moz-transition: all 300ms ease-in-out;
+            -ms-transition: all 300ms ease-in-out;
+            -o-transition: all 300ms ease-in-out;
+            max-height: 37px;
+            max-width: 450px;
+            overflow: hidden;
+            position: absolute;
+            text-overflow: ellipsis;
+            transition: all 300ms ease-in-out;
+        }
+
+        tr:hover .item-desc {
+            background-color: #eeeeee;
+            border: solid 1px #000000;
+            max-height: 500px;
+            padding: 10px;
+            z-index: 100;
+        }
+
+        .table > thead > tr > th.thcomment {
+            width: 40px;
+            text-align: right;
+        }
+
+        .table > tbody > tr > td.tdcomment {
+            vertical-align: bottom;
+        }
+
+        tbody > tr.comment > td {
+            border-top: 0;
+        }
+    </style>
+}
+<input type="hidden" id="starvalue" />
+@Html.Partial("~/Views/Shared/Offline/_Partial_Pin.cshtml")
+@Html.Partial("~/Views/Shared/Offline/_Partial_Unlock.cshtml")
+<div class="row" id="form_School">
+    <div class="col-sm-6 col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="padding: 10px 15px;">Facility Infomation</div>
+            <div class="panel-body" data-bind="foreach: { data: currentSchool }">
+                <div class="form-group">
+                    <a data-bind="click: $root.getSchoolUrl" href="#" class="mainbutton mainright-btn nav-btn">Back to Assessment List</a>
+                </div>
+                <div class="form-horizontal main-content top-form">
+                    <label class="control-label">LWDB</label>
+                    <label class="control-label-text" data-bind="html: CommunityNames"></label>
+                    <label class="control-label" style="padding-left: 30px">School</label>
+                    <label class="control-label-text" data-bind="html: Name"></label>
+                    <label class="control-label" style="padding-left: 30px">Director</label>
+                    <label class="control-label-text" data-bind="html: NamesOfPrincipals"></label>
+                    <label class="control-label" style="padding-left: 30px">Recertification By</label>
+                    <label class="control-label-text" data-bind="datetime: RecertificationBy"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="padding: 10px 15px;">Log&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;<span data-bind="text: network.online() ? 'Online' : 'Offline'"></span>&nbsp;<span data-bind="    visible: network.online(), text: network.logged() ? '[Logged in]' : ''"></span>&nbsp;<span data-bind="    text: network.date(), visible: network.online()"></span></div>
+            <div class="panel-body panel-body-log" id="log_Container">
+            </div>
+        </div>
+    </div>
+</div>
+<form class="form-horizontal" id="form_Assessment">
+    <div class="right-content-top">
+        <div class="form-group">
+            <label class="control-label col-sm-1">Visit Date</label>
+            <div class="col-sm-2">
+                @Html.TextBoxFor(x => x.VisitDate, new
+           {
+               @class = "form-control date",
+               data_bind = "required:isFinalizing(),value: visitDate, datetime: visitDate,enable:action=='edit'"
+           })
+                @Html.ValidationMessageFor(x => x.VisitDate)
+            </div>
+            <label class="control-label col-sm-2">Discuss Date</label>
+            <div class="col-sm-3">
+                @Html.TextBoxFor(x => x.DiscussDate, new
+           {
+               @class = "form-control date",
+               data_bind = "required:isFinalizing(),value: discussDate, datetime: discussDate,enable:action=='edit'"
+           })
+                @Html.ValidationMessageFor(x => x.DiscussDate)
+            </div>
+            <label class="control-label col-sm-2">Approve Date</label>
+            <div class="col-sm-2">
+                @Html.TextBoxFor(x => x.ApproveDate, new
+           {
+               @class = "form-control date",
+               data_bind = "required:isFinalizing(),value: approveDate, datetime: approveDate,enable:action=='edit'"
+           })
+                @Html.ValidationMessageFor(x => x.ApproveDate)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-1 required">Type</label>
+            <div class="col-sm-2">
+                <!-- ko if:action=='edit'-->
+                @Html.EnumDropDownListFor(x => x.Type, ViewTextHelper.DefaultPleaseSelectText, "",
+                new
+                {
+                    @class = "form-control",
+                    data_bind = "value:type"
+                })
+                @Html.ValidationMessageFor(x => x.Type)
+                <!--/ko-->
+                <!-- ko ifnot:action=='edit'-->
+                <input type="text" class="form-control" data-bind="value:type()>0?AssessmentType[type()].text:'',enable:false" />
+                <!--/ko-->
+            </div>
+            <label class="control-label col-sm-2">TA Status</label>
+            <div class="col-sm-3">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="TaStatuses"  value="@((int)TrsTaStatus.TaPlan)" 
+                               data-bind='click:action=="edit"?"":disableClick,checked:taStatuses.indexOf(@((int)TrsTaStatus.TaPlan))>= 0'/>
+                        &nbsp;@(TrsTaStatus.TaPlan.ToDescription())
+                    </label>@ViewTextHelper.HtmlEmptySeparator
+                    <label>
+                        <input type="checkbox" name="TaStatuses" value="@((int)TrsTaStatus.Sia)"  
+                                   data-bind='click:action=="edit"?"":disableClick,checked:taStatuses.indexOf(@((int)TrsTaStatus.Sia))>= 0' />
+                        &nbsp;@(TrsTaStatus.Sia.ToDescription())
+                    </label>@ViewTextHelper.HtmlEmptySeparator
+                    <label>
+                        <input type="checkbox" name="TaStatuses" value="@((int)TrsTaStatus.TrsProbation)" 
+                                       data-bind='click:action=="edit"?"":disableClick,checked:taStatuses.indexOf(@((int)TrsTaStatus.TrsProbation))>= 0'  />
+                        &nbsp;@(TrsTaStatus.TrsProbation.ToDescription())
+                    </label>@ViewTextHelper.HtmlEmptySeparator
+                    <label>
+                        <input type="checkbox" name="TaStatuses" value="@((int)TrsTaStatus.None)" 
+                                           data-bind='click:action=="edit"?"":disableClick,checked:taStatuses.indexOf(@((int)TrsTaStatus.None))>= 0'  />
+                        &nbsp;@(TrsTaStatus.None.ToDescription())
+                    </label>
+                </div>
+            </div>
+            <label class="control-label col-sm-2">Recertification By</label>
+            <div class="col-sm-2">
+                @Html.TextBoxFor(x => x.RecertificatedBy, new
+               {
+                   @class = "form-control date",
+                   data_bind = "required:isFinalizing(),value: recertificatedBy, datetime: recertificatedBy,enable:action=='edit'"
+               })
+                @Html.ValidationMessageFor(x => x.RecertificatedBy)
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-l-b"></div>
+    <div class="main-content">
+        <!-- School categories begin-->
+        <div>
+            <label class="trs-name" data-bind="text:assessor"></label>
+        </div>
+        <!-- ko template:{name:'tmp_school',data:school,as:'host'}-->
+        <!--/ko-->
+        <!-- School categories end-->
+        <div class="modal-l-b"></div>
+        <!-- Classes categories begin-->
+        <ul class="nav-container" role="tablist" data-bind="foreach: { data: classes, as: 'host' }">
+            <li role="presentation" data-bind="css: { active: $root.activeClassId() == host.id, 'trs-partial': allFilled() == false, 'trs-completed': allFilled() }, attr: { 'href': '#class' + $index(), id: 'tab_class_' + $index() }, click: $root.switchClass">
+                <a role="tab" data-toggle="tab" data-bind="attr: { href: '#class' + $index() }, text: name"></a>
+            </li>
+        </ul>
+        <div class="tab-content" data-bind="foreach: { data: classes, as: 'host' }">
+            <div role="tabpanel" class="tab-pane " data-bind="attr: { id: 'class' + $index() }, css: { active: $root.activeClassId() == host.id }">
+                <!--ko if:window._DEBUG-->
+                <div data-bind="visible: window._DEBUG, text: host.name"></div>
+                <!--/ko-->
+                <div class="form-group">
+                    <label class="col-sm-2 control-lable">Length of Observation</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="classobs" class="form-control number"
+                            data-bind="value: host.observationLength, enable: host.ifCanAccessObservation" />
+                    </div>
+                </div>
+                <div class="panel-group" role="tablist" aria-multiselectable="false"
+                    data-bind="attr: { id: 'class' + id + 'Categories' }, foreach: { data: categories, as: 'category' }">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" data-bind="attr: { id: 'class' + host.id + 'Heading' + $index() }, css: { 'trs-partial': allFilled() == false, 'trs-completed': allFilled() }">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" aria-expanded="true"
+                                    data-bind="attr: { href: '#class' + host.id + 'Category' + $index(), 'aria-controls': 'class' + host.id + 'Category' + $index(), 'data-parent': '#class' + host.id + 'Categories' }, html: text"></a>
+                            </h4>
+                        </div>
+                        <div class="panel-collapse collapse"
+                            data-bind="attr: { id: 'class' + host.id + 'Category' + $index(), 'aria-labelledby': 'class' + host.id + 'Heading' + $index() }">
+                            <div class="panel-body" data-bind="template: { name: $root.getCategroyTemplate, foreach: subs, as: 'sub' }">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Classes categories end-->
+    </div>
+    <div id="buttonsContainer" class="button-content hide">
+        <!-- ko ifnot:action=='viewAssessment' -->
+        <button class="mainbutton mainright-btn submit-btn" type="button" data-bind="event: { click: save }">
+            Save</button>
+        <button class="mainbutton mainright-btn submit-btn" id="btnPreview" type="button" data-bind="event: { click: preview }">
+            Preview</button>
+        <!-- ko if:action=='edit' -->
+        <button class="mainbutton mainright-btn submit-btn" type="button" data-bind="event: { click: finalize }">
+            Finalize</button>
+        <!--/ko-->
+        <button class="mainbutton mainright-btn cancel-btn" type="button" data-bind="event: { click: cancel }">
+            Cancel</button>
+        <!--/ko-->
+        <!-- ko if:action=='viewAssessment' -->
+        <button class="mainbutton mainright-btn cancel-btn" type="button" data-bind="event: { click: cancel }">
+            Back</button>
+        <!--/ko-->
+    </div>
+    <div class="scrollUp">
+        <a href="#" title="Back to Top">
+            <i class="icon-angle-up icon-2x"></i>&nbsp;Back to Top
+        </a>
+        <div class="clearfix"></div>
+        <a href="#" title="Collapse" data-bind="click: collapseAll">
+            <i class="icon-folder-close-alt icon-2x"></i>&nbsp;Collapse All
+        </a>
+    </div>
+    <input type="hidden" id="taStatus" />
+</form>
+
+@section Scripts{
+
+    @System.Web.Optimization.Scripts.Render("~/scripts/format/offline")
+    @System.Web.Optimization.Scripts.Render("~/scripts/trs/offline")
+    @System.Web.Optimization.Scripts.Render("~/scripts/jquery_val/offline")
+
+    <script type="text/html" id="tmp_school">
+        <div class="panel-group" id="schoolCategories" role="tablist" aria-multiselectable="true"
+            data-bind="foreach: { data: $root.categories, as: 'category' }">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab"
+                    data-bind="attr: { id: 'schoolHeading' + $index() }, css: { 'trs-partial': allFilled() == false, 'trs-completed': allFilled() }">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#schoolCategories" aria-expanded="true"
+                            data-bind="attr: { href: '#schoolCategory' + $index(), 'aria-controls': 'schoolCategory' + $index() }, html: text"></a>
+                    </h4>
+                </div>
+                <div class="panel-collapse collapse" role="tabpanel"
+                    data-bind="attr: { id: 'schoolCategory' + $index(), 'aria-labelledby': 'schoolHeading' + $index() }">
+                    <div class="panel-body" data-bind="template: { name: $root.getCategroyTemplate, foreach: subs, as: 'sub' }">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="tmp_subCategory_Process">
+        <table class="table table-striped table-hover trs-items">
+            <caption data-bind="html: text + ' (' + note + ')'" style="text-align: left;">
+            </caption>
+            <thead>
+                <tr>
+                    <th style="width: 120px;">Measure #
+                    </th>
+                    <th width="*">Measure
+                    </th>
+                    <th class="scores">Score0
+                    </th>
+                    <th class="scores">Score1
+                    </th>
+                    <th class="scores">Score2
+                    </th>
+                    <th class="scores">Score3
+                    </th>
+                    <th class="scores scores-na">Exclude
+                    </th>
+                    <th class="thcomment"></th>
+                </tr>
+            </thead>
+            <tbody data-bind="template: { name: 'tmp_Item', foreach: items, as: 'item' }"></tbody>
+        </table>
+        <br />
+    </script>
+    <script type="text/html" id="tmp_Item">
+        <tr data-bind="css: { 'danger': $root.isSubmitting() && filled() === false }">
+            <td data-bind="html: itemNo"></td>
+            <td style="text-align: left;">
+                <div data-bind="html: description">
+                </div>
+                <!--ko if:keyBehavior && keyBehavior.length>0 -->
+                <a class="form-link2" data-toggle="tooltip" data-container="body" data-placement="right" data-html="true" data-bind="tooltip: keyBehavior">Mouse over for Key behaviors</a>
+                <!--/ko-->
+            </td>
+            <td data-bind="template: { name: 'tmp_Answer', foreach: answers.Score0, as: 'answer' }" class="scores"></td>
+            <td data-bind="template: { name: 'tmp_Answer', foreach: answers.Score1, as: 'answer' }" class="scores"></td>
+            <td data-bind="template: { name: 'tmp_Answer', foreach: answers.Score2, as: 'answer' }" class="scores"></td>
+            <td data-bind="template: { name: 'tmp_Answer', foreach: answers.Score3, as: 'answer' }" class="scores"></td>
+            <td data-bind="template: { name: 'tmp_Answer', foreach: answers.Score_1, as: 'answer' }" class="scores scores-na"></td>
+            <td>
+                <a class="table-btn icon-pencil pencil-btn"
+                    data-bind="click:function(){isView(false);},visible:(isView() && ifCanAccess)" href="#" title="Add comment"></a>
+            </td>
+        </tr>
+        <tr class="hidden">
+            <td colspan="8"></td>
+        </tr>
+        <tr class="comment" data-bind="template:{name:'tmp_Comments',foreach:item}">
+        </tr>
+    </script>
+    <script type="text/html" id="tmp_subCategory_Structural">
+        <table class="table table-striped table-hover trs-items">
+            <caption data-bind="html: text + ' (' + note + ')'" style="text-align: left;">
+            </caption>
+            <thead>
+                <tr>
+                    <th style="width: 120px;">Measure #
+                    </th>
+                    <th width="*">Measure
+                    </th>
+                    <th class="scores"></th>
+                    <th class="scores"></th>
+                    <th class="scores scores-na">Exclude</th>
+                    <th class="thcomment"></th>
+                </tr>
+            </thead>
+            <tbody data-bind="template: { name: 'tmp_Item_Structural', foreach: items, as: 'item' }"></tbody>
+        </table>
+        <br />
+    </script>
+    <script type="text/html" id="tmp_Item_Structural">
+        <tr data-bind="css: { 'danger': $root.isSubmitting() && filled() === false }">
+            <td data-bind="html: itemNo"></td>
+            <td style="text-align: left;">
+                <div data-bind="html: description">
+                </div>
+                <!--ko if:keyBehavior && keyBehavior.length>0 -->
+                <a class="form-link2" data-toggle="tooltip" data-container="body"
+                    data-placement="right" data-html="true" data-bind="tooltip: keyBehavior">Mouse over for Key behaviors</a>
+                <!--/ko-->
+
+            </td>
+            <td data-bind="template: { name: 'tmp_Answer', foreach: answers.Score0, as: 'answer' }" class="scores"></td>
+            <td data-bind="template: { name: 'tmp_Answer', foreach: answers.Score1, as: 'answer' }" class="scores"></td>
+            <td data-bind="template: { name: 'tmp_Answer', foreach: answers.Score_1, as: 'answer' }" class="scores scores-na"></td>
+            <td>
+                <a class="table-btn icon-pencil pencil-btn"
+                    data-bind="click:function(){isView(false)},visible:(isView() && ifCanAccess)" href="#" title="Add comment"></a>
+            </td>
+        </tr>
+        <tr class="hidden">
+            <td colspan="6"></td>
+        </tr>
+        <tr class="comment" data-bind="template:{name:'tmp_Comments',foreach:item}">
+        </tr>
+    </script>
+    <script type="text/html" id="tmp_Answer">
+        <input type="radio" data-bind="enable: item.ifCanAccess, attr: { name: 'host' + host && host.id + 'item' + $parent.itemId, id: 'host' + host && host.id + 'item' + $parent.itemId + 'answer' + id }, value: id, checked: item.answer.newAnswer, click: function (clickedAnswer, event) { return $root.choosed(host, $parent, event); }" />
+        <label data-bind="attr: { for: 'host' + host && host.id + 'item' + $parent.itemId + 'answer' + id }, html: '&nbsp;' + text">
+        </label>
+        <div class="clearfix"></div>
+    </script>
+    <script type="text/html" id="tmp_Comments">
+        <td colspan="8">
+            <!--ko ifnot:isView() -->
+            <div style="text-align: right">
+                <textarea style="width: 800px; height: 70px; border: solid gray 1px; word-break: normal" maxlength="300"
+                    data-bind="hasFocus:!isView(),text:comments,value:comments,enable:ifCanAccess,event:{blur:$root.onItemCommentBlur}"></textarea>
+            </div>
+            <!--/ko-->
+        </td>
+    </script>
+
+    <script type="text/javascript">
+        var offlineApp;
+        var $log;
+        var $form=$("#form_Assessment");
+        var model;
+
+        function log(type, message) {
+            var log = '<div class="alert alert-' + type + ' alert-log" role="alert" title="' + message + '">' + message + '</div>';
+            $(log).appendTo($log);
+            $log.scrollTop($log[0].scrollHeight);
+        }
+
+        var verifiedStarSetted = false;
+        var TrsAssessmentStatus = {};
+        TrsAssessmentStatus[0]={text:"@(TRSStatusEnum.Initialized.ToString())",value: +"@((int)TRSStatusEnum.Initialized)"},
+        TrsAssessmentStatus[1]={text:"@(TRSStatusEnum.Saved.ToString())",value: +"@((int)TRSStatusEnum.Saved)"},
+        TrsAssessmentStatus[2]={text:"@(TRSStatusEnum.Completed.ToString())",value: +"@((int)TRSStatusEnum.Completed)"},
+
+        $(function () {
+
+            $log = $("#log_Container");
+
+            offlineApp = getTrsOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.writeLog = log;
+            offlineApp.init(offlineApp.values.Url.assessment);
+            model= new TrsAssessmentModel(offlineApp.viewModel.currentAssessment,true);
+            var school = offlineApp.viewModel.currentSchool;
+
+
+            $.extend(model, {
+                assessmentId: model.Id,
+                getCategroyTemplate: function (subCategory) {
+                    return "tmp_subCategory_" + subCategory.type;
+                },
+                collapseAll: function () {
+                    $("div.collapse.in").each(function (index, div) {
+                        $(div).collapse("hide");
+                    });
+                    return false;
+                },
+                save: function () {
+                    GetTaStatus();
+                    model.collapseAll();
+
+                    model.status=TrsAssessmentStatus[1];
+                    model.submitStatus(Trs_Status.Saving);
+                    model.submit();     
+                    window.showMessage("success");
+                },
+                preview: function () {
+                    model.collapseAll();
+                    window.open(offlineApp.values.Url.preview);                    
+                },
+                finalize: function () {
+                    GetTaStatus();
+                    model.collapseAll();
+                    // change status after verified star set
+                    model.status=TrsAssessmentStatus[1];
+                    model.submitStatus(Trs_Status.Finalizing);
+                    model.submit();
+                },
+                cancel: function () {
+                    location.href = offlineApp.values.Url.school;
+                },
+
+                submit: function () {
+                    $("input[type=text][name=classobs]").each(function(){
+                        $(this).removeClass("number");
+                    })
+                    var result = model.prepare();
+                    if ($form.valid()) {
+                        if (result === false) {
+                            window.showMessage("hint", "trs_All_items_required");
+                        } else {
+                            $("input[type=text][name=classobs]").each(function(){
+                                $(this).addClass("number");
+                            })
+                            if ($("input[type=text][name=classobs]").valid()) {
+                                var result_observation = model.getObservations();
+                                $form.find("#items").val(result);
+                                $form.find("#observations").val(result_observation);
+                                offlineApp.viewModel.saveAssessment(result,model,$("#taStatus").val());
+                                model.postBack();                                
+                            }
+                            else {
+                                window.showMessage("hint", "trs_ObservationLength");
+                            }
+                        }
+                    }
+                },
+
+                postBack:function(){
+                    if (model.submitStatus() == Trs_Status.Finalizing) {
+                        if (model.status.value == TrsAssessmentStatus[1].value) {
+                            offlineApp.updateStar(true);
+                            $("#modalSmall").modal({ remote: offlineApp.values.Url.verifiedStar });                            
+                        } else if (model.status.value == TrsAssessmentStatus[2].value) {
+                            $form.find("button.submit-btn").button("loading");
+                            window.loading();
+                        }
+                    } else if (model.submitStatus() == Trs_Status.Priviewing) {
+                        model.submitStatus(Trs_Status.Saving);
+                        window.open('@Url.Action("Preview", "Report")' + "/" + id + "?all=" + model.allFilled());
+                    }
+                },
+                disableClick:function(){
+                    return false;
+                }
+            });
+            model.assessor=offlineApp.viewModel.currentSchool.Assessor.FullName;
+            ko.applyBindings(model, document.getElementById("form_Assessment"));
+            ko.applyBindings(offlineApp.viewModel, document.getElementById("form_School"));         
+
+            $("#modalSmall").on("shown.bs.modal", function (event) {
+                var tt = $("div.modal-backdrop.in:visible");
+                tt.css("background","#000000");
+                tt.css("opacity",0.5);
+                tt.css("filter","alpha(opacity=5)");
+            });
+
+            $("body").on("shown.bs.collapse", function (event) {
+                var $this = $(event.target);
+                var $panel = $this.closest("div.panel");
+                window.scrollTo(0, $panel.offset().top);
+            });
+
+            $("#btnPreview").tooltip({
+                html: true,
+                placement: "top",
+                title: window.getErrorMessage("trs_Preview_Tips")
+            });
+
+            $("#buttonsContainer").removeClass("hide");
+
+            $(window).resize(function () {
+                // Measure #, 4 Score, N/A, adjust(padding)
+                var descWidth = $("div.panel-group").width() - 120 - 110 * 4 - 80 - 60;
+                $("div.item-desc").css("max-width", descWidth);
+            }).trigger("resize");
+
+            $("#ApproveDate").on("change", function () {
+                var limitTrsDate = offlineApp.viewModel.trsMinDate;
+                var limitDate = new Date(limitTrsDate.getFullYear(), limitTrsDate.getMonth() - 1, limitTrsDate.getDate());  //替换成School.TrsMinDate
+                var source = $(this).val();
+                var date = new Date(source);
+                if (date < limitDate) {
+                    date = limitDate;
+                    source = limitDate.Format("MM/dd/yyyy");
+                    $(this).val(source);
+                }
+                model.recertificatedBy=source.replace(date.getFullYear().toString(), date.getFullYear() + 3);
+                $("#RecertificatedBy").val(source.replace(date.getFullYear().toString(), date.getFullYear() + 3));
+            });
+
+        });
+
+    function GetTaStatus(){
+        var taStatus=[];
+        $("input[name=TaStatuses]:checked").each(function(){
+            taStatus+=$(this).val()+",";
+        })
+        if(taStatus.length>0)
+        {
+            taStatus=taStatus.substring(0,taStatus.length-1);
+            $("#taStatus").val(taStatus);
+        }
+    }
+    </script>
+}

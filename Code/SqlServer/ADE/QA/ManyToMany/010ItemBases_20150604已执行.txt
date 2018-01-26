@@ -1,0 +1,12 @@
+﻿IF NOT EXISTS(SELECT * FROM SYSCOLUMNS WHERE ID=OBJECT_ID('ItemBases') AND NAME='IsPractice')
+BEGIN
+ALTER TABLE dbo.ItemBases
+ADD [IsPractice] BIT NULL
+END
+GO
+
+UPDATE ItemBases SET [IsPractice] = 0 ;
+GO
+
+ALTER TABLE dbo.ItemBases
+ALTER COLUMN [IsPractice] BIT NULL

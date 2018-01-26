@@ -1,0 +1,30 @@
+﻿发布步骤：
+
+发布前置条件(项目依赖)：
+		因为本程序是把"Cli Engage"项目中的“Data Management”导入后的“执行”功能，独立出来。
+        所以发布本程序前，确保已经更新了"Cli Engage"项目中的“Data Management”的部分。
+
+
+
+0、执行数据更新脚本
+1、配置好App.config各项参数
+
+2、生成或重新生成项目
+
+3、新建一个“程序主目录文件夹”。
+   定位到项目代码文件主目录:复制如下文件各文件夹，到“程序主目录文件夹”
+
+   最终的目录结构为：
+		程序主目录文件夹
+			bin目录（Debug/程序文件 或者 Release/程序文件）
+			Publishing（发布说明，可以不要）
+4、确认(或者修改) “程序主目录文件夹/bin/Debug”或 “程序主目录文件夹/bin/Release”目录里， DataManagement.exe.config 的各项配置参数
+
+5、按照"安装成Windows服务与卸载.txt"方法指引，做成 "windows服务"
+
+6、查看日志，确认程序执行。
+
+
+
+特别注意：
+1、发布本程序前，需要先更新"Cli Engage"项目中的“Data Management”部分。

@@ -1,0 +1,7 @@
+SELECT *  INTO [StudentAssessments_BK0528] FROM [StudentAssessments]
+
+ALTER TABLE [dbo].[StudentAssessments]
+DROP COLUMN [CDId]
+
+ALTER TABLE [dbo].[StudentAssessments]
+DROP COLUMN SchoolId

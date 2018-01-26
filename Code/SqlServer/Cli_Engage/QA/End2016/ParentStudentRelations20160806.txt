@@ -1,0 +1,2 @@
+﻿delete ParentStudentRelations where ParentId not in (select Id from Parents)
+delete ParentStudentRelations where StudentId not in (select Id from Students)

@@ -1,0 +1,26 @@
+﻿@using System.Web.Optimization
+@{
+    Layout = null;   
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@(ViewBag.Title) Report</title>
+    @*@Styles.Render("~/css/basic")*@
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+</head>
+<body>
+    <div class="container">
+        @RenderBody()
+    </div>
+    @RenderSection("Scripts", false)
+
+</body>
+</html>
+

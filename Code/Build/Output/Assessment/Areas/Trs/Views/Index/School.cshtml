@@ -1,0 +1,253 @@
+﻿@using Sunnet.Cli.Business.Trs.Models
+@using Sunnet.Cli.Core.Trs
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Trs.Models.TrsSchoolModel
+@{
+    ViewBag.Title = "TRS Reports";
+    var assessments = ViewBag.Assessments as List<TrsAssessmentListModel>;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section BreadPath
+{
+    <a href="@(SFConfig.MainSiteDomain)Home/Dashboard">
+        <img src="/images/icon_trs.png" alt="Logo" />
+    </a>
+    <i class="icon-angle-right"></i>@Html.ActionLink("Facilities", "Index")
+    <i class="icon-angle-right"></i>TRS Reports
+    @ViewTextHelper.HtmlEmptySeparator
+    @ViewTextHelper.HtmlEmptySeparator
+    @if (ViewBag.IsPrincipal)
+    {
+        <a class="form-link2" href="@(SFConfig.MainSiteDomain)School/School/SchoolProfile">My School</a>
+    }
+}
+<div class="main-content top-form">
+    <form class="form-horizontal" role="form">
+        @Html.LabelFor(x => x.CommunityNames, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.CommunityNames)
+        @ViewTextHelper.HtmlEmptySeparator
+        @Html.LabelFor(x => x.Name, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.Name)
+        @ViewTextHelper.HtmlEmptySeparator
+        @Html.LabelFor(x => x.Principals, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.NamesOfPrincipals, "List")
+        @ViewTextHelper.HtmlEmptySeparator
+        @Html.LabelFor(x => x.RecertificationBy, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.RecertificationBy)
+    </form>
+</div>
+@if (!string.IsNullOrEmpty(Model.Action) && Model.Action == "assessment")
+{
+    <div class="right-content-top">
+        @Html.ActionLink("Start Assessment", "Assessment", null, new { schoolId = Model.ID }, new { action = "add", @class = "mainbutton mainright-btn nav-btn", data_bind = "click:goAssessment" })
+    </div>
+}
+@if (assessments.Any())
+{
+    <div class="main-content">
+        <div class="content-title">Assessments</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Date Created</th>
+                        <th>Approval Date</th>
+                        <th>Assessment Type</th>
+                        <th>Calculated Star</th>
+                        <th>Verified Star</th>
+                        <th>Result Report</th>
+                        <th>Facility TA plan</th>
+                        <th>Class TA plan</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var assessment in assessments)
+                    {
+                        <tr>
+                            <td>
+                                @assessment.CreatedOn.FormatDateString()
+                            </td>
+                            <td>@assessment.ApproveDate.FormatDateString()</td>
+                            <td>
+                                @if (assessment.Type > 0)
+                                {
+                                    @assessment.Type.ToDescription()
+                                }
+                            </td>
+                            <td>
+                                @if (assessment.Status == TRSStatusEnum.Completed && assessment.Star > 0)
+                                {
+                                    @(assessment.Star.ToDescription())
+                                }
+                                else
+                                {
+                                    @Html.Raw("")
+                                }
+                            </td>
+                            <td>
+                                @if (assessment.Status == TRSStatusEnum.Completed)
+                                {
+                                    @((assessment.VerifiedStar > 0) ? assessment.VerifiedStar.ToDescription() : "")
+                                }
+                                else
+                                {
+                                    @Html.Raw("")
+                                }
+                            </td>
+                            <td>
+                                @if (assessment.Status == TRSStatusEnum.Completed)
+                                {
+                                    @Html.ActionLink(assessment.UpdatedOn.ToString("MM/dd/yyyy hh:mm:ss tt"),
+                                        "AssessmentResults", "Report", new { id = assessment.Id }, new { @class = "form-link2" })
+                                }
+                            </td>
+                            <td>
+                                @if (assessment.Status == TRSStatusEnum.Completed && assessment.Star > 0)
+                                {
+                                    @Html.ActionLink(assessment.UpdatedOn.ToString("MM/dd/yyyy hh:mm:ss tt"),
+                                        "Facility", "Report", new { id = assessment.Id }, new { @class = "form-link2" })
+                                }
+                            </td>
+                            <td>
+                                @if (assessment.Status == TRSStatusEnum.Completed && assessment.Star > 0)
+                                {
+                                    foreach (var class1 in assessment.Classes)
+                                    {
+                                    @Html.ActionLink(class1.Name,
+                                            "Class", "Report", new { id = assessment.Id, classId = class1.Id }, new { @class = "form-link2" })<br />
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(assessment.Action)
+                                     && assessment.Action == "viewAssessment"
+                                    )
+                                {
+                                    <a class="table-btn icon-folder-open view-btn" href='@Url.Action("Assessment", new { id = assessment.Id, schoolId = assessment.SchoolId })' title="View" data-bind="click:canAssessment"></a>                                
+                                }
+                                @if (!string.IsNullOrEmpty(assessment.Action)
+                                     && assessment.Action == "classedit"
+                                    )
+                                {
+                                    <a class="table-btn icon-pencil pencil-btn" href='@Url.Action("Assessment", new { id = assessment.Id, schoolId = assessment.SchoolId })' title="Edit" data-bind="click:canAssessment"></a>                                
+                                }
+                                @if (!string.IsNullOrEmpty(assessment.Action)
+                                     && assessment.Action == "edit"
+                                     && assessment.Status != TRSStatusEnum.Completed
+                                    )
+                                {
+                                    <a class="table-btn icon-pencil pencil-btn" href='@Url.Action("Assessment", new { id = assessment.Id, schoolId = assessment.SchoolId })' action="edit" title="Edit" data-bind="click:goAssessment"></a>
+                                    <a class="table-btn icon-trash trash-btn" href="#" title="Delete" data-bind="click:function(){$root.deleteAssessment(@(assessment.Id));}"></a>
+                                }
+                                @if (!string.IsNullOrEmpty(assessment.Action) && assessment.Action == "invalidate" && assessment.Status == TRSStatusEnum.Completed)
+                                {
+                                    <a class="table-btn icon-undo pencil-btn" 
+                                       assessment="@assessment.Id" 
+                                       data-delete="@((assessment.Status == TRSStatusEnum.Completed && assessment.Star == 0).ToString().ToLower())" 
+                                       href="#" title="Invalidate"></a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="main-content">
+        There are no TRS reports.
+    </div>
+}
+@using (Ajax.BeginForm("Invalidate", null, PostFormHelper.DefaultAjaxOptions, new { id = formId }))
+{
+    @Html.Hidden("ID")
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            var $form = $("#@formId");
+            $("body").on("click", "a[assessment]", function () {
+                var $this = $(this);
+                var msgKey = $this.data("delete") ? "trs_Invalidate_Assessment_Confirm_Delete" : "trs_Invalidate_Assessment_Confirm";
+                $.when(window.waitingConfirm(msgKey, "Invalidate", "No")).done(function () {
+
+                    var id = $this.attr("assessment");
+                    if (id) {
+                        $form.find("#ID").val(id);
+                        $form.submit();
+                    }
+                });
+                return false;
+            });
+
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    location.reload();
+                }
+            });
+
+            function goUrl(url) {
+                //console.log(url);
+                //return;
+                if (url.indexOf("http") < 0) {
+                    location.href = url;
+                } else {
+                    window.open(url);
+                }
+            }
+
+            ko.applyBindings({
+                goAssessment: function (model, event) {
+                    var $anchor = $(event.target), index;
+                    var href = $anchor.attr("href");
+                    var editClassHref = "@(SFConfig.MainSiteDomain)Class/Class/Edit?close=true&ID=";
+                    var checkTrsAvailableUrl = '@(Html.Raw(Url.Action("TrsAvailable", new { schoolId = Model.ID })))';
+                    $.when($.getJSON(checkTrsAvailableUrl)).then(function (response) {
+                        if (response.success) {
+                            response.href = href;
+                        }
+                        else {
+                            if (response.data) {
+                                for (index = 0; index < response.data.length; index++) {
+                                    response.href = editClassHref + response.data[index].id;
+                                    break;
+                                }
+                                return window.waitingConfirm(response.msg, "Edit", "Cancel", response);
+                            } else {
+                                response.href = "";
+                                return window.showMessage("fail", response.msg);
+                            }
+                        }
+                        return response;
+                    }).done(function (response) {
+                        if (response && response.href) {
+                            goUrl(response.href);
+                        }
+                    });
+                    return false;
+                },
+                deleteAssessment:
+
+            function (assessmentId) {
+                $.when(window.waitingConfirm("trs_Delete_Confirm", "Delete", "No")).done(function () {
+                    $.post('@Url.Action("Delete", "Index")', {
+                        id: assessmentId
+                    }, function (response) {
+                        if (response.success) {
+                            $.when(window.showMessage("success")).done(function () {
+                                location.reload();
+                            });
+                        }
+                    }, "json");
+                });
+            }
+            });
+        })
+    </script>
+}

@@ -1,0 +1,12 @@
+GO
+IF NOT EXISTS ( SELECT  *
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID('ReportQueue')
+                        AND name = 'ExcuteTime' )
+    ALTER TABLE ReportQueue ADD ExcuteTime DATETIME;
+GO
+UPDATE  ReportQueue
+SET     ExcuteTime = '1753-1-1'
+WHERE   ExcuteTime IS NULL;
+GO
+ALTER TABLE ReportQueue ALTER COLUMN ExcuteTime DATETIME NOT NULL;

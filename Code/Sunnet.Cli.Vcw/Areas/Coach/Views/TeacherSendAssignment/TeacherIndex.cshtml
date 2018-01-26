@@ -1,0 +1,186 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherListModel
+@using Sunnet.Cli.UIBase.Models;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.Business.Vcw.Models
+@{
+    ViewBag.Title = "TeacherIndex";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_Teachers)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("My Teachers", "Index", "TeacherVIP"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Teacher List
+}
+<form class="form-horizontal">
+    @Html.Partial("~/Areas/Coach/Views/Partials/Tab.cshtml", new PageSelected { PageId = 4 })
+    <div class="nav-container-main">
+        <div class="form-group">
+        </div>
+        <div class="nav-tab">
+            <ul id="myTab" class="nav-container nav-container-little" role="tablist">
+                <li class="active"><a href="@(Url.Action("TeacherIndex", "TeacherSendAssignment"))">Teacher List</a></li>
+                <li><a href="@(Url.Action("AssignmentIndex", "TeacherSendAssignment"))">Assignment Sent</a></li>
+            </ul>
+        </div>
+        <div class="form-group"></div>
+        <div class="nav-container-main">
+            <div class="form-group"></div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="CommunityName">Community Name</label>
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(model => model.CommunityName, ViewBag.Communities as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.community" })
+                </div>
+                <label class="control-label col-sm-2" for="SchoolName">School Name</label>
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(model => model.SchoolName, ViewBag.Schools as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.school" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="TeacherName">Teacher Name</label>
+                <div class="col-sm-3">
+                    @Html.DropDownListFor(model => model.TeacherName, ViewBag.Teachers as IEnumerable<SelectListItem>, new { @class = "form-control", data_bind = "value: searchCriteria.teacher" })
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2">
+                    <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <a id="btnBatch" class="mainbutton mainright-btn submit-btn"
+                        onclick="sendAssignment()" style="cursor: pointer">Send Assignment to selected Teachers</a>
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="content-title">Teacher</div>
+                <div class="content-body-tab">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr data-bind="foreach: { data: headers, as: 'header' }">
+                                <!-- ko if: (header.order === true)-->
+                                <th data-bind="style: { width: width }">
+                                    <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                                    <span class="glyphicon"
+                                        data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                                    <span class="glyphicon"
+                                        data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                                </th>
+                                <!-- /ko-->
+                                <!-- ko if: (header.order === false) -->
+                                <th data-bind="text: text, style: { width: width }"></th>
+                                <!-- /ko-->
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                            <tr>
+                                <td>
+                                    <label>
+                                        <input type="checkbox" name="teacher_select" data-bind="value: item.TeacherUserId" />
+                                    </label>
+                                </td>
+                                <td data-bind="text: item.CommunityName"></td>
+                                <td data-bind="text: item.SchoolName"></td>
+                                <td data-bind="text: item.TeacherName"></td>
+                                <td>
+                                    <a class="table-btn icon-plus plus-btn" data-bind="attr: { href: $root.sendData(item) }" href="#" title="Send"><span style="display:none;">1</span></a>
+                                </td>
+                            </tr>
+                        </tbody>@Html.Display("e", "NoData", new { Colspan = 100 })
+                    </table>
+                    @Html.Partial("_Partial_Pager")
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Teacher = {};
+
+        $(function () {
+
+            list_Teacher = new ViewModel(
+                {
+                    instanceName: "list_Teacher",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchTeacher")))',
+                    orderBy: "CommunityName",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("Select")",
+                            width: "5%"
+                        },
+                        {
+                            text: "@Html.DisplayName("Community")",
+                            field: "@Html.NameFor(model => model.CommunityName)",
+                            order: true,
+                            width: "10%"
+                        },
+                        {
+                            text: "@Html.DisplayName("School Name")",
+                            field: "@Html.NameFor(model => model.SchoolName)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Teacher Name")',
+                            field: "@Html.NameFor(model => model.TeacherName)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: "Action",
+                            width: "5%"
+                        }
+                    ],
+                    searchCriteria: {
+                        community: ko.observable(window.queryString("community", -1)),
+                        school: ko.observable(window.queryString("school", -1)),
+                        teacher: ko.observable(window.queryString("teacher", -1)),
+                    }
+                },
+                {
+                    sendData: function (data) {
+                        var param = { teacherId: data.TeacherUserId, returnurl: list_Teacher.getLocation(), teacherTableId: data.TeacherId };
+                        return list_Teacher.appendQueryString('@Html.Raw(Url.Action("New", "TeacherSendAssignment"))', param);
+                    }
+                }
+            );
+
+            list_Teacher.search();
+            ko.applyBindings(list_Teacher);
+        });
+
+            function sendAssignment() {
+                var teachers = $("input[name=teacher_select]:checked");
+                if (teachers.length == 0) {
+                    showMessage("hint", "Vcw_Teachers_Noselect")
+                    $("#btnBatch").removeAttr("href");
+                    return false;
+                }
+                else {
+                    var teacher_list = "";
+                    for (var i = 0; i < teachers.length; i++) {
+                        if (i == teachers.length - 1)
+                            teacher_list += teachers[i].value;
+                        else
+                            teacher_list += teachers[i].value + ",";
+                    }
+                    var param = { teacherId: 0, teacher_select: teacher_list, returnurl: list_Teacher.getLocation() };
+                    $("#btnBatch").attr("href", list_Teacher.appendQueryString('@Html.Raw(Url.Action("New", "TeacherSendAssignment"))', param));
+                }
+            }
+
+    </script>
+}

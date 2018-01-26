@@ -1,0 +1,46 @@
+﻿/****** Object:  Table [dbo].[DataStudents]    Script Date: 2014/10/9 16:07:54 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[DataStudents](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[GroupId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[Remark] [varchar](500) NOT NULL,
+	[CommunityId] [int] NOT NULL,
+	[School_TEA_ID] [varchar](9) NOT NULL,
+	[Teacher_TEA_ID] [varchar](50) NOT NULL,
+	[Teacher_First_Name] [varchar](50) NOT NULL,
+	[Teacher_Middle_Name] [varchar](50) NULL,
+	[Teacher_Last_Name] [varchar](50) NOT NULL,
+	[Teacher_Previous_Last_Name] [varchar](50) NULL,
+	[Teacher_Primary_Phone] [varchar](50) NOT NULL,
+	[Teacher_Primary_Phone_Type] [tinyint] NOT NULL,
+	[Teacher_Primary_Email] [varchar](50) NOT NULL,
+	[Teacher_Secondary_Email] [varchar](50) NULL,
+	[Class_Day_Type] [tinyint] NOT NULL,
+	[Previous_Teacher_Number] [varchar](50) NULL,
+	[Previous_Teacher_First_Name] [varchar](50) NULL,
+	[Previous_Teacher_Middle_Name] [varchar](50) NULL,
+	[Previous_Teacher_Last_Name] [varchar](50) NULL,
+	[Student_TSDS_ID] [varchar](50) NOT NULL,
+	[Student_First_Name] [varchar](50) NOT NULL,
+	[Student_Middle_Name] [varchar](50) NULL,
+	[Student_Last_Name] [varchar](50) NOT NULL,
+	[Student_Birth_Date] [datetime] NOT NULL,
+	[Student_Gender] [tinyint] NOT NULL,
+	[Student_Ethnicity] [tinyint] NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

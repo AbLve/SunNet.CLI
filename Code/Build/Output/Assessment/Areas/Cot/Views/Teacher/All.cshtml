@@ -1,0 +1,408 @@
+﻿@model Sunnet.Cli.Business.Cot.Models.CotSchoolTeacherModel
+@{
+    ViewBag.Title = "Teachers";
+    var assessmentId = (int)ViewBag.assessmentId;
+    List<int> UserPages = ViewBag.UserPages as List<int>;
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a>
+    <i class="icon-angle-right"></i>
+    Teachers
+}
+@section Styles
+{
+    @Styles.Render("~/css/assessment/offline")
+    <style type="text/css">
+        .list-group-item {
+            width: 49%;
+            margin-bottom: 5px;
+            margin-right: 5px;
+            float: left;
+        }
+
+            .list-group-item:last-child {
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
+            .list-group-item:first-child {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+    </style>
+}
+<div class="right-content-top">
+
+</div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        @Html.Label("CommunityName", new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#CommunityId",
+                    data_remote = Url.Action("GetCommunitySelectListForSearch", "Teacher", new { Area = "Cot" }),
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "txtCommunity",
+                    name = "txtCommunity",
+                    @for = "CommunityId",
+                    placeholder = "Enter key text to search",
+                    data_required = "true"
+                })
+            @Html.Hidden("CommunityId", "", new
+           {
+               @class = "form-control ",
+               placeholder = "selected from autocomplete",
+               data_bind = "value: searchCriteria.communityId"
+           })
+        </div>
+        @Html.Label("SchoolName", new
+       {
+           @class = "control-label col-sm-2",
+           @for = "txtSchool"
+       })
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", "", new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#SchoolId",
+                    data_remote = Url.Action("GetSchoolSelectList", "Teacher", new { Area = "Cot" }),
+                    data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "txtSchool",
+                    name = "txtSchool",
+                    @for = "SchoolId",
+                    placeholder = "Enter key text to search",
+                    data_extraParams = "{\"communityId\":\"#CommunityId\"}",
+                    data_required = "true"
+                })
+            @Html.Hidden("SchoolId", "", new
+           {
+               @class = "form-control",
+               placeholder = "selected from autocomplete",
+               data_bind = "value: searchCriteria.schoolId"
+           })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.FirstName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.FirstName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.firstName"
+            })
+        </div>
+        @Html.LabelFor(m => m.LastName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.LastName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.lastName"
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.TeacherID, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.TeacherID, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.teacherCode"
+            })
+        </div>
+        @Html.Label("SchoolYear", "School Year", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.DropDownList("SchoolYear", (IEnumerable<SelectListItem>)ViewBag.SchoolYearOptions, new { @class = "form-control", data_bind = "value: searchCriteria.year" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("searchExisted", "Search option", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-2">
+            @Html.CheckBox("searchExisted", false, new { data_bind = "checked:searchCriteria.searchExisted" })
+            @Html.Label("searchExisted", "Search in Existing COT")
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn search-bg-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+        <div class="col-sm-5">
+            @if (@ViewBag.COTOffline)
+            {
+                <!--ko if:$root.currentYear == $root.searchedYear()-->
+                <button class="mainbutton mainright-btn pencil-btn" type="button" id="hrefGoOffline">Offline Assessment</button>
+                <!-- /ko-->
+                <button class="mainbutton mainright-btn pencil-btn hidden" type="button" id="btnOpenResetPin">Reset PIN</button>
+            }
+        </div>
+    </div>
+</form>
+
+<div class="main-content main-content">
+    <div class="content-title">Teachers</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.CommunitiesText"></td>
+                    <td data-bind="text: item.SchoolsText"></td>
+                    <td data-bind="text: item.FirstName"></td>
+                    <td data-bind="text: item.LastName"></td>
+                    <td>
+                        <span data-bind="text: item.CoachFirstName"></span>
+                        <span data-bind="text: item.CoachLastName"></span>
+                    </td>
+                    <td data-bind="text: item.YearsInProject"></td>
+                    <td data-bind="text: $root.yearText"></td>
+                    <td>
+                        <span data-bind="text: item.CotWave1"></span>
+                            <!-- ko if:$root.currentYear == $root.searchedYear() && item.CotWave1 && item.CotWave1().length>0-->
+                            <a class="table-btn icon-trash trash-btn" href="#" title="Reset BOY COT" data-bind="click:function(){$root.resetCot(item,'BOY');}">
+                            </a>
+                            <!-- /ko-->
+                    </td>
+
+                    <td>
+                        <span data-bind="text: item.CotWave2"></span>
+                            <!-- ko if:$root.currentYear == $root.searchedYear() && item.CotWave2 && item.CotWave2().length>0-->
+    <a class="table-btn icon-trash trash-btn" href="#" title="Reset MOY COT" data-bind="click:function(){$root.resetCot(item,'MOY');}">
+    </a>
+                            <!-- /ko-->
+                    </td>
+                    <td>
+                        <!--ko if:$root.currentYear == $root.searchedYear()-->
+                        <a class="tab-btn" data-bind="click: $root.viewTeacher" title="Launch COT"><i class="icon-play"></i></a>
+                        <!-- /ko-->
+                        <!--ko ifnot:$root.currentYear == $root.searchedYear()-->
+                        <!--ko if:CotWave1 || CotWave2 || false-->
+                        <a class="tab-btn" data-bind="click: $root.viewTeacher" title="View COT"><i class="icon-folder-open"></i></a>
+                        <!-- /ko-->
+                        <!-- /ko-->
+
+                        <a class="tab-btn on-btn"
+                           data-toggle="modal" data-target="#modalNormal" data-confirm="false"
+                           data-bind="visible:CotWave1 && CotWave2,attr:{href:'/Cot/Report/Index?assessmentId=@(assessmentId)&teacherId=' + ID+'&year='+$root.searchedYear()}"
+                           title="COT Reports"><i class="icon-bar-chart"></i></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 10 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+@Html.Partial("Offline/_Partial_Reset")
+@Html.Partial("Offline/_Partial_Pin")
+@section Scripts
+{
+    @Scripts.Render("~/scripts/cot/report")
+    @Scripts.Render("~/scripts/cot/offline")
+    <script type="text/javascript">
+        var teacherList = {};
+
+        jQuery(function() {
+
+            teacherList = new ViewModel(
+            {
+                instanceName: "teacherList",
+                modalId: "modalNormal",
+                getDataUrl: '@Html.Raw(Url.Action("Search"))',
+
+                orderBy: "FirstName",
+                orderDirection: "ASC",
+                pageSize: 10,
+                headers: [
+                    {
+                        text: "@Html.DisplayNameFor(model => model.CommunitiesText)",
+
+                        order: false,
+                        width: '150px'
+                    },
+                    {
+                        text: "@Html.DisplayNameFor(model => model.SchoolsText)",
+                        order: false,
+                        width: '*'
+                    },
+                    {
+                        text: "@Html.DisplayNameFor(model => model.FirstName)",
+                        field: "@Html.NameFor(model => model.FirstName)",
+                        order: true,
+                        width: '100px'
+                    },
+                    {
+                        text: "@Html.DisplayNameFor(model => model.LastName)",
+                        field: "@Html.NameFor(model => model.LastName)",
+                        order: true,
+                        width: '100px'
+                    },
+                    {
+                        text: "@Html.DisplayNameFor(model => model.CoachFirstName)",
+                        field: "@Html.NameFor(model => model.CoachFirstName)",
+                        order: true,
+                        width: '140px'
+                    },
+                    {
+                        text: "@Html.DisplayNameFor(model => model.YearsInProject)",
+                        field: "@Html.NameFor(model => model.YearsInProject)",
+                        order: true,
+                        width: '140px'
+                    },
+                    {
+                        text: "School Year",
+                        field: "",
+                        order: false,
+                        width: '140px'
+                    },
+                    {
+                        text: "@Html.DisplayNameFor(model => model.CotWave1)",
+                        field: "@Html.NameFor(model => model.CotWave1)",
+                        order: true,
+                        width: '140px'
+                    }, {
+                        text: "@Html.DisplayNameFor(model => model.CotWave2)",
+                        field: "@Html.NameFor(model => model.CotWave2)",
+                        order: true,
+                        width: '140px'
+                    },
+                    { text: "Action", width: '120px' }
+                ],
+                searchCriteria: {
+                    communityId: ko.observable(window.queryString("communityId", "")),
+                    schoolId: ko.observable(window.queryString("schoolId", '')),
+                    teacherCode: ko.observable(window.queryString("teacherCode")),
+                    firstName: ko.observable(window.queryString("firstName")),
+                    lastName: ko.observable(window.queryString("lastName")),
+                    status: ko.observable(window.queryString("status", -1)),
+                    year: ko.observable(window.queryString("year")),
+                    searchExisted: ko.observable(window.queryString("searchExisted", false) == true),
+                    assessmentId: ko.observable("@(assessmentId)")
+                }
+            }, {
+                dataProcessor: function(items) {
+                    $.each(items, function(index, item) {
+                        if (typeof (item.CotWave1) == "string") {
+                            item.CotWave1 = ko.observable(item.CotWave1);
+                        }
+                        if (typeof (item.CotWave2) == "string") {
+                            item.CotWave2 = ko.observable(item.CotWave2);
+                        }
+                    });
+                    teacherList.searchedYear(teacherList.searchCriteria.year());
+                    return items;
+                },
+                viewTeacher: function(teacher) {
+                    var url = '@Html.Raw(Url.Action("Index", "Teacher", new {Area = "Cot"}))';
+                    url += "/Index/" + teacher.ID + "?assessmentId=@(assessmentId)&year=" + teacherList.searchCriteria.year();
+                    location.href = url;
+                },
+                resetCot: function(teacher, wave) {
+                    $.when(window.waitingConfirm("reset_" + wave + "_COT_Confirm", "Reset", "No")).done(function() {
+                        var url = '@Url.Action("ResetCot")';
+                        $.post(url, {
+                            assessmentId: @assessmentId,
+                            teacherId: teacher.ID,
+                            year: teacherList.searchCriteria.year(),
+                            wave: wave
+                        }, function(response) {
+                            if (response.success) {
+                                window.showMessage("success");
+                                if (wave == "BOY") {
+                                    teacher.CotWave1("");
+                                }
+                                if (wave == "MOY") {
+                                    teacher.CotWave2("");
+                                }
+                            } else {
+                                window.showMessage("fail", response.msg);
+                            }
+                        }, 'json');
+                    });
+                },
+                currentYear: '@(ViewBag.CurrentYear)',
+                searchedYear: ko.observable(window.queryString("year", '@(ViewBag.CurrentYear)'))
+            });
+            teacherList.yearText = ko.computed(function() {
+                var yearLast2No = teacherList.searchedYear().slice(2);
+                var yearText = yearLast2No + "-" + (+yearLast2No + 1);
+                return yearText;
+            }, this);
+            teacherList.offline = function() {
+                $.get('@Url.Action("Offline")', {
+                    communityId: teacherList.searchCriteria.communityId(),
+                    schoolId: teacherList.searchCriteria.schoolId(),
+                    teacherCode: teacherList.searchCriteria.teacherCode(),
+                    firstName: teacherList.searchCriteria.firstName(),
+                    lastName: teacherList.searchCriteria.lastName(),
+                    status: teacherList.searchCriteria.status(),
+                    year: teacherList.searchCriteria.year(),
+                    searchExisted: teacherList.searchCriteria.searchExisted(),
+                    assessmentId: teacherList.searchCriteria.assessmentId(),
+                    sort: teacherList.orderBy(),
+                    order: teacherList.orderDirection(),
+                    first: teacherList.showFromRecord() - 1,
+                    count: teacherList.showRecordsCount()
+                }, function(response) {
+                    if (response.success) {
+                        location.href = '@Url.Action("Preparing", "Offline", new {Area = "Cot", assessmentId = assessmentId})';
+                    }
+                }, 'json');
+            };
+            teacherList.search();
+            ko.applyBindings(teacherList);
+
+            var offlineApp = getCotOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.init();
+
+            offlineApp.customOfflinePreparing = function() {
+                teacherList.offline();
+            };
+
+            $("#hrefGoOffline").click(function() {
+                if (offlineApp.status === offlineApp.values.Status.Changed) {
+                    $.when(window.waitingConfirm("confirm_To_Offline_Changed", "Go to Offline", "Cancel")).done(function() {
+                        location.href = "/Cot/Offline";
+                    });
+                } else {
+                    offlineApp.showLocker();
+                }
+                return false;
+            });
+
+            if (offlineApp.status === offlineApp.values.Status.None) {
+                $("#btnOpenResetPin").remove();
+            } else {
+                $("#btnOpenResetPin").removeClass("hidden").click(function() {
+                    offlineApp.resetPin();
+                });
+            }
+        });
+    </script>
+}

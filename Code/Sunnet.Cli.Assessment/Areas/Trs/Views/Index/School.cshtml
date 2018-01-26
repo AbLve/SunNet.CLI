@@ -1,0 +1,805 @@
+﻿@using Sunnet.Cli.Business.Trs.Models
+@using Sunnet.Cli.Core.Trs
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Trs.Enums
+@using System.Web.Optimization
+@using Sunnet.Cli.UIBase
+@model Sunnet.Cli.Business.Trs.Models.TrsSchoolModel
+@{
+    ViewBag.Title = "TRS Reports";
+    var assessments = ViewBag.Assessments as List<TrsAssessmentListModel>;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+<style type="text/css">
+    label.error {
+        color: red;
+    }
+</style>
+@section BreadPath
+{
+    <a href="@(SFConfig.MainSiteDomain)Home/Dashboard">
+        <img src="/images/icon_trs.png" alt="Logo" />
+    </a>
+    <i class="icon-angle-right"></i>@Html.ActionLink("Facilities", "Index")
+    <i class="icon-angle-right"></i>TRS Reports
+    @ViewTextHelper.HtmlEmptySeparator
+    @ViewTextHelper.HtmlEmptySeparator
+    @if (ViewBag.IsPrincipal)
+    {
+        <a class="form-link2" href="@(SFConfig.MainSiteDomain)School/School/SchoolProfile">My School</a>
+    }
+}
+<div class="main-content top-form">
+    <form class="form-horizontal" role="form">
+        @Html.LabelFor(x => x.CommunityNames, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.CommunityNames)
+        @ViewTextHelper.HtmlEmptySeparator
+        @Html.LabelFor(x => x.Name, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.Name)
+        @ViewTextHelper.HtmlEmptySeparator
+        @if (Model.Principals.ToList().Count > 0)
+        {
+            @Html.LabelFor(x => x.Principals, new { @class = "control-label" })
+            @Html.DisplayFor(x => x.NamesOfPrincipals, "List")
+            @ViewTextHelper.HtmlEmptySeparator
+
+        }
+
+        @Html.LabelFor(x => x.RecertificationBy, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.RecertificationBy)
+    </form>
+</div>
+
+<div class="right-content-top" id="koAssessment">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to Facility List</a>
+    @if (!string.IsNullOrEmpty(Model.Action) && Model.Action == "assessment")
+    {
+        @Html.ActionLink("Start Assessment", "Assessment", null, new { schoolId = Model.ID }, new { action = "add", @class = "mainbutton mainright-btn nav-btn", data_bind = "click:goAssessment" })
+    }
+</div>
+
+
+<div class="main-content">
+    @if (!ViewBag.IsPrincipal)
+    {
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#AssessmentList" onclick="clickAssessments()" data-toggle="tab">Assessments</a>
+            </li>
+            <li><a href="#EventLogList" data-toggle="tab">Event Log</a></li>
+
+        </ul>
+    }
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="AssessmentList">
+            @if (assessments.Any())
+            {
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date Created</th>
+                            <th>Approval Date</th>
+                            <th>Assessment Type</th>
+                            <th>Calculated Star</th>
+                            <th>Verified Star</th>
+                            <th>Result Report</th>
+                            <th>Facility Report</th>
+                            <th>Class Report</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var assessment in assessments)
+                        {
+                            <tr>
+                                <td>
+                                    @assessment.CreatedOn.FormatDateString()
+                                </td>
+                                <td>@assessment.ApproveDate.FormatDateString()</td>
+                                <td>
+                                    @if (assessment.EventLogType != 0)
+                                    {
+                                        @assessment.EventLogType.ToDescription()
+                                    }
+                                    else if (assessment.Type > 0)
+                                    {
+                                        @assessment.Type.ToDescription()
+                                    }
+                                </td>
+                                <td>
+                                    @if (assessment.Status == TRSStatusEnum.Completed && assessment.Star > 0)
+                                    {
+                                        @(assessment.Star.ToDescription())
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("")
+                                    }
+                                </td>
+                                <td>
+                                    @if (assessment.Status == TRSStatusEnum.Completed)
+                                    {
+                                        @((assessment.VerifiedStar > 0) ? assessment.VerifiedStar.ToDescription() : "")
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("")
+                                    }
+                                </td>
+                                <td>
+                                    @if (assessment.Status == TRSStatusEnum.Completed)
+                                    {
+                                        @Html.ActionLink(assessment.UpdatedOn.ToString("MM/dd/yyyy hh:mm:ss tt"),
+                                        "AssessmentResults", "Report", new { id = assessment.Id }, new { @class = "form-link2" })
+                                        <br />
+                                        <a class="form-link2" href="/Trs/Report/ReportWithComments/@assessment.Id">@assessment.UpdatedOn.ToString("MM/dd/yyyy hh:mm:ss tt")</a><span style="display: none">1</span><i class='icon-asterisk'></i>
+
+                                    }
+                                </td>
+                                <td>
+                                    @if (assessment.Status == TRSStatusEnum.Completed && assessment.Star > 0)
+                                    {
+                                        @Html.ActionLink(assessment.UpdatedOn.ToString("MM/dd/yyyy hh:mm:ss tt"),
+                                        "Facility", "Report", new { id = assessment.Id }, new { @class = "form-link2" })
+                                    }
+                                </td>
+                                <td>
+                                    @if (assessment.Status == TRSStatusEnum.Completed && assessment.Star > 0)
+                                    {
+                                        foreach (var class1 in assessment.Classes)
+                                        {
+                                            @Html.ActionLink(class1.Name,
+                                            "Class", "Report", new { id = assessment.Id, classId = class1.Id }, new { @class = "form-link2" })<br />
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(assessment.Action)
+                                     && assessment.Action == "viewAssessment"
+                                    )
+                                    {
+                                        <a class="table-btn icon-folder-open view-btn" href='@Url.Action("Assessment", new { id = assessment.Id, schoolId = assessment.SchoolId })' title="View" data-bind="click:canAssessment"></a>
+                                    }
+                                    @if (!string.IsNullOrEmpty(assessment.Action)
+                                     && assessment.Action == "classedit"
+                                    )
+                                    {
+                                        <a class="table-btn icon-pencil pencil-btn" href='@Url.Action("Assessment", new { id = assessment.Id, schoolId = assessment.SchoolId })' title="Edit" data-bind="click:canAssessment"><span style="display: none">1</span></a>
+                                    }
+                                    @if (!string.IsNullOrEmpty(assessment.Action)
+                                     && assessment.Action == "edit"
+                                     && assessment.Status != TRSStatusEnum.Completed
+                                    )
+                                    {
+                                        <a class="table-btn icon-pencil pencil-btn" href='@Url.Action("Assessment", new { id = assessment.Id, schoolId = assessment.SchoolId })' action="edit" title="Edit" data-bind="click:goAssessment"><span style="display: none">1</span></a>
+                                        <a class="table-btn icon-trash trash-btn" href="#" title="Delete" data-bind="event:{ click:$root.deleteAssessment.bind($data,@(assessment.Id))}"><span style="display: none">1</span></a>
+                                    }
+                                    @if (!string.IsNullOrEmpty(assessment.Action) && assessment.Action == "invalidate" && assessment.Status == TRSStatusEnum.Completed)
+                                    {
+                                        <a class="table-btn icon-undo pencil-btn"
+                                           assessment="@assessment.Id"
+                                           data-delete="@((assessment.Status == TRSStatusEnum.Completed && assessment.Star == 0).ToString().ToLower())"
+                                           href="#" title="Invalidate"><span style="display: none">1</span></a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="main-content">
+                    There are no TRS reports.
+                </div>
+            }
+        </div>
+        @if (!ViewBag.IsPrincipal)
+        {
+            <div id="EventLogList" class="tab-pane fade">
+                <a id="accreditation" class="table-btn icon-comment-alt viewcomment-btn hidden" data-bind='attr: { href: accreditationUrl }' data-toggle="modal" data-target="#modalNormal"><span style="display: none">1</span></a>
+                <a id="notification" class="table-btn icon-comment-alt viewcomment-btn hidden" data-bind='attr: { href: notificationUrl }' data-toggle="modal" data-target="#modalNormal"><span style="display: none">1</span></a>
+                <a id="changeStarLevel" class="table-btn icon-comment-alt viewcomment-btn hidden" data-bind='attr: { href: changeStarLevelUrl }' data-toggle="modal" data-target="#modalSmall"><span style="display: none">1</span></a>
+                <a class="mainbutton mainright-btn nav-btn" href="javascript:void(0);" data-bind="event:{click:newEventLog}">Create Event</a>
+                <form id="formbox" class="form-horizontal" role="form">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width: 150px">Date Created</th>
+                                <th style="width: 150px">Created By</th>
+                                <th style="width: 170px">Event Type</th>
+                                <th>Comment</th>
+                                <th style="width: 150px">Action Required</th>
+                                <th style="width: 150px">Notification</th>
+                                <th style="width: 210px">Documentation</th>
+                                <th style="width: 80px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- ko if(showNew) -->
+                            <!-- ko foreach:{data:newEventLogList, as: 'log'} -->
+                            <tr data-bind="template:'eventLogEditTemp'"></tr>
+                            <!-- /ko -->
+                            <!-- /ko -->
+                            <!-- ko foreach:{data:eventLogList, as: 'log'} -->
+                            <tr data-bind="template:log.tempName"></tr>
+                            <!-- /ko -->
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+
+@using (Ajax.BeginForm("Invalidate", null, PostFormHelper.DefaultAjaxOptions, new { id = formId }))
+{
+    @Html.Hidden("ID")
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/html" id="eventLogTemp">
+        <td>
+            <span data-bind="text:log.dateCreated"></span>
+        </td>
+        <td>
+            <span data-bind="text:log.createdBy"></span>
+        </td>
+        <td>
+            <span data-bind="text:log.eventTypeText"></span>
+            <span data-bind="visible:log.relatedId!=0" style="font-weight: bold">(modified)</span>
+        </td>
+        <td>
+            <span data-bind="text:log.comment"></span>
+        </td>
+        <td>
+            <span data-bind="datetime:log.actionRequired"></span>
+        </td>
+        <td>
+            <span data-bind="text:log.notificationText"></span>
+        </td>
+        <td>
+            <!-- ko foreach:{data:log.documents, as: 'doc'} -->
+            <!-- ko ifnot(doc.isDelete) -->
+            <p>
+                <a class="form-link4" data-bind="text:doc.fileName,attr:{href:doc.fileServerPath}" target="_blank"></a>
+                <!-- ko if(doc.isAllowDel) -->
+                <span class="delete" title="Remove this file"><a href="javascript:;" data-bind="click:$root.removeFile"><i class="icon-trash icon-large"></i><span style="display:none;width:0px;">1</span></a></span>
+                <!-- /ko -->
+            </p>
+            <!-- /ko -->
+            <!-- /ko -->
+        </td>
+        <td>
+            <a class="table-btn icon-pencil pencil-btn" title="Modified" href="#" data-bind="click:$root.editEventLogClick"><span style="display: none">1</span></a>
+        </td>
+    </script>
+
+    <script type="text/html" id="eventLogEditTemp">
+        <td>
+            <label data-bind="attr:{for:'dateCreated'+log.id}" style="display: none">Date Created</label>
+            <input type="text" class="form-control date required" data-val="true"
+                   data-bind="value:log.dateCreated,attr:{id:'dateCreated'+log.id,name:'dateCreated'+log.id}" />
+        </td>
+        <td>
+            <label data-bind="attr:{for:createdBy+log.id}" style="display: none">Created By</label>
+            <input type="text" class="form-control required" data-val="true"
+                   data-bind="value:log.createdBy,attr:{id:createdBy+log.id,name:'createdBy'+log.id}" />
+        </td>
+        <td>
+            <label data-bind="attr:{for:'EventType'+log.id}" style="display: none">Event Type</label>
+            <!-- ko if:log.eventTypeValue()==@TrsEventType.Auto_Assign.GetValue() -->
+            <div class="input-group">
+                <a class="input-group-addon" style="padding: 2px 5px" data-bind="attr:{href:'../Accreditations/'+log.id+'?accreditation='+log.accreditation()+'&verifiedStar='+log.verifiedStar()+'&schoolId='+@Model.ID}" data-toggle="modal" data-target="#modalNormal">
+                    <span style="display: none">Edit Accreditation</span>
+                    <i class="icon-edit icon-large"></i>
+                </a>
+                @Html.DropDownList("EventType", (IEnumerable<SelectListItem>)ViewBag.TrsEventType,
+                new { @class = "form-control required", data_bind = "value:log.eventTypeValue,event:{change:$root.eventTypeChange},attr:{id:'EventType'+log.id}" })
+            </div>
+            <!-- /ko -->
+            <!-- ko if:log.eventTypeValue()==@TrsEventType.Star_Level_Change.GetValue() -->
+            <div class="input-group">
+                <a class="input-group-addon" style="padding: 2px 5px" data-bind="attr:{href:'../ChangeStarLevel/'+log.id+'?verifiedStar='+log.verifiedStar()+'&schoolId='+@Model.ID+'&approvalDate='+log.approvalDate()}" data-toggle="modal" data-target="#modalSmall">
+                    <span style="display: none">Edit Star Level</span>
+                    <i class="icon-edit icon-large"></i>
+                </a>
+                @Html.DropDownList("EventType", (IEnumerable<SelectListItem>)ViewBag.TrsEventType,
+                new { @class = "form-control required", data_bind = "value:log.eventTypeValue,event:{change:$root.eventTypeChange},attr:{id:'EventType'+log.id}" })
+            </div>
+            <!-- /ko -->
+            <!-- ko ifnot:(log.eventTypeValue()==@TrsEventType.Auto_Assign.GetValue()||log.eventTypeValue()==@TrsEventType.Star_Level_Change.GetValue()) -->
+            @Html.DropDownList("EventType", (IEnumerable<SelectListItem>)ViewBag.TrsEventType,
+                new {@class = "form-control required", data_bind = "value:log.eventTypeValue,event:{change:$root.eventTypeChange},attr:{id:'EventType'+log.id}"})
+            <!-- /ko -->
+            <label data-bind="attr:{for:'txtAccreditation'+log.id}" style="display: none">Accreditation</label>
+            <input type="text" class="hidden" data-bind="value:log.accreditation,attr:{id:'txtAccreditation'+log.id}"/>
+
+        </td>
+        <td>
+            <label data-bind="attr:{for:'comment'+log.id}" style="display: none">Comment</label>
+            <!-- ko if:log.eventTypeValue()==@TrsEventType.Star_Level_Change.GetValue() && log.verifiedStar()!=0 -->
+            <textarea class="form-control required" data-bind="value:log.comment,attr:{id:'comment'+log.id,name:'comment'+log.id}"></textarea>
+            <span class="field-validation-valid" data-bind="attr: { 'data-valmsg-for': 'comment'+log.id}" data-valmsg-replace="true"></span>
+            <!-- /ko -->
+            <!-- ko if:log.eventTypeValue()!=@TrsEventType.Star_Level_Change.GetValue() || log.verifiedStar()==0 -->
+            <textarea class="form-control" data-bind="value:log.comment,attr:{id:'comment'+log.id,name:'comment'+log.id}"></textarea>
+            <!-- /ko -->
+        </td>
+        <td>
+            <label data-bind="attr:{for:'actionRequired'+log.id}" style="display: none">Action Required</label>
+            <input type="text" class="date form-control" data-bind="value:log.actionRequired,attr:{id:'actionRequired'+log.id,name:'actionRequired'+log.id}" />
+        </td>
+        <td>
+            <label data-bind="attr:{for:'notification'+log.id}" style="display: none">Notification</label>
+            <!-- ko if:log.eventTypeValue()==@TrsEventType.Star_Level_Change.GetValue() && log.verifiedStar()!=0 && log.notification() -->
+            <input class="" disabled type="checkbox" checked="checked" data-bind="attr:{id:'notification'+log.id}" />
+            <!-- /ko -->
+            <!-- ko if:log.eventTypeValue()!=@TrsEventType.Star_Level_Change.GetValue() || log.verifiedStar()==0 -->
+            <input class="" type="checkbox" data-bind="checked:log.notification(),attr:{id:'notification'+log.id}" />
+            <!-- /ko -->
+        </td>
+        <td>
+            <div class="btns">
+                <div data-bind="attr:{id:'btnPickDoc'+log.id,for:'doc'+log.id}">
+                    Upload Documentation
+                    <span class="icon-plus" style="margin-top:3px"></span>
+                </div>
+
+            </div>
+            <div data-bind="attr:{id:'docList'+log.id}" class="uploader-list" style="margin-top:23px;margin-left:-18px"></div>
+            <input type="hidden" data-bind="attr:{id:'doc'+log.id,name:'doc'+log.id}" />
+            <input type="hidden" data-bind="attr:{id:'uploadfiles'+log.id,name:'uploadfiles'+log.id},value:log.newFiles" />
+        </td>
+        <td>
+            <a class="table-btn icon-save save-btn" title="Save" href="#" data-bind="attr:{id:'btnSave'+log.id},click:$root.saveEventLog">
+                <span style="display: none">Save</span>
+            </a>
+            <a class="icon-ban-circle table-btn active-btn" title="Cancel" href="#" data-bind="click:$root.cancelAdd">
+                <span style="display: none">Cancel</span>
+            </a>
+        </td>
+    </script>
+
+    <script type="text/javascript">
+        var addAssessment = false;
+        function clickAssessments() {
+            if (addAssessment) {
+                addAssessment=true;
+                location.reload();
+            }
+        }
+        function getToFolder() {
+            return "EventLog";
+        }
+        var minDates = ['01/01/0001', '1/1/0001', '01/01/1753', '1/1/1753'];
+        function EventLog(eventLog) {
+            this.id = eventLog.ID;
+            this.dateCreated = eventLog.DateCreated;
+            this.createdBy = eventLog.CreatedBy;
+            this.eventTypeValue = ko.observable(eventLog.EventType.value);
+            this.eventTypeText = eventLog.EventType.text;
+            this.comment = eventLog.Comment;
+
+            if (minDates.indexOf(eventLog.ActionRequired) >= 0)
+                this.actionRequired = "";
+            else
+                this.actionRequired = eventLog.ActionRequired;
+
+            this.notification = ko.observable(eventLog.Notification);
+            this.notificationText = ko.observable(eventLog.Notification ? "Yes" : "No");
+            this.accreditation = ko.observable(eventLog.Accreditation.value);
+            this.verifiedStar = ko.observable(0);
+            this.relatedId = eventLog.RelatedId;
+            this.tempName = ko.observable("eventLogTemp");
+            this.uploaderDoc = 0;
+            this.newFiles = ko.observable("");
+            this.documents = ko.observableArray([]);
+            for (var i = 0; i < eventLog.Documents.length; i++) {
+                var doc = new EventLogDoc(eventLog.Documents[i]);
+                this.documents.push(doc);
+            }
+            this.approvalDate = ko.observable("");
+        }
+        function NewEventLog() {
+            var self = this;
+            this.id = 0;
+            this.dateCreated = "";
+            this.createdBy = "";
+            this.eventTypeValue = ko.observable(0);
+            this.comment = "";
+            this.actionRequired = "";
+            this.notification = ko.observable(false);
+            this.accreditation = ko.observable(0);
+            this.verifiedStar = ko.observable(0);
+            this.uploaderDoc = 0;
+            this.newFiles = ko.observable("");
+            this.documents = ko.observableArray([]);
+            this.approvalDate = ko.observable("");
+        }
+        function EventLogDoc(eventLogDoc) {
+            this.id = eventLogDoc.ID;
+            this.eventLogId = eventLogDoc.EventLogId;
+            this.fileName = eventLogDoc.FileName;
+            this.filePath = eventLogDoc.FilePath;
+            this.fileServerPath = eventLogDoc.FileServerPath;
+            this.isDelete = ko.observable(eventLogDoc.IsDelete);
+            this.isAllowDel = eventLogDoc.IsAllowDel;
+        }
+
+        function EventLogModel() {
+            var self = this;
+            this.notificationUrl = ko.observable("javascript:;");
+            this.eventLogList = ko.observableArray([]);
+            this.newEventLogList = ko.observableArray([new NewEventLog()]);
+            this.getEventLogs = function () {
+                $.getJSON('../GetEventLogList', { schoolId: '@Model.ID' }, function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var eventLog = new EventLog(data[i]);
+                        self.eventLogList.push(eventLog);
+                    }
+                });
+            };
+            this.showNew = ko.observable(false);
+            this.newEventLog = function () {
+                self.showNew(true);
+                var log = self.newEventLogList()[0];
+                if (log.uploaderDoc == 0)
+                    log.uploaderDoc = SunnetWebUploader.CreateWebUploader({
+                        pick: "#btnPickDoc" + log.id,
+                        container: "#docList" + log.id,
+                        submitbutton: "#btnSave" + log.id,
+                        targetField: "#doc" + log.id,
+                        multiple: true,
+                        fileNumLimit: 100,
+                        fileSingleSizeLimit: 2097152,
+                        filetemplate: '<div id="<% this.id %>" class="item">' +
+                '<span class="info"><% this.name %> (<% WebUploader.formatSize(this.size) %>)</span>&nbsp;' +
+                '<span class="delete" title="Remove this file"><a href="javascript:;"><i class="icon-trash icon-large"></i><span style="display:none">1</span></a></span>' +
+                '</div>',
+                        accept: {
+                            title: "doc,picture",
+                            extensions: "doc,docx,xls,xlsx,csv,rtf,rtfd,txt,tab,ppt,pptx,pdf,png,gif,jpg,jpeg",
+                            mimeTypes: "application/msword,application/msexcel,application/rtf,text/plain,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/png,image/gif,image/jpeg,application/pdf"
+                        }
+                    });
+            };
+            this.cancelAdd = function (log) {
+                if (log.id == 0) {
+                    self.newEventLogList.removeAll();
+                    self.newEventLogList([new NewEventLog()]);
+                    self.showNew(false);
+                }
+                else {
+                    self.selectEventType(false);
+                    log.dateCreated = log.oldDateCreated;
+                    log.createdBy = log.oldCreateBy;
+                    log.eventTypeValue(log.oldEventTypeValue);
+                    log.eventTypeText = log.oldEventTypeText;
+                    log.comment = log.oldComment;
+                    log.actionRequired = log.oldActionRequired;
+                    log.notification(log.oldNotification);
+                    log.notificationText(log.oldNotificationText);
+                    log.accreditation(log.oldAccreditation);
+                    log.tempName("eventLogTemp");
+                    self.selectEventType(true);
+                }
+            };
+            this.saveEventLog = function (log) {
+                if (log.uploaderDoc.getStats().queueNum > 0) {
+                    var docConfirmHtml = "<div>"
+                    docConfirmHtml += "<p>Confirm Documentation Upload</p>";
+                    docConfirmHtml += "<p style='font-size:16px'>You will be uploading the following items</p>";
+                    var completeFiles = log.uploaderDoc.getFiles("queued");
+                    for (var i = 0; i < completeFiles.length; i++) {
+                        docConfirmHtml += "<p style='font-size:14px'>" + completeFiles[i].name + "(" + WebUploader.formatSize(completeFiles[i].size) + ")</p>";
+                    }
+                    docConfirmHtml += "<p style='font-size:16px;font-weight: bolder;'>Would you like to proceed with the document upload and event log record creation?</p>";
+                    docConfirmHtml += "</div>";
+                    jQuery.when(waitingConfirm(docConfirmHtml, "Yes", "No")).done(function () {
+                        $("#btnSave" + log.id).data("clicked", true);
+                        if (log.uploaderDoc.state == "ready") {
+                            log.uploaderDoc.upload();
+                        }
+                    }).fail(function () {
+                        return false;
+                    });
+                    return false;
+                }
+                if (log.uploaderDoc.getStats().progressNum > 0) {
+                    return false;
+                }
+                if (log.uploaderDoc.getStats().successNum > 0) {
+                    GetFiles(log);
+                }
+
+                if ($("#formbox").valid()) {
+                    log.notification($("#notification" + log.id).prop('checked'));
+                    if (log.verifiedStar() != 0) {
+                        $("#comment" + log.id).valid();
+                    }
+                    if (log.id == 0) {
+                        self.addLog(log);
+                    }
+                    else {
+                        self.modifyLog(log);
+                    }
+                }
+            };
+            this.addLog = function (log) {
+                $.post("../NewEventLog", {
+                    dateCreated: log.dateCreated,
+                    createdBy: log.createdBy,
+                    eventType: log.eventTypeValue(),
+                    comment: log.comment,
+                    actionRequired: log.actionRequired,
+                    notification: log.notification(),
+                    accreditation: log.accreditation(),
+                    verifiedStar: log.verifiedStar(),
+                    schoolId: '@Model.ID',
+                    files: log.newFiles(),
+                    approvalDate: log.approvalDate()
+                }, function (response) {
+                    if (response.success) {
+                        if (log.eventTypeValue() == Number('@TrsEventType.Star_Level_Change.GetValue()') || log.eventTypeValue() == Number('@TrsEventType.Auto_Assign.GetValue()'))
+                            addAssessment = true;
+
+                        var JsonData = JSON.parse(response.data);
+                        self.eventLogList.unshift(new EventLog(JsonData[0]));
+                        self.newEventLogList.removeAll();
+                        self.newEventLogList([new NewEventLog()]);
+                        self.showNew(false);
+                        if (JsonData[0].Notification) {
+                            self.notificationUrl('@Url.Action("Notification")' + "/" + JsonData[0].ID + "?schoolId=" + JsonData[0].SchoolId);
+                            $("#notification").click();
+                        }
+                        else {
+                            showMessage("success");
+                        }
+                    }
+                }, 'json')
+            };
+            this.modifyLog = function (log) {
+                $.post("../NewEventLog", {
+                    dateCreated: log.dateCreated,
+                    createdBy: log.createdBy,
+                    eventType: log.eventTypeValue(),
+                    comment: log.comment,
+                    actionRequired: log.actionRequired,
+                    notification: log.notification(),
+                    accreditation: log.accreditation(),
+                    schoolId: '@Model.ID',
+                    relatedId: log.id,
+                    verifiedStar: log.verifiedStar(),
+                    files: log.newFiles(),
+                    approvalDate: log.approvalDate()
+                }, function (response) {
+                    if (response.success) {
+                        if (log.eventTypeValue() == Number('@TrsEventType.Star_Level_Change.GetValue()') || log.eventTypeValue() == Number('@TrsEventType.Auto_Assign.GetValue()'))
+                            addAssessment = true;
+
+                        var JsonData = JSON.parse(response.data);
+                        self.eventLogList.unshift(new EventLog(JsonData[0]));
+                        if (JsonData[0].Notification) {
+                            self.notificationUrl('@Url.Action("Notification")' + "/" + JsonData[0].ID + "?schoolId=" + JsonData[0].SchoolId);
+                            $("#notification").click();
+                        }
+                        else {
+                            showMessage("success");
+                        }
+                        self.selectEventType(false);
+                        log.dateCreated = log.oldDateCreated;
+                        log.createdBy = log.oldCreateBy;
+                        log.eventTypeValue(log.oldEventTypeValue);
+                        log.eventTypeText = log.oldEventTypeText;
+                        log.comment = log.oldComment;
+                        log.actionRequired = log.oldActionRequired;
+                        log.notification(log.oldNotification);
+                        log.notificationText(log.oldNotificationText);
+                        log.accreditation(log.oldAccreditation);
+                        log.tempName("eventLogTemp");
+                        self.selectEventType(true);
+                    }
+                }, 'json')
+            };
+
+            this.dataTempName = ko.observable("eventLogTemp");
+            this.editEventLogClick = function (log) {
+                log.oldDateCreated = log.dateCreated;
+                log.oldCreateBy = log.createdBy;
+                log.oldEventTypeValue = log.eventTypeValue();
+                log.oldEventTypeText = log.eventTypeText;
+                log.oldComment = log.comment;
+                log.oldActionRequired = log.actionRequired;
+                log.oldNotification = log.notification();
+                log.oldNotificationText = log.notificationText();
+                log.oldAccreditation = log.accreditation();
+                log.tempName("eventLogEditTemp");
+                log.newFiles("");
+                log.uploaderDoc = SunnetWebUploader.CreateWebUploader({
+                    pick: "#btnPickDoc" + log.id,
+                    container: "#docList" + log.id,
+                    submitbutton: "#btnSave" + log.id,
+                    targetField: "#doc" + log.id,
+                    multiple: true,
+                    fileNumLimit: 100,
+                    fileSingleSizeLimit: 2097152,
+                    filetemplate: '<div id="<% this.id %>" class="item">' +
+            '<span class="info"><% this.name %> (<% WebUploader.formatSize(this.size) %>)</span>&nbsp;' +
+            '<span class="delete" title="Remove this file"><a href="javascript:;"><i class="icon-trash icon-large"></i></a></span>' +
+            '</div>',
+                    accept: {
+                        title: "doc,picture",
+                        extensions: "doc,docx,xls,xlsx,csv,rtf,rtfd,txt,tab,ppt,pptx,pdf,png,gif,jpg,jpeg",
+                        mimeTypes: "application/msword,application/msexcel,application/rtf,text/plain,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/png,image/gif,image/jpeg,application/pdf"
+                    }
+                });
+            }
+
+            this.accreditationUrl = ko.observable("javascript:;");
+            this.changeStarLevelUrl = ko.observable("javascript:;");
+            this.selectEventType = ko.observable(true);
+            this.eventTypeChange = function (log) {
+                $("#EventType" + log.id).val(log.eventTypeValue());
+                if (self.selectEventType()) {
+                    if (log.eventTypeValue() == '@TrsEventType.Auto_Assign.GetValue()') {
+                        self.accreditationUrl('@Url.Action("Accreditations")' + "/" + log.id + "?accreditation=" + log.accreditation() + "&verifiedStar=" + log.verifiedStar() + "&schoolId=" + '@Model.ID');
+                        $("#accreditation").click();
+                    }
+                    else if (log.eventTypeValue() == '@TrsEventType.Star_Level_Change.GetValue()') {
+                        self.changeStarLevelUrl('@Url.Action("ChangeStarLevel")' + "/" + log.id + "?verifiedStar=" + log.verifiedStar() + "&schoolId=" + '@Model.ID' + "&approvalDate=" + log.approvalDate());
+                        $("#changeStarLevel").click();
+                    }
+                    else {
+                        log.accreditation(0);
+                    }
+                }
+            };
+            this.removeFile = function (doc) {
+                var delConfirmHtml = "<p>Are you sure you want to delete this document?</p>";
+                delConfirmHtml += "<p style='font-size:14px'>" + doc.fileName + ")</p>";
+                jQuery.when(waitingConfirm(delConfirmHtml, "Yes", "No")).done(function () {
+                    $.post('@Url.Action("DeleteEventLogFile")', { eventLogId: doc.id }, function (response) {
+                        if (response.success) {
+                            showMessage("success");
+                            doc.isDelete(true);
+                        }
+                        else {
+                            showMessage("fail", response.msg);
+                        }
+                    }, 'json');
+                }).fail(function () {
+                    return false;
+                });
+
+            };
+            this.getEventLogs();
+        }
+        var eventLogModel = new EventLogModel();
+        function GetFiles(log) {
+            var uploadFiles = "[";
+            var completeFiles = log.uploaderDoc.getFiles("complete");
+            for (var i = 0; i < completeFiles.length; i++) {
+                uploadFiles += "{" + '"FileName":"' + completeFiles[i].name + "(" + WebUploader.formatSize(completeFiles[i].size) + ")" + '",' + '"FilePath":"' + completeFiles[i].dbName + '"' + "},";
+            }
+            uploadFiles += "]";
+            $("#uploadfiles" + log.id).val(uploadFiles);
+            log.newFiles(uploadFiles);
+        }
+
+        $(function () {
+            var $form = $("#@formId");
+            $("body").on("click", "a[assessment]", function () {
+                var $this = $(this);
+                var msgKey = $this.data("delete") ? "trs_Invalidate_Assessment_Confirm_Delete" : "trs_Invalidate_Assessment_Confirm";
+                $.when(window.waitingConfirm(msgKey, "Invalidate", "No")).done(function () {
+
+                    var id = $this.attr("assessment");
+                    if (id) {
+                        $form.find("#ID").val(id);
+                        $form.submit();
+                    }
+                });
+                return false;
+            });
+
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    location.reload();
+                }
+            });
+
+            function goUrl(url) {
+                //console.log(url);
+                //return;
+                if (url.indexOf("http") < 0) {
+                    location.href = url;
+                } else {
+                    window.open(url);
+                }
+            }
+
+            ko.applyBindings({
+                goAssessment: function (model, event) {
+                    var $anchor = $(event.target), index;
+                    var href = $anchor.attr("href");
+                    var editClassHref = "@(SFConfig.MainSiteDomain)TRSClass/TRSClass/Edit?close=true&ID=";
+                    var checkTrsAvailableUrl = '@(Html.Raw(Url.Action("TrsAvailable", new { schoolId = Model.ID })))';
+                    $.when($.getJSON(checkTrsAvailableUrl)).then(function (response) {
+                        if (response.success) {
+                            response.href = href;
+                        }
+                        else {
+                            if (response.data) {
+                                for (index = 0; index < response.data.length; index++) {
+                                    response.href = editClassHref + response.data[index].id;
+                                    break;
+                                }
+                                return window.waitingConfirm(response.msg, "Edit", "Cancel", response);
+                            } else {
+                                response.href = "";
+                                return window.showMessage("fail", response.msg);
+                            }
+                        }
+                        return response;
+                    }).done(function (response) {
+                        if (response && response.href) {
+                            goUrl(response.href);
+                        }
+                    });
+                    return false;
+                },
+                deleteAssessment: function (assessmentId) {
+                    $.when(window.waitingConfirm("trs_Delete_Confirm", "Delete", "No")).done(function () {
+                        $.post('@Url.Action("Delete", "Index")', {
+                            id: assessmentId
+                        }, function (response) {
+                            if (response.success) {
+                                $.when(window.showMessage("success")).done(function () {
+                                    location.reload();
+                                });
+                            }
+                        }, "json");
+                    });
+                }
+            }, document.getElementById("AssessmentList"));
+
+            ko.applyBindings({
+                goAssessment: function (model, event) {
+                    var $anchor = $(event.target), index;
+                    var href = $anchor.attr("href");
+                    var editClassHref = "@(SFConfig.MainSiteDomain)TRSClass/TRSClass/Edit?close=true&ID=";
+                    var checkTrsAvailableUrl = '@(Html.Raw(Url.Action("TrsAvailable", new { schoolId = Model.ID })))';
+                    $.when($.getJSON(checkTrsAvailableUrl)).then(function (response) {
+                        if (response.success) {
+                            response.href = href;
+                        }
+                        else {
+                            if (response.data) {
+                                for (index = 0; index < response.data.length; index++) {
+                                    response.href = editClassHref + response.data[index].id;
+                                    break;
+                                }
+                                return window.waitingConfirm(response.msg, "Edit", "Cancel", response);
+                            } else {
+                                response.href = "";
+                                return window.showMessage("fail", response.msg);
+                            }
+                        }
+                        return response;
+                    }).done(function (response) {
+                        if (response && response.href) {
+                            goUrl(response.href);
+                        }
+                    });
+                    return false;
+                }
+            }, document.getElementById("koAssessment"));
+
+            ko.applyBindings(eventLogModel, document.getElementById("EventLogList"));
+        })
+    </script>
+}

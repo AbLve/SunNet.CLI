@@ -1,0 +1,3 @@
+﻿select * into StudentMeasures20171129 from StudentMeasures
+go
+update StudentMeasures set Goal=-1 where MeasureId in (select ID from Measures where ParentId>0) and Status=1 and goal=0

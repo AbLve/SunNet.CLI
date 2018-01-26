@@ -1,0 +1,29 @@
+﻿ 
+/****** Object:  UserDefinedFunction [dbo].[GetStudentCode]    Script Date: 2014/10/8 20:13:25 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date, ,>
+-- Description:	<Description, ,>
+-- =============================================
+CREATE FUNCTION [dbo].[GetStudentCode] 
+(
+	 @schoolYear varchar(5)
+)
+RETURNS varchar(50)
+AS
+BEGIN
+     DECLARE @count int
+	 select @count = count(1) from Students where SchoolYear = @schoolYear
+	  
+	  return 'ESU'+ CONVERT(varchar(2), GETDATE(), 12)+RIGHT('0000000'+CONVERT(VARCHAR(50),(@count+1)),'7')
+END
+
+GO
+
+

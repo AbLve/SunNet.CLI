@@ -1,0 +1,38 @@
+﻿CREATE TABLE [dbo].[DataProcesses](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[GroupId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[Remark] [varchar](500) NOT NULL,
+	[CommunityId] [int] NOT NULL,
+	[CommunityName] [varchar](200) NOT NULL,
+	[CommunityInternalId] [varchar](100) NOT NULL,
+	[SchoolName] [varchar](500) NOT NULL,
+	[SchoolInternalId] [varchar](100) NOT NULL,
+	[TeacherFirstName] [varchar](150) NOT NULL,
+	[TeacherMiddleName] [varchar](150) NOT NULL,
+	[TeacherLastName] [varchar](150) NOT NULL,
+	[TeacherInternalId] [varchar](150) NOT NULL,
+	[TeacherPhoneNumber] [varchar](50) NOT NULL,
+	[TeacherPhoneType] [tinyint] NOT NULL,
+	[TeacherPrimaryEmail] [varchar](150) NOT NULL,
+	[ClassDayType] [tinyint] NOT NULL,
+	[ClassLevel] [tinyint] NOT NULL,
+	[StudentFirstName] [varchar](150) NOT NULL,
+	[StudentMiddleName] [varchar](150) NOT NULL,
+	[StudentLastName] [varchar](150) NOT NULL,
+	[StudentInternalId] [varchar](100) NOT NULL,
+	[StudentTsdsId] [varchar](100) NOT NULL,
+	[StudentGradeLevel] [tinyint] NOT NULL,
+	[StudentLanguage] [tinyint] NOT NULL,
+	[StudentBirthdate] [datetime] NOT NULL,
+	[StudentGender] [tinyint] NOT NULL,
+	[StudentEthnicity] [tinyint] NOT NULL,
+	[LineNum] [int] NOT NULL,
+	[RemarkType] [tinyint] NOT NULL,
+ CONSTRAINT [PK_DataProcesses] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO

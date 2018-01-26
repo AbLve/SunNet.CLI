@@ -1,0 +1,12 @@
+﻿ALTER FUNCTION [dbo].[GetStudentCode] 
+(
+	 @schoolYear varchar(5)
+)
+RETURNS varchar(50)
+AS
+BEGIN
+     DECLARE @count int
+	 select @count = count(1) from Students where SchoolYear = @schoolYear
+	  
+	  return 'ESU'+ left(@schoolYear,2)+RIGHT('0000000'+CONVERT(VARCHAR(50),(@count+1)),'7')
+END

@@ -1,0 +1,221 @@
+﻿@model Sunnet.Cli.Business.Ade.Models.TxkeaLayoutModel
+@using System.Web.Optimization
+
+@{
+    ViewBag.Title = "Layouts";
+}
+
+@section Styles
+{
+    @Styles.Render("~/css/multiselect")
+    <style type="text/css">
+        .form-horizontal .radio, .form-horizontal .checkbox, .form-horizontal .radio-inline, .form-horizontal .checkbox-inline
+        {
+            float: none;
+        }
+    </style>
+}
+
+@section BreadPath
+{
+Layout List
+}
+
+<div class="right-content-top">
+    <button type="button" href='@Url.Action("New")' class="mainbutton mainright-btn create-btn" data-bind="click: addData">Create Layout</button>
+</div>
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearchLayout">
+    <div class="form-group">
+        @Html.Label("LayoutName", "Layout Name", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBox("LayoutName", "", new { @class = "form-control", data_bind = "value: searchCriteria.name", placeholder = "Enter Layout Name" })
+            <input type="text" style="display: none" aria-labelledby="LayoutName" />
+        </div>
+        @Html.LabelFor(model => model.NumberOfImages, new { @class = "control-label col-sm-2", @for = "numberOfImages", @id = "lblNumberOfImages" })
+        <div class="col-sm-3">
+            <select id="numberOfImages" multiple="multiple">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("OperationUser", "Created/Updated By", new { @class = "control-label col-sm-2", @for = "txtOperationUser" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtOperationUser", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#OperationUserId",
+                data_remote = Url.Action("GetOperationUser"),
+                data_text = "Name",
+                placeholder = "Enter Created/Updated User Name",
+                data_value = "ID",
+                id = "txtOperationUser",
+                name = "txtOperationUser",
+                @for = "OperationUserId",
+                data_required = "false",
+                data_bind = "value: searchCriteria.operationUserName",
+            })
+            @Html.Hidden("OperationUserId", null,
+                new
+                {
+                    data_bind = "value: searchCriteria.operationUserId"
+                })
+        </div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-3">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: searchPrepare }">Search</button>
+        </div>
+    </div>
+</form>
+
+<div class="main-content main-content">
+    <div class="content-title">Layout</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.Name"></td>
+                    <td data-bind="text: item.NumberOfImages"></td>
+                    <td data-bind="text: item.CreatedUserName"></td>
+                    <td data-bind="text: item.UpdatedUserName"></td>
+                    <td data-bind="text: item.UpdatedOnConvert"></td>
+                    <td>
+                        <!-- ko if: (RelatedItemsCount<=0) -->
+                        <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                        <!-- /ko-->
+                        <a class="table-btn icon-play create-btn" data-bind="attr: { href: $root.preview(item) }" href="#" title="Preview"
+                            data-toggle="modal" data-target="#modalLayoutPreview"></a>
+                        <!-- ko if: (RelatedItemsCount<=0) -->
+                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.deleteData }" href="#" title="Delete"></a>
+                        <!-- /ko-->
+                    </td>
+                </tr>
+            </tbody>
+            @Html.Display("e", "NoData", new { Colspan = 7 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/fabric")
+    @Scripts.Render("~/scripts/MultiSelect")
+    <script type="text/javascript">
+        var list_Layout = {};
+        $(function () {
+            list_Layout = new ViewModel(
+                {
+                    instanceName: "list_Layout",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: "Redirect",
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: "Redirect",
+                    deleteDataUrl: '@Html.Raw(Url.Action("Delete"))',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Name)",
+                            field: "@Html.NameFor(model => model.Name)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "No of Images",
+                            field: "@Html.NameFor(model => model.NumberOfImages)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: '@Html.DisplayNameFor(model => model.CreatedBy)',
+                            field: "@Html.NameFor(model => model.CreatedBy)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.UpdatedBy)",
+                            field: "@Html.NameFor(model => model.UpdatedBy)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "Last Updated On",
+                            field: "@Html.NameFor(model => model.UpdatedOn)",
+                            order: true,
+                            width: '10%'
+                        },
+                        { text: "Action", width: '10%' }
+                    ],
+                    searchCriteria: {
+                        name: ko.observable(window.queryString("name", "")),
+                        numberOfImages: ko.observable(window.queryString("numberOfImages", "")),
+                        operationUserId: ko.observable(window.queryString("operationUserId", 0)),
+                        operationUserName: ko.observable(window.queryString("operationUserName", ""))
+                    }
+                },
+                {
+                    preview: function (data) {
+                        return '@Url.Action("PreviewLayout")' + "?id=" + data.ID;
+                    },
+                    searchPrepare: function () {
+                        if ($("#numberOfImages").val())
+                            list_Layout.searchCriteria.numberOfImages($("#numberOfImages").val().join(";"));
+                        else
+                            list_Layout.searchCriteria.numberOfImages("");
+
+                        list_Layout.search();
+                    }
+                }
+            );
+            list_Layout.search();
+            ko.applyBindings(list_Layout);
+
+            $("form").keydown(function (e) {
+                if (e.keyCode == 13) {
+                    list_Layout.searchCriteria.name($("#LayoutName").val())
+                    list_Layout.search();
+                }
+            });
+
+            $('#numberOfImages').multiselect();
+        });
+    </script>
+}
+
+
+
+

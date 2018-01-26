@@ -1,0 +1,11 @@
+﻿go
+;
+with cotassessmentList as(
+select assessmentid  from COTAssessments a
+inner join CotWaves c on c.CotAssessmentId = a.ID
+where SchoolYear = '14-15' and c.Status = 10 and VisitDate  = '1753-01-01' and spenttime = '0.00'
+group by assessmentid 
+having count(*) = 2
+)
+update CotWaves set Status = 1 where CotAssessmentId in (select * from cotassessmentList)
+;

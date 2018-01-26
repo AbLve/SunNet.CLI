@@ -1,0 +1,8 @@
+
+GO 
+ALTER TABLE dbo.TrsStars ADD AutoAssign BIT NOT NULL DEFAULT 0;
+GO 
+UPDATE  dbo.TrsStars
+SET     Star = 0 ,
+        AutoAssign = 1
+WHERE   Star = 20; 

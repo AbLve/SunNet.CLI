@@ -1,0 +1,7 @@
+﻿ 
+
+alter table Auditors add [InternalID] varchar(32)
+go
+update Auditors set [InternalID] = '' 
+go
+alter table Auditors alter column [InternalID] varchar(32) not null

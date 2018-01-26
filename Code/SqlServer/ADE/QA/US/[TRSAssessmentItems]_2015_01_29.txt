@@ -1,0 +1,2 @@
+﻿IF EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('TRSAssessmentItems') AND name = 'Score' )
+ALTER TABLE [dbo].[TRSAssessmentItems] DROP COLUMN [Score]

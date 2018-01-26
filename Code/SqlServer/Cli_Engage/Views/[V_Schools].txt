@@ -1,0 +1,56 @@
+﻿
+/****** Object:  View [dbo].[V_Schools]    Script Date: 2/3 2015 15:56:48 ******/
+IF EXISTS(SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Schools]') AND type in (N'V'))
+DROP VIEW [dbo].[V_Schools]
+GO
+
+/****** Object:  View [dbo].[V_Schools]    Script Date: 2/3 2015 15:56:48 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[V_Schools]
+AS
+SELECT SCH.[ID]
+      ,SCH.[SchoolId]
+      ,SCH.[BasicSchoolId]
+	  ,[SchoolName] = BSCH.Name
+      ,SCH.[CommunityId]
+	  ,[CommunityName] = BCOM.Name
+      ,SCH.[Status]
+      ,SCH.[SchoolYear]
+      ,SCH.[ESCName]
+      ,SCH.[PhysicalAddress1]
+      ,SCH.[PhysicalAddress2]
+      ,SCH.[City]
+      ,SCH.[CountyId]
+	  ,[CountyName] = COUNTY.Name
+      ,SCH.[StateId]
+	  ,[StateName] = STA.Name
+      ,SCH.[Zip]
+      ,SCH.[PhoneNumber]
+      ,SCH.[PhoneType]
+      ,SCH.[SchoolTypeId]
+	  ,SCH.[SubTypeId]
+	  ,[Type] =  PT.Name
+	  ,[SubType] = ST.Name
+      ,SCH.[FundingId]
+	  ,[Funding] = FUN.Name
+	  ,[CountOfClassroom] = (SELECT COUNT(1) FROM [dbo].[Classrooms] CR WHERE CR.SchoolId = SCH.ID AND CR.[Status] = 1)
+	  ,[CountOfTeacher] = (SELECT COUNT(1) FROM [dbo].[Teachers] TEA INNER JOIN [dbo].[Users] TEAU ON TEA.UserId = TEAU.ID WHERE TEA.SchoolId = SCH.ID AND TEAU.[Status] = 1)
+	  ,[CountOfStudent] = (SELECT COUNT(1) FROM [dbo].[Students] STU WHERE STU.SchoolId = SCH.ID AND STU.[Status] = 1 )
+	  ,SCH.UpdatedOn
+	  ,SCH.CreatedOn
+FROM dbo.Schools SCH 
+INNER JOIN [dbo].[BasicSchools] BSCH ON SCH.BasicSchoolId  = BSCH.ID 
+INNER JOIN [dbo].[Communities] COM ON SCH.CommunityId = COM.ID INNER JOIN [dbo].[BasicCommunities] BCOM ON COM.BasicCommunityId = BCOM.ID
+LEFT JOIN [dbo].[Counties] COUNTY ON SCH.[CountyId] = COUNTY.ID 
+LEFT JOIN [dbo].[States] STA ON SCH.[StateId] = STA.ID 
+LEFT JOIN [dbo].[SchoolTypes] PT ON SCH.SchoolTypeId = PT.ID
+LEFT JOIN [dbo].[SchoolTypes] ST ON SCH.SubTypeId = ST.ID
+LEFT JOIN [dbo].[Fundings] FUN ON SCH.FundingId = FUN.ID
+GO
+
+

@@ -1,0 +1,9 @@
+
+GO
+UPDATE  dbo.CutOffScores
+SET     LowerScore = 0
+WHERE   LowerScore IS NULL;
+GO
+UPDATE  dbo.CutOffScores
+SET     HigherScore = 0
+WHERE   HigherScore IS NULL;

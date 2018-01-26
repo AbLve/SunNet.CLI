@@ -1,0 +1,187 @@
+﻿@{
+    ViewBag.Title = "Existing Layouts";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<TxkeaLayoutModel> list = ViewBag.List as List<TxkeaLayoutModel>;
+}
+
+
+<style type="text/css">
+    ul.LayoutItem {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        min-height: 260px;
+    }
+
+        ul.LayoutItem li {
+            border: 1px solid #6ca632;
+            text-align: center;
+            margin-top: 10px;
+            margin-left: 15px;
+            width: 320px;
+            height: 140px;
+            float: left;
+        }
+</style>
+
+<div class="main-content main-content" id="@formId">
+    <div class="content-body-tab" style="height:300px; overflow-y:auto;">
+
+        <ul class="LayoutItem">
+            @foreach (TxkeaLayoutModel item in list)
+            {
+                <li>
+                    <div style="text-align: center; padding-top: 3px;">
+                        @Html.Raw(item.LayoutHtml)
+
+                        <img src='@(Sunnet.Framework.SFConfig.StaticDomain)Upload/TxkeaLayout/@(item.LayoutPng)?v=@(DateTime.Now.Second.ToString() + DateTime.Now.Millisecond.ToString())'
+                             style='height:100px; width:@(item.layoutWidth)px;' />
+                    </div>
+                    <div style="text-align: center; padding-top: 3px;">
+                        <input type="radio" name="radioLayoutModel" value="@item.ID" id="radioLayoutModel@(item.ID)" />
+
+                        &nbsp;&nbsp;
+                        <label for="radioLayoutModel@(item.ID)">@item.Name</label>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="button-content">
+        @if (string.IsNullOrEmpty(ViewBag.isView))
+        {
+            <button class="mainbutton mainright-btn nav-btn" type="button" onclick="chooseLayoutItem($('input[name=radioLayoutModel]:checked').val())">
+                Select
+            </button>
+        }
+        <button class="mainbutton mainright-btn cancel-btn" type="button" onclick="closeModal($('#@(formId)'))">
+            Cancel
+        </button>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var layouts = @(Html.Raw(ViewBag.SerilizedList));
+        var formEle = document.getElementById("@formId");
+        var curScreenWidth = $("div.canvas-container").innerWidth();
+        var customBackColor; //自定义背景色
+        var customBackImage; //自定义背景图片
+
+        $(function () {
+            customBackColor = jsonModel.BackgroundFill;
+            customBackImage = jsonModel.BackgroundImage;
+
+            var layoutId = $("#LayoutId").val();
+            if (layoutId != "" && layoutId != "0")
+                $("#radioLayoutModel" + $("#LayoutId").val()).prop("checked", true);
+        })
+
+        function chooseLayoutItem(obj) {
+            var filterLayouts = layouts.filter(function (o) { return o.ID == obj });
+            var selectedLayout = filterLayouts.length > 0 ? filterLayouts[0] : "";
+            if (selectedLayout.Layout) {
+                $("#LayoutId").val(obj);
+                if (typeof (jsonModel) != 'undefined') {
+                    jsonModel.LayoutId = obj;
+                }
+                InitSelectedLayout(selectedLayout.Layout, selectedLayout.ScreenWidth, canvas);
+            }
+            closeModal($("#@(formId)"));
+        }
+
+        //现有的canvas对象替换选择的layout
+        function InitSelectedLayout(selectedLayout, selectedLayoutWidth, curCanvas) {
+            var models = JSON.parse(selectedLayout);
+            if (typeof (jsonModel) != 'undefined')   //确保该值为最新值
+            {
+                if (models.backgroundImage && models.backgroundImage.src)
+                    jsonModel.LayoutBackgroundImage = models.backgroundImage.src;
+                else
+                    jsonModel.LayoutBackgroundImage = "";
+            }
+            if (!customBackColor && !customBackImage) {
+                delete canvas["backgroundImage"];
+                delete canvas["backgroundColor"];
+            }
+            else {
+                models["background"] = "";
+                models["backgroundImage"] = "";
+            }
+            if (models && models.objects && models.objects.length > 0 && curCanvas && curCanvas._objects && curCanvas._objects.length > 0) {
+                for (var i = 0; i < models.objects.length; i++) { //循环将选中的layout中的object.src替换成canvas中的图片地址
+                    debugger;
+                    var selectedObject = models.objects[i];//选中的object
+                    var curObjects = curCanvas._objects.filter(function (obj) { return obj.sort == Number(selectedObject.id) - 1 }); //待替换的object
+                    if (curObjects.length > 0) {
+                        var curObject = curObjects[0];
+
+                        var centerTop = selectedObject.height*selectedObject.scaleY / 2.00 + selectedObject.top;
+                        var centerLeft = selectedObject.width*selectedObject.scaleX / 2.00 + selectedObject.left;
+                      
+
+                        selectedObject.src = curObject._element.src;
+                        selectedObject.id = curObject.id;
+                        selectedObject.sort = curObject.sort;
+                        selectedObject.selectable = false;  //选模板不可以移动元素
+                        var widthRate = (selectedObject.width * selectedObject.scaleX) / (curObject.width * curObject.scaleX);
+                        var heightRate = (selectedObject.height * selectedObject.scaleY) / (curObject.height * curObject.scaleY);
+                        rate = widthRate < heightRate ? widthRate : heightRate;
+                        selectedObject.width = curObject.width * curObject.scaleX * rate;
+                        selectedObject.height = curObject.height * curObject.scaleY * rate;
+                        selectedObject.scaleX = 1;
+                        selectedObject.scaleY = 1;
+                        if (curScreenWidth != selectedLayoutWidth) {
+                            debugger;
+                          
+                         
+                            var preWidth = selectedObject.width * selectedObject.scaleX;
+                            var width = selectedObject.width * selectedObject.scaleX * (curScreenWidth/selectedLayoutWidth); //model.realwidth
+                            var preHeight = selectedObject.height * selectedObject.scaleY ; //model.realheight
+                             var height = (width / preWidth * preHeight);
+                             var preScreenHeight = selectedLayoutWidth * (565 / 1024);
+                             var curScreenHeight = curScreenWidth * (565 / 1024);
+                          
+                             selectedObject.width = width;
+                             selectedObject.height = height;
+
+                             var newTop = centerTop - selectedObject.height / 2.00;
+                             var newLeft = centerLeft - selectedObject.width / 2.00;
+
+                             selectedObject.left = newLeft;
+                             selectedObject.top = newTop;
+
+
+                            if (selectedObject.left < (selectedLayoutWidth / 2)) { //靠左边
+                                selectedObject.left = (selectedObject.left / selectedLayoutWidth) * curScreenWidth;
+                            }
+                            else {  //靠右边
+                                selectedObject.left = curScreenWidth -  ((selectedLayoutWidth - selectedObject.left - preWidth) / selectedLayoutWidth) * curScreenWidth - width;
+                            }
+                            if (selectedObject.top < (selectedLayoutWidth / 2))
+                                selectedObject.top = (selectedObject.top / preScreenHeight) * curScreenHeight;
+                              else
+                                selectedObject.top = curScreenHeight - ((preScreenHeight - selectedObject.top - preHeight) / preScreenHeight) * curScreenHeight - height;
+                        }
+                    }
+                    else {
+                        delete models.objects[i];  //change to undefined 
+                    }
+                }
+
+                var instruction = canvas._objects.filter(function (obj) { return obj.type == "text" })[0];
+                curCanvas.loadFromDatalessJSON(JSON.stringify(models),
+                    function () {
+                        InitLines();
+                        if (typeof (canvas) != "undefined" && instruction)
+                            curCanvas.add(instruction);
+
+                        curCanvas.renderAll();
+                    });
+            }
+        }
+    </script>
+}

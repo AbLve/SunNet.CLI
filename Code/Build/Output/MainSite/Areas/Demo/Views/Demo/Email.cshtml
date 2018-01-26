@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Email";
+}
+
+<h2>Email</h2>
+
+@using (Html.BeginForm("Email", "Demo", FormMethod.Post, new { role = "form" }))
+{
+    <div class="form-group">
+        状态:@ViewBag.Result
+    </div>
+    <div class="form-group">
+        <input type="email" class="form-control" name="to" placeholder="收件人">
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" name="subject" placeholder="主题">
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" name="body" placeholder="邮件正文">
+    </div>
+    <div class="checkbox">
+        <label>
+            <input type="radio" name="isAsync" value="false" id="isAsync" checked="">
+            <label for="isAsync">同步发送</label>
+            <input type="radio" name="isAsync" value="true" id="isAsync2">
+            <label for="isAsync2">异步发送</label>
+        </label>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+}

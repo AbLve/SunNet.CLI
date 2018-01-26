@@ -1,0 +1,5 @@
+﻿alter table [dbo].[BUP_Teachers] add Teacher_TSDS_ID varchar(50)
+alter table [dbo].[BUP_Teachers] add TeacherStatus tinyint
+GO
+update BUP_Teachers set Teacher_TSDS_ID=''
+update BUP_Teachers set TeacherStatus=1

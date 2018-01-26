@@ -1,0 +1,22 @@
+﻿GO
+/****** 
+Object:  Synonym [dbo].[Cli_Engage__Schools]    Script Date: 2014/12/23 13:43:46 
+移除单引号内的文字，包括单引号，替换成服务器上面的主数据库名
+******/
+CREATE SYNONYM [dbo].[Cli_Engage__Users] FOR '主数据库(MainDb)'.[dbo].[Users]
+GO
+
+CREATE SYNONYM [dbo].[Cli_Engage__Teachers] FOR '主数据库(MainDb)'.[dbo].[Teachers]
+GO
+
+CREATE SYNONYM [dbo].[Cli_Engage__BasicSchools] FOR '主数据库(MainDb)'.[dbo].[BasicSchools]
+GO
+
+CREATE SYNONYM [dbo].[Cli_Engage__Communities] FOR '主数据库(MainDb)'.[dbo].[Communities]
+GO
+
+CREATE SYNONYM [dbo].[Cli_Engage__BasicCommunities] FOR '主数据库(MainDb)'.[dbo].[BasicCommunities]
+GO
+
+CREATE SYNONYM [dbo].[Cli_Engage__YearsInProjects] FOR '主数据库(MainDb)'.[dbo].[YearsInProjects]
+GO

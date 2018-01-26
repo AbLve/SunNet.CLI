@@ -1,0 +1,30 @@
+﻿/****** Object:  Table [dbo].[CecResults]    Script Date: 2014/12/9 18:48:17 ******/
+DROP TABLE [dbo].[CecResults]
+GO
+
+/****** Object:  Table [dbo].[CecResults]    Script Date: 2014/12/9 18:48:17 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[CecResults](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CecHistoryId] [int] NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[AnswerId] [int] NOT NULL,
+	[Score] [decimal](18, 2) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+ CONSTRAINT [PK_CecResults] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+

@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[Video_SelectionList_Datas](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_Video_SelectionList_Datas] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+SET IDENTITY_INSERT [dbo].[Video_SelectionList_Datas] ON 
+
+GO
+INSERT [dbo].[Video_SelectionList_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (1, N'Best Practice', 1, CAST(0x0000A45F012F9677 AS DateTime), CAST(0x0000A45F012F9677 AS DateTime))
+GO
+INSERT [dbo].[Video_SelectionList_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (2, N'Missed Opportunities', 1, CAST(0x0000A45F012F9677 AS DateTime), CAST(0x0000A45F012F9677 AS DateTime))
+GO
+INSERT [dbo].[Video_SelectionList_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (3, N'PA Instruction', 1, CAST(0x0000A45F012F9677 AS DateTime), CAST(0x0000A45F012F9677 AS DateTime))
+GO
+INSERT [dbo].[Video_SelectionList_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (4, N'Scaffolding', 1, CAST(0x0000A45F012F9677 AS DateTime), CAST(0x0000A45F012F9677 AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[Video_SelectionList_Datas] OFF
+GO

@@ -1,0 +1,206 @@
+﻿@using System.Web.Optimization
+@{
+    Layout = null;
+    var title = "" + ViewBag.Title;
+    if (!string.IsNullOrEmpty(title))
+    {
+        title += " - ";
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@(title)Report</title>
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+    <style type="text/css">
+        body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, form, img, dl, dt, dd, table, th, td, blockquote, fieldset, div, strong, label, em {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        body {
+            font-family: Calibri;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        table > caption {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .container {
+            /*border: solid 1px #000;*/
+            border-radius: 5px;
+            padding: 5px 20px;
+            margin: 10px;
+            text-align: center;
+        }
+
+            .container.pdf {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+
+                .container.pdf table {
+                }
+
+        table {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+            table th {
+                text-align: center;
+            }
+
+        th.title {
+            font-size: 14px;
+        }
+
+        table.header {
+            width: 99%;
+            margin: 0 auto;
+            font-size: 12px;
+        }
+
+        .header div {
+            white-space: nowrap;
+        }
+
+        .header td {
+            vertical-align: top;
+            padding: 0;
+        }
+
+        table th, table td {
+            padding: 3px;
+        }
+
+            table th.noborder, table td.noborder, .noborder, .noborder td, .noborder th {
+                border-color: #fff !important;
+            }
+
+            table th.border-t, table td.border-t {
+                border-top: 1px solid #000 !important;
+            }
+
+            table th.border-l, table td.border-l {
+                border-left: 1px solid #000 !important;
+            }
+
+            table th.border-b, table td.border-b {
+                border-bottom: 1px solid #000 !important;
+            }
+
+        table caption {
+            text-align: left;
+        }
+        /***************** begin:table-left ********************/
+        .table-left {
+            text-align: left;
+            border: #fff !important;
+        }
+
+            .table-left .noborder {
+                border-color: #fff !important;
+            }
+
+            .table-left th, .table-left td {
+                border: solid 1px #000;
+                padding: 3px;
+            }
+
+            .table-left .td-right {
+                text-align: right;
+            }
+
+            .table-left .td-center {
+                text-align: center;
+            }
+
+            .table-left .text-bold {
+                font-weight: bolder;
+            }
+
+        /***************** end:table-left ********************/
+        .onerow {
+            page-break-inside: avoid;
+        }
+
+        .newpager {
+            page-break-before: always;
+        }
+
+        .btn-export {
+            position: fixed;
+            top: 50%;
+            right: 50px;
+            height: 40px;
+            font-size: 16px;
+            background-color: #1a7c9d;
+            color: #fff;
+            cursor: pointer;
+            display: none;
+        }
+
+        .title-strong {
+            font-weight: bold;
+        }
+
+        .note {
+            text-align: left;
+            color: #999;
+        }
+
+        .report-data {
+            margin: 0 auto;
+        }
+
+            .report-data th {
+                font-size: 13px;
+                text-align: center;
+            }
+
+                .report-data th.left {
+                    text-align: left;
+                }
+
+            .report-data td.date {
+                text-align: center;
+            }
+
+        img {
+            max-width: 1200px;
+            max-height: 650px;
+        }
+
+        .table_border {
+            border: 1px #333 solid;
+            border-left: 0px;
+            border-bottom: 0px;
+        }
+
+            .table_border td, .table_border th {
+                border-left: 1px #333 solid;
+                border-bottom: 1px #333 solid;
+            }
+    </style>
+    @RenderSection("Styles", false)
+</head>
+<body>
+    <div class='container @(ViewData["Pdf"] != null && ViewBag.Pdf ? "pdf" : "")'>
+        @RenderBody()
+    </div>
+    @RenderSection("Scripts", false)
+
+</body>
+</html>

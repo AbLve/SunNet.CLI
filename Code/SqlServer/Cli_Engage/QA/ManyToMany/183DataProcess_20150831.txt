@@ -1,0 +1,22 @@
+﻿alter table [dbo].[DataGroups]
+add CommunityId int not null default 0
+go
+
+update d set d.CommunityId=p.CommunityId
+from DataGroups d
+inner join DataProcesses p
+on d.ID=p.GroupId
+go
+
+update d set d.CommunityId=c.CommunityId
+from DataGroups d
+inner join DataCommunities c
+on d.ID=c.GroupId
+go
+
+
+alter table [dbo].[DataProcesses]
+drop column CommunityId
+go
+
+

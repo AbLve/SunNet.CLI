@@ -1,0 +1,23 @@
+﻿if not exists(select * from syscolumns where id=object_id('TRSAssessments') and name='Type')
+begin
+alter table dbo.TRSAssessments
+add [Type] tinyint not null default 1
+end
+
+if not exists(select * from syscolumns where id=object_id('TRSAssessments') and name='VisitDate')
+begin
+alter table dbo.TRSAssessments
+add VisitDate datetime not null
+end
+
+if not exists(select * from syscolumns where id=object_id('TRSAssessments') and name='DiscussDate')
+begin
+alter table dbo.TRSAssessments
+add DiscussDate datetime not null
+end
+
+if not exists(select * from syscolumns where id=object_id('TRSAssessments') and name='ApproveDate')
+begin
+alter table dbo.TRSAssessments
+add ApproveDate datetime not null
+end

@@ -1,0 +1,19 @@
+﻿
+if OBJECT_ID('tgr_class_update','tr') is not null drop trigger tgr_class_update
+go
+CREATE TRIGGER [dbo].[tgr_class_update]
+on [dbo].classes
+    after update
+as
+begin
+	 declare @ID int,@oldStatus tinyint,@newStatus tinyint
+	 select @ID=d.ID,@oldStatus=d.[Status] from deleted d
+	 select @newStatus=i.[Status] from inserted i
+	 if(@oldStatus!=@newStatus)
+	 begin
+	      update Classes set StatusDate=GETDATE() where id=@ID
+	 end 
+end	 
+ 
+GO
+

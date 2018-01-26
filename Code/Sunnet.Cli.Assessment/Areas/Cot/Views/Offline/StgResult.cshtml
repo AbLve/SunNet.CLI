@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "STG Result";
+    Layout = "~/Views/Shared/_Layout_Offline.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    //ViewBag.Manifest = Url.Action("Manifest");
+}
+@section Styles{
+    <style type="text/css">
+        .note {
+            text-align: left;
+            color: #999;
+        }
+        .action-plan {
+            border: solid 1px #000000;
+            padding: 5px;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-sm-6 col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Basic Information</div>
+            <div class="panel-body ">
+                <form class="form-horizontal" role="form">
+                    <label class="control-label">Teacher Name</label>
+                    <label class="control-label-text" data-bind="html:teacher.firstname + ' ' + teacher.lastname">
+                    </label>
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <label class="control-label">School Year</label>
+                    <label class="control-label-text" data-bind="html:assessment.SchoolYear">
+                    </label>
+                </form>
+                <div class="right-content-top">
+                    <a href="/Cot/Offline" class="mainbutton mainright-btn nav-btn">Back to Teacher List</a>
+                    <button type="button" class="mainbutton mainright-btn create-btn"
+                            data-bind="click:gotoTeacherFolder">
+                        Teacher Folder
+                    </button>
+                    <button type="button" class="mainbutton mainright-btn create-btn"
+                            data-bind="click:gotoCotReport">
+                        Select Goals/Update COT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("_Partial_Log")
+</div>
+
+<form class="form-horizontal" novalidate="novalidate" id="@(formId)">
+
+    <div class="main-content">
+        <div class="content-body">
+            <table class="table  table-hover table-striped   table-condensed">
+                <thead>
+                    <tr>
+                        <th>Selected Goals</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--ko foreach:{data:teacher.editingStgReport.measures,as:'measure'}-->
+                    <!--    ko if:measure.visible-->
+                    <!--        ko template:{name:'_tmp1_measure',data:measure}--><!--/ko-->
+                    <!--        ko if:items && items.length -->
+                    <!--        ko template:{name:'_tmp1_item',foreach:items,as:'item'}--><!--/ko-->
+                    <!--        /ko-->
+                    <!--        ko if:children && children.length-->
+                    <!--            ko foreach:{data:children,as:'childMeasure'}-->
+                    <!--                ko if:childMeasure.visible-->
+                    <!--                    ko template:{name:'_tmp1_child',data:childMeasure}--><!--/ko-->
+                    <!--                    ko template:{name:'_tmp1_item',foreach:items,as:'item'}--><!--/ko-->
+                    <!--                /ko-->
+                    <!--            /ko-->
+                    <!--        /ko-->
+                    <!--    /ko-->
+                    <!--/ko-->
+                </tbody>
+            </table>
+            <div class="modal-l-b"></div>
+            <div class="form-group">
+                <div class="col-sm-4 col-sm-offset-4" style="text-align: center;">
+                    <h3>Action Plan</h3>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2">On My Own</div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12 action-plan" data-bind="html:teacher.editingStgReport.onMyOwn">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2">
+                    With Support
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12 action-plan" data-bind="html:teacher.editingStgReport.withSupport">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2">Additional Comments</div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12 action-plan" data-bind="html:teacher.editingStgReport.additionalComments">
+                </div>
+            </div>
+            
+            <table class="table  table-hover table-striped   table-condensed">
+                <thead>
+                    <tr>
+                        <th colspan="4" style="text-align: left;">
+                            References
+                        </th>
+                    </tr>
+                    <tr>
+                        <th width="50">Item</th>
+                        <!--ko if:$root.type == "teacher"-->
+                        <th >CIRCLE Manual</th>
+                        <!--/ko-->
+                        <!--ko if:$root.type == "mentor"-->
+                        <th>Mentoring Guide</th>
+                        <!--/ko-->
+                        <th>Prekindergarten Guidelines</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--ko foreach:{data:teacher.editingStgReport.measures,as:'measure'}-->
+                    <!--    ko if:measure.visible-->
+                    <!--        ko template:{name:'_tmp2_measure',data:measure}--><!--/ko-->
+                    <!--        ko if:items && items.length -->
+                    <!--        ko template:{name:'_tmp2_item',foreach:items,as:'item'}--><!--/ko-->
+                    <!--        /ko-->
+                    <!--        ko if:children && children.length-->
+                    <!--            ko foreach:{data:children,as:'childMeasure'}-->
+                    <!--                ko if:childMeasure.visible-->
+                    <!--                    ko template:{name:'_tmp2_child',data:childMeasure}--><!--/ko-->
+                    <!--                    ko template:{name:'_tmp2_item',foreach:items,as:'item'}--><!--/ko-->
+                    <!--                /ko-->
+                    <!--            /ko-->
+                    <!--        /ko-->
+                    <!--    /ko-->
+                    <!--/ko-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+<script type="text/html" id="_tmp1_measure">
+    <tr class="success" data-bind="if:measure.items && measure.items.length || measure.children && measure.children.length ">
+        <td style="text-align: left;font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp1_child">
+    <tr class="info" data-bind="if:childMeasure.items && childMeasure.items.length">
+        <td style="text-align: left;padding-left: 40px;font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp1_item">
+    <!--ko if:goalMetDone == false--><!--/ko-->
+    <tr>
+        <td style="text-align: left;" data-bind="html:fullTargetText + cotItem"></td>
+    </tr>
+    
+</script>
+<script type="text/html" id="_tmp2_measure">
+    <tr class="success" data-bind="if:measure.items && measure.items.length || measure.children && measure.children.length ">
+        <td colspan="3" style="text-align: left;font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp2_child">
+    <tr class="info" data-bind="if:childMeasure.items && childMeasure.items.length">
+        <td colspan="3" style="text-align: left;padding-left: 40px;font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp2_item">
+    <!--ko if:goalMetDone == false--><!--/ko-->
+    <tr>
+        <td data-bind="html:cotItem"></td>
+        <!--ko if:$root.type == "teacher"-->
+        <td style="text-align: left;" data-bind="html:circleManual"></td>
+        <!--/ko-->
+        <!--ko if:$root.type == "mentor"-->
+        <td style="text-align: left;" data-bind="html:mentoringGuide"></td>
+        <!--/ko-->
+        <td style="text-align: left;" data-bind="html:prekindergartenGuidelines"></td>
+    </tr>
+    
+</script>
+@section Scripts
+{
+    @Scripts.Render("~/scripts/jquery_val/offline")
+    @Scripts.Render("~/scripts/format/offline")
+    @Scripts.Render("~/scripts/cot/offline")
+    <script type="text/javascript" src="/Content/Scripts/datetime/lang/en.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/datetime/calendar.js?"></script>
+
+    <script type="text/javascript">
+        function log(type, message) {
+            var log = '<div class="alert alert-' + type + ' alert-log" role="alert" title="' + message + '">' + message + '</div>';
+            $(log).appendTo($log);
+            $log.scrollTop($log[0].scrollHeight);
+        }
+
+        var offlineApp;
+        var $log;
+
+        $(function() {
+            $log = $("#log_Container");
+            offlineApp = getCotOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.writeLog = log;
+            offlineApp.init();
+
+            var id = offlineApp.getItem(offlineApp.values.Key.stgReportId);
+            var type = offlineApp.getItem(offlineApp.values.Key.stgReportType);
+            offlineApp.viewModel["type"] = type;
+            offlineApp.viewModel.teacher.editingStgReport = offlineApp.viewModel.teacher.reportById[id];
+
+            var measures = offlineApp.viewModel.teacher.editingStgReport.measures;
+            for (var mIndex = 0; mIndex < measures.length; mIndex++) {
+                var measure = measures[mIndex];
+                if (measure.visible) {
+                    if (measure.items) {
+                        var doneItems = 0;
+                        for (var itemIndex = 0; itemIndex < measure.items.length; itemIndex++) {
+                            if (measure.items[itemIndex].goalMetDone) {
+                                doneItems++;
+                            }
+                        }
+                        //if (doneItems == measure.items.length) {
+                        //    measure.visible = false;
+                        //}
+                    }
+                    if (measure.children) {
+                        var hiddenChild = 0;
+                        for (var childIndex = 0; childIndex < measure.children.length; childIndex++) {
+                            var child = measure.children[childIndex];
+                            if (child.items) {
+                                doneItems = 0;
+                                for (itemIndex = 0; itemIndex < child.items.length; itemIndex++) {
+                                    if (child.items[itemIndex].goalMetDone) {
+                                        doneItems++;
+                                    }
+                                }
+                                //if (doneItems == child.items.length) {
+                                //    child.visible = false;
+                                //    hiddenChild++;
+                                //}
+                            }
+                        }
+                        //if (hiddenChild == measure.children.length) {
+                        //    measure.visible = false;
+                        //}
+                    }
+                }
+            }
+
+            ko.applyBindings(offlineApp.viewModel);
+
+        });
+    </script>
+}

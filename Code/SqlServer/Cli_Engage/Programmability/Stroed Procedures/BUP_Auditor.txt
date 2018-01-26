@@ -1,0 +1,167 @@
+﻿CREATE PROCEDURE [dbo].[BUP_Auditor] 
+	@BUPAuditorID int,
+	@InvitationEmail bit
+AS
+BEGIN
+	  SET XACT_ABORT ON;
+
+	  DECLARE @Action tinyint
+      DECLARE @CommunityName varchar(200)
+      DECLARE @CommunityEngageID varchar(50)
+      DECLARE @SchoolName varchar(200)
+      DECLARE @SchoolEngageID varchar(50)
+      DECLARE @FirstName varchar(140)
+      DECLARE @MiddleName varchar(140)
+      DECLARE @LastName varchar(140)
+      DECLARE @EngageId varchar(50)
+      DECLARE @InternalID varchar(50)
+      DECLARE @PrimaryPhoneNumber varchar(50)
+      DECLARE @PrimaryNumberType tinyint
+      DECLARE @PrimaryEmailAddress varchar(50)
+      DECLARE @SecondaryEmailAddress varchar(50)
+
+	  DECLARE @UserId INT --users 表Id
+
+	  BEGIN TRY
+		BEGIN TRANSACTION;
+
+		SELECT  @Action=[Action],@CommunityName=[CommunityName],@CommunityEngageID=[CommunityEngageID],@SchoolName=[SchoolName],@SchoolEngageID=[SchoolEngageID]
+		    ,@FirstName=[FirstName],@MiddleName=[MiddleName],@LastName=[LastName],@EngageId=[EngageID],@InternalID=[InternalId]
+		    ,@PrimaryPhoneNumber=[PhoneNumber],@PrimaryNumberType=[PhoneType],@PrimaryEmailAddress=[PrimaryEmail]
+		    ,@SecondaryEmailAddress=[SecondEmail]
+			FROM [dbo].BUP_Auditors WHERE ID = @BUPAuditorID
+
+		IF(@EngageId != '')	
+			SELECT @UserId =UserId ,
+			@FirstName= CASE @FirstName WHEN '' THEN u.FirstName ELSE @FirstName END,
+			@LastName= CASE @LastName WHEN '' THEN u.LastName ELSE @LastName END,
+			@PrimaryEmailAddress= CASE @PrimaryEmailAddress WHEN '' THEN u.PrimaryEmailAddress ELSE @PrimaryEmailAddress END
+			FROM Auditors a
+			INNER JOIN Users u
+			ON a.UserId=u.ID
+			WHERE AuditorId=@EngageId
+
+		--INSERT
+		IF(@Action = 1) BEGIN
+			IF(EXISTS (SELECT * FROM Users WHERE FirstName=@FirstName AND LastName=@LastName 
+			AND PrimaryEmailAddress= @PrimaryEmailAddress AND Status=1 AND Role!=101))
+				UPDATE 	BUP_Auditors SET Status=5 ,Remark ='One user has been existed with different role ' WHERE ID = @BUPAuditorID	
+			ELSE
+			BEGIN
+				SELECT @UserId = ID FROM Users WHERE FirstName=@FirstName AND LastName=@LastName 
+				AND PrimaryEmailAddress= @PrimaryEmailAddress AND Status=1 AND Role=101
+				IF(@UserId IS NULL)		
+				  BEGIN
+					INSERT INTO [dbo].[Users]
+						([Role]
+						,[GoogleId]
+						,[FirstName]
+						,[MiddleName]
+						,[LastName]
+						,[PreviousLastName]
+						,[Status]
+						,[StatusDate]
+						,[PrimaryEmailAddress]
+						,[SecondaryEmailAddress]
+						,[PrimaryPhoneNumber]
+						,[PrimaryNumberType]
+						,[SecondaryPhoneNumber]
+						,[SecondaryNumberType]
+						,[FaxNumber]
+						,[CreatedOn]
+						,[UpdatedOn]
+						,[IsDeleted]
+						,[Sponsor]
+						,[InvitationEmail]
+						,[EmailExpireTime]
+						,[Notes]
+						,[gmail]
+						,[IsSyncLms]
+						,[InternalID])
+						VALUES
+						( 101 --<Role, tinyint,>
+						,''-- <GoogleId, varchar(50),>
+						,@FirstName --, varchar(140),>
+						,@MiddleName --, varchar(140),>
+						,@LastName --, varchar(140),>
+						,''--<PreviousLastName, varchar(140),>
+						,1--<Status, tinyint,>
+						,GETDATE() --<StatusDate, datetime,>
+						,@PrimaryEmailAddress --, varchar(50),>
+						,@SecondaryEmailAddress --, varchar(50),>
+						,@PrimaryPhoneNumber --, varchar(50),>
+						,@PrimaryNumberType --, tinyint,>
+						,'' --, varchar(50),>
+						,0--<SecondaryNumberType, tinyint,>
+						,''--<FaxNumber, varchar(50),>
+						,GETDATE()--<CreatedOn, datetime,>
+						,GETDATE()--<UpdatedOn, datetime,>
+						,0--<IsDeleted, bit,>
+						,1--<Sponsor, int,>
+						,(case when @InvitationEmail=1 then 2 else 1 end)--<InvitationEmail, tinyint,>
+						,'1753/1/1' --<EmailExpireTime, datetime,>
+						,'BUP' --<Notes, varchar(100),>
+						,'' --<gmail, varchar(200),>
+						,0 --<IsSyncLms, bit,>
+						,@InternalID
+						)
+
+						SELECT @UserId = SCOPE_IDENTITY()
+
+						INSERT INTO [dbo].[Auditors](UserId,AuditorId,SchoolYear,PositionId,PositionOther,AffiliationId,AffiliationOther,AuditorNotes)
+						VALUES(@UserId,@EngageId,dbo.GetSchoolYear(),0,'',0,'','')
+				 END
+				 ELSE  -- duplicate 
+					UPDATE 	BUP_Auditors SET Status=5 ,Remark ='No duplicate user was created' WHERE ID = @BUPAuditorID
+			END
+		END
+
+		--UPDATE
+		IF(@Action = 2) BEGIN	    
+			IF(@UserId IS NULL)
+			    UPDATE BUP_Auditors SET Status=5, Remark ='Auditor User Engage ID is not in Auditors' WHERE ID = @BUPAuditorID
+			ELSE
+			 BEGIN
+				IF(EXISTS (SELECT * FROM Users WHERE FirstName=@FirstName AND LastName=@LastName 
+								AND PrimaryEmailAddress= @PrimaryEmailAddress AND Status=1 AND ID!=@UserId))
+					UPDATE 	BUP_Auditors SET Status=5 ,Remark ='Duplicate user found' WHERE ID = @BUPAuditorID	
+				ELSE
+					UPDATE [dbo].[Users] SET 
+					[FirstName] =  CASE WHEN @FirstName != '' THEN @FirstName ELSE [FirstName] END
+					,[MiddleName] =  CASE WHEN @MiddleName='*CLEAR*' THEN '' WHEN @MiddleName != '' THEN @MiddleName ELSE MiddleName END
+					,[LastName] =  CASE WHEN @LastName != '' THEN @LastName ELSE LastName END
+					,[InternalID] = CASE WHEN @InternalID='*CLEAR*' THEN '' WHEN @InternalID != '' THEN @InternalID ELSE InternalID END
+					,[PrimaryEmailAddress] =  CASE WHEN @PrimaryEmailAddress != '' THEN @PrimaryEmailAddress ELSE PrimaryEmailAddress END
+					,[SecondaryEmailAddress] = CASE WHEN @SecondaryEmailAddress='*CLEAR*' THEN '' WHEN @SecondaryEmailAddress != '' THEN @SecondaryEmailAddress ELSE SecondaryEmailAddress END
+					,[PrimaryPhoneNumber] =  CASE WHEN @PrimaryPhoneNumber != '' THEN @PrimaryPhoneNumber ELSE PrimaryPhoneNumber END
+					,[PrimaryNumberType] = CASE WHEN @PrimaryNumberType = 127 THEN 0 WHEN @PrimaryNumberType>0 THEN @PrimaryNumberType ELSE PrimaryNumberType END 
+					,[UpdatedOn] = getdate()
+					WHERE ID =@UserId
+			END
+		END
+
+		--DELETE
+		IF(@Action = 3) BEGIN
+			IF(@UserId IS NULL)
+			    UPDATE BUP_Auditors SET Status=5, Remark ='Auditor User Engage ID is not in Auditors' WHERE ID = @BUPAuditorID
+			ELSE
+				UPDATE Users SET Status=2, StatusDate=GETDATE() WHERE ID=@UserId
+		END
+
+		UPDATE BUP_Auditors SET Status = 3 WHERE ID = @BUPAuditorID AND Status = 1;
+		COMMIT TRANSACTION ;
+	  END TRY
+
+	  BEGIN CATCH
+			IF (XACT_STATE()) = -1
+			BEGIN			
+				ROLLBACK TRANSACTION;
+				UPDATE BUP_Auditors SET Remark = ERROR_MESSAGE() ,Status = 4 WHERE ID = @BUPAuditorID
+			END;
+
+			IF (XACT_STATE()) = 1
+			BEGIN
+				COMMIT TRANSACTION;   
+			END;
+	  END CATCH 
+END

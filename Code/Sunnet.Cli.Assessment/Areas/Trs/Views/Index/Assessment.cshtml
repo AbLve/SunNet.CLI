@@ -1,0 +1,1151 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.Business.Common
+@using Sunnet.Cli.Core.Trs
+@model Sunnet.Cli.Business.Trs.Models.TrsAssessmentModel
+@{
+    ViewBag.Title = "Assessment";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var limitDate = CommonAgent.TrsMinDate;
+    bool isSpecialist = ViewBag.IsSpecialist == null ? false : (bool)ViewBag.IsSpecialist;
+    bool ifCanSave = ViewBag.IfCanSave == null ? false : (bool)ViewBag.IfCanSave;
+}
+@section BreadPath
+{
+    <a href="@(SFConfig.MainSiteDomain)Home/Dashboard">
+        <img src="/images/icon_trs.png" alt="Logo" />
+    </a>
+    <i class="icon-angle-right"></i>@Html.ActionLink("Facilities", "Index")
+    <i class="icon-angle-right"></i>@Html.ActionLink(Model.School.Name, "School", new { id = Model.SchoolId })
+    <i class="icon-angle-right"></i><b>TRS Process assessment</b>
+}
+@section Styles
+{
+    <style type="text/css">
+        .tooltip-inner {
+            max-width: 600px;
+        }
+
+        table.trs-items caption {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        table.trs-items th.scores {
+            text-align: left;
+            width: 110px;
+        }
+
+        table.trs-items th.scores-na {
+            width: 80px;
+        }
+
+        table.trs-items td.scores {
+            text-align: left;
+        }
+
+            table.trs-items td.scores input {
+                float: left;
+            }
+
+            table.trs-items td.scores label {
+                display: inline-block;
+                float: left;
+                width: 70px;
+            }
+
+        table.trs-items td.scores-na label {
+            width: 50px;
+        }
+
+        table.trs-items td.scores label {
+            border: solid 1px rgba(255, 255, 255, 0);
+            padding: 2px;
+        }
+
+            table.trs-items td.scores label:hover {
+                border: solid 1px #ddd;
+            }
+
+        .panel-heading {
+            padding: 0;
+        }
+
+        .panel-title a {
+            display: inline-block;
+            padding: 10px 15px;
+            width: 100%;
+        }
+
+        .scrollUp {
+            position: fixed;
+            right: 20px;
+            top: 75%;
+            width: 140px;
+            z-index: 2147483647;
+        }
+
+            .scrollUp a {
+                background-color: #333333;
+                border: none;
+                border-bottom: 1px #000 solid;
+                color: #eee;
+                display: inline-block;
+                height: 40px;
+                line-height: 40px;
+                opacity: .8;
+                text-align: left;
+                text-decoration: none;
+                width: 130px;
+            }
+
+                .scrollUp a i {
+                    background-color: #42b357;
+                    border: solid 1px #333333;
+                    display: inline-block;
+                    height: 100%;
+                    text-align: center;
+                    vertical-align: top;
+                    width: 40px;
+                }
+
+                .scrollUp a:hover {
+                    background-color: #444444;
+                }
+
+        .item-desc {
+            -moz-transition: all 300ms ease-in-out;
+            -ms-transition: all 300ms ease-in-out;
+            -o-transition: all 300ms ease-in-out;
+            max-height: 37px;
+            max-width: 450px;
+            overflow: hidden;
+            position: absolute;
+            text-overflow: ellipsis;
+            transition: all 300ms ease-in-out;
+        }
+
+        tr:hover .item-desc {
+            background-color: #eeeeee;
+            border: solid 1px #000000;
+            max-height: 500px;
+            padding: 10px;
+            z-index: 100;
+        }
+
+        .table > thead > tr > th.thcomment {
+            width: 40px;
+            text-align: right;
+        }
+
+        .table > tbody > tr > td.tdcomment {
+            vertical-align: bottom;
+        }
+
+        tbody > tr.comment > td {
+            border-top: 0;
+        }
+    </style>
+}
+<div class="main-content top-form">
+    <form class="form-horizontal" role="form">
+        @Html.LabelFor(x => x.School.Name, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.School.Name)
+    </form>
+</div>
+@using (Ajax.BeginForm("SaveAssessment", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    <div class="right-content-top">
+        <div class="form-group">
+            @Html.LabelFor(x => x.VisitDate, new { @class = "control-label col-sm-1 " })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(x => x.VisitDate, new
+           {
+               @class = "form-control date",
+               title = " ",
+               @Value = Model.VisitDate.FormatDateString(),
+               data_bind = "required:isFinalizing(),enable:" + isSpecialist.ToString().ToLower() + ""
+           })
+
+                @Html.ValidationMessageFor(x => x.VisitDate)
+            </div>
+            @Html.LabelFor(x => x.DiscussDate, new { @class = "control-label col-sm-1 ",title = " " })
+            <div class="col-sm-3">
+                @Html.TextBoxFor(x => x.DiscussDate, new
+           {
+               @class = "form-control date",
+               title = " ",
+               @Value = Model.DiscussDate.FormatDateString(),
+               data_bind = "required:isFinalizing(),enable:" + isSpecialist.ToString().ToLower() + ""
+           })
+                @Html.ValidationMessageFor(x => x.DiscussDate)
+            </div>
+            @Html.LabelFor(x => x.ApproveDate, new { @class = "control-label col-sm-3 "})
+            <div class="col-sm-2">
+                @Html.TextBoxFor(x => x.ApproveDate, new
+           {
+               @class = "form-control date",
+               title = " ",
+               @Value = Model.ApproveDate.FormatDateString(),
+               data_bind = "required:isFinalizing(),enable:" + isSpecialist.ToString().ToLower() + ""
+           })
+                @Html.ValidationMessageFor(x => x.ApproveDate)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Type, new { @class = "control-label col-sm-1 required" })
+            <div class="col-sm-2">
+                @if (isSpecialist)
+                {
+                    @Html.EnumDropDownListFor(x => x.Type, ViewTextHelper.DefaultPleaseSelectText, "",
+                new
+                {
+                    @class = "form-control",
+                    data_bind = "value:type"
+                })
+                    @Html.ValidationMessageFor(x => x.Type)
+                }
+                else
+                {
+                    @Html.HiddenFor(x => x.Type)
+                    <span class="form-control" style="background-color: #eee">@((int)Model.Type > 0 ? Model.Type.ToDescription() : "")</span>
+                }
+            </div>
+            @Html.LabelFor(x => x.TaStatuses, new { @class = "control-label col-sm-1" })
+            <div class="col-sm-4">
+                <div class="checkbox">
+                    <input type="hidden" name="TaStatuses" />
+                    <label>
+                        <input type="checkbox" name="TaStatuses" value="@((int)TrsTaStatus.TaPlan)" onclick="@(!isSpecialist ? "return false;" : "")"
+                               data-bind='checked:taStatuses.indexOf(@((int)TrsTaStatus.TaPlan))>= 0'/>&nbsp;@(TrsTaStatus.TaPlan.ToDescription())
+                        </label>@ViewTextHelper.HtmlEmptySeparator
+                        <label>
+                            <input type="checkbox" name="TaStatuses" value="@((int)TrsTaStatus.Sia)" onclick="@(!isSpecialist ? "return false;" : "")"
+                                   data-bind='checked:taStatuses.indexOf(@((int)TrsTaStatus.Sia))>= 0' />&nbsp;@(TrsTaStatus.Sia.ToDescription())
+                            </label>@ViewTextHelper.HtmlEmptySeparator
+                            <label>
+                                <input type="checkbox" name="TaStatuses" value="@((int)TrsTaStatus.TrsProbation)" onclick="@(!isSpecialist ? "return false;" : "")"
+                                       data-bind='checked:taStatuses.indexOf(@((int)TrsTaStatus.TrsProbation))>= 0'  />&nbsp;@(TrsTaStatus.TrsProbation.ToDescription())
+                                </label>@ViewTextHelper.HtmlEmptySeparator
+                                <label>
+                                    <input type="checkbox" name="TaStatuses" value="@((int)TrsTaStatus.None)" onclick="@(!isSpecialist ? "return false;" : "")"
+                                           data-bind='checked:taStatuses.indexOf(@((int)TrsTaStatus.None))>= 0'  />&nbsp;@(TrsTaStatus.None.ToDescription())
+                                    </label>
+                                    <br />
+                                    @Html.ValidationMessageFor(x => x.TaStatuses)
+                                </div>
+                            </div>
+                            @Html.LabelFor(x => x.RecertificatedBy, new { @class = "control-label col-sm-2 ",title= " " })
+                            <div class="col-sm-2">
+                                @Html.TextBoxFor(x => x.RecertificatedBy, new
+           {
+               @class = "form-control date",
+               title = " ",
+               @Value = Model.RecertificatedBy.FormatDateString(),
+               data_bind = "required:isFinalizing(),enable:" + isSpecialist.ToString().ToLower() + ""
+           })
+                                @Html.ValidationMessageFor(x => x.RecertificatedBy)
+                            </div>
+                        </div>
+                        @Html.HiddenFor(x => x.Id)
+                        @Html.HiddenFor(x => x.Status)
+                        @Html.Hidden("items")
+                        @Html.Hidden("observations")
+                        @Html.HiddenFor(x => x.SchoolId)
+                        <label for="hasRetained"><span style="display: none;">wave</span></label>
+                        <input id="hasRetained" name="hasRetained" class="hidden" data-bind="value:$root.hasRetainedStar()" />
+                    </div>
+                    <div class="modal-l-b"></div>
+                    <div class="main-content">
+                        <!-- School categories begin-->
+                        <div>
+                            <label class="trs-name">@(Model.School.Assessor.FullName)</label>
+                        </div>
+                        <!-- ko template:{name:'tmp_school',data:school,as:'host'}-->
+                        <!--/ko-->
+                        <!-- School categories end-->
+                        <div class="modal-l-b"></div>
+                        <!-- Classes categories begin-->
+                        <ul class="nav-container" role="tablist" data-bind="foreach:{data:classes,as:'host'}">
+                            <li role="presentation" data-bind="css:{active:$root.activeClassId() == host.id,'trs-partial':allFilled()==false,'trs-completed':allFilled()},attr:{'href':'#class' + $index(),id:'tab_class_'+$index()},click:$root.switchClass">
+                                <a role="tab" data-toggle="tab" data-bind="attr:{href:'#class' + $index()},text:name"></a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" data-bind="foreach:{data:classes,as:'host'}">
+                            <div role="tabpanel" class="tab-pane " data-bind="attr:{id:'class' + $index()},css:{active:$root.activeClassId() == host.id}">
+                                <!--ko if:window._DEBUG-->
+                                <div data-bind="visible:window._DEBUG,text:host.name"></div>
+                                <!--/ko-->
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-lable">
+                                        Length of Observation
+                                        <a class="icon-question-sign question-tip" data-toggle="tooltip" data-container="body"
+                                           data-placement="top" data-html="true" data-bind="tooltip:'For example, 2 and  one-half hours would be entered 2.5'"></a>
+                                    </label>
+                                    <div class="col-sm-2">
+                                        <label data-bind="attr:{for:'classobs'+id}"><span style="display: none;">wave</span></label>
+                                        <input type="text" title=" " name="classobs" class="form-control number" style="width: 80%; display: inline;"
+                                               data-bind="attr:{id:'classobs'+id},value:host.observationLength,enable:host.ifCanAccessObservation" />
+                                        hour(s)
+                                    </div>
+                                </div>
+                                <div class="panel-group" role="tablist" aria-multiselectable="false"
+                                     data-bind="    attr:{id:'class'+id+'Categories'},foreach:{data:categories,as:'category'}">
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" data-bind="    attr:{id:'class'+host.id+'Heading'+$index()},css:{'trs-partial':allFilled()==false,'trs-completed':allFilled()}">
+                                            <h4 class="panel-title" data-toggle="collapse" aria-expanded="true" style="cursor: pointer"
+                                                data-bind="    attr:{href:'#class'+host.id+'Category'+$index(),'aria-controls':'class'+host.id+'Category'+$index(),'data-parent':'#class'+host.id+'Categories'}">
+                                                <a data-bind="html:text" style="width: 120px"></a>
+                                                <label data-bind="click:$root.selectClassCatNA.bind($data,host),visible:$root.showNAChk()" style="cursor: pointer">
+                                                    N/A
+                                                    <input type="checkbox" class="hide" data-bind="attr:{id:'class'+host.id+'selectNA_'+category,checked:allFilledAndNA}" />
+                                                    <!-- ko if:(allFilledAndNA) -->
+                                                    <i class="icon-check icon-large" data-bind="attr:{id:'class'+host.id+'icon-check-'+category}"></i>
+                                                    <!-- /ko -->
+                                                    <!-- ko ifnot:(allFilledAndNA) -->
+                                                    <i class="icon-check-empty icon-large" data-bind="attr:{id:'class'+host.id+'icon-check-empty-'+category}"></i>
+                                                    <!-- /ko -->
+                                                </label>
+                                            </h4>
+                                        </div>
+                                        <div class="panel-collapse collapse"
+                                             data-bind="    attr:{id:'class'+host.id+'Category'+$index(),'aria-labelledby':'class'+host.id+'Heading'+$index()}">
+                                            <div class="panel-body" data-bind="    template:{name:$root.getCategroyTemplate,foreach:subs,as:'sub'}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Classes categories end-->
+                    </div>
+                    <div id="buttonsContainer" class="button-content hide">
+                        @if (ifCanSave)
+                        {
+                            <button class="mainbutton mainright-btn submit-btn" type="button" data-bind="event:{click:save}">Save</button>
+                            <button class="mainbutton mainright-btn submit-btn" id="btnPreview" type="button" data-bind="event:{click:preview}">Preview</button>
+                            if (isSpecialist)
+                            {
+                                <button class="mainbutton mainright-btn submit-btn" type="button" data-bind="event:{click:finalize}">Finalize</button>
+                            }
+                            @Html.ActionLink("Cancel", "School", new { id = Model.SchoolId }, new { @class = "mainbutton mainright-btn cancel-btn" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Back", "School", new { id = Model.SchoolId }, new { @class = "mainbutton mainright-btn cancel-btn" })
+                        }
+                    </div>
+                    <div class="scrollUp">
+                        <a href="#" title="Back to Top">
+                            <i class="icon-angle-up icon-2x"></i>&nbsp;Back to Top
+                        </a>
+                        <div class="clearfix"></div>
+                        <a href="#" title="Collapse" data-bind="click:collapseAll">
+                            <i class="icon-folder-close-alt icon-2x"></i>&nbsp;Collapse All
+                        </a>
+                    </div>
+}
+<iframe style="display: none; height: 0; visibility: hidden; width: 0;" id="downloadpdf"></iframe>
+@section Scripts{
+    <script type="text/html" id="tmp_school">
+        <div class="panel-group" id="schoolCategories" role="tablist" aria-multiselectable="true"
+             data-bind="foreach:{data:$root.categories,as:'category'}">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab"
+                     data-bind="    attr:{id:'schoolHeading'+$index()},css:{'trs-partial':allFilled()==false,'trs-completed':allFilled()}">
+                    <h4 class="panel-title" data-toggle="collapse" data-parent="#schoolCategories" aria-expanded="true" style="cursor: pointer"
+                        data-bind="    attr:{href:'#schoolCategory'+$index(),'aria-controls':'schoolCategory'+$index()}">
+                        <a data-bind="html:text" style="width: 120px"></a>
+                        <label data-bind="click:$root.selectCatNA,visible:$root.showNAChk()" style="cursor: pointer">
+                            N/A
+                            <input type="checkbox" class="hide" data-bind="attr:{id:'selectNA_'+category,checked:allFilledAndNA}" />
+                            <!-- ko ifnot:(allFilledAndNA) -->
+                            <i class="icon-check-empty icon-large" data-bind="attr:{id:'icon-check-empty-'+category}"></i>
+                            <!-- /ko -->
+                            <!-- ko if:(allFilledAndNA) -->
+                            <i class="icon-check icon-large" data-bind="attr:{id:'icon-check-'+category}"></i>
+                            <!-- /ko -->
+                        </label>
+                    </h4>
+                </div>
+                <div class="panel-collapse collapse" role="tabpanel"
+                     data-bind="    attr:{id:'schoolCategory'+$index(),'aria-labelledby':'schoolHeading'+$index()}">
+                    <div class="panel-body" data-bind="    template:{name:$root.getCategroyTemplate,foreach:subs,as:'sub'}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="tmp_subCategory_Process">
+        <table class="table table-striped table-hover trs-items">
+            <caption data-bind="    html:text + ' (' + note + ')'" style="text-align: left; color: #666;">
+            </caption>
+            <thead>
+                <tr>
+                    <th style="width: 120px;">
+                        Measure #
+                    </th>
+                    <th width="*">
+                        Measure
+                    </th>
+                    <th class="scores">
+                        Score0
+                    </th>
+                    <th class="scores">
+                        Score1
+                    </th>
+                    <th class="scores">
+                        Score2
+                    </th>
+                    <th class="scores">
+                        Score3
+                    </th>
+                    <th class="scores scores-na">
+                        Exclude
+                    </th>
+                    <th class="thcomment"><span style="display: none;">wave</span></th>
+                </tr>
+            </thead>
+            <tbody data-bind="template:{name:'tmp_Item',foreach:items,as:'item'}"></tbody>
+        </table>
+        <br />
+    </script>
+    <script type="text/html" id="tmp_Item">
+        <tr data-bind="    css:{'danger':$root.isSubmitting() && filled() === false}">
+            <td data-bind="    html:itemNo"></td>
+            <td style="text-align: left;">
+                <div data-bind="html:description">
+                </div>
+                <!--ko if:keyBehavior && keyBehavior.length>0 -->
+                <a class="form-link2" data-toggle="tooltip" data-container="body" data-placement="right" data-html="true" data-bind="    tooltip:keyBehavior">Mouse over for Key behaviors</a>
+                <!--/ko-->
+            </td>
+            <td data-bind="template:{name:'tmp_Answer',foreach:answers.Score0,as:'answer'}" class="scores"></td>
+            <td data-bind="template:{name:'tmp_Answer',foreach:answers.Score1,as:'answer'}" class="scores"></td>
+            <td data-bind="    template:{name:'tmp_Answer',foreach:answers.Score2,as:'answer'}" class="scores"></td>
+            <td data-bind="template:{name:'tmp_Answer',foreach:answers.Score3,as:'answer'}" class="scores"></td>
+            <td data-bind="    template:{name:'tmp_Answer',foreach:answers.Score_1,as:'answer'}" class="scores scores-na"></td>
+            <td>
+                <a class="table-btn icon-pencil pencil-btn"
+                   data-bind="click:function(){isView(false);},visible:(isView() && ifCanAccess)" href="#" title="Add comment">
+                    <span style="display: none">wave</span>
+                </a>
+            </td>
+        </tr>
+        <tr class="hidden">
+            <td colspan="8"></td>
+        </tr>
+        <tr class="comment" data-bind="    template:{name:'tmp_Comments',foreach:item}"></tr>
+    </script>
+
+    <script type="text/html" id="tmp_subCategory_Process_CalcScore">
+        <table class="table table-striped table-hover trs-items">
+            <caption data-bind="    html:text" style="text-align: left; color: #666;">
+            </caption>
+            <thead>
+                <tr>
+                    <th style="width: 120px;">
+                        Measure #
+                    </th>
+                    <th style="width: 300px;">Select Age Group</th>
+                    <th style="width: 150px;">
+                        Group Size
+                    </th>
+                    <th style="width: 150px;">
+                        Number of Caregivers
+                    </th>
+                    <th class="scores">
+                        Score0
+                    </th>
+                    <th class="scores">
+                        Score1
+                    </th>
+                    <th class="scores">
+                        Score2
+                    </th>
+                    <th class="scores">
+                        Score3
+                    </th>
+                    <th class="scores scores-na">
+                        Exclude
+                    </th>
+                    <th class="thcomment"><span style="display: none;">wave</span></th>
+                </tr>
+            </thead>
+            <tbody data-bind="template:{name:'tmp_Item_CalcScore',foreach:items,as:'item'}"></tbody>
+        </table>
+        <br />
+    </script>
+    <script type="text/html" id="tmp_Item_CalcScore">
+        <tr data-bind="    css:{'danger':$root.isSubmitting() && filled() === false}">
+            <td data-bind="    html:itemNo"></td>
+            <td align="center">
+                <label>
+                    <!-- ko if:item.answer.newAnswer()==77 || !$root.validItem() -->
+                    @Html.DropDownList("AgeGroup", (IEnumerable<SelectListItem>)ViewBag.ItemAgeGroup,
+                        new { @class = "form-control", style = "width:180px", data_bind = "attr:{id:'class'+host.id+'ageGroup',name:'class'+host.id+'ageGroup'},value:item.ageGroup,event:{change:$root.checkScore.bind($data,item,host.id)}" })
+                    <!-- /ko-->
+                    <!-- ko if:item.answer.newAnswer()!=77 && $root.validItem() -->
+                    @Html.DropDownList("AgeGroup", (IEnumerable<SelectListItem>)ViewBag.ItemAgeGroup,
+                        new { @class = "form-control required", style = "width:180px", data_bind = "attr:{id:'class'+host.id+'ageGroup',name:'class'+host.id+'ageGroup'},value:item.ageGroup,event:{change:$root.checkScore.bind($data,item,host.id)}" })
+                    <span class="field-validation-valid" data-bind="attr: { 'data-valmsg-for': 'class'+host.id+'ageGroup' }" data-valmsg-replace="true"></span>
+                    <!-- /ko-->
+                </label>
+            </td>
+            <td align="center">
+                <label>
+                    <!-- ko if:item.answer.newAnswer()==77 || !$root.validItem() -->
+                    <input type="text" maxlength="2" style="width: 80px;" class="form-control"
+                           data-bind="attr:{id:'class'+host.id+'txtGroupSize',name:'class'+host.id+'txtGroupSize'},value:item.groupSize,event:{change:$root.checkScore.bind($data,item,host.id)}"
+                           onkeyup="javascript:this.value=this.value.replace(/[^\d]/g,'')" />
+                    <span style="display: none;">wave</span>
+                    <!-- /ko-->
+                    <!-- ko if:item.answer.newAnswer()!=77 && $root.validItem() -->
+                    <input type="text" maxlength="2" style="width: 80px;" class="form-control required"
+                           data-bind="attr:{id:'class'+host.id+'txtGroupSize',name:'class'+host.id+'txtGroupSize'},value:item.groupSize,event:{change:$root.checkScore.bind($data,item,host.id)}"
+                           onkeyup="javascript:this.value=this.value.replace(/[^\d]/g,'')" min="1" />
+                    <span class="field-validation-valid" data-bind="attr: { 'data-valmsg-for': 'class'+host.id+'txtGroupSize'}" data-valmsg-replace="true"></span>
+                    <span style="display: none;">wave</span>
+                    <!-- /ko-->
+                </label>
+            </td>
+            <td align="center">
+                <label>
+                    <!-- ko if:item.answer.newAnswer()==77 || !$root.validItem() -->
+                    <input type="text" maxlength="2" style="width: 80px;" class="form-control"
+                           data-bind="attr:{id:'class'+host.id+'txtNumOfCaregiver',name:'class'+host.id+'txtNumOfCaregiver'},value:item.caregiversNo,event:{change:$root.checkScore.bind($data,item,host.id)}"
+                           onkeyup="javascript:this.value=this.value.replace(/[^\d]/g,'')" />
+                    <span style="display: none;">wave</span>
+                    <!-- /ko-->
+                    <!-- ko if:item.answer.newAnswer()!=77 && $root.validItem() -->
+                    <input type="text" maxlength="2" style="width: 80px;" class="form-control required"
+                           data-bind="attr:{id:'class'+host.id+'txtNumOfCaregiver',name:'class'+host.id+'txtNumOfCaregiver'},value:item.caregiversNo,event:{change:$root.checkScore.bind($data,item,host.id)}"
+                           onkeyup="javascript:this.value=this.value.replace(/[^\d]/g,'')" min="1" />
+                    <span class="field-validation-valid" data-bind="attr: { 'data-valmsg-for': 'class'+host.id+'txtNumOfCaregiver' }" data-valmsg-replace="true"></span>
+                    <span style="display: none;">wave</span>
+                    <!-- /ko-->
+                </label>
+            </td>
+            <td data-bind="template:{name:'tmp_Answer_CalcScore',foreach:answers.Score0,as:'answer'}" class="scores"></td>
+            <td data-bind="template:{name:'tmp_Answer_CalcScore',foreach:answers.Score1,as:'answer'}" class="scores"></td>
+            <td data-bind="    template:{name:'tmp_Answer_CalcScore',foreach:answers.Score2,as:'answer'}" class="scores"></td>
+            <td data-bind="template:{name:'tmp_Answer_CalcScore',foreach:answers.Score3,as:'answer'}" class="scores"></td>
+            <td data-bind="    template:{name:'tmp_Answer_CalcScore',foreach:answers.Score_1,as:'answer'}" class="scores scores-na"></td>
+            <td>
+                <a class="table-btn icon-pencil pencil-btn"
+                   data-bind="click:function(){isView(false);},visible:(isView() && ifCanAccess)" href="#" title="Add comment">
+                    <span style="display: none">wave</span>
+                </a>
+            </td>
+        </tr>
+        <tr class="hidden">
+            <td colspan="10"></td>
+        </tr>
+        <tr class="comment" data-bind="    template:{name:'tmp_Comments_CalcScore',foreach:item}"></tr>
+    </script>
+
+
+    <script type="text/html" id="tmp_subCategory_Structural">
+        <table class="table table-striped table-hover trs-items">
+            <caption data-bind="html:text + ' (' + note + ')'" style="text-align: left; color: #666;">
+            </caption>
+            <thead>
+                <tr>
+                    <th style="width: 120px;">
+                        Measure #
+                    </th>
+                    <th width="*">
+                        Measure
+                    </th>
+                    <th class="scores"><span style="display: none;">wave</span></th>
+                    <th class="scores"><span style="display: none;">wave</span></th>
+                    <th class="scores scores-na">
+                        Exclude
+                    </th>
+                    <th class="thcomment"><span style="display: none;">wave</span></th>
+                </tr>
+            </thead>
+            <tbody data-bind="template:{name:'tmp_Item_Structural',foreach:items,as:'item'}"></tbody>
+        </table>
+        <br />
+    </script>
+    <script type="text/html" id="tmp_Item_Structural">
+        <tr data-bind="css:{'danger':$root.isSubmitting() && filled() === false}">
+            <td data-bind="html:itemNo"></td>
+            <td style="text-align: left;">
+                <div data-bind="html:description">
+                </div>
+                <!--ko if:keyBehavior && keyBehavior.length>0 -->
+                <a class="form-link2" data-toggle="tooltip" data-container="body" data-placement="right" data-html="true" data-bind="tooltip:keyBehavior">
+                    Mouse over for Key behaviors
+                </a>
+                <!--/ko-->
+            </td>
+            <td data-bind="template:{name:'tmp_Answer',foreach:answers.Score0,as:'answer'}" class="scores"></td>
+            <td data-bind="    template:{name:'tmp_Answer',foreach:answers.Score1,as:'answer'}" class="scores"></td>
+            <td data-bind="template:{name:'tmp_Answer',foreach:answers.Score_1,as:'answer'}" class="scores scores-na"></td>
+            <td>
+                <a class="table-btn icon-pencil pencil-btn"
+                   data-bind="click:function(){isView(false)},visible:(isView() && ifCanAccess)" href="#" title="Add comment"><span style="display: none">wave</span></a>
+            </td>
+        </tr>
+        <tr class="hidden">
+            <td colspan="6"></td>
+        </tr>
+        <tr class="comment" data-bind="    template:{name:'tmp_Comments',foreach:item}"></tr>
+
+    </script>
+    <script type="text/html" id="tmp_Answer">
+        <input type="radio" data-bind="    enable:item.ifCanAccess,attr:{name:'host'+host && host.id + 'item'+$parent.itemId,id:'host' + host && host.id + 'item'+$parent.itemId+'answer'+id},value:id,checked:item.answer.newAnswer,click:function(clickedAnswer,event){return $root.choosed(host,$parent,event);}" />
+        <label data-bind="attr:{for:'host' + host && host.id + 'item'+$parent.itemId+'answer'+id},html:'&nbsp;'+text">
+            <span style="display: none">wave</span>
+        </label>
+        <div class="clearfix"></div>
+    </script>
+    <script type="text/html" id="tmp_Answer_CalcScore">
+        <input type="radio" data-bind="    enable:text=='N/A',attr:{name:'host'+host && host.id + 'item'+$parent.itemId,id:'host' + host && host.id + 'item'+$parent.itemId+'answer'+id},value:id,checked:item.answer.newAnswer,click:function(clickedAnswer,event){return $root.choosed(host,$parent,event);}" />
+        <label data-bind="attr:{for:'host' + host && host.id + 'item'+$parent.itemId+'answer'+id},html:'&nbsp;'+text">
+            <span style="display: none">wave</span>
+        </label>
+        <div class="clearfix"></div>
+    </script>
+    <script type="text/html" id="tmp_Comments">
+        <td colspan="8">
+            <!--ko ifnot:isView() -->
+            <div style="text-align: right">
+                <textarea style="width: 800px; height: 70px; border: solid gray 1px; word-break: normal" maxlength="300" onkeyup="checkLength(this)"
+                          data-bind="hasFocus:!isView(),text:comments,value:comments,enable:ifCanAccess,event:{blur:$root.onItemCommentBlur}" title=" "></textarea>
+            </div>
+            <!--/ko-->
+        </td>
+    </script>
+    <script type="text/html" id="tmp_Comments_CalcScore">
+        <td colspan="10">
+            <!--ko ifnot:isView() -->
+            <div style="text-align: right">
+                <textarea style="width: 800px; height: 70px; border: solid gray 1px; word-break: normal" maxlength="300" onkeyup="checkLength(this)"
+                          data-bind="hasFocus:!isView(),text:comments,value:comments,enable:ifCanAccess,event:{blur:$root.onItemCommentBlur}" title=" "></textarea>
+            </div>
+            <!--/ko-->
+        </td>
+    </script>
+
+    @Scripts.Render("~/scripts/trs")
+    <script type="text/javascript">
+        var assessment = @Html.Raw(ViewBag.Json);
+        var model = new TrsAssessmentModel(assessment);
+        var $form;
+
+        var TrsAssessmentStatus = {
+            Initialized: +"@((int)TRSStatusEnum.Initialized)",
+            Saved: +"@((int)TRSStatusEnum.Saved)",
+            Completed: +"@((int)TRSStatusEnum.Completed)"
+        };
+        var downloadQueue = [];
+        var goingToSchool = false;
+        var downloading = 0;
+
+        function goToSchool() {
+            goingToSchool = true;
+            if (downloading > 0) {
+                window.loading();
+            } else {
+                location.href = '@Url.Action("School", "Index", new { Id = Model.SchoolId })';
+            }
+        }
+
+        function startDownload() {
+            var iframeHtml = '<iframe style="width:0px;height:0px; display: none;visibility: hidden;"></iframe>';
+            var reports = downloadQueue.length;
+            for (var i = 0; i < reports; i++) {
+                var url = downloadQueue.pop();
+                $(iframeHtml).load(function() {
+                    downloading--;
+                    goingToSchool && goToSchool();
+                }).attr("src", url).appendTo("body");
+                downloading++;
+            }
+        }
+
+        function prepareReportUrl() {
+            var resultUrl = '@Html.Raw(Url.Action("AssessmentResults", "Report", new { export = true, download = false }))';
+            var facilityUrl = '@Html.Raw(Url.Action("Facility", "Report", new { export = true, download = false }))';
+            var classUrl = '@Html.Raw(Url.Action("Class", "Report", new { export = true, download = false }))';
+            downloadQueue.push(facilityUrl + "&id=" +  model.assessmentId);
+            for (var i = 0; i < model.classes().length; i++) {
+                downloadQueue.push(classUrl + "&id=" +  model.assessmentId + "&classId=" + model.classes()[i].id);
+            }
+            downloadQueue.push(resultUrl + "&id=" +  model.assessmentId);
+            startDownload();
+            goToSchool();
+        }
+
+        function checkLength(obj) {
+            if ($(obj).val().length > 299) {
+                window.showMessage("warning", "Over the limit! There is limit of 300  characters for this text box.");
+            }
+        }
+
+        function checkNA(){
+            var allNARadio=$(".scores-na input[type='radio']").length;
+            var checkedNARadio=$(".scores-na input[type='radio']:checked").length;
+            return allNARadio==checkedNARadio;
+        }
+
+        var verifiedStarSetted = false;
+        var retainStarSetted=false;
+        $(function() {
+            $form = $('#@(formId)');
+            $.extend(model, {
+                showNAChk:function (){
+                    if(model.type()=='@((int)TrsAssessmentType.AnnualMonitoring)'||model.type()=='@((int)TrsAssessmentType.CategoryReassessment)')
+                        return true;
+                    else
+                        return false;
+                },
+                assessmentId:"@(Model.Id)",
+                hasRetainedStar:ko.observable(false),
+                getCategroyTemplate: function(subCategory) {
+                    if(subCategory.text=='Staff Ratios and Group Size')
+                        return "tmp_subCategory_Process_CalcScore";
+                    return "tmp_subCategory_" + subCategory.type;
+                },
+                collapseAll: function() {
+                    $("div.collapse.in").each(function(index, div) {
+                        $(div).collapse("hide");
+                    });
+                    return false;
+                },
+                submitCollapse: function() {
+                    var activeClassFlag=0;
+                    for(var i=0;i<model.categories().length;i++){
+                        $('schoolCategory'+i).collapse('hide');
+                    }
+                    for(var i=0;i<model.classes().length;i++){
+                        for(var j=0;j<model.classes()[i].categories().length;j++){
+                            if(j==0){
+                                var curitem=model.classes()[i].categories()[j].subs()[0].items()[0];
+                                if( curitem.answer.newAnswer()!=77 && model.validItem())
+                                {
+                                    if($("#class"+model.classes()[i].id+"ageGroup").length>0)
+                                        var ageGroupValid= $("#class"+model.classes()[i].id+"ageGroup").valid();
+                                    if($("#class"+model.classes()[i].id+"txtGroupSize").length>0)
+                                        var groupSizeValid=$("#class"+model.classes()[i].id+"txtGroupSize").valid();
+                                    if($("#class"+model.classes()[i].id+"txtNumOfCaregiver").length>0)
+                                        var caregiversNoValid=$("#class"+model.classes()[i].id+"txtNumOfCaregiver").valid();
+                                    if(activeClassFlag==0&&!(ageGroupValid&&groupSizeValid&&caregiversNoValid)){
+                                        activeClassFlag=1;
+                                        model.activeClassId(model.classes()[i].id);
+                                        $('#class'+model.classes()[i].id+'Category'+j).collapse('show');
+                                    }
+                                }
+                                else{
+                                    var curAgeGroup=$("#class"+model.classes()[i].id+"ageGroup").val();
+                                    var curGroupSize=$("#class"+model.classes()[i].id+"txtGroupSize").val();
+                                    var curCaregiversNo=$("#class"+model.classes()[i].id+"txtNumOfCaregiver").val();
+
+                                    if(!(curAgeGroup&&curAgeGroup.length))
+                                        model.classes()[i].categories()[j].subs()[0].items()[0].ageGroup=0;
+
+                                    if(!(curGroupSize&&curGroupSize.length))
+                                        model.classes()[i].categories()[j].subs()[0].items()[0].groupSize="0";
+
+                                    if(!(curCaregiversNo&&curCaregiversNo.length))
+                                        model.classes()[i].categories()[j].subs()[0].items()[0].caregiversNo="0";
+                                    $('#class'+model.classes()[i].id+'Category'+j).collapse('hide');
+                                }
+                            }
+                            else
+                                $('#class'+model.classes()[i].id+'Category'+j).collapse('hide');
+                        }
+                    }
+                    return false;
+                },
+                validItem:ko.observable(true),
+                save: function() {
+                    model.validItem(false);
+                    model.submitCollapse();
+                    if(checkNA()){
+                        var msg = window.getErrorMessage("trs_AllNAChecked").replace("{0}", "will not be saved");
+                        window.showMessage("hint", msg);
+                        return false;
+                    }
+                    $form.find("#Status").val(TrsAssessmentStatus.Saved);
+                    model.submitStatus(Trs_Status.Saving);
+                    model.submit();
+                },
+                preview: function() {
+                    model.submitCollapse();
+                    if(checkNA()){
+                        var msg = window.getErrorMessage("trs_AllNAChecked").replace("{0}", "can not preview");
+                        window.showMessage("hint", msg);
+                        return false;
+                    }
+                    var id = $form.find("#Id").val();
+                    if (id && +id > 0) {
+                        $.when(window.waitingConfirm("trs_Preview_Tips", "Continue", "Cancel")).done(function () {
+                            window.open('@Url.Action("Preview", "Report")' + "/" + id + "?all=" + model.allFilled());
+                        });
+                    } else {
+                        $form.find("#Status").val(TrsAssessmentStatus.Saved);
+                        model.submitStatus(Trs_Status.Priviewing);
+                        model.submit();
+                    }
+                },
+                finalize: function() {
+                    model.submitCollapse();
+                    if(checkNA()){
+                        var msg = window.getErrorMessage("trs_AllNAChecked").replace("{0}", "can not be finalized");
+                        window.showMessage("hint", msg);
+                        return false;
+                    }
+                    // change status after verified star set
+                    $form.find("#Status").val(TrsAssessmentStatus.Saved);
+                    model.submitStatus(Trs_Status.Finalizing);
+                    model.submit();
+                },
+                finalizeAfterVerifiedStar: function() {
+                    model.submitCollapse();
+                    // change status after verified star set
+                    $form.find("#Status").val(TrsAssessmentStatus.Completed);
+                    model.submitStatus(Trs_Status.Finalizing);
+                    model.submit();
+                },
+                submit: function() {
+                    var result = model.prepare();
+                    if ($form.valid()) {
+                        if (result == false) {
+                            window.showMessage("hint", "trs_All_items_required");
+                        } else {
+                            if(model.type()!='@((int)TrsAssessmentType.AnnualMonitoring)'&&model.type()!='@((int)TrsAssessmentType.CategoryReassessment)'){
+                                model.hasRetainedStar(false);
+                            }
+                            var result_observation=model.getObservations();
+                            $form.find("#items").val(result);
+                            $form.find("#observations").val(result_observation);
+                            $form.submit();
+                        }
+                    }
+                    else
+                    {
+                        model.checkErrorMsgs();
+                    }
+                },
+                selectCatNA:function(category){
+                    var chkChecked= $("#selectNA_"+category.category).prop('checked');
+                    var newAnswerValue=chkChecked?0:77;
+                    for (var n = 0; n < category.subs().length; n++) {
+                        sub = category.subs()[n];
+                        for (var l = 0; l < sub.items().length; l++) {
+                            var item = sub.items()[l];
+                            item.answer.newAnswer(newAnswerValue);
+                            item.filled(!chkChecked);
+                        }
+                    }
+                    $("#selectNA_"+category.category).prop('checked',!chkChecked);
+                },
+                selectClassCatNA:function(host){
+                    classId=host.id;
+                    category=this;
+                    var chkChecked= $("#class"+classId+"selectNA_"+category.category).prop('checked');
+                    var newAnswerValue=chkChecked?0:77;
+                    for (var n = 0; n < this.subs().length; n++) {
+                        sub = category.subs()[n];
+                        for (var l = 0; l < sub.items().length; l++) {
+                            var item = sub.items()[l];
+                            item.answer.newAnswer(newAnswerValue);
+                            var radioId='';
+                            if (item.syncAnswer !== Trs_SyncAnswer.None)//Some item need to sync answer.
+                            {
+                                model.choosed(host,item);
+                            }
+                            item.filled(!chkChecked);
+                        }
+                    }
+                    $("#class"+classId+"selectNA_"+category.category).prop('checked',!chkChecked);
+                },
+                checkErrorMsgs:function(){
+                    for(var i=0;i<model.classes().length;i++){
+                        if($("#class"+model.classes()[i].id+"ageGroup-error"))
+                            $("#class"+model.classes()[i].id+"ageGroup-error").html("You must enter the age group of the children in this class.");
+                        if($("#class"+model.classes()[i].id+"txtGroupSize-error"))
+                            $("#class"+model.classes()[i].id+"txtGroupSize-error").html("You must enter the maximum group size.");
+                        if($("#class"+model.classes()[i].id+"txtNumOfCaregiver-error"))
+                            $("#class"+model.classes()[i].id+"txtNumOfCaregiver-error").html("You must enter the number of caregivers.");
+                    }
+                },
+                checkScore:function(item,classId){
+                    var itemId=item.itemId;
+                    var ageGroup=Number($("#class"+classId+"ageGroup").val());
+                    var groupSize=$("#class"+classId+"txtGroupSize").val();
+                    var caregiversNo=$("#class"+classId+"txtNumOfCaregiver").val();
+                    if(groupSize==''||caregiversNo==''||groupSize=='0'||caregiversNo=='0'||ageGroup=="")
+                        return;
+                    var ratio=0;
+                    if(groupSize!=''&&caregiversNo!=''&&groupSize!='0'&&caregiversNo!='0'){
+                        //Round down r, if age group is not 0-11 mo
+                        if(ageGroup==1)
+                            ratio=groupSize/caregiversNo;
+                        else
+                            ratio=Math.floor(groupSize/caregiversNo);
+                    }
+                    var r_score=-1;
+                    //Calculate r_score
+                    switch(ageGroup)
+                    {
+                        case 1://0-11m
+                            if(ratio>4.5)
+                                r_score=0;
+                            else if(ratio>4)
+                                r_score=2;
+                            else
+                                r_score=3;
+                            break;
+                        case 2://12-17m
+                            if(ratio>6)
+                                r_score=0;
+                            else if(ratio>4)
+                                r_score=2;
+                            else
+                                r_score=3;
+                            break;
+                        case 3://18-23m
+                            if(ratio>8)
+                                r_score=0;
+                            else if(ratio>6)
+                                r_score=1;
+                            else if(ratio>5)
+                                r_score=2;
+                            else
+                                r_score=3;
+                            break;
+                        case 4://2y
+                            if(ratio>10)
+                                r_score=0;
+                            else if(ratio>7)
+                                r_score=1;
+                            else if(ratio>6)
+                                r_score=2;
+                            else
+                                r_score=3;
+                            break;
+                        case 5://3y
+                            if(ratio>12)
+                                r_score=0;
+                            else if(ratio>9)
+                                r_score=1;
+                            else if(ratio>8)
+                                r_score=2;
+                            else
+                                r_score=3;
+                            break;
+                        case 6://4y
+                            if(ratio>16)
+                                r_score=0;
+                            else if(ratio>13)
+                                r_score=1;
+                            else if(ratio>9)
+                                r_score=2;
+                            else
+                                r_score=3;
+                            break;
+                        case 7://5y
+                            if(ratio>16)
+                                r_score=0;
+                            else if(ratio>11)
+                                r_score=1;
+                            else if(ratio>10)
+                                r_score=2;
+                            else
+                                r_score=3;
+                            break;
+                        case 8://6-8y
+                        case 9://9-13y
+                            if(ratio>17)
+                                r_score=0;
+                            else if(ratio>16)
+                                r_score=1;
+                            else if(ratio>11)
+                                r_score=2;
+                            else
+                                r_score=3;
+                            break;
+                    }
+
+                    var g=groupSize;
+                    var g_score=-1;
+                    //Calculate g_score
+                    switch(ageGroup)
+                    {
+                        case 1://0-11m
+                            if(g>9)
+                                g_score=0;
+                            else if(g>8)
+                                g_score=2;
+                            else
+                                g_score=3;
+                            break;
+                        case 2://12-17m
+                            if(g>12)
+                                g_score=0;
+                            else
+                                g_score=3;
+                            break;
+                        case 3://18-23m
+                            if(g>18)
+                                g_score=0;
+                            else if(g>15)
+                                g_score=2;
+                            else
+                                g_score=3;
+                            break;
+                        case 4://2y
+                            if(g>21)
+                                g_score=0;
+                            else if(g>18)
+                                g_score=2;
+                            else
+                                g_score=3;
+                            break;
+                        case 5://3y
+                            if(g>27)
+                                g_score=0;
+                            else if(g>24)
+                                g_score=2;
+                            else
+                                g_score=3;
+                            break;
+                        case 6://4y
+                            if(g>32)
+                                g_score=0;
+                            else if(g>27)
+                                g_score=1;
+                            else
+                                g_score=3;
+                            break;
+                        case 7://5y
+                            if(g>33)
+                                g_score=0;
+                            else if(g>30)
+                                g_score=2;
+                            else
+                                g_score=3;
+                            break;
+                        case 8://6-8y
+                        case 9://9-13y
+                            if(g>34)
+                                g_score=0;
+                            else if(g>33)
+                                g_score=1;
+                            else
+                                g_score=3;
+                            break;
+                    }
+                    //Final Score = min of r_score and g_score
+                    var score=Math.min(r_score,g_score);
+                    var newAnswer=77;
+                    switch (score)
+                    {
+                        case 0:
+                            newAnswer=71;
+                            break;
+                        case 1:
+                            newAnswer=72;
+                            break;
+                        case 2:
+                            newAnswer=73;
+                            break;
+                        case 3:
+                            newAnswer=74;
+                            break;
+                    }
+                    item.answer.newAnswer(newAnswer);
+                }
+            });
+
+            ko.applyBindings(model, document.getElementById("@(formId)"));
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    model.validItem(true);
+                    if (response.data) {
+                        $form.find("#Id").val(response.data.id);
+                        model.assessmentId = response.data.id;
+                    }
+                    if (model.submitStatus() == Trs_Status.Finalizing) {
+                        if (response.data.status.value === TrsAssessmentStatus.Saved) {
+                            if(model.type()=='@((int)TrsAssessmentType.AnnualMonitoring)'||
+                                model.type()=='@((int)TrsAssessmentType.CategoryReassessment)'){
+                                $("#modalNormal").modal({ remote: '@Url.Action("RetainStar")/' +  model.assessmentId+'?schoolId='+@Model.SchoolId });
+                            }
+                            else{
+                                $("#modalSmall").modal({ remote: '@Url.Action("VerifiedStar")/' +  model.assessmentId });
+                            }
+                        } else if (response.data.status.value === TrsAssessmentStatus.Completed) {
+                            $form.find("button.submit-btn").button("loading");
+                            window.loading();
+                            prepareReportUrl();
+                        }
+                    } else if (model.submitStatus() == Trs_Status.Priviewing) {
+                        model.submitStatus(Trs_Status.Saving);
+                        window.open('@Url.Action("Preview", "Report")' + "/" + id + "?all=" + model.allFilled());
+                    }
+                }
+            });
+
+            $("#modalNormal").on("hidden.bs.modal", function(event) {
+                if (retainStarSetted) {
+                    $("#modalSmall").modal({ remote: '@Url.Action("VerifiedStar")/' +  model.assessmentId+"?hasRecent="+model.hasRetainedStar()+"&type="+model.type()+"&calcStar=false" });
+                }
+                else{
+                    model.hasRetainedStar(false);
+                }
+            });
+
+            $("#modalSmall").on("hidden.bs.modal", function(event) {
+                if (verifiedStarSetted) {
+                    model.finalizeAfterVerifiedStar();
+                }
+                else{
+                    model.hasRetainedStar(false);
+                }
+            });
+
+            $("body").on("shown.bs.collapse", function(event) {
+                var $this = $(event.target);
+                var $panel = $this.closest("div.panel");
+                window.scrollTo(0, $panel.offset().top);
+            });
+
+            $("#buttonsContainer").removeClass("hide");
+
+            $(window).resize(function() {
+                // Measure #, 4 Score, N/A, adjust(padding)
+                var descWidth = $("div.panel-group").width() - 120 - 110 * 4 - 80 - 60;
+                $("div.item-desc").css("max-width", descWidth);
+            }).trigger("resize");
+
+            $("#ApproveDate").on("change", function() {
+                var limitDate = new Date('@(limitDate.Year)','@(limitDate.Month - 1)','@(limitDate.Day)');
+                var source = $(this).val();
+                var date = new Date(source);
+                if (date < limitDate) {
+                    date = limitDate;
+                    source = limitDate.Format("MM/dd/yyyy");
+                    $(this).val(source);
+                }
+                $("#RecertificatedBy").val(source.replace(date.getFullYear().toString(), date.getFullYear() + 3));
+            });
+
+        });
+
+        $(function(){
+            $("#ApproveDate").prop("title"," ");  
+        })
+    </script>
+}

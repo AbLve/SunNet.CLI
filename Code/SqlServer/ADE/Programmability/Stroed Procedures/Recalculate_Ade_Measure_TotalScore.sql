@@ -1,0 +1,43 @@
+﻿GO
+
+/****** Object:  StoredProcedure [dbo].[Recalculate_Ade_Measure_TotalScore]    Script Date: 12/12/2014 10:51:23 ******/
+IF EXISTS(SELECT 1 FROM sys.objects WHERE object_id = object_id('Recalculate_Ade_Measure_TotalScore'))
+DROP PROCEDURE [dbo].[Recalculate_Ade_Measure_TotalScore]
+GO
+
+/****** Object:  StoredProcedure [dbo].[Recalculate_Ade_Measure_TotalScore]    Script Date: 12/12/2014 10:51:23 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Jack
+-- Create date: 2014_12_12
+-- Description:	Re calc ade measures total score
+-- =============================================
+CREATE PROCEDURE [dbo].[Recalculate_Ade_Measure_TotalScore]
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	-- child measure
+	UPDATE [dbo].[Measures] SET TotalScore =
+	 ISNULL((SELECT SUM(Score) 
+		FROM ItemBases IB 
+		WHERE IB.MeasureId = [Measures].ID AND IB.Scored = 1 AND IB.Status = 1 AND IB.IsDeleted = 0),0)
+	WHERE EXISTS(SELECT 1 FROM ItemBases IB WHERE IB.MeasureId = [Measures].ID AND IB.Scored = 1 AND IB.Status = 1 AND IB.IsDeleted = 0)
+
+	-- parent measure
+	UPDATE [dbo].[Measures] SET TotalScore =
+	ISNULL((SELECT SUM(TotalScore) 
+		FROM [Measures] M2 
+		WHERE M2.ParentId = [Measures].ID AND M2.IsDeleted = 0 AND M2.Status = 1 ),0)
+	WHERE NOT EXISTS(SELECT 1 FROM ItemBases IB WHERE IB.MeasureId = [Measures].ID AND IB.Scored = 1 AND IB.Status = 1 AND IB.IsDeleted = 0)
+END
+
+GO
+
+

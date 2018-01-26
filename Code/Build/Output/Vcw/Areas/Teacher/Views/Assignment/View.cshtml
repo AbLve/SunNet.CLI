@@ -1,0 +1,299 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase;
+@using Sunnet.Cli.Business.Vcw.Models;
+@using Sunnet.Cli.Core.Vcw.Entities
+@model Sunnet.Cli.Business.Vcw.Models.FileListModel
+
+@{
+    ViewBag.Title = "Assignment Information";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    AssignmentModel Assignment = (ViewBag.Assignment as AssignmentModel) == null ? new AssignmentModel() : ViewBag.Assignment as AssignmentModel;
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Teacher_Assignment)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Teacher Assignments", "Index", "Assignment"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;View
+}
+
+
+@using (Ajax.BeginForm("Delete", "Assignment", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("AssignmentId", Assignment.ID)
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "Assignment"))" >Back to Assignment List</a>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="content-con">
+                <div class="content-title3">
+                    <div class="control-label">Assignment Information</div>
+                </div>
+                <div class="inputtext-con">
+                    <span class="control-label col-sm-2">Due Date</span>
+                    <span class="col-sm-2">@(Assignment.DueDate.FormatDateString())</span>
+                    <span class="control-label col-sm-2">Feedback Call Date</span>
+                    <span class="col-sm-2">@(Assignment.CallDate.Value.FormatDateString())</span>
+                    <span class="control-label col-sm-2">Session</span>
+                    <span class="col-sm-2">@(Assignment.Session == 0 ? "" : Assignment.Session.ToDescription())</span>
+                </div>
+                <div class="inputtext-con">
+                    <span class="control-label col-sm-2">File Type(s) Requested</span>
+                    <span class="col-sm-2">@(Assignment.UploadType)</span>
+                    <span class="control-label col-sm-2">Video Context</span>
+                    <span class="col-sm-2">@(Assignment.Context)</span>
+                    <span class="control-label col-sm-2">Status</span>
+                    <span class="col-sm-2">@(Assignment.Status == 0 ? "" : Assignment.Status.ToDescription())</span>
+                </div>
+
+                <div class="inputtext-con">
+                    <span class="control-label col-sm-2">Content</span>
+                    <span class="col-sm-10">@(Assignment.Content)</span>
+                </div>
+
+                <div class="inputtext-con-file">
+                    <span class="control-label col-sm-2">Teacher STG Report</span>
+                    <span class="col-sm-10">
+                        @if (Assignment.Reports != null)
+                        {
+                            foreach (AssignmentReportEntity item in Assignment.Reports)
+                            {
+                                string url = Url.Action("Pdf", "STGSend", new { Area = "STGReport", id = item.ReportId, type = "teacher" });
+                            <a class="form-link2" target="_blank" title="Download pdf" href="@(url)">
+                                @(item.CreatedOn.ToString("MM/dd/yyyy HH:mm:ss tt"))</a>
+                            <span>&nbsp;</span>
+                            }
+                        }
+                    </span>
+                </div>
+
+                <div class="inputtext-con">
+                    <span class="control-label col-sm-2">Description</span>
+                    <span class="col-sm-10">@(Assignment.Description)</span>
+                </div>
+
+                <div class="inputtext-con-file">
+                    <span class="control-label col-sm-2">Watch</span>
+                    <span class="col-sm-10"><a href="@(Assignment.Watch)" class="form-link4" target="_blank">@(Assignment.Watch)</a></span>
+                </div>
+
+                <div class="inputtext-con-file">
+                    <span class="control-label col-sm-2">Coach Assignment File</span>
+                    @if (Assignment.AssignmentFiles != null)
+                    {
+                        <span class="col-sm-10">@foreach (var item in Assignment.AssignmentFiles)
+                                                {
+                            <i class="icon-paper-clip"></i>
+                            <a href="@(DownLoadFile.GetDownFilePath(item.FilePath, item.FileName))" 
+                            class="form-link4" style="margin-right:15px">@(item.FileName)</a>
+                                                }
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="content-con">
+                <div class="content-title3">
+                    <div class="control-label">Coach Feedback</div>
+                </div>
+                <div class="inputtext-con-file">
+                    <p>
+                        @if (!string.IsNullOrEmpty(Assignment.FeedbackFileName))
+                        {
+                            <i class="icon-paper-clip"></i>          
+                            <a href="@(DownLoadFile.GetDownFilePath(Assignment.FeedbackFilePath, Assignment.FeedbackFileName))" 
+                                class="form-link4">@Assignment.FeedbackFileName</a>
+                        }
+                    </p>
+                    <p>
+                        @Assignment.FeedbackText
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <button type="button"  href='@Url.Action("UploadVideo", "Assignment", new { AssignmentID = @Assignment.ID, listObj = "list_Video" })' 
+        class="mainbutton mainright-btn submit-btn" data-target="#modalNormal" data-toggle="modal">
+                Upload video</button>
+            <input type="button" class="mainbutton mainright-btn pencil-btn" value="Delete Selected videos" onclick="return deletedata()">
+        </div>
+    </div>
+
+
+
+    <div class="main-content">
+        <div class="content-title">Video</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr>
+                        <td>
+                            <label>
+                                <input name="video_select" type="checkbox" data-bind="value: item.ID" />
+                            </label>
+                        </td>
+                        <td data-bind="text: item.IdentifyFileName"></td>
+                        <td data-bind="text: item.Number"></td>
+                        <td data-bind="text: item.Status.text"></td>
+                        <td data-bind="text: item.UploadDate"></td>
+                        <td data-bind="text: item.DateRecorded == minDate ? '' : item.DateRecorded"></td>
+                        <td data-bind="text: item.Language.value == '0' ? '' : item.Language.text"></td>
+                        <td data-bind="text: item.FileExtension"></td>
+                        <td>
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                            <a class="table-btn icon-download-alt download-btn" data-bind="attr: { href: item.DownLoadFilePath }" title="Download"></a>
+                        </td>
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+            </table>
+            @Html.Partial("_Partial_Pager")
+        </div>
+    </div>
+}
+
+
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/javascript">
+        var list_Video = {};
+
+        $(function () {
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    list_Video.search();
+                }
+            })
+
+            list_Video = new ViewModel(
+                {
+                    instanceName: "list_Video",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchFiles")))',
+                    viewDataUrl: '@Html.Raw(Url.Action("EditFile"))',
+                    viewType: "Redirect",
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("Select")",
+                            width: "5%"
+                        },
+                        {
+                            text: '@Html.DisplayName("File Name")',
+                            field: "@Html.NameFor(model => model.IdentifyFileName)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: "@Html.DisplayName("ID")",
+                            field: "@Html.NameFor(model => model.ID)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayName("Status")",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: "10%"
+                        },
+                        {
+                            text: "@Html.DisplayName("Upload Date")",
+                            field: "@Html.NameFor(model => model.UploadDate)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Date Recorded")',
+                            field: "@Html.NameFor(model => model.DateRecorded)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Language")',
+                            field: "@Html.NameFor(model => model.Language)",
+                            order: true,
+                            width: "12%"
+                        },
+                        {
+                            text: '@Html.DisplayName("File Type")',
+                            field: "@Html.NameFor(model => model.FileExtension)",
+                            width: "10%"
+                        },
+                        {
+                            text: "Action",
+                            width: "8%"
+                        }
+                    ],
+                    searchCriteria: {
+                        assignmentId: ko.observable(window.queryString("assignmentId", "@Assignment.ID")),
+                    }
+                }
+            );
+
+            list_Video.search();
+            ko.applyBindings(list_Video);
+        });
+
+            function deletedata() {
+                var video_select = $("input[name=video_select]:checked");
+                if (video_select.length == 0) {
+                    showMessage("hint", "Vcw_Videos_Noselect")
+                    return false;
+                }
+                else {
+                    var message = window.getErrorMessage("confirmToDelete");
+                    message = message.replace("[{0}]", "the selected videos");
+                    $.when(waitingConfirm(message, "Delete", "Cancel")).done(function () {
+                        $("#@(formId)").submit();
+                    })
+                }
+                return false;
+            }
+    </script>
+}

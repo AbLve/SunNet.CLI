@@ -1,0 +1,2 @@
+﻿if exists(select * from syscolumns where id=object_id('Classes') and name='TypeOfClassroom')
+	EXEC  sp_rename  'Classes.TypeOfClassroom' , 'TypeOfClass','column'

@@ -1,0 +1,961 @@
+﻿@using Sunnet.Cli.Core.Cot
+@model Sunnet.Cli.Business.Cot.Models.CotStgReportModel
+@{
+    ViewBag.Title = "Short Term Goals";
+    var assessmentId = (int)ViewBag.assessmentId;
+    var teacherId = (int)ViewBag.teacherId;
+    var teacher = (string)ViewBag.teacher;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var controlOptions = new Dictionary<string, object>();
+    var lastReport = ViewBag.LastReport;
+    controlOptions.Add("class", "form-control validate");
+    controlOptions.Add("rows", 8);
+    if (!lastReport)
+    {
+        controlOptions.Add("disabled", true);
+    }
+}
+
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a>
+    <i class="icon-angle-right"></i>
+    @Html.ActionLink("Teachers", "All", "Teacher", new { Area = "Cot", id = assessmentId }, new { })
+    <i class="icon-angle-right"></i>
+    @Html.ActionLink(teacher, "Index", "Teacher", new { Area = "Cot", assessmentId = assessmentId, id = teacherId, year = Request.QueryString["year"] }, new { })
+    <i class="icon-angle-right"></i>
+    Short Term Goals
+}
+@section Styles{
+    <style type="text/css">
+        .tDnD_whileDrag {
+            -moz-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .table .tDnD_whileDrag td {
+            border-top: solid 1px #008000;
+            border-bottom: solid 1px #008000;
+            cursor: s-resize;
+        }
+
+        .tDnD_whileDrag td:first-child {
+            border-left: solid 1px #008000;
+        }
+
+        .tDnD_whileDrag td:last-child {
+            border-right: solid 1px #008000;
+        }
+
+        .dragHandle {
+            cursor: s-resize;
+        }
+
+        .groupDragHandle {
+            cursor: s-resize;
+        }
+
+        .thisItem {
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        #tempBox {
+            position: absolute;
+            z-index: 9999;
+        }
+    </style>
+}
+@section Scripts{
+    @Scripts.Render("~/scripts/cot")
+    @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        var assessmentJson = @Html.Raw(ViewBag.Json);
+        var assessmentModel = new CotAssessment(assessmentJson);
+
+        CKEDITOR.replace('OnMyOwn',
+        {
+            toolbar: 'COT'
+        });
+        CKEDITOR.replace('WithSupport',
+        {
+            toolbar: 'COT'
+        });
+        CKEDITOR.on('instanceReady', function (e) { $("iframe").removeAttr("frameborder"); })
+        CKEDITOR.replace('AdditionalComments',
+        {
+            toolbar: 'COT'
+            });
+
+        assessmentModel.prapare = function() {
+            var items = [];
+            for (var i = 0; i < assessmentModel.measures.length; i++) {
+                var measure = assessmentModel.measures[i];
+                if (measure.items && measure.items.length) {
+                    for (var j = 0; j < measure.items.length; j++) {
+                        var item = measure.items[j];
+                        if (item.goalMetAble && item.goalMetAbled) {
+                            items.push(item.itemId);
+                        }
+                    }
+                }
+                if (measure.children && measure.children.length) {
+                    for (var k = 0; k < measure.children.length; k++) {
+                        var child = measure.children[k];
+                        if (child.items && child.items.length) {
+                            for (var j = 0; j < child.items.length; j++) {
+                                var item = child.items[j];
+                                if (item.goalMetAble && item.goalMetAbled) {
+                                    items.push(item.itemId);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $("#hidItems").val(JSON.stringify(items));
+        };
+        assessmentModel.save = function () {
+            if (assessmentModel.createGroupNow()) {
+                showMessage("hint", "A new group goals is being created , please save or cancel you changes first.");
+                return false;
+            }
+            var updateGroupResult = true;
+            if (assessmentModel.eidtGroupNow()) {
+                updateGroupResult = assessmentModel.updateGroup();
+            }
+            if (updateGroupResult) {
+                updateCkeditor();
+                if ("@(Model.Status)" == "@(CotStgReportStatus.Saved)") {
+                    assessmentModel.prapare();
+                }
+                $("#@(formId)").submit();
+            }
+        };
+        assessmentModel.getPdf = function(type,fullText) {
+            //type: teacher,mentor
+            var getpdf=this;
+            var urls = {
+                teacher: '@Html.Raw(Url.Action("Pdf", "StgReport", new { Area = "Cot", id = Model.ID, type = "teacher" }))',
+                mentor: '@Html.Raw(Url.Action("Pdf", "StgReport", new { Area = "Cot", id = Model.ID, type = "mentor" }))'
+            };
+            var $form = $("#@(formId)");
+            if ($form.data("_source") != $form.serialize()) {
+                $.when(window.waitingConfirm("Cot_Generate_Stg_Report_Confirm", "OK", "Cancel")).done(function() {
+                    window.open(urls[type]+"&fullItemText="+fullText);
+                });
+            } else {
+                window.open(urls[type]+"&fullItemText="+fullText);
+            }
+        };
+        assessmentModel.goalSetDateFilled = "@lastReport"=="True";
+        assessmentModel.completed = "@((byte)Model.Status)" >= "@((byte)CotStgReportStatus.Saved)" ;
+        assessmentModel.updateGoalsMet=("@((byte)Model.Status)" >= "@((byte)CotStgReportStatus.Saved)")&&("@lastReport"=="True");
+        assessmentModel.showFullTargetText = ko.observable("@ViewBag.ShowFullText"=="1"?true:false);
+        assessmentModel.stepUpward = function(measure, event) {
+            var $tbody = $(event.target).closest("tbody");
+            var $elementsToMove, $target;
+            if (measure.parent) {
+                $elementsToMove = $tbody;
+                if ($elementsToMove.prev("tbody").attr("parent")) {
+                    $target = $elementsToMove.prev("tbody");
+                } else {
+                    // already on the top
+                    window.showMessage("success", "Cot_Sort_Top");
+                }
+            } else {
+                $elementsToMove = $tbody.add(jQuery("tbody[parent='" + measure.measureId + "']"));
+                if ($tbody.prevAll("tbody[measure]").length) {
+                    $target = $tbody.prevAll("tbody[measure]").last();
+                } else {
+                    // already on the top
+                    window.showMessage("success", "Cot_Sort_Top");
+                }
+            }
+            if ($target && $target.length) {
+                $elementsToMove.insertBefore($target);
+                dropEnd();
+            }
+        };
+
+        assessmentModel.stgGroups = ko.observableArray([]);
+        assessmentModel.refreshGroupList = function (editFirst) {
+            $.getJSON('@Url.Action("GetStgGroups")', { stgReportId:@Model.ID}, function (result) {
+                assessmentModel.stgGroups.removeAll();
+                $.each(result, function (i, e) {
+                    assessmentModel.stgGroups.push(e);
+                    CKEDITOR.replace('OnMyOwn' + e.ID,
+                        {
+                            toolbar: 'COT',
+
+                        });
+                    CKEDITOR.replace('WithSupport' + e.ID,
+                        {
+                            toolbar: 'COT'
+                        });
+                    CKEDITOR.replace('OnMyOwnDisplay' + e.ID,
+                        {
+                            toolbar: 'COT',
+
+                        });
+                    CKEDITOR.replace('WithSupportDisplay' + e.ID,
+                        {
+                            toolbar: 'COT'
+                        });
+                });
+                if (editFirst === true) {
+                    assessmentModel.editGroupClick();
+                }
+            });
+        };
+        assessmentModel.newGroupItems = ko.observableArray([]);
+        assessmentModel.createGroupNow = ko.observable(false);
+        assessmentModel.createGroupClick = function () {
+            if (assessmentModel.eidtGroupNow()) {
+                showMessage("hint", "Please save or cancel you changes first.");
+                return false;
+            }
+            assessmentModel.createGroupNow(true);
+            $("#groupCreate").slideDown(500);
+        };
+        assessmentModel.cancelCreateGroupClick = function () {
+            $("#groupCreate").slideUp(500);
+            $("#GroupGoalName").val("");
+            assessmentModel.newGroupItems.removeAll();
+            assessmentModel.createGroupNow(false);
+        };
+        assessmentModel.CreateGroup = function () {
+            if ($("#GroupGoalName").valid()) {
+                if (assessmentModel.newGroupItems().length == 0) {
+                    showMessage("hint", "Please drag item to Group.");
+                    return false;
+                }
+                var groupName = $("#GroupGoalName").val();
+                var params = $.tableDnD.serializeTable(document.getElementById("groupItemOrders")) + "&stgReportId=@(Model.ID)" + "&groupName=" + groupName;
+                $.post('@Url.Action("NewStgGroup")', params, function (response) {
+                    if (response.success) {
+                        window.showMessage("success");
+                        assessmentModel.cancelCreateGroupClick();
+                        assessmentModel.refreshGroupList(true);
+                    } else {
+                        window.showMessage("fail", response.msg);
+                        assessmentModel.cancelCreateGroupClick();
+                    }
+
+                }, 'json');
+            }
+        };
+        assessmentModel.delGroup = function (group) {
+            jQuery.when(waitingConfirm("Do you want to delete [" + group.GroupName + "] ?", "Yes", "No")).done(function () {
+                $.post('@Url.Action("DelStgGroup")', { stgGroupId: group.ID }, function (response) {
+                    if (response.success) {
+                        window.showMessage("successOnlyMsg", "Delete [" + group.GroupName + "] success.");
+                        assessmentModel.stgGroups.remove(group);
+                        if (assessmentModel.eidtGroupNow()) {
+                            assessmentModel.newGroupItems.removeAll();
+                            assessmentModel.eidtGroupNow(false);
+                            assessmentModel.editGroupId("");
+                        }
+                    }else {
+                        window.showMessage("fail", response.msg);
+                    }
+                },'json');
+            }).fail(function () {
+
+            });
+        };
+        assessmentModel.eidtGroupNow = ko.observable(false);
+        assessmentModel.editGroupId = ko.observable("");
+        assessmentModel.editGroupClick = function (group) {
+            if (assessmentModel.createGroupNow() || assessmentModel.eidtGroupNow()) {
+                showMessage("hint", "Please save or cancel you changes first.");
+                return false;
+            }
+            if (group === undefined) {
+                group = assessmentModel.stgGroups()[0];
+            }
+            assessmentModel.eidtGroupNow(true);
+            assessmentModel.editGroupId(""+group.ID);
+            $.each(group.StgGroupItems, function (i, e) {
+                var newGroupItem = new GroupItem(e.ItemId, e.ShortTargetText, group.ID);
+                assessmentModel.newGroupItems.push(newGroupItem);
+            });
+            $("#groupDisplay" + group.ID).hide();
+            $("#groupEdit" + group.ID).show();
+            $("#groupItemOrders" + group.ID).tableDnD({
+                //onDrop: function (table, row) {
+                //    var params = $.tableDnD.serializeTable(document.getElementById("groupItemOrders" + group.ID)) + "&stgGroupId=" + group.ID;
+                //},
+                dragHandle: ".groupDragHandle"
+            });
+        };
+        assessmentModel.cancelEditGroup = function (group) {
+            var groupId;
+            if (group == undefined) {
+                groupId = assessmentModel.editGroupId();
+            } else {
+                groupId = group.ID;
+            }
+            $("#groupDisplay" + groupId).show();
+            $("#groupEdit" + groupId).hide();
+            assessmentModel.newGroupItems.removeAll();
+            assessmentModel.eidtGroupNow(false);
+            assessmentModel.editGroupId("");
+        };
+        assessmentModel.updateGroup = function (group) {
+            if (assessmentModel.newGroupItems().length == 0) {
+                showMessage("hint", "Please drag item to Group.");
+                return false;
+            }
+            var groupId;
+            if (group == undefined) {
+                groupId = assessmentModel.editGroupId();
+            } else {
+                groupId = group.ID;
+            }
+            var onMyOwn = CKEDITOR.instances["OnMyOwn" + groupId].getData();
+            var withSupport = CKEDITOR.instances["WithSupport" + groupId].getData();
+            var params = $.tableDnD.serializeTable(document.getElementById("groupItemOrders" + groupId));
+            var reg = new RegExp("groupItemOrders" + groupId, "g");
+            params = params.replace(reg, "groupItemOrders");
+            params = params + "&stgGroupId=" + groupId + "&onMyOwn=" + onMyOwn + "&withSupport=" + withSupport;
+            $.post('@Url.Action("SaveGroupItemOrder")', params, function(response) {
+                    if (response.success) {
+                        //window.showMessage("success");
+                        assessmentModel.refreshGroupList();
+                    } else {
+                        window.showMessage("fail", response.msg);
+                        return false;
+                    }
+            }, 'json');
+            assessmentModel.cancelEditGroup();
+            return true;
+        };
+        assessmentModel.delItem = function (groupItem) {
+            var groupId = groupItem.groupId || assessmentModel.editGroupId();
+            var params = $.tableDnD.serializeTable(document.getElementById("groupItemOrders" + groupId));
+            var reg = new RegExp("groupItemOrders" + groupId, "g");
+            params = params.replace(reg, "");
+            params = params.replace(/[^0-9|&]/g, '');
+            itemIdArr = params.split('&');
+            var leftItems = [];
+            start:
+            for (var i = 0; i < itemIdArr.length;i++) {
+                if (itemIdArr[i] == groupItem.itemId) {
+                    continue;
+                }
+                for (var j = 0; j < assessmentModel.newGroupItems().length; j++) {
+                    if (itemIdArr[i] == assessmentModel.newGroupItems()[j].itemId) {
+                        leftItems.push(assessmentModel.newGroupItems()[j]);
+                        continue start;
+                    }
+                }
+            }
+            assessmentModel.newGroupItems.removeAll();
+            $.each(leftItems, function (i, e) {
+                var newGroupItem = new GroupItem(e.itemId, e.shortText, groupId);
+                assessmentModel.newGroupItems.push(newGroupItem);
+            });
+            $("#groupItemOrders" + groupId).tableDnD({
+                dragHandle: ".groupDragHandle"
+            });
+            @*if (groupItem.groupId != 0) {
+                jQuery.when(waitingConfirm("Do you want to delete this item ?", "Yes", "No")).done(function () {
+                    $.post('@Url.Action("DelStgGroupItem")', { stgGroupId: groupItem.groupId, stgGroupItemId: groupItem.itemId }, function (response) {
+                        if (response.success) {
+                            window.showMessage("success");
+                            assessmentModel.newGroupItems.remove(groupItem);
+                        } else {
+                            window.showMessage("fail", response.msg);
+                        }
+                    }, 'json');
+                }).fail(function () {
+
+                });
+            }*@
+        };
+
+        function GroupItem(id, shortText, groupId) {
+            this.groupId = groupId || 0;
+            this.itemId = id;
+            this.shortText = shortText;
+            this.sort = assessmentModel.newGroupItems().length;
+        }
+
+        var saveEvent = 0;
+        function dropEnd() {
+            var params = $.tableDnD.serializeTable(document.getElementById("itemOrders")) + "&id=@(Model.ID)";
+            clearTimeout(saveEvent);
+            saveEvent = setTimeout(function() {
+                $.post('@Url.Action("SaveOrders")', params, function(response) {
+                    if (response.success) {
+                        window.showMessage("success", "Cot_New_Orders_Saved");
+                    } else {
+                        window.showMessage("fail", response.msg);
+                    }
+                }, 'json');
+            }, 2000);
+        }
+
+        $(function() {
+            window.registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    if(response.success)
+                    {
+                        jQuery.when(waitingConfirm("Do you want to go to STG Report list page ?", "Yes", "No")).done(function () {
+                            //location.replace(location.href);
+                            var url = "/Cot/Teacher/Index/" + @teacherId+ "?assessmentid=" +@assessmentId+"&year=@(Request.QueryString["year"])";
+                            location.href = url;
+                        }).fail(function () {
+
+                        });
+                    }
+                }
+            });
+
+            assessmentModel.refreshGroupList();
+            ko.applyBindings(assessmentModel, document.getElementById("@(formId)"));
+
+            $("#itemOrders").tableDnD({
+                onDrop: function(table, row) {
+                    dropEnd();
+                },
+                dragHandle: ".dragHandle"
+            });
+
+            $('.thisItem').Drag({ drop: '.groupItems', finish: change });
+        });
+
+
+        //拖放插件DragDrop
+        $.fn.Drag = function (options) {
+            var defaults = {
+                limit: window, //是否限制拖放范围,默认限制当前窗口内
+                drop: false, //是否drop
+                handle: false, //拖动手柄
+                finish: function () { } //回调函数
+            };
+
+            var options = $.extend(defaults, options);
+            this.X = 0; //初始位置
+            this.Y = 0;
+            this.dx = 0; //位置差值
+            this.dy = 0;
+
+            var This = this;
+            var ThisO = $(this); //被拖目标
+            var thatO;
+            var thatOO; //保持原如的thatO
+            var thatIndex;
+            if (options.drop) {
+                var ThatO = $(options.drop); //可放下位置
+                ThisO.find('.thisItem').css({});
+                var tempBox = $('<div id="tempBox"></div>');
+            } else {
+                options.handle ? ThisO.find(options.handle).css({ cursor: 'move', '-moz-user-select': 'none' }) : ThisO.css({ cursor: 'move', '-moz-user-select': 'none' });
+            }
+
+            //拖动开始
+            this.dragStart = function (e) {
+
+                var cX = e.pageX;
+                var cY = e.pageY;
+                if (options.drop) {
+                    ThisO = $(this);
+                    This.X = ThisO.closest(".thisItem2").offset().left + 3;
+                    This.Y = ThisO.closest(".thisItem2").offset().top - 3;
+                    tempBox.html(ThisO.next(".itemForMove").html());
+                    $('body').append(tempBox);
+                    tempBox.css({ left: This.X, top: This.Y });
+
+                } else {
+                    This.X = ThisO.offset().left;
+                    This.Y = ThisO.offset().top;
+                    ThisO.css({ margin: 0 });
+                }
+                This.dx = cX - This.X;
+                This.dy = cY - This.Y;
+                if (!options.drop) {
+                    ThisO.css({ position: 'absolute', left: This.X, top: This.Y });
+                }
+                $(document).mousemove(This.dragMove);
+                $(document).mouseup(This.dragStop);
+                //  if ($.support) { ThisO[0].setCapture(); }//IE,鼠标移到窗口外面也能释放
+            }; //拖动中
+            this.dragMove = function (e) {
+                var cX = e.pageX;
+                var cY = e.pageY;
+                if (options.limit) { //限制拖动范围
+                    //容器的尺寸
+                    var L = $(options.limit)[0].offsetLeft ? $(options.limit).offset().left : 0; //0
+                    var T = $(options.limit)[0].offsetTop ? $(options.limit).offset().top : 0; //0
+                    var R = L + $(options.limit).width(); //1903
+                    var B = T + $(options.limit).height(); //835
+
+                    //获取拖动范围
+                    var iLeft = cX - This.dx, iTop = cY - This.dy;
+                    //获取超出长度
+                    var iRight = iLeft + 180 - R;
+                    iBottom = iTop + 30 - B - $(document).scrollTop();
+                    //alert($(window).height())
+                    //先设置右下, 再设置左上
+                    if (iRight > 0) {
+                        iLeft -= iRight;
+                    }
+
+                    if (iBottom > 0) {
+                        iTop -= iBottom;
+                    }
+
+                    if (L > iLeft) iLeft = L;
+                    if (T > iTop) iTop = T;
+
+                    if (options.drop) {
+                        tempBox.css({ left: iLeft, top: iTop });
+                    } else {
+                        ThisO.css({ left: iLeft, top: iTop });
+                    }
+                } else {
+                    //不限制范围
+                    if (options.drop) {
+                        tempBox.css({ left: cX - This.dx, top: cY - This.dy });
+                    } else {
+                        ThisO.css({ left: cX - This.dx, top: cY - This.dy });
+                    }
+                }
+
+            }; //拖动结束
+            this.dragStop = function (e) {
+                var flag = false;
+                if (options.drop) {
+
+                    var cX = e.pageX;
+                    var cY = e.pageY;
+                    var oLf = ThisO.next(".itemForMove").offset().left;
+                    var oRt = oLf + ThisO.next(".itemForMove").width();
+                    var oTp = ThisO.next(".itemForMove").offset().top;
+                    var oBt = oTp + ThisO.next(".itemForMove").height();
+                    if (!(cX > oLf && cX < oRt && cY > oTp && cY < oBt)) { //如果不是在原位
+                        for (var i = 0; i < ThatO.length; i++) {
+                            var XL = $(ThatO[i]).offset().left;
+                            var XR = XL + $(ThatO[i]).width();
+                            var YL = $(ThatO[i]).offset().top;
+                            var YR = YL + $(ThatO[i]).height();
+                            if (XL < cX && cX < XR && YL < cY && cY < YR) { //找到拖放目标 交换位置
+                                thatOO = $(ThatO[i]).clone();
+                                thatIndex = i;
+                                //$(ThatO[i]).append(tempBox.html());
+                                thatO = $(ThatO[i]);
+                                tempBox.remove();
+                                flag = true;
+                                break; //一旦找到 就终止循环
+                            }
+                        }
+                    }
+                    if (!flag) { //如果找不到拖放位置,归回原位
+                        tempBox.css({ left: This.X, top: This.Y });
+                        ThisO.next(".itemForMove").html(tempBox.html());
+                        tempBox.remove();
+                    }
+                }
+                $(document).unbind('mousemove');
+                $(document).unbind('mouseup');
+                if (flag) {
+                    //options.finish(e, thatOO, ThisO.next(".itemForMove"), ThatO, thatIndex);
+                    options.finish(ThisO);
+                }
+                else {
+                    $('.thisItem').off();
+                    $('.thisItem').Drag({ drop: '.groupItems', finish: change });
+                }
+            };
+            //绑定拖动
+            if (options.handle) {
+                ThisO.find(options.handle).mousedown(This.dragStart);
+            } else {
+                ThisO.mousedown(This.dragStart);
+            }
+        };
+
+        var change = function (ThisO) {
+            var moveItemId = ThisO.attr("itemId");
+            var moveItemText = ThisO.attr("shotText");
+            var existItem = false;
+            $.each(assessmentModel.newGroupItems(),function (i, e) {
+                if (e.itemId == moveItemId) {
+                    existItem = true;
+                    return false;
+                }
+            });
+            if (existItem) {
+                showMessage("hint", "The item is already in this Group.");
+                return;
+            }
+            var groupItem = new GroupItem(moveItemId, moveItemText);
+            assessmentModel.newGroupItems.push(groupItem);
+            $("#groupItemOrders" + assessmentModel.editGroupId()).tableDnD({
+                //onDrop: function (table, row) {
+                //    var params = $.tableDnD.serializeTable(document.getElementById("groupItemOrders"));
+                //    //todo
+                //},
+                dragHandle: ".groupDragHandle"
+            });
+        };
+    </script>
+}
+@using (Ajax.BeginForm("Save", "StgReport", null, PostFormHelper.DefaultAjaxOptions, new { id = formId, @class = "form-horizontal" }))
+{
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn"
+           href="@Url.Action("Report", "Index", new { area = "Cot", assessmentid = assessmentId, teacherId = teacherId, year = Request.QueryString["year"] })">
+            Select Goals/Update COT
+        </a>
+        <a class="mainbutton mainright-btn nav-btn"
+           href="@Url.Action("Index", "Teacher", new { area = "Cot", assessmentid = assessmentId, id = teacherId, year = Request.QueryString["year"] })">
+            Teacher Folder
+        </a>
+    </div>
+    <div class="modal-l-b"></div>
+    <div class="right-content-top">
+        @Html.HiddenFor(x => x.ID)
+        <div class="form-group">
+            @Html.LabelFor(x => x.GoalSetDate, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-2">
+                @Html.TextBoxFor(x => x.GoalSetDate, new
+           {
+               @class = "form-control date",
+               Value = Model.GoalSetDate.FormatDateString(),
+               data_bind = "enable:goalSetDateFilled"
+           })
+                @Html.ValidationMessageFor(model => model.GoalSetDate, "", new { id = "GoalSetDate-error" })
+            </div>
+            @Html.LabelFor(x => x.SpentTime, new { @class = "control-label col-sm-2 required" })
+            <div class="col-sm-2">
+                @Html.DropDownListFor(x => x.SpentTime, (IEnumerable<SelectListItem>)ViewBag.SpentTimeOptions, new
+           {
+               @class = "form-control",
+               data_bind = "enable:goalSetDateFilled"
+           })
+                @Html.ValidationMessageFor(model => model.SpentTime, "", new { id = "SpentTime-error" })
+            </div>
+            <div class="col-sm-2">
+                <button type="button" class="mainbutton mainright-btn create-btn" data-bind="text:$root.showFullTargetText()?'Show Short Text':'Show Full Text' , click:toggleFullTargetText"></button>
+                <label for="ShowFullText" class="hide">Show full or short text</label>
+                @Html.CheckBoxFor(x => x.ShowFullText, new { @class = "hide", data_bind = "checked:$root.showFullTargetText()", title = " " })
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-body">
+            <table class="table  table-hover table-striped   table-condensed" id="itemOrders">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;"><span style="display:none;">1</span></th>
+                        <th style="width: 30px;"><span style="display:none;">1</span></th>
+                        <th>Goal Item</th>
+                        <th style="width: 100px;">
+                            <span style="display:none;">1</span>
+                            <!-- ko if:!assessmentModel.completed -->
+                            STGR<br />
+                            Goal Set Date
+                            <!-- /ko -->
+                        </th>
+                    </tr>
+                </thead>
+                <!--ko foreach:{data:measures,as:'measure'}-->
+                <!--    ko if:measure.visible && measure.items && measure.items.length-->
+                <tbody data-bind="attr:{id:'measure' + measure.measureId,measure:measure.measureId}">
+                    <!--        ko template:{name:'_tmp_measure',data:measure}-->
+                    <!--        /ko-->
+                    <!--    ko if:items-->
+                    <!--        ko template:{name:'_tmp_item',foreach:items,as:'item'}-->
+                    <!--        /ko-->
+                    <!--    /ko-->
+                </tbody>
+                <!--    /ko-->
+                <!--|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||-->
+                <!--    ko if:measure.visible && measure.children && measure.children.length-->
+                <tbody data-bind="attr:{id:'measure' + measure.measureId,measure:measure.measureId}">
+                    <!--        ko template:{name:'_tmp_measure',data:measure}-->
+                    <!--        /ko-->
+                </tbody>
+                <!--        ko if:children && children.length-->
+                <!--            ko foreach:{data:children,as:'childMeasure'}-->
+                <!--                ko if:childMeasure.visible-->
+                <tbody data-bind="attr:{id:'child' + childMeasure.measureId,parent:measure.measureId}">
+                    <!--                    ko template:{name:'_tmp_measure2',data:childMeasure}-->
+                    <!--                    /ko-->
+                    <!--                    ko template:{name:'_tmp_item',foreach:childMeasure.items,as:'childItem'}-->
+                    <!--                    /ko-->
+                </tbody>
+                <!--                /ko-->
+                <!--            /ko-->
+                <!--        /ko-->
+                <!--    /ko-->
+                <!--/ko-->
+            </table>
+            <div class="form-group">
+                <div class="col-sm-11">
+                    <h3>Action Plan</h3>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.OnMyOwn, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.OnMyOwn, controlOptions)
+                    @Html.ValidationMessageFor(model => model.OnMyOwn)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.WithSupport, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.WithSupport, controlOptions)
+                    @Html.ValidationMessageFor(model => model.WithSupport)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.AdditionalComments, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.AdditionalComments, controlOptions)
+                    @Html.ValidationMessageFor(model => model.AdditionalComments)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-11">
+                    <h3 style="cursor:pointer" data-bind="click:createGroupClick"><i class="icon-plus"></i>&nbsp;&nbsp;Create Grouped Goal</h3>
+                </div>
+            </div>
+            <!--**********************************************Add Stg Group DIV*********************************************-->
+            <div id="groupCreate" style="display:none">
+                <div class="form-group">
+                    <label class="control-label col-sm-2 required" for="GroupGoalName" aria-required="true">Grouped Goals Name</label>
+                    <div class="col-sm-4">
+                        <input class="form-control valid" data-val="true" data-val-required="Grouped Goals Name is required." id="GroupGoalName" name="GroupGoalName" type="text" placeholder="" aria-required="true" aria-invalid="false" aria-describedby="GroupGoalName-error">
+                        <span id="GroupGoalName-error" class="field-validation-valid" data-valmsg-for="GroupGoalName" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+
+                <div class="btns-group-con col-sm-11 col-sm-offset-1 groupItems" data-bind=""
+                     style="border: 1px dashed #000;  display: inline-block; min-height: 200px; padding-top: 15px; ">
+                    <table id="groupItemOrders" class="table  table-hover table-striped   table-condensed">
+                        <tbody>
+                            <!--ko template:{name:'_tmp_groupItemEdit',foreach:newGroupItems,as:'groupItem'}-->
+                            <!--/ko-->
+                        </tbody>
+                    </table>
+                    <div class="dragItemHere" data-bind="visible:!$root.newGroupItems().length" style="text-align: center;color: #999;font-size:40px; line-height:4; font-style:italic;">
+                        <span>Drag Items Here</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-3 col-sm-offset-9">
+                        <button type="button" class="mainbutton mainright-btn create-btn" data-bind="click:CreateGroup">Create Group</button>
+                        <button class="mainbutton modal-btn cancel-btn" type="button" data-bind="click:cancelCreateGroupClick">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <!--**********************************************Add Stg Group DIV End*********************************************-->
+            <!--**********************************************Display Stg Group DIV*********************************************-->
+            <!--ko foreach:{data:stgGroups,as:'group'}-->
+            <div data-bind="attr:{id:'groupDisplay'+ID}">
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        <h3>
+                            <span data-bind="text:GroupName"></span>
+                            <span data-bind="click:$root.editGroupClick" style="cursor:pointer" title="Edit"><i class="icon-pencil"></i></span>
+                            <span data-bind="click:$root.delGroup" style="cursor:pointer" title="Delete"><i class="icon-trash"></i></span>
+                        </h3>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <table class="table-condensed col-sm-11 col-sm-offset-1">
+                        <tbody data-bind="foreach:{data:group.StgGroupItems,as:'item'}">
+                            <tr>
+                                <td style="text-align: left;">
+                                    <span data-html="true" data-bind="html:ShortTargetText"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-11 col-sm-offset-1">
+                        <h3>Action Plan for Grouped Goals</h3>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-bind="attr:{for:'OnMyOwnDisplay'+ID}" class="control-label col-sm-2">On My Own</label>
+                    <div class="col-sm-10">
+                        <textarea disabled data-bind="attr:{id:'OnMyOwnDisplay'+ID,name:'OnMyOwnDisplay'+ID},value:OnMyOwn" class="form-control validate" cols="20" data-val="true"
+                                  data-val-length="field On My Own must be a maximum length of a string of 4000."
+                                  data-val-length-max="4000" rows="8" style="visibility: hidden; display: none;" placeholder=""></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-bind="attr:{for:'WithSupportDisplay'+ID}" class="control-label col-sm-2">With Support</label>
+                    <div class="col-sm-10">
+                        <textarea disabled data-bind="attr:{id:'WithSupportDisplay'+ID,name:'WithSupportDisplay'+ID},value:WithSupport" class="form-control validate" cols="20" data-val="true"
+                                  data-val-length="field On My Own must be a maximum length of a string of 4000."
+                                  data-val-length-max="4000" rows="8" style="visibility: hidden; display: none;" placeholder=""></textarea>
+                    </div>
+                </div>
+            </div>
+            <!--**********************************************Display Stg Group DIV End*********************************************-->
+            <!--**********************************************Edit Stg Group DIV*********************************************-->
+            <div data-bind="attr:{id:'groupEdit'+ID}" style="display:none">
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        <h3>
+                            <span data-bind="text:GroupName"></span>
+                            @*<span data-bind="click:$root.updateGroup" style="cursor:pointer" title="Save"><i class="icon-save"></i></span>*@
+                            <span data-bind="click:$root.cancelEditGroup" style="cursor:pointer" title="Cancel"><i class="icon-reply"></i></span>
+                            <span data-bind="click:$root.delGroup" style="cursor:pointer" title="Delete"><i class="icon-trash"></i></span>
+                        </h3>
+                    </div>
+                </div>
+                <div class="btns-group-con col-sm-11 col-sm-offset-1 groupItems" data-bind=""
+                     style="border: 1px dashed #000;  display: inline-block; min-height: 200px; padding-top: 15px; ">
+                    <table data-bind="attr:{id:'groupItemOrders'+ID}" class="table  table-hover table-striped   table-condensed">
+                        <tbody>
+                            <!--ko template:{name:'_tmp_groupItemEdit',foreach:$root.newGroupItems,as:'groupItem'}-->
+                            <!--/ko-->
+                        </tbody>
+                    </table>
+                    <div class="dragItemHere" data-bind="visible:!$root.newGroupItems().length" style="text-align: center;color: #999;font-size:40px; line-height:4; font-style:italic;">
+                        <span>Drag Items Here</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-11 col-sm-offset-1">
+                        <h3>Action Plan for Grouped Goals</h3>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-bind="attr:{for:'OnMyOwn'+ID}" class="control-label col-sm-2">On My Own</label>
+                    <div class="col-sm-10">
+                        <textarea data-bind="attr:{id:'OnMyOwn'+ID,name:'OnMyOwn'+ID},value:OnMyOwn" class="form-control validate" cols="20" data-val="true"
+                                  data-val-length="field On My Own must be a maximum length of a string of 4000."
+                                  data-val-length-max="4000" rows="8" style="visibility: hidden; display: none;" placeholder=""></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-bind="attr:{for:'WithSupport'+ID}" class="control-label col-sm-2">With Support</label>
+                    <div class="col-sm-10">
+                        <textarea data-bind="attr:{id:'WithSupport'+ID,name:'WithSupport'+ID},value:WithSupport" class="form-control validate" cols="20" data-val="true"
+                                  data-val-length="field On My Own must be a maximum length of a string of 4000."
+                                  data-val-length-max="4000" rows="8" style="visibility: hidden; display: none;" placeholder=""></textarea>
+                    </div>
+                </div>
+            </div>
+            <!--**********************************************Edit Stg Group DIV End*********************************************-->
+            <!--/ko-->
+
+        </div>
+    </div>
+    <div class="button-content">
+        @Html.HiddenFor(x => x.Status)
+        <input type="hidden" id="hidItems" name="items" />
+        <input type="submit" class="mainbutton mainright-btn submit-btn" data-bind="click:save,visible:!completed" value="Save"
+               style="display: none;" />
+        <input type="submit" class="mainbutton mainright-btn submit-btn" data-bind="click:save,visible:updateGoalsMet" value="Save Changes"
+               style="display: none;" />
+        <input type="button" class="mainbutton mainright-btn create-btn" data-bind="click:function(){$root.getPdf('teacher',$root.showFullTargetText());}" value="Generate Teacher STG Report" />
+        <input type="button" class="mainbutton mainright-btn create-btn" data-bind="click:function(){$root.getPdf('mentor',$root.showFullTargetText());}" value="Generate Coach STG Report" />
+    </div>
+}
+<script type="text/html" id="_tmp_item">
+    <tr data-bind="attr:{id:id}">
+        <td>
+            <span class="dragHandle" title="Drag to sort">
+                <i class="icon-reorder"></i>
+            </span>
+        </td>
+        <td class="thisItem2">
+            <span class="thisItem btns-group-con" data-bind="attr:{itemId:id,shotText:shortTargetText}" title="Drag to group">
+                <i class="icon-move"></i>
+            </span>
+
+            <div style="display:none;" class="itemForMove">
+                <div>
+                    <span title="Drag to sort">
+                        <i class="icon-reorder"></i>
+                    </span>
+                    <span data-bind="html:shortTargetText"></span>
+                </div>
+            </div>
+        </td>
+        <td style="text-align: left;">
+            <span data-html="true" data-bind="html:shortTargetText,visible:$root.showFullTargetText()==false,tooltip:fullTargetText,attr:{id:'measureItem'+id}"></span>
+            <div data-bind="html:fullTargetText,visible:$root.showFullTargetText()"></div>
+        </td>
+        <td>
+            <!-- ko if:!assessmentModel.completed -->
+            <span data-bind="text:goalSetDate"></span>
+            <!-- /ko -->
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_groupItem">
+    <tr data-bind="attr:{id:itemId}">
+        <td style="width:50px; text-align:left;">
+            <span class="groupDragHandle" title="Drag to sort">
+                <i class="icon-reorder"></i>
+            </span>
+        </td>
+        <td style="text-align: left;">
+            <span data-html="true" data-bind="html:shortText"></span>
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_groupItemEdit">
+    <tr data-bind="attr:{id:itemId}">
+        <td style="width:30px; text-align:left;">
+            <span class="groupDragHandle" title="Drag to sort">
+                <i class="icon-reorder"></i>
+            </span>
+        </td>
+        <td style="width:30px; text-align:left;">
+            <span data-bind="click:$root.delItem" style="cursor:pointer;" title="Delete">
+                <i class="icon-trash"></i>
+            </span>
+        </td>
+        <td style="text-align: left;">
+            <span data-html="true" data-bind="html:shortText"></span>
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_measure">
+    <!--ko if:measure.visible  -->
+    <tr class="success nodrag nodrop">
+        <td>
+            <a class="table-btn view-btn" href="javascript:;" title="Step Upward" data-bind="click:$root.stepUpward">
+                <span style="display:none;">1</span>
+                <i class="icon-arrow-up"></i>
+            </a>
+        </td>
+        <td colspan="5" style="text-align: left; font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+    <!--/ko-->
+</script>
+<script type="text/html" id="_tmp_measure2">
+    <!--ko if:childMeasure.visible-->
+    <tr class="info  nodrag nodrop">
+        <td>
+            <a class="table-btn view-btn" href="javascript:;" title="Step Upward" data-bind="click:$root.stepUpward">
+                <span style="display:none;">1</span>
+                <i class="icon-arrow-up"></i>
+            </a>
+        </td>
+        <td colspan="5" style="text-align: left; padding-left: 40px; font-weight: bold;" data-bind="text:name"></td>
+    </tr>
+    <!--/ko-->
+</script>

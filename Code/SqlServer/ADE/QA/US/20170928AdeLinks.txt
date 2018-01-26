@@ -1,0 +1,10 @@
+﻿
+alter table AdeLinks alter column Link nvarchar(500) not null
+go
+declare @name varchar(50) 
+select @name=b.name from syscolumns a,sysobjects b where a.id=object_id('[AdeLinks]') 
+and b.id=a.cdefault and a.name='DisplayText' 
+and b.name like 'DF%' 
+exec('alter table AdeLinks drop constraint '+@name) 
+go
+alter table AdeLinks alter column DisplayText nvarchar(500) not null

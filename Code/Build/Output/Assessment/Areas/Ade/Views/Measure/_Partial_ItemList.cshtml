@@ -1,0 +1,99 @@
+﻿@model Sunnet.Cli.Business.Ade.Models.ItemListModel
+
+@{
+    ViewBag.Title = "_Partial_ItemList";
+    Layout = null;
+}
+<div class="right-content-top">
+    <form class="form-horizontal" role="form" id="formSearch">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Label, new { @class = "control-label col-sm-2", @for = "Label_Search" })
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="Label_Search" name="Label_Search" placeholder="Enter Label" data-bind="value: searchCriteria.label" />
+            </div>
+            @if (ViewBag.IsCEC)
+            {
+                @Html.Label("Area", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="Description" name="Description" placeholder="Enter Area" data-bind="value: searchCriteria.description" />
+                </div>
+            }
+            else
+            {
+                @Html.LabelFor(m => m.Description, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="Description" name="Description" placeholder="Enter Description" data-bind="value: searchCriteria.description" />
+                </div>
+            }
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.CreatedByName, new { @class = "control-label col-sm-2" })
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="CreatedByName" name="CreatedByName" placeholder="Enter First Name or Last Name" data-bind="value: searchCriteria.createdBy" />
+            </div>
+            @Html.LabelFor(m => m.Status, new { @class = "control-label col-sm-2", @for = "Status_Search" })
+            <div class="col-sm-3">
+                @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultAllText, "-1", new
+           {
+               @class = "form-control",
+               data_bind = "value: searchCriteria.status",
+               id = "Status_Search"
+           })
+            </div>
+            <div class="col-sm-2">
+                <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="main-content main-content">
+    <div class="content-title">Items</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th width="3%">Index</th>
+                    <th width="15%">@Html.DisplayNameFor(x => x.Label)</th>
+                    <th width="10%">@Html.DisplayNameFor(x => x.Type)</th>
+                    @if (ViewBag.IsCEC)
+                    {
+                        <th width="*">Area</th>
+                    }
+                    else
+                    {
+                        <th width="*">@Html.DisplayNameFor(x => x.Description)</th>
+                    }
+                    <th width="10%">@Html.DisplayNameFor(x => x.CreatedByName)</th>
+                    <th width="12%">@Html.DisplayNameFor(x => x.UpdatedOn)</th>
+                    <th width="6%">@Html.DisplayNameFor(x => x.Status)</th>
+                    <th width="20%">Action</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: $index() + 1"></td>
+                    <td data-bind="text: item.Label"></td>
+                    <td data-bind="text: item.Type.text"></td>
+                    <td data-bind="text: item.Description"></td>
+                    <td data-bind="text: item.CreatedByName"></td>
+                    <td data-bind="text: item.UpdatedOn"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td>
+                        <a class="table-btn icon-copy create-btn" data-bind="event: { click: $root.copyItem }" href="#" title="Clone"></a>
+                        @if (ViewBag.IsCpalls)
+                        { 
+                            <a class="table-btn  icon-zoom-in preview-btn" target="_blank"
+                                data-bind="attr: { href: $root.getPreviewUrl(item) }" title="Preview"></a>
+                        }
+                        <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                        <a class="table-btn icon-paper-clip clip-btn" href="#"
+                            title="Edit Circle Manual Links" data-bind="attr: { href: $root.getLinkHref(item) }"
+                            data-toggle="modal" data-target="#modalNormal"></a>
+                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.deleteData }" href="#" title="Delete"></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 8 })
+        </table>
+    </div>
+</div>

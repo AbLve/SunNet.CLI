@@ -1,0 +1,153 @@
+﻿@model Sunnet.Cli.Business.Users.Models.ApplicantTeacherModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Principal Sign Up";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#CommunityId").rules("add", { required: true, messages: { required: "The community field is required." } });
+            $("#chkNoDistrict").click(function () {
+                if ($("#chkNoDistrict").prop("checked") == true) {
+                    $("#CommunityId").rules("remove", "required");
+                    $("#txtCommunity").val("");
+                    $("#CommunityId").val();
+                    $("#txtCommunity").attr("disabled", "disabled");
+                }
+                else {
+                    $("#txtCommunity").removeAttr("disabled");
+                    $("#CommunityId").rules("add", { required: true, messages: { required: "The community field is required." } });
+                }
+            });
+
+            $("#chkAgree").click(function () {
+                if ($("#chkAgree").prop("checked") == true) {
+                    $(".submit-btn").removeAttr("disabled");
+                } else {
+                    $(".submit-btn").attr({ "disabled": "disabled" });
+                }
+            });
+        })
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function (response) {
+                if ($("#chkNoDistrict").prop("checked") == true) {
+                    location = "/Signup/Principal/CommunityInvitedRegister?applicantId=" + encodeURIComponent(response.data.entity.ApplicantId);
+                } else {
+                    if (response.data.isCommunityVerified == false)
+                        location = "/Signup/Principal/CommunityInvitedRegister?applicantId=" + encodeURIComponent(response.data.entity.ApplicantId)
+                        + "&communityName=" + encodeURIComponent($("#txtCommunity").val());
+                    else
+                        $("#confirmation").click();
+                }
+            }
+        });
+    </script>
+}
+@using (Ajax.BeginForm("PrincipalApplicant", "Principal", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{          
+    <a href="/Signup/Teacher/Confirmation" id="confirmation" data-toggle="modal" data-target="#modalNormal"></a>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+    <div class="main-container">
+        <div class="main-con">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3><b>Principal/Director</b> Sign Up</h3>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.EnumDropDownListFor(model => model.Title, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.Title)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.FirstName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control col-sm-4" })
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="logup-tip">@Html.ValidationMessageFor(model => model.LastName)</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, new { @class = "col-sm-4 control-label required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control col-sm-4 email" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.Email)
+                    </div>
+                </div>
+                <div class="form-group" id="select_School">
+                    @Html.Label("Disctrict/Community", new { @class = "col-sm-4 control-label required" ,@for="txtCommunity"})
+                    <div class="col-sm-4">
+                        @Html.TextBox("txtCommunity", "", new
+                       {
+                           autocomplete = "off",
+                           @class = "form-control",
+                           data_list = "true",
+                           data_for = "#CommunityId",
+                           data_remote = Url.Action("GetBasicCommunitySelectList", "Teacher", new { Area = "Signup" }),
+                           data_text = "Name",
+                           data_value = "ID",
+                           data_searchfields="Zip",
+                           id = "txtCommunity",
+                           name = "txtCommunity",
+                           @for = "CommunityId",
+                           placeholder = "Enter Community/District name or zipcode to search"
+                       })
+                        @Html.HiddenFor(model => model.CommunityId, new { @class = "form-control logup-right validate" })
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.CommunityId)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8">
+                        <label>@Html.CheckBox("chkNoDistrict")
+                            I can not find my Community/District</label>
+                    </div>
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8" style="display: none;">
+                        <label>
+                            @Html.CheckBox("chkAgree", new { @checked = true })
+                            I agree to the <a href="#" class="loginup-link">Terms of Service</a> and <a href="#" class="loginup-link">Privacy Policy</a></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12 logbtn-con">
+                        <input type="submit" class="logbutton submit-btn" value="Submit">
+                        <input type="button" class="logbutton cancel-btn" onclick="javascript: location.href = '/Home/SignUp/'" value="Cancel">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

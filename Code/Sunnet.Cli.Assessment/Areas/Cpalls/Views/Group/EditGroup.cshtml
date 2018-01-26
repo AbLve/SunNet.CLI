@@ -1,0 +1,49 @@
+﻿@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Core.Cpalls.Entities.CpallsStudentGroupEntity
+
+@{
+    ViewBag.Title = "Edit Group";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    group_DataNameEdited(response);
+                    closeModal($("#@(formId)"));
+                }
+            });
+        })();
+    </script>
+}
+@using (Ajax.BeginForm("EditGroup", "Group", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-9">
+            @Html.TextBoxFor(model => model.Name, baseClassObj)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+    </div>
+    <div class="modal-footer">
+
+        <input type="submit" class="mainbutton mainright-btn submit-btn" value="Save" id="btnSubmit">
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

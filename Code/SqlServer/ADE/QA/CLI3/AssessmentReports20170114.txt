@@ -1,0 +1,7 @@
+﻿create table AssessmentReports
+(
+ID int primary key identity(1,1) not null,
+AssessmentId int not null,
+ReportType tinyint not null,
+Report tinyint not null
+)

@@ -1,0 +1,13 @@
+﻿
+insert into Permission_Authority(ID,Authority,Descriptions,CreatedOn,UpdatedOn)
+values(65536,'AssignCoordCoach','AssignCoordCoach',GETDATE(),GETDATE())
+go
+
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3800,65536)
+go
+
+update Permission_RolePageAuthorities set PageAction=PageAction + '65536;'
+where PageId=3800 and CHARINDEX('8192',PageAction)>0
+go

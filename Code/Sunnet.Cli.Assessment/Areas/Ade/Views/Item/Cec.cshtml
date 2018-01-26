@@ -1,0 +1,184 @@
+﻿@model CecItemModel
+
+@{
+    if (Model.ID < 1)
+    {
+        ViewBag.Title = "New " + ItemType.Cec.ToDescription();
+    }
+    else
+    {
+        ViewBag.Title = Model.Label;
+    }
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Detail", "Measure", new { id = Model.MeasureId });
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @Html.Partial("NEV_Item_BreadPath", Model)
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+        function getToFolder() {
+            return "assessment";
+        }
+        var itemModel;
+        jQuery(function() {
+
+            CKEDITOR.replace('TargetText',
+        {
+            toolbar: 'Cli'
+        });
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@Html.Raw(backUrl)");
+                }
+            });
+
+            var jsonModel = @Html.Raw(ViewBag.ModelJson);
+            var formEle = document.getElementById("@formId");
+            itemModel = getCecItemModel(jsonModel, {Answer:"#Answers"});
+            ko.applyBindings(itemModel, formEle);
+        });
+    </script>
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+</div>
+@using (Ajax.BeginForm("SaveCec", "Item", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ID" value="@Model.ID" />
+    @Html.HiddenFor(m => m.Type)
+    @Html.HiddenFor(m => m.MeasureId)
+    @Html.Hidden("Answers", "")
+    @Html.HiddenFor(x => x.AnswerType)
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(model => model.Label, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Label)
+                </div>
+                <div class="col-sm-2">
+                    @Html.LabelFor(model => model.Status, new { @class = "hide" })
+                    @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Area", new { @class = "control-label col-sm-2  required" })
+                <div class="col-sm-10">
+                    @*                    @Html.TextBoxFor(model => model.Description, baseClassObj)*@
+                    <input class="form-control valid" data-val-required="The Area field is required." data-val="true" data-val-length="The field Area must be a string with a maximum length of 1000." data-val-length-max="1000" id="Description" name="Description" type="text" value="@Model.Description" placeholder="" aria-describedby="Description-error">
+                    <span data-valmsg-replace="true" data-valmsg-for="Description" class="field-validation-valid"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Description", new { @class = "control-label col-sm-2  required" })
+                <div class="col-sm-10">
+                   @* @Html.TextAreaFor(model => model.TargetText, new { @class = "form-control", style = "height:30px;" })*@
+
+                    <textarea title=" " class="form-control validate" cols="20" data-val="true" data-val-required="The Description field is required." data-val-length="The field Description must be a string with a maximum length of 4000." data-val-length-max="4000" id="TargetText" name="TargetText" rows="3" style="visibility: hidden; display: none;" placeholder="">@Model.TargetText</textarea>
+                   
+                     <span data-valmsg-replace="true" data-valmsg-for="TargetText" class="field-validation-valid"></span>
+                </div>
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(model => model.ResponseCount, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.ResponseCount, new
+                    {
+                        @class = "form-control",
+                        @readonly = "readonly",
+                        data_bind = "value:Answers().length"
+                    })
+                    @Html.ValidationMessageFor(model => model.ResponseCount)
+                </div>
+                <div class="col-sm-4">
+                    @Html.EditorForModel("IsMultiChoice")
+                </div>
+                <div class="col-sm-4">
+                    @Html.RadioButtonFor(x => x.Direction, CecItemsDirection.Portrait, new { id = "Portrait" })
+                    @Html.Label("", CecItemsDirection.Portrait.ToDescription(), new { @for = "Portrait" })
+                    @ViewTextHelper.HtmlEmptySeparator
+                    @Html.RadioButtonFor(x => x.Direction, CecItemsDirection.Landscape, new { id = "Landscape" })
+                    @Html.Label("", CecItemsDirection.Landscape.ToDescription(), new { @for = "Landscape" })
+                    <div class="clearfix"></div>
+                    @Html.ValidationMessageFor(model => model.Direction)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.IsRequired, new { @class = "control-label col-sm-2  ", @style = "vertical-align:bottom" })
+                <div class="col-sm-10">
+                    @Html.CheckBoxFor(c => c.IsRequired, new { @style = "vertical-align:bottom" })
+                </div>
+            </div>
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th width="10%">Response</th>
+                        <th width="*">Text</th>
+                        <th width="15%">Score</th>
+                        <th width="10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach:{data:Answers,as:'answer'}">
+                    <tr data-bind="css:{'has-error':answer.hasError}">
+                        <td data-bind="text:$index()+1"></td>
+                        <td>
+                            <label class="hide" data-bind="attr:{for:'Text'+$index()}">Text</label>
+                            <input type="text" class="form-control  input-lg" maxlength="100" data-bind="
+    value:Text,required:true,
+    attr:{name:'Text'+$index(),id:'Text'+$index()}" />
+                            <div class="field-validation-valid" data-valmsg-replace="true"
+                                data-bind="attr:{'data-valmsg-for':'Text'+$index()}">
+                            </div>
+                        </td>
+                        <td>
+                            <label class="hide" data-bind="attr:{for:'Score'+$index()}">Score</label>
+                            <input type="text" class="form-control input-sm positive" maxlength="5" data-bind="
+    value:Score,
+    number:true,required:true,
+    attr:{name:'Score'+$index(),id:'Score'+$index()}"
+                                   style="width: 50px; display: inline-block;">
+                            <div class="field-validation-valid" data-valmsg-replace="true"
+                                data-bind="attr:{'data-valmsg-for':'Score'+$index()}">
+                            </div>
+                        </td>
+                        <td>
+                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event:{click:$root.newAnswer}" title="New"><span style="display:none;">1</span></a>
+                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event:{click:$root.deleteAnswer}" title="Delete"><span style="display:none;">1</span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+        </div>
+    </div>
+    <div class="button-content">
+        <button class="mainbutton mainright-btn submit-btn submit" id="btnSubmit" type="button" data-bind="event:{click:submit}">Submit</button>
+        <a class="mainbutton mainright-btn cancel-btn" href="@(Html.Raw(backUrl))">Cancel</a>
+    </div>
+}

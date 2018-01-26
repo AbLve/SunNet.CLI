@@ -1,0 +1,5 @@
+﻿declare @name varchar(8000)
+select @name=b.name from syscolumns a,sysobjects b where a.id=object_id('StudentItems') and b.id=a.cdefault and a.name='Goal' and b.name like 'DF%'
+exec('alter table StudentItems drop constraint '+@name)
+go
+alter table studentItems alter column [Goal] varchar(50)

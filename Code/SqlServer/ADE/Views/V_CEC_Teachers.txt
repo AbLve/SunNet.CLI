@@ -1,0 +1,30 @@
+﻿GO
+
+
+/****** Object:  View [dbo].[V_CEC_Teachers]    Script Date: 7/2/2015 15:42:22 ******/
+IF EXISTS(SELECT 1 FROM sys.objects WHERE object_id = object_id('V_CEC_Teachers'))
+DROP VIEW [dbo].[V_CEC_Teachers]
+GO
+
+/****** Object:  View [dbo].[V_CEC_Teachers]    Script Date: 7/2/2015 15:42:22 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[V_CEC_Teachers]
+AS
+SELECT   t.ID,t.UserId,  t.Firstname, t.Lastname, t.TeacherID, t.CoachId, 
+                t.CoachFirstname, t.CoachLastname, ISNULL(t.YearsInProjectId, 0) AS YearsInProjectId, ISNULL(t.YearsInProject, '') 
+                AS YearsInProject, b.SchoolYear, ISNULL(CONVERT(varchar(100), b.AssessmentDate, 101), '') AS BOY, 
+                ISNULL(CONVERT(varchar(100), m.AssessmentDate, 101), '') AS MOY, ISNULL(CONVERT(varchar(100), 
+                e.AssessmentDate, 101), '') AS EOY
+FROM      dbo.V_Teachers AS t LEFT OUTER JOIN
+                dbo.CecHistories AS b ON b.TeacherId = t.ID AND b.Wave = 1 LEFT OUTER JOIN
+                dbo.CecHistories AS m ON m.TeacherId = t.ID AND m.Wave = 2 AND b.SchoolYear = m.SchoolYear LEFT OUTER JOIN
+                dbo.CecHistories AS e ON e.TeacherId = t.ID AND e.Wave = 3 AND m.SchoolYear = e.SchoolYear
+
+GO
+
+

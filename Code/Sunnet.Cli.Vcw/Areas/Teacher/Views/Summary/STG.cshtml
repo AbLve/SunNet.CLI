@@ -1,0 +1,120 @@
+﻿@using Sunnet.Cli.Business.Cot.Models
+@using Sunnet.Cli.Core.Cec.Models
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var reports = ViewBag.Reports as List<CotStgReportModel>;
+    var CotReports = ViewBag.CotReports as List<CotAssessmentModel>;
+    var CecReports = ViewBag.CecReports as List<CECTeacherModel_VCW>;
+    ViewBag.Title = "View STR Reports";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.STG_Reports)
+}
+@section BreadPath
+{
+My COT & CEC Reports
+}
+
+@section Styles
+{<style type="text/css">
+     .table > tbody > tr > .table-STG > table {
+         border: 1px #ddd solid;
+     }
+ </style>
+}
+
+
+<div class="main-content top-form">
+    <form class="form-horizontal" role="form">
+        <label class="control-label" for="Name">Community</label>
+        @ViewBag.Community
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label" for="Name">School</label>
+        @ViewBag.School
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label" for="Name">Coach</label>
+        @ViewBag.Coach
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label" for="Name">School Year</label>
+        @ViewBag.SchoolYear
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label" for="Name">Teacher</label>
+        @ViewBag.Teacher
+    </form>
+</div>
+<div class="modal-l-b"></div>
+
+<div class="main-content">
+    <div class="content-title"></div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Teacher STG Reports</th>
+                    <th>COT PDF Reports</th>
+                    <th>CEC Reports</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="table-STG">
+                        <table class="table table-striped table-hover">
+                            @if (reports != null && reports.Any())
+                            {
+                                for (var i = 0; i < reports.Count; i++)
+                                {
+                                <tr>
+                                    <td>
+                                        <a class="form-link2" target="_blank"
+                            title="Download pdf"  href='@(Url.Action("Pdf", "STGSend", new { Area = "STGReport", id = reports[i].ID, type = "teacher" }))'>
+                                            @(reports[i].CreatedOn.ToString("MM/dd/yyyy HH:mm:ss tt"))
+                                        </a>
+                                    </td>
+                                </tr>
+                                }
+                            }
+                        </table>
+                    </td>
+                    <td class="table-STG">
+                        <table class="table table-striped table-hover">
+                            @if (CotReports != null && CotReports.Any())
+                            {
+                                foreach (CotAssessmentModel item in CotReports)
+                                {
+                                <tr>
+                                    <td>
+                                        <a class="form-link2" target="_blank" title="Download pdf"  
+                                            href='@(Url.Action("CotPdf", "Summary",
+                                            new { assessmentId = item.AssessmentId, teacherId = item.TeacherId, year = Request.QueryString["year"] }))'>COT PDF Report
+                                        </a>
+                                    </td>
+                                </tr>
+                                }
+                            }
+                        </table>
+                    </td>
+                    <td class="table-STG">
+                        <table class="table table-striped table-hover">
+                            @if (CecReports != null && CecReports.Any())
+                            {
+                                foreach (CECTeacherModel_VCW item in CecReports)
+                                {
+                                <tr>
+                                    <td>
+                                        <a class="form-link2" target="_blank" title="Download pdf"  
+                                            href='@(Url.Action("CECReport", "Summary",
+                                            new { assessmentId = item.AssessmentId, teacherId = item.TeacherId, wave = item.Wave }))'>
+                                            @(item.Wave.ToString() + ":" + item.AssessmentDate.FormatDateString())
+                                        </a>
+                                    </td>
+                                </tr>
+                                }
+                            }
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

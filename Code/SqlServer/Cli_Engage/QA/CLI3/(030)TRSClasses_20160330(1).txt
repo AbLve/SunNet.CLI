@@ -1,0 +1,28 @@
+CREATE TABLE [dbo].[TRSClasses](
+	[ID] [int] Primary key IDENTITY(1,1) NOT NULL,
+	[SchoolId] [int] NOT NULL,
+	[TRSClassId] [varchar](32) NOT NULL,
+	[Name] [varchar](150) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[StatusDate] [datetime] NOT NULL,
+	[SchoolYear] [varchar](5) NOT NULL,
+	[HomeroomTeacherId] [int] NOT NULL,
+	[PlaygroundId] [int] NOT NULL,
+	[TrsAssessorId] [int] NOT NULL,
+	[TrsMentorId] [int] NOT NULL,
+	[TypeOfClass] [tinyint] NOT NULL,
+	[Notes] [varchar](600) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL
+)
+
+GO
+CREATE TRIGGER [dbo].[UpdateTRSClassCode] ON [dbo].[TRSClasses] 
+FOR INSERT
+AS
+  declare @ID int
+  select @ID = ID from Inserted
+  if(@ID is not null) begin
+  update TRSClasses set TRSClassId = 'ETRSCL'+ left(SchoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),next value for SeqClassCode ),'5') 
+  where id = @ID
+end

@@ -1,0 +1,37 @@
+﻿GO
+
+/****** Object:  View [dbo].[V_Circle_Data_Export_Students]    Script Date: 4/27/2015 14:20:31 ******/
+IF EXISTS(SELECT 1 FROM sys.objects WHERE object_id = object_id('V_Circle_Data_Export_Students'))
+DROP VIEW [dbo].[V_Circle_Data_Export_Students]
+GO
+
+/****** Object:  View [dbo].[V_Circle_Data_Export_Students]    Script Date: 4/27/2015 14:20:31 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+CREATE VIEW [dbo].[V_Circle_Data_Export_Students]
+AS
+
+SELECT [CommunityId] = COM.ID, [CommunityName] = BCM.Name, [CommunityIdentity] = COM.CommunityId, COM.DistrictNumber
+,SchoolId = SCH.ID, [SchoolName] = BSH.Name, SchoolIdentity = SCH.SchoolId, SchoolType = SCT.Name, SCH.SchoolNumber
+,STU.ID,STU.FirstName, STU.MiddleName, STU.LastName, STU.BirthDate, [StudentStatus] = STU.[Status], STU.LocalStudentID, STU.TSDSStudentID
+,[Teachers] = dbo.GetTeachersOfStudent(STU.ID), Classes = [dbo].GetClassesOfStudent(STU.ID)
+FROM  
+[dbo].[Communities] COM 
+INNER JOIN [dbo].[BasicCommunities] BCM 	ON COM.BasicCommunityId = BCM.ID
+INNER JOIN [dbo].[Schools] SCH				ON COM.ID = SCH.CommunityId
+INNER JOIN [dbo].[BasicSchools] BSH			ON SCH.BasicSchoolId = BSH.ID
+INNER JOIN [dbo].[SchoolTypes] SCT			ON SCH.SchoolTypeId = SCT.ID
+INNER JOIN [dbo].[Students] STU				ON SCH.ID = STU.SchoolId
+
+
+
+GO
+
+

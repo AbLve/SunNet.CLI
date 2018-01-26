@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+@using System.Web.Optimization
+@{
+    const string siteName = "Cli Engage";
+    var relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    ViewBag.Title = "Preparing";
+    Layout = null;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword"
+        content="CLI Engage" />
+    <title>@ViewBag.Title - Trs - @siteName</title>
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.AssessmentDomain";
+    </script>
+    @Styles.Render("~/css/basic/offline")
+
+    @Scripts.Render("~/scripts/modernizr/offline")
+    @Scripts.Render("~/scripts/jquery/offline")
+    @Scripts.Render("~/scripts/bootstrap/offline")
+    @Scripts.Render("~/scripts/knockout/offline")
+    @Scripts.Render("~/scripts/format/offline")
+    @Scripts.Render("~/scripts/cli/offline")
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <h4 id="msg">Preparing Data
+    </h4>
+    <br />
+    <h5>Please keep the Internet connection.
+    </h5>
+
+    @Scripts.Render("~/scripts/trs/offline")
+    <script type="text/javascript">
+
+        $(function () {
+            function gotoOffline() {
+                location.replace("/Trs/Offline");
+            }
+
+            var interVal;
+
+            function getData() {
+                interVal = setInterval(function () {
+                    var tmpMsg = $("#msg").html();
+                    tmpMsg += "... ";
+                    $("#msg").html(tmpMsg);
+                }, 300);
+
+
+                $.when(
+                        $.getJSON('/Trs/Offline/GetOfflineData')
+                    )
+                    .done(function (result1) {
+                        var assessment = result1.AssessmentStructure;
+                        var schools = result1.Schools;
+                        var offlineApp = getTrsOfflineApp('@(ViewBag.EncryptUserID)');
+                        offlineApp.init();
+                        if (offlineApp.status !== offlineApp.values.Status.Changed) {
+                            offlineApp.writeLocalData({
+                                assessment: assessment,
+                                schools: schools
+                            });
+                        } else {
+                            gotoOffline();
+                        }
+
+                        window.clearInterval(interVal);
+                        var tmpMsg = $("#msg").html();
+                        tmpMsg += "completed. Redirecting...";
+                        $("#msg").html(tmpMsg);
+                        setTimeout(gotoOffline, 300);
+
+                    }).fail(function (result1) {
+                        window.clearInterval(interVal);
+                        var tmpMsg = $("#msg").html();
+                        tmpMsg += ". Something is wrong, please contact administrator.";
+                        $("#msg").html(tmpMsg);
+                    });
+                }
+            getData();
+        });
+    </script>
+</body>
+</html>

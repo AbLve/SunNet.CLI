@@ -1,0 +1,581 @@
+﻿@model Sunnet.Cli.Business.Students.Models.ParentStudentListModel
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+
+@{
+    ViewBag.Title = "Add Parents";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+<style type="text/css">
+    input.error {
+        border: 1px solid #b94a48;
+    }
+
+    select.error {
+        border: 1px solid #b94a48;
+    }
+
+    label.error {
+        color: #b94a48;
+    }
+</style>
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.ParentManagement)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Parent Management", "Index", "Index"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Add Parents
+}
+
+<div class="right-content-top" style="margin-bottom: 20px;">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to Parent Management</a>
+</div>
+<form class="form-horizontal" role="form" id="StudentSearch">
+    <div class="form-group">
+        @Html.Label("", "Community/District", new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#CommunityId",
+           data_remote = Url.Action("GetCommunitySelectListForSearch", "Community", new { Area = "Community" }),
+           data_text = "Name",
+           data_value = "ID",
+           data_required = false,
+           id = "txtCommunity",
+           name = "txtCommunity",
+           placeholder = "Enter key text to search",
+           data_bind = "value: searchCriteria.communityName",
+           @for = "CommunityId",
+
+           data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}"
+       })
+            @Html.Hidden("CommunityId", "", new
+       {
+           @class = "form-control ",
+           placeholder = "Selected Community",
+           data_bind = "value: searchCriteria.communityId"
+       })
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        @Html.Label("", "School Name", new { @class = "control-label col-sm-2", @for = "txtSchool" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#SchoolId",
+           data_remote = Url.Action("GetSchoolSelectList", "School", new { Area = "School" }),
+           data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+
+           data_text = "Name",
+           data_value = "ID",
+           data_required = false,
+           id = "txtSchool",
+           name = "txtSchool",
+           placeholder = "Enter key text to search",
+           data_bind = "value: searchCriteria.schoolName",
+           @for = "SchoolId",
+           data_extraParams = "{\"communityId\":\"#CommunityId\",\"isActive\":\"#isActive\"}"
+
+       })
+            @Html.Hidden("SchoolId", "", new
+       {
+           @class = "form-control",
+           placeholder = "Selected School",
+           data_bind = "value: searchCriteria.schoolId"
+       })
+            @Html.Hidden("isActive", false)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("", "Class Name", new { @class = "control-label col-sm-2", @for = "dplClass" })
+        <div class="col-sm-3">
+            <select id="dplClass" class="form-control"
+                data-bind="options: classOptions, optionsText: 'Text', optionsValue: 'Value', value: searchCriteria.classId">
+            </select>
+        </div>
+        @Html.Label("", "Student Name", new { @class = "control-label col-sm-2", @for = "txtStudentName" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtStudentName", "", new
+       {
+           @class = "form-control",
+           data_bind = "value: searchCriteria.studentName",
+           placeholder = "Enter first, middle or last name"
+       })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ParentStatus, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(m => m.ParentStatus, ViewTextHelper.DefaultAllText, "-1", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.parentStatus"
+            })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+
+    <div class="main-content main-content">
+        <div class="content-title">
+            Parents 
+        </div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover p-table-list">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="html: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody id="listBody" data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr data-bind="css: { 'new-table-list': created }">
+                        <td>
+                            <span data-bind="text: $index() + 1"></span>
+                        </td>
+                        <td data-bind="attr: { title: $index() }">
+                            <label class="input-sm" style="display: inline-block;"
+                                data-bind="text: item.ChildFirstName, attr: { id: 'ChildFirstName' + $index(), name: 'ChildFirstName' + $index() }">
+                            </label>
+                        </td>
+                        <td>
+                            <label class="input-sm" style="display: inline-block;"
+                                data-bind="text: item.ChildLastName, attr: { id: 'ChildLastName' + $index(), name: 'ChildLastName' + $index() }">
+                            </label>
+                        </td>
+                        <td>
+                            <label class="input-sm date" style="display: inline-block;"
+                                data-bind="text: item.BirthDate, attr: { id: 'BirthDate' + $index(), name: 'BirthDate' + $index() }">
+                            </label>
+                        </td>
+                        <td>
+                            <label class="input-sm" style="display: inline-block;"
+                                data-bind="text: item.ParentCode, attr: { id: 'ParentCode' + $index(), name: 'ParentCode' + $index() }">
+                            </label>
+                        </td>
+                        <td>
+                            <label data-bind="attr:{for:'ParentFirstName' + $index()}" class="hide">parent</label>
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                   style="display: inline-block;" data-bind="value: item.ParentFirstName, attr:
+                        { id: 'ParentFirstName' + $index(), name: 'ParentFirstName' + $index() },required: item.changed()"/>
+                        </td>
+                        <td>
+                            <label data-bind="attr:{for:'ParentLastName' + $index()}" class="hide">parent</label>
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.ParentLastName, attr:
+                        { id: 'ParentLastName' + $index(), name: 'ParentLastName' + $index() }, required: item.changed()" />
+                        </td>
+                        <td>
+                            <label data-bind="attr:{for:'ParentPrimaryEmail' + $index()}" class="hide">parent</label>
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                style="display: inline-block;" data-bind="value: item.ParentPrimaryEmail, attr:
+                        { id: 'ParentPrimaryEmail' + $index(), name: 'ParentPrimaryEmail' + $index() }, required: item.changed()" />
+                        </td>
+                        <td>
+                            <!-- ko if: created -->
+                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.deleteParent }" title="Delete"></a>
+                            <!--/ko-->
+                            <a class="table-btn icon-plus  create-btn" data-bind="event: { click: $root.newRow.bind($data, item, $index()) }" href="#" title="New Parent"></a>
+                            <!-- ko if: ($index()+1) === list_Parents.showRecords().length -->
+
+                            <!--/ko-->
+                        </td>
+                    </tr>
+                </tbody>
+                @Html.Display("e", "NoData", new { Colspan = 11 })
+            </table>
+
+            @Html.Partial("_Partial_Pager")
+        </div>
+    </div>
+</form>
+@using (Ajax.BeginForm("AddParents", null, null, PostFormHelper.DefaultAjaxOptions, new
+{
+    id = formId,
+    data_bind = "visible:changed"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("confirm", false)
+    <input type="hidden" name="Parents" id="Parents" />
+    <input type="hidden" name="debug" value="true" />
+    <input type="hidden" name="isInvite" id="isInvite" value="false" />
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" data-bind="click: submit">Submit</button>
+        <button class="mainbutton modal-btn submit-btn" type="button" data-bind="click: submitAndInvite">Submit & Invite</button>
+    </div>
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        ko.bindingHandlers.datalist = {
+            init: function (element, valueAccessor, allBinding, viewModel, bindingContext) {
+                $(element).datalist();
+            }
+        };
+        var list_Parents = {};
+
+        function Parent(defaultValues, newItem) {
+            var self = this;
+            if (newItem) {
+                this.ChildFirstName = newItem.ChildFirstName();
+                this.ChildLastName = newItem.ChildLastName();
+                this.BirthDate = newItem.BirthDate();
+                this.ParentCode = newItem.ParentCode();
+                this.ParentId = newItem.ParentId;
+                this.StudentId = newItem.StudentId;
+            } else {
+                this.ChildFirstName = "";
+                this.ChildLastName = "";
+                this.BirthDate = "";
+                this.ParentCode = "";
+            }
+            this.ID = 0;
+            this.ParentFirstName = "";
+            this.ParentLastName = "";
+            this.ParentPrimaryEmail = "";
+            this.changed = ko.observable(false);
+            var fieldChanged = function (newVal) {
+                self.changed(true);
+            };
+            if (defaultValues) {
+                $.extend(self, defaultValues);
+            }
+            this.ChildFirstName = ko.observable(this.ChildFirstName);
+            this.ChildFirstName.subscribe(fieldChanged);
+            this.ChildLastName = ko.observable(this.ChildLastName);
+            this.ChildLastName.subscribe(fieldChanged);
+            this.BirthDate = ko.observable(this.BirthDate);
+            this.BirthDate.subscribe(fieldChanged);
+            this.ParentCode = ko.observable(this.ParentCode);
+            this.ParentCode.subscribe(fieldChanged);
+            this.ParentFirstName = ko.observable(this.ParentFirstName);
+            this.ParentFirstName.subscribe(fieldChanged);
+            this.ParentLastName = ko.observable(this.ParentLastName);
+            this.ParentLastName.subscribe(fieldChanged);
+            this.ParentPrimaryEmail = ko.observable(this.ParentPrimaryEmail);
+            this.ParentPrimaryEmail.subscribe(fieldChanged);
+
+            if (defaultValues != undefined) {
+                this.ParentFirstName.subscribe(
+                    function (newVal) {
+                        if (defaultValues.ParentFirstName != newVal)
+                            self.changed(true);
+                        else
+                            self.changed(false);
+                    });
+                this.ParentLastName.subscribe(
+                    function (newVal) {
+                        if (defaultValues.ParentLastName != newVal)
+                            self.changed(true);
+                        else
+                            self.changed(false);
+                    });
+                this.ParentPrimaryEmail.subscribe(
+                    function (newVal) {
+                        if (defaultValues.ParentPrimaryEmail != newVal)
+                            self.changed(true);
+                        else
+                            self.changed(false);
+                    });
+            }
+            this.changed(false);
+        }
+
+        function getNewParent(item) {
+            var parent = new Parent(undefined, item);
+            parent.changed(true);
+            parent.created = true;
+            return parent;
+        }
+
+        function getParent(values) {
+            var parent = new Parent(values, null);
+            parent.created = false;
+            return parent;
+        }
+
+        $(function () {
+            var $form = $("#@(formId)");
+            var $formData = $("#StudentSearch");
+            var inited = false;
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+
+                    if (response.success) {
+                        list_Parents.search();
+                    }
+                }
+            });
+            list_Parents = new ViewModel(
+                {
+                    instanceName: "list_Parents",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchStudentsToAddParent")))',
+                    orderBy: "ChildFirstName",
+                    orderDirection: "ASC",
+                    pageSize: 50,
+                    headers: [
+                        {
+                            text: '#',
+                            width: '5%'
+                        },
+                        {
+                            text: "<span class='required'>Child First Name</span>",
+                            field: "@Html.NameFor(model => model.ChildFirstName)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "<span class='required'>Child Last Name</span>",
+                            field: "@Html.NameFor(model => model.ChildLastName)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "<span class='required'>Child DOB</span>",
+                            field: "@Html.NameFor(model => model.BirthDate)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "<span class='required'>Parent Pin For Progress Monitoring</span>",
+                            field: "@Html.NameFor(model => model.ParentCode)",
+                            order: true,
+                            width: '9%'
+                        },
+                        {
+                            text: "<span class='required'>Parent First Name</span>",
+                            field: "@Html.NameFor(model => model.ParentFirstName)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "<span class='required'>Parent Last Name</span>",
+                            field: "@Html.NameFor(model => model.ParentLastName)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "<span class='required'>Parent Email</span>",
+                            field: "@Html.NameFor(model => model.ParentPrimaryEmail)",
+                            order: true,
+                            width: '15%'
+                        }, { text: "Action", width: '8%' }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("communityId")),
+                        communityName: ko.observable(window.queryString("communityName")),
+                        schoolId: ko.observable(window.queryString("schoolId")),
+                        schoolName: ko.observable(window.queryString("schoolName")),
+                        classId: ko.observable(window.queryString("classid", -1)),
+                        studentName: ko.observable(window.queryString("studentName")),
+                        parentStatus: ko.observable(window.queryString("parentStatus", -1))
+                    }
+                },
+                {
+                    classOptions: ko.observableArray([]),
+                    dataProcessor: function (items) {
+                        var models = [];
+                        for (var i = 0; i < items.length; i++) {
+                            models.push(getParent(items[i]));
+                        }
+                        if (items.length == 0)
+                            list_Parents.newRow();
+                        return models;
+
+                    },
+                    newRow: function (item, index) {
+                        if (list_Parents.showRecords().length < 50) {
+                            console.log(item.ChildFirstName);
+                            list_Parents.showRecords.splice(index + 1, 0, getNewParent(item));
+                            //list_Parents.showRecords.unshift(getNewParent(item));
+                        } else {
+                            waitingAlert("fail", "Up to 50 parents in this list.");
+                        }
+                    },
+                    deleteParent: function (parent) {
+                        list_Parents.showRecords.remove(parent);
+                    },
+
+                    submitAndInvite: function () {
+                        $("#isInvite").val("true");
+                        var parents = [], changedParents = [];
+
+                        if (list_Parents.changed()) {
+                            if ($formData.valid() === false) {
+                                window.showMessage("hint", "multiple_Fields_Required");
+                                return false;
+                            }
+
+                            for (var i = 0; i < list_Parents.showRecords().length; i++) {
+                                var item = list_Parents.showRecords()[i];
+                                if (item.changed()) {
+                                    changedParents.push(item);
+                                }
+                            }
+
+                            parents = $.map(changedParents, function (item) {
+                                return {
+                                    ID: item.ID,
+                                    StudentId: item.StudentId,
+                                    ParentId: item.ParentId,
+                                    ParentFirstName: item.ParentFirstName(),
+                                    ParentLastName: item.ParentLastName(),
+                                    ParentPrimaryEmail: item.ParentPrimaryEmail(),
+                                    ChildFirstName: item.ChildFirstName(),
+                                    ChildLastName: item.ChildLastName(),
+                                    BirthDate: item.BirthDate(),
+                                    ParentCode: item.ParentCode()
+                                }
+                            });
+
+                            $form.find("#Parents").val(JSON.stringify(parents));
+                            $form.submit();
+                        } else {
+                            window.showMessage("success", "Nothing is changed.");
+                            return;
+                        }
+                    },
+
+                    submit: function () {
+                        $("#isInvite").val("false");
+                        var parents = [], changedParents = [];
+
+
+
+
+                        if (list_Parents.changed()) {
+                            if ($formData.valid() === false) {
+                                window.showMessage("hint", "multiple_Fields_Required");
+                                return false;
+                            }
+
+                            for (var i = 0; i < list_Parents.showRecords().length; i++) {
+                                var item = list_Parents.showRecords()[i];
+                                if (item.changed()) {
+                                    changedParents.push(item);
+                                }
+                            }
+
+                            parents = $.map(changedParents, function (item) {
+                                return {
+                                    ID: item.ID,
+                                    StudentId: item.StudentId,
+                                    ParentId: item.ParentId,
+                                    ParentFirstName: item.ParentFirstName(),
+                                    ParentLastName: item.ParentLastName(),
+                                    ParentPrimaryEmail: item.ParentPrimaryEmail(),
+                                    ChildFirstName: item.ChildFirstName(),
+                                    ChildLastName: item.ChildLastName(),
+                                    BirthDate: item.BirthDate(),
+                                    ParentCode: item.ParentCode()
+                                }
+                            });
+
+                            $form.find("#Parents").val(JSON.stringify(parents));
+                            $form.submit();
+                        } else {
+                            window.showMessage("success", "Nothing is changed.");
+                            return;
+                        }
+                    }
+                }
+            );
+
+            list_Parents.changed = ko.computed(function () {
+                var changed = false;
+                for (var i = 0; i < this.showRecords().length; i++) {
+                    if (this.showRecords()[i].changed()) {
+                        changed = true;
+                        break;
+                    }
+                }
+                return changed;
+            }, list_Parents);
+
+            ko.applyBindings(list_Parents);
+            var $txtCommunity = $("#txtCommunity");
+            var $txtSchool = $("#txtSchool");
+            $txtCommunity.on("selected.sunnet.datalist", function (event) {
+                $txtSchool.datalist("clear");
+                $("#SchoolId").val("");
+                SchoolChanged();
+            });
+            $txtSchool.on("selected.sunnet.datalist", function () {
+                SchoolChanged();
+            });
+            SchoolChanged();
+        });
+
+                function SchoolChanged() {
+                    var schoolId = $("#SchoolId").val();
+                    var communityId = $("#CommunityId").val();
+                    $.getJSON(
+                        '/Student/Student/GetClassSelectList',
+                        { schoolId: schoolId, communityId: communityId },
+                        function (data) {
+                            list_Parents.classOptions(data);
+                            list_Parents.searchCriteria.classId(window.queryString("classid"));
+                        });
+                }
+
+                $(function () {
+                    $form = $("#@(formId)");
+                    registerFormCallbacks("@(formId)", {
+                        onResponsed: function (response) {
+                            if (response.success) {
+                                var promise;
+                                $form.find("#confirm").val(false);
+                                if (typeof response.data == "string") {
+                                    if (response.data == "waiting") {
+                                        promise = window.waitingAlert("warning", response.msg);
+                                    } else {
+                                        promise = window.showMessage("success", response.msg);
+                                        list_Parents.search();
+                                    }
+                                } else if (typeof response.data == "object") {
+                                    if (response.data != null && response.data.type == "continue") {
+                                        $.when(window.waitingConfirm(response.msg, "Continue", "Cancel")).done(function () {
+                                            $form.find("#confirm").val(true);
+                                            $form.submit();
+                                        }).fail(function () {
+                                            $form.find("#confirm").val(false);
+                                        });
+                                    } else {
+                                        window.showMessage("success", response.msg);
+                                        list_Parents.search();
+                                    }
+                                }
+                            } else if (response.success) {
+                                window.showMessage("success", response.msg);
+                            } else {
+                                window.showMessage("fail",
+                                    response.msg);
+                            }
+                        }
+                    });
+                });
+    </script>
+}

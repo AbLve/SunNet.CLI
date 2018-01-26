@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    Assessment<i class="icon-angle-right"></i>Dashboard
+}
+<ul class="ade-dashboard-content">
+    <li>
+        @Html.ActionLink("CPALLS+", "Index", "School", new { Area = "Cpalls" }, new { @class = "manage-btn" })
+    </li>
+    <li>
+        @Html.ActionLink("COT", "Index", "Index", new { Area = "Cot" }, new { @class = "items-btn" })
+    </li>
+    <li>
+        @Html.ActionLink("Cec", "Index", "Cec", new { Area = "Cec" }, new { @class = "courses-btn" })
+    </li>
+</ul>

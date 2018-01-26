@@ -1,0 +1,311 @@
+﻿@using Sunnet.Cli.Business.Cot.Summary
+@using Sunnet.Cli.Core.Users.Enums
+@{
+    ViewBag.Title = "Summary";
+    Layout = "~/Areas/Cot/Views/Shared/_Layout_Report_Chart.cshtml";
+    var models = ViewBag.Model as List<SummaryReportModel>;
+    bool isFirstTeacher = true;
+    int index = 0;
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    int itemIndex = 1;
+    int itemsCount = 0;
+    int pageSize = 10;
+    int pageCount = 0;
+    string assessmentName = ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName);
+}
+@foreach (SummaryReportModel model in models)
+{
+    <table class='header @(isFirstTeacher ? "" : "newpager") ' width="100%">
+        @Html.Partial("_Partial_SummaryReport_Head", model, new ViewDataDictionary { new KeyValuePair<string, object>("assessmentName", assessmentName) })
+    </table>
+    <div id="chart@(index++)" style="height: 450px; width: @(ReportHelper.GetChartWidth(model.Measures.Count(),80, 100, 1200)+200)px;">
+    </div>
+    <div class="note" style="color:#000000;">
+        @foreach (var measure in model.Measures)
+        {
+            <b>@measure.ShortName:</b>
+            <span>&nbsp;@(measure.Name);&nbsp;</span>
+        }
+    </div>
+    {
+        itemsCount = model.Measures.Sum(x => x.Items.Count());
+        pageCount = itemsCount % pageSize == 0 ? itemsCount / pageSize : itemsCount / pageSize + 1;
+    }
+    for (var i = 0; i < pageCount; i++)
+    {
+        var j = 0;
+        <table class='header @(isFirstTeacher ? "" : "newpager") ' width="100%">
+            @Html.Partial("_Partial_SummaryReport_Head", model, new ViewDataDictionary { new KeyValuePair<string, object>("assessmentName", assessmentName) })
+        </table>
+        <table cellpadding="0" cellspacing="0" class="report-data table_border" style="text-align:center; margin-top:20px; margin-bottom:50px;  width:60%;">
+            <thead style="page-break-inside: avoid">
+                <tr>
+                    <th width="5%"></th>
+                    <th width="20%">Domain</th>
+                    <th width="20%">Item</th>
+                    <th width="15%">Level</th>
+                    <th width="10%">Status</th>
+                    <th width="15%">Date</th>
+                    <th width="15%">Resource</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (SummaryMeasureModel measure in model.Measures)
+                {
+                    foreach (var item in measure.Items.ToArray())
+                    {
+                        j++;
+                        if (i * pageSize >= j)
+                        {
+                            continue;
+                        }
+                        if (j > (i + 1) * pageSize)
+                        {
+                            break;
+                        }
+                        <tr>
+                            <td>@(itemIndex++)</td>
+                            <td>@measure.Name</td>
+                            <td>@item.Description</td>
+                            <td>@item.Level.GetValue()</td>
+                            <td>@(item.IsMet ? "Met" : item.IsSet ? "Set" : "Not Set")</td>
+                            <td>@(item.IsMet ? item.MetDate.ToString("MM/dd/yyyy") : item.IsSet ? item.SetDate.ToString("MM/dd/yyyy") : "")</td>
+                            <td>
+                                @if (item.Links != null)
+                                {
+                                    foreach (var link in item.Links)
+                                    {
+                                        <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                            <br />
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                    if (j >= (i + 1) * pageSize)
+                    {
+                        break;
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    {
+        itemIndex = 1;
+        isFirstTeacher = false;
+    }
+
+}
+@using (Html.BeginForm("Summary_Download", "Report", FormMethod.Post, new { id = formId, target = "_blank" }))
+{
+    @Html.Hidden("teacherId")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("type")
+    @Html.Hidden("SchoolId")
+    @Html.Hidden("CommunityId")
+    @Html.Hidden("measures")
+    @Html.Hidden("yearsInProject")
+    if (models.Any())
+    {
+        foreach (AssignmentType type in models.First().CoachModels)
+        {
+            @Html.Hidden("coachModels", type)
+        }
+        foreach (AssignmentType type in models.First().ECircles)
+        {
+            @Html.Hidden("eCircles", type)
+        }
+    }
+    @Html.Hidden("export", true)
+    <button type="submit" class="btn-export" id="btn_Export" onclick=" javascript:return exportPdf(); ">
+        Export
+    </button>
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+
+    <script type="text/javascript">
+    var reports = @Html.Raw(ViewBag.Json);
+    var charts = [];
+    var options = [];
+    var currentIndex = 0;
+
+    function exportPdf() {
+        var $form = $("#@(formId)");
+            $form.find("input:hidden[name='imgSources']").remove();
+            if (charts && charts.length) {
+                for (var i = 0; i < charts.length; i++) {
+                    var myChart = charts[i];
+                    var options = myChart.getOption();
+                    options.toolbox.feature.magicType.show = false;
+                    options.toolbox.feature.dataZoom.show = false;
+                    options.toolbox.feature.restore.show = false;
+                    myChart.setOption(options);
+                    var $imgSources = $('<input name="imgSources" type="hidden" value="" />').appendTo($form);
+                    $imgSources.val(myChart.getDataURL());
+
+                    options.toolbox.feature.magicType.show = true;
+                    options.toolbox.feature.dataZoom.show = true;
+                    options.toolbox.feature.restore.show = true;
+                    myChart.setOption(options);
+                }
+            }
+            return true;
+        }
+
+        var maxCount = {
+            maxCount: 0,
+            getMaxCount: function(minVlaue) {
+                var value = (Math.floor(this.maxCount / 10) + 1) * 10;
+                if (minVlaue && value < minVlaue) {
+                    value = minVlaue;
+                }
+                return value;
+            },
+            getSplitNumber: function() {
+                var count = Math.ceil(this.maxCount / 5);
+                return count;
+            },
+            setMaxCount: function(max) {
+                if (max > this.maxCount)
+                    this.maxCount = max;
+            },
+            reset: function() {
+                this.maxCount = 0;
+            }
+        }
+        $(function() {
+            function startGenerateReport() {
+                if (options.length > currentIndex) {
+                    window.scrollTo(0, $("#chart" + currentIndex).offset().top);
+
+                    var option = options[currentIndex];
+                    var myChart = echarts.init(document.getElementById('chart' + index++), echartsTheme.default);
+                    myChart.setOption(option);
+                    charts.push(myChart);
+                    currentIndex++;
+                    setTimeout(function() {
+                        startGenerateReport();
+                    }, 1000);
+                } else {
+                    setTimeout(function() {
+                        $("#btn_Export").slideDown();
+                    }, 1000);
+                }
+            }
+
+            var index = 0;
+            var dicMeasureItemCount = new Array();
+            for (var i = 0; i < reports.length; i++) {
+                var report = reports[i];
+
+                var option = new ReportOption();
+                option.title = {
+                    text: "@(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))",
+                    textAlign: "left",
+                    x: 0,
+                    y: 0
+                };
+
+                option.color = ["#3399CC","#ffffff"];
+                var legendTitle = "Observed";
+                //option.legend.data.push(legendTitle);
+                //option.legend.data.push("EmptyItems");
+                option.legend.show = false;
+                option.legend.x = 350; // hide legend
+
+                option.series.push({
+                    name: legendTitle,
+                    type: 'bar',
+                    stack: legendTitle,
+                    data: [],
+                    barWidth: 30,
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                position: 'insideTop',
+                                formatter: function (legend, category, value) {
+                                    return value < 1 ? "" : value;
+                                },
+                                textStyle: {
+                                    color: "#000000"
+                                }
+                            },
+                            barBorderColor: "#000000",
+                            barBorderWidth: 1
+                        }
+                    }
+                });
+                option.series.push({
+                    name: "Not Observed",
+                    type: 'bar',
+                    stack: legendTitle,
+                    data: [],
+                    barWidth: 80,
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                position: 'insideTop',
+                                formatter: function (legend, category, value) {
+                                    return value < 1 ? "" : value;
+                                },
+                                textStyle: {
+                                    color: "#000000"
+                                }
+                            },
+                            barBorderColor: "#000000",
+                            barBorderWidth: 1
+                        }
+                    }
+                });
+
+                option.xAxis = option.xAxis.slice(0, 1);
+                option.xAxis[0].axisLabel.rotate = 0;
+                var xAxisData = option.xAxis[0].data;
+                var max = 1;
+                for (var j = 0; j < report.Measures.length; j++) {
+                    var measure = report.Measures[j];
+                    xAxisData.push(measure.ShortName);
+                    option.series[0].data.push(measure.FillColorCount);
+                    option.series[1].data.push(measure.ItemCount - measure.FillColorCount);
+                    if (measure.ItemCount > max) {
+                        max = measure.ItemCount;
+                        maxCount.setMaxCount(max);
+                    }
+                    dicMeasureItemCount[measure.Name] = measure.ItemCount;
+                }
+
+                option.xAxis[0].axisTick = {
+                    show: true,
+                    length: 5,
+                    lineStyle: {
+                        type: 'dashed'
+                    }
+                };
+                option.yAxis[0].name = "Obs/Met";
+                option.yAxis[0].max = max;
+                option.yAxis[0].splitNumber = maxCount.getSplitNumber();
+                option.yAxis[0].min = 0;
+                option.yAxis[0].axisLabel = {
+                    show: true,
+                    interval: 0
+                };
+                option.yAxis[0].axisLine = {
+                    show: true
+                };
+                option.grid.width = xAxisData.length * option.grid.width;
+                option.grid.borderWidth = 1;
+                option.grid.borderColor = "#000";
+                options.push(option);
+                maxCount.reset();
+            }
+            startGenerateReport();
+        });
+    </script>
+}
+

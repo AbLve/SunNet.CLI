@@ -1,0 +1,250 @@
+﻿/*
+Navicat SQL Server Data Transfer
+
+Source Server         : sunnetdb
+Source Server Version : 110000
+Source Host           : 192.168.1.7\sql2012:1433
+Source Database       : Cli_Ade_TXKea
+Source Schema         : dbo
+
+Target Server Type    : SQL Server
+Target Server Version : 110000
+File Encoding         : 65001
+
+Date: 2017-12-15 10:58:37
+*/
+
+
+-- ----------------------------
+-- Table structure for TsdsMap
+-- ----------------------------
+DROP TABLE [dbo].[TsdsMap]
+GO
+CREATE TABLE [dbo].[TsdsMap] (
+[Id] int NOT NULL IDENTITY(1,1) ,
+[AssessmentIdentificationCode] nvarchar(30) NULL ,
+[AssessmentTitle] nvarchar(50) NULL ,
+[AcademicSubject] nvarchar(50) NULL ,
+[AssessmentLabel] nvarchar(30) NULL ,
+[AssessmentId] int NULL ,
+[MeasureLabel] nvarchar(30) NULL ,
+[MeasureName] nvarchar(50) NULL ,
+[MeasureId] int NULL ,
+[Wave] int NULL ,
+[Score] nvarchar(30) NULL 
+)
+
+
+GO
+DBCC CHECKIDENT(N'[dbo].[TsdsMap]', RESEED, 64)
+GO
+
+-- ----------------------------
+-- Records of TsdsMap
+-- ----------------------------
+SET IDENTITY_INSERT [dbo].[TsdsMap] ON
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'1', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Social and Emotional Development', N'CPALLS+_2015_Eng', N'9', N'Social-Emotional_V1', N'Social Emotional Checklist', N'108', N'1', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'2', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Language and Communication', N'CPALLS+_2015_Eng', N'9', N'RV_set1_v1', N'Rapid Vocabulary 1', N'70', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'3', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Emergent Literacy Reading', N'CPALLS+_2015_Eng', N'9', N'RLN_v1', N'Rapid Letter Naming', N'69', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'4', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Emergent Literacy Writing', N'CPALLS+_2015_Eng', N'9', N'Early_Writing_v1', N'Early Writing Checklist', N'65', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'5', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Mathematics', N'CPALLS+_2015_Eng', N'9', N'Math_v1', N'Math', N'130', N'1', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'6', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Composite', N'CPALLS+_2015_Eng', N'9', N'(blank)', N'', null, null, N'Leave blank')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'7', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Social and Emotional Development', N'CPALLS+_2015_Eng', N'9', N'Social-Emotional_V1', N'Social Emotional Checklist', N'108', N'3', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'8', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Language and Communication', N'CPALLS+_2015_Eng', N'9', N'RV_set3_v1', N'Rapid Vocabulary 3', N'72', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'9', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Emergent Literacy Reading', N'CPALLS+_2015_Eng', N'9', N'RLN_v1', N'Rapid Letter Naming', N'69', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'10', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Emergent Literacy Writing', N'CPALLS+_2015_Eng', N'9', N'Early_Writing_v1', N'Early Writing Checklist', N'65', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'11', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Mathematics', N'CPALLS+_2015_Eng', N'9', N'Math_v1', N'Math', N'130', N'3', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'12', N'CIRCLE English', N'EOY PK CIRCLE Assessment English', N'Composite', N'CPALLS+_2015_Eng', N'9', N'(blank)', N'', null, null, N'Leave blank')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'13', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Social and Emotional Development', N'CPALLS+_2015_Spa', N'10', N'Social-Emotional_spa_v2', N'Socio-Emocional', N'88', N'1', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'14', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Language and Communication', N'CPALLS+_2015_Spa', N'10', N'RV_set1_spa_v1', N'Vocabulario rápido 1', N'85', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'15', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Emergent Literacy Reading', N'CPALLS+_2015_Spa', N'10', N'RLNA_spa_v1', N'Letras rápidas', N'84', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'16', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Emergent Literacy Writing', N'CPALLS+_2015_Spa', N'10', N'Early_Writing_spa_v1', N'Escritura temprana', N'80', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'17', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Mathematics', N'CPALLS+_2015_Spa', N'10', N'Math_spa_v1', N'Matemáticas', N'137', N'1', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'18', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Composite', N'CPALLS+_2015_Spa', N'10', N'(blank)', N'', null, null, N'Leave blank')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'19', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Social and Emotional Development', N'CPALLS+_2015_Spa', N'10', N'Social-Emotional_spa_v2', N'Socio-Emocional', N'88', N'3', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'20', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Language and Communication', N'CPALLS+_2015_Spa', N'10', N'RV_set3_spa_v1', N'Vocabulario rápido 3', N'87', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'21', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Emergent Literacy Reading', N'CPALLS+_2015_Spa', N'10', N'RLNA_spa_v1', N'Letras rápidas', N'84', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'22', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Emergent Literacy Writing', N'CPALLS+_2015_Spa', N'10', N'Early_Writing_spa_v1', N'Escritura temprana', N'80', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'23', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Mathematics', N'CPALLS+_2015_Spa', N'10', N'Math_spa_v1', N'Matemáticas', N'137', N'3', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'24', N'CIRCLE Spanish', N'EOY PK CIRCLE Assessment Spanish', N'Composite', N'CPALLS+_2015_Spa', N'10', N'(blank)', N'', null, null, N'Leave blank')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'25', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Social and Emotional Development', N'TXKEA_En_v1', N'48', N'TXKEA_Social_Emotional', N'', N'488', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'26', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Language and Communication', N'TXKEA_En_v1', N'48', N'TXKEA_Vocabulary', N'', N'449', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'27', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Language and Communication', N'TXKEA_En_v1', N'48', N'TXKEA_Listening_Comp', N'', N'497', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'28', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Emergent Literacy Reading', N'TXKEA_En_v1', N'48', N'TXKEA_Letter_Names', N'', N'451', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'29', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Emergent Literacy Reading', N'TXKEA_En_v1', N'48', N'TXKEA_Letter_Sounds', N'', N'452', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'30', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Emergent Literacy Reading', N'TXKEA_En_v1', N'48', N'TXKEA_Blending', N'', N'453', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'31', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Emergent Literacy Writing', N'TXKEA_En_v1', N'48', N'TXKEA_Spelling', N'', N'455', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'32', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Mathematics', N'TXKEA_En_v1', N'48', N'TXKEA_Math_Part_1', N'', N'499', N'1', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'33', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Mathematics', N'TXKEA_En_v1', N'48', N'TXKEA_Math_Part_2', N'', N'498', N'1', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'34', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Composite', N'TXKEA_En_v1', N'48', N'(blank)', N'', null, N'1', N'Leave blank')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'35', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Social and Emotional Development', N'TXKEA_En_v1', N'48', N'TXKEA_Social_Emotional', N'', N'488', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'36', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Language and Communication', N'TXKEA_En_v1', N'48', N'TXKEA_Vocabulary', N'', N'449', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'37', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Language and Communication', N'TXKEA_En_v1', N'48', N'TXKEA_Listening_Comp', N'', N'497', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'38', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Emergent Literacy Reading', N'TXKEA_En_v1', N'48', N'TXKEA_Letter_Names', N'', N'451', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'39', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Emergent Literacy Reading', N'TXKEA_En_v1', N'48', N'TXKEA_Letter_Sounds', N'', N'452', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'40', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Emergent Literacy Reading', N'TXKEA_En_v1', N'48', N'TXKEA_Blending', N'', N'453', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'41', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Emergent Literacy Writing', N'TXKEA_En_v1', N'48', N'TXKEA_Spelling', N'', N'455', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'42', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Mathematics', N'TXKEA_En_v1', N'48', N'TXKEA_Math_Part_1', N'', N'499', N'3', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'43', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Mathematics', N'TXKEA_En_v1', N'48', N'TXKEA_Math_Part_2', N'', N'498', N'3', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'44', N'TX-KEA-E', N'EOY KG TX-KEA English', N'Composite', N'TXKEA_En_v1', N'48', N'(blank)', N'', null, N'3', N'Leave blank')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'45', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Social and Emotional Development', N'TXKEA_Sp_v1', N'49', N'TXKEA_Social_Emotional_Sp', N'', N'483', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'46', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Language and Communication', N'TXKEA_Sp_v1', N'49', N'TXKEA_Vocabulary_Sp', N'', N'467', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'47', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Language and Communication', N'TXKEA_Sp_v1', N'49', N'TXKEA_Listening_Comp_Sp', N'', N'1533', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'48', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Emergent Literacy Reading', N'TXKEA_Sp_v1', N'49', N'TXKEA_Letter_Names_Sp', N'', N'470', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'49', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Emergent Literacy Reading', N'TXKEA_Sp_v1', N'49', N'TXKEA_Letter_Sounds_Sp', N'', N'471', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'50', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Emergent Literacy Reading', N'TXKEA_Sp_v1', N'49', N'TXKEA_Blending_Sp', N'', N'472', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'51', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Emergent Literacy Writing', N'TXKEA_Sp_v1', N'49', N'TXKEA_Spelling_SP', N'', N'474', N'1', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'52', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Mathematics', N'TXKEA_Sp_v1', N'49', N'TXKEA_Math_Part_1_Sp', N'', N'503', N'1', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'53', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Mathematics', N'TXKEA_Sp_v1', N'49', N'TXKEA_Math_Part_2_Sp', N'', N'502', N'1', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'54', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Composite', N'TXKEA_Sp_v1', N'49', N'(blank)', N'', null, N'1', N'Leave blank')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'55', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Social and Emotional Development', N'TXKEA_Sp_v1', N'49', N'TXKEA_Social_Emotional_Sp', N'', N'483', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'56', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Language and Communication', N'TXKEA_Sp_v1', N'49', N'TXKEA_Vocabulary_Sp', N'', N'467', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'57', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Language and Communication', N'TXKEA_Sp_v1', N'49', N'TXKEA_Listening_Comp_Sp', N'', N'1533', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'58', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Emergent Literacy Reading', N'TXKEA_Sp_v1', N'49', N'TXKEA_Letter_Names_Sp', N'', N'470', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'59', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Emergent Literacy Reading', N'TXKEA_Sp_v1', N'49', N'TXKEA_Letter_Sounds_Sp', N'', N'471', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'60', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Emergent Literacy Reading', N'TXKEA_Sp_v1', N'49', N'TXKEA_Blending_Sp', N'', N'472', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'61', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Emergent Literacy Writing', N'TXKEA_Sp_v1', N'49', N'TXKEA_Spelling_SP', N'', N'474', N'3', N'Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'62', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Mathematics', N'TXKEA_Sp_v1', N'49', N'TXKEA_Math_Part_1_Sp', N'', N'503', N'3', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'63', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Mathematics', N'TXKEA_Sp_v1', N'49', N'TXKEA_Math_Part_2_Sp', N'', N'502', N'3', N'Parent Measure Total')
+GO
+GO
+INSERT INTO [dbo].[TsdsMap] ([Id], [AssessmentIdentificationCode], [AssessmentTitle], [AcademicSubject], [AssessmentLabel], [AssessmentId], [MeasureLabel], [MeasureName], [MeasureId], [Wave], [Score]) VALUES (N'64', N'TX-KEA-S', N'EOY KG TX-KEA Spanish', N'Composite', N'TXKEA_Sp_v1', N'49', N'(blank)', N'', null, N'3', N'Leave blank')
+GO
+GO
+SET IDENTITY_INSERT [dbo].[TsdsMap] OFF
+GO
+
+-- ----------------------------
+-- Indexes structure for table TsdsMap
+-- ----------------------------
+
+-- ----------------------------
+-- Primary Key structure for table TsdsMap
+-- ----------------------------
+ALTER TABLE [dbo].[TsdsMap] ADD PRIMARY KEY ([Id])
+GO

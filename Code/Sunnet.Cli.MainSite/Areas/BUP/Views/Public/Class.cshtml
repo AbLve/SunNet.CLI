@@ -1,0 +1,52 @@
+﻿@using Sunnet.Cli.Core.BUP.Models
+@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    List<BUPClassModel> entities = ViewBag.Entities;
+    ViewBag.Title = "Batch " + ViewBag.BatchId + ", " + "Class";
+}
+
+<style type="text/css">
+    .modal-main-content {
+        padding-top: 0px;
+    }
+    .modal-content {
+        width: 1000px;
+    }
+</style>
+
+<form class="form-horizontal">
+    <div class="main-content main-content">
+        <div class="content-title">Error Records</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 1%">#</th>
+                        <th style="width: 10%">Action</th>
+                        <th style="width: 14%">Community Name</th>
+                        <th style="width: 14%">School Name</th>
+                        <th style="width: 14%">Class Name</th>
+                        <th style="width: 14%">Classroom Name</th>
+                        <th style="width: 10%">Engage ID</th>
+                        <th style="width: auto">Error Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (BUPClassModel item in entities)
+                    {
+                        <tr>
+                            <td>@(item.LineNum)</td>
+                            <td>@(item.Action.ToString())</td>
+                            <td>@(item.CommunityName)</td>
+                            <td>@(item.SchoolName)</td>
+                            <td>@(item.Name)</td>
+                            <td>@(item.ClassroomName)</td>
+                            <td>@(item.ClassEngageID)</td>
+                            <td>@(item.Remark)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>

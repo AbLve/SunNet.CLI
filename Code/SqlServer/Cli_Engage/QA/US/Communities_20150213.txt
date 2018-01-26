@@ -1,0 +1,3 @@
+﻿if not exists(select * from syscolumns where id=object_id('Communities') and name='TexasRisingStar')
+alter table Communities add  TexasRisingStar bit not null default 0
+

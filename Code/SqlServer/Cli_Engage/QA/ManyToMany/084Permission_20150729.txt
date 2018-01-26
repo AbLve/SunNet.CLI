@@ -1,0 +1,125 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3930,'Status Tracking',1,3000,'',13,1,'Status Tracking',GETDATE(),GETDATE())
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3932,'Export',1,3000,'',14,1,'Export',GETDATE(),GETDATE())
+SET IDENTITY_INSERT Permission_Pages OFF
+go
+
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3930,1)
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3932,1)
+go
+
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(2,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(3,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(4,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(5,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(6,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(7,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(8,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(9,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(10,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(11,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(12,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(13,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(15,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(16,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(18,3930,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(20,3930,'1;',GETDATE(),GETDATE())
+go
+
+
+
+
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(1,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(2,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(3,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(4,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(5,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(6,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(7,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(8,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(9,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(10,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(11,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(12,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(13,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(15,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(16,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(18,3932,'1;',GETDATE(),GETDATE())
+go
+insert into Permission_RolePageAuthorities(RoleId,PageId,PageAction,CreatedOn,UpdatedOn)
+values(20,3932,'1;',GETDATE(),GETDATE())
+go

@@ -1,0 +1,5 @@
+﻿alter table [dbo].[Permission_Roles] add  Status tinyint default(1) not null
+
+alter table [dbo].[Permission_Roles] add  UserType tinyint default(1) not null
+
+alter table [dbo].[Permission_Roles] add  IsDefault bit default(1) not null

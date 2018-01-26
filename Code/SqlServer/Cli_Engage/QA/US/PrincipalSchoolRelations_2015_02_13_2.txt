@@ -1,0 +1,14 @@
+﻿TRUNCATE TABLE [dbo].[PrincipalSchoolRelations]
+GO
+INSERT INTO [dbo].[PrincipalSchoolRelations]
+SELECT [PrincipalId] = [ID],[SchoolId],[CommunityId],[CreatedBy] = 1,[CreatedOn] = GETDATE(),[UpdatedBy] = 1,[UpdatedOn] =GETDATE(),[Status] = 10,Note = 'Import'
+FROM [dbo].[Principals]
+
+GO
+IF EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('Principals') AND name = 'CommunityId' )
+ALTER TABLE [dbo].Principals DROP COLUMN CommunityId
+
+GO
+IF EXISTS(SELECT 1 FROM SYS.all_columns WHERE  [object_id] = OBJECT_ID('Principals') AND name = 'SchoolId' )
+ALTER TABLE [dbo].Principals DROP COLUMN SchoolId
+

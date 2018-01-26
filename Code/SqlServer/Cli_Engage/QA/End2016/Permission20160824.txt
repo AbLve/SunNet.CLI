@@ -1,0 +1,69 @@
+﻿
+SET IDENTITY_INSERT Permission_Pages ON
+
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9503,'Track Your child''s Development',1,9500,'/Parent/Parent/index',3,1,'Track Your child''s Development',GETDATE(),GETDATE())
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9504,'School Reports',1,9500,'/Parent/Parent/SchoolReport',4,1,'School Reports',GETDATE(),GETDATE())
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9505,'My Connections',1,9500,'/Parent/Index/MyConnections',5,1,'My Connections',GETDATE(),GETDATE())
+SET IDENTITY_INSERT Permission_Pages OFF
+
+GO
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 9503, -- PageId - int
+          1  -- ActionId - int
+          )
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 9504, -- PageId - int
+          1  -- ActionId - int
+          )
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 9505, -- PageId - int
+          1  -- ActionId - int
+          )
+
+		  INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9503 , -- PageId - int
+          '1;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )
+
+INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9504 , -- PageId - int
+          '1;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )
+
+INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9505 , -- PageId - int
+          '1;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )

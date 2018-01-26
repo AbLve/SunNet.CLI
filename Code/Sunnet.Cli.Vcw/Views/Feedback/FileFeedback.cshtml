@@ -1,0 +1,29 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.FeedbackModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Vcw.Enums
+@using System.Web.Optimization
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase;
+
+@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+}
+
+<div class="content-con">
+    <div class="uploader-list">
+        @if (!string.IsNullOrEmpty(Model.FeedbackFileName))
+        {
+            <div class="item">
+                <i class="icon-paper-clip"></i>
+                <a href="@(DownLoadFile.GetDownFilePath(Model.FeedbackFilePath, Model.FeedbackFileName))"  
+                    class="form-link4">@(Model.FeedbackFileName)</a>
+            </div>            
+        }
+        <p>
+            @(Model.FeedbackText)
+        </p>
+    </div>
+</div>
+
+
+

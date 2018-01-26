@@ -1,0 +1,139 @@
+﻿@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Common
+@using Sunnet.Cli.Business.Cpalls
+@{
+    ViewBag.Title = "School Comparison Report";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+
+}
+@section Scripts{
+    <script type="text/javascript">
+        +(function() {
+
+            var $form = $("#@(formId)");
+            var groups = @(Html.Raw(ViewBag.MeasureJson));
+            $.each(groups.waves, function(id, wave) {
+                wave.count = ko.observable(wave.count);
+                wave.selectedMeasures = ko.observableArray([]);
+            });
+            $.each(groups.groups, function(index, group) {
+                group.selectedMeasures = ko.observableArray([]);
+                $.each(group.measures, function(i2, measure) {
+                    measure.selectedWaves = ko.observableArray([]);
+                });
+            });
+            $.extend(groups, {
+                selectedWave: ko.observable(1),
+                chooseWave: function(wave) {
+                    groups.selectedWave(wave);
+                },
+                chooseGroup: function(group) {
+                    $.each(group.measures, function(k, measure) {
+                        if (measure.selectedWaves().indexOf(groups.selectedWave()) < 0) {
+                            measure.selectedWaves.push(groups.selectedWave());
+                            group.selectedMeasures.push(measure.id);
+                            groups.waves[groups.selectedWave()].selectedMeasures.push(measure.id);
+                        }
+                    });
+                },
+                chooseMeasure: function(measure, group) {
+                    if (measure.applyToWave.indexOf(groups.selectedWave()) >= 0) { // current measure is apply to current wave
+                        if (measure.selectedWaves().indexOf(groups.selectedWave()) >= 0) { // selected, deselected
+                            measure.selectedWaves.remove(groups.selectedWave());
+                            group.selectedMeasures.remove(measure.id);
+                            groups.waves[groups.selectedWave()].selectedMeasures.remove(measure.id);
+                        } else {
+                            measure.selectedWaves.push(groups.selectedWave());
+                            group.selectedMeasures.push(measure.id);
+                            groups.waves[groups.selectedWave()].selectedMeasures.push(measure.id);
+                        }
+                    }
+                },
+                submit: function() {
+                    var measures = {};
+                    $.each(groups.waves, function(i, wave) {
+                        measures[i] = [];
+                    });
+                    $.each(groups.groups, function(j, group) {
+                        $.each(group.measures, function(k, measure) {
+                            $.each(measure.selectedWaves(), function(l, wave) {
+                                measures[wave].push(measure.id);
+                                if (group.parent && measures[wave].indexOf(group.parent.id) <= 0) {
+                                    measures[wave].push(group.parent.id);
+                                }
+                            });
+                        });
+                    });
+                    var strMeas = JSON.stringify(measures);
+                    if (strMeas == '{"1":[],"2":[],"3":[]}') {
+                        window.showMessage("hint", "Export_Select_Measure");
+                    } else {
+                        $form.find("#waves").val(strMeas);
+                        var sY = [];
+                        $.each($("#divSchoolYear :checked"),function(i,item) {
+                            sY.push($(this).val());
+                        });
+                        if (sY.length < 1) {
+                            window.showMessage("hint", "Cpalls_Report_need_SchoolYear");
+                        } else {
+                            $form.find("#schoolYear").val(sY);
+                            $form.submit(); 
+                        }
+                    }
+                }
+            });
+
+            ko.applyBindings(groups, document.getElementById("@(formId)"));
+        })();
+    </script>
+}
+
+    <form class="form-horizontal" role="form" method="POST" id="@(formId)" action='@Url.Action("ComparisonPdf", "Class", new { Area = "Report" })' target="_blank">
+        <div class="form-group" id="divSchoolYear">
+            @if (ViewBag.schoolYear != null)
+            {
+                foreach (int item in ViewBag.schoolYear)
+                {
+                    <label class="col-sm-3">
+                        <input type="checkbox" value="@item.ToSchoolYearString()"/>&nbsp;&nbsp;@item.ToSchoolYearString()
+                    </label>
+                }
+            }
+        </div>
+        @Html.Partial("_Partial_Select_Wave_Measure")
+        @Html.Hidden("assessmentId")
+        @Html.Hidden("schoolId")
+        @Html.Hidden("schoolYear")
+        @Html.Hidden("waves")
+        @Html.Hidden("export",true)
+        <div class="modal-footer">
+            <button type="button" class="mainbutton mainright-btn save-btn" data-bind="click:submit">Export</button>
+        </div>
+    </form>
+@*
+else
+{
+    <form class="form-horizontal" role="form" method="POST" id="@(formId)" action='@Url.Action("Comparison_Export", "Class", new { Area = "Report" })' target="_blank">
+        <div class="form-group" id="divSchoolYear">
+            @if (ViewBag.schoolYear != null)
+            {
+                foreach (var item in ViewBag.schoolYear)
+                {
+                <label class="col-sm-3">
+                    <input type="checkbox" value="@item"/>&nbsp;&nbsp;@item
+                </label>
+                }
+            }
+        </div>
+        @Html.Partial("_Partial_Select_Wave_Measure")
+        @Html.Hidden("assessmentId")
+        @Html.Hidden("year")
+        @Html.Hidden("schoolId")
+        @Html.Hidden("schoolYear")
+        @Html.Hidden("waves")
+        <div class="modal-footer">
+            <button type="button" class="mainbutton mainright-btn save-btn" data-bind="click:submit">Export</button>
+        </div>
+    </form>
+}*@

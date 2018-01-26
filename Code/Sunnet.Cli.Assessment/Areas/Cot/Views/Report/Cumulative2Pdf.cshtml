@@ -1,0 +1,270 @@
+﻿@using Sunnet.Cli.Business.Cot.Cumulative
+@using Sunnet.Cli.Core.Users.Enums
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Cot/Views/Shared/_Layout_Report_Chart.cshtml";
+    var models = ViewBag.Model as List<CumulativeReportModel>;
+    if (models == null)
+    {
+        models = new List<CumulativeReportModel>();
+    }
+
+    bool isFirstTeacher = true;
+    int index = 0;
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@foreach (CumulativeReportModel model in models)
+{
+    foreach (MeasureModel measure in model.Measures)
+    {
+        <table class='header @(isFirstTeacher ? "" : "newpager") ' width="100%">
+            @Html.Partial("_Partial_CumulativeReport_Head2", model, new ViewDataDictionary { new KeyValuePair<string, object>("measureName", measure.Name) })
+        </table>
+        <div id="chart@(index++)" style="height: 520px; width: @ReportHelper.GetChartWidth(measure.Items.Count() + 2, 50, 800, 3250)px;">
+        </div>
+        @*<div id="chart@(index++)" style="height: 520px; width: 100%">
+        </div>*@
+        {
+            isFirstTeacher = false;
+        }
+    }
+}
+
+@using (Html.BeginForm("Cumulative2Pdf_Download", "Report", FormMethod.Post, new { id = formId, target = "_blank" }))
+{
+    @Html.Hidden("teacherId")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("type")
+    @Html.Hidden("SchoolId")
+    @Html.Hidden("CommunityId")
+    @Html.Hidden("measures")
+    @Html.Hidden("yearsInProject")
+    if (models.Any())
+    {
+        foreach (AssignmentType type in models.First().CoachModels)
+        {
+            @Html.Hidden("coachModels", type)
+        }
+        foreach (AssignmentType type in models.First().ECircles)
+        {
+            @Html.Hidden("eCircles", type)
+        }
+    }
+    @Html.Hidden("export", true)
+
+    <button type="submit" class="btn-export" id="btn_Export" onclick=" javascript:return exportPdf(); ">
+        Export
+    </button>
+}
+@section Scripts{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+    <script type="text/javascript">
+    var reports = @Html.Raw(ViewBag.Json);
+    var charts = [];
+    var options = [];
+    var currentIndex = 0;
+
+    function exportPdf() {
+        var $form = $("#@(formId)");
+            $form.find("input:hidden[name='imgSources']").remove();
+            if (charts && charts.length) {
+                for (var i = 0; i < charts.length; i++) {
+                    var myChart = charts[i];
+                    var options = myChart.getOption();
+                    options.toolbox.feature.magicType.show = false;
+                    options.toolbox.feature.dataZoom.show = false;
+                    options.toolbox.feature.restore.show = false;
+                    myChart.setOption(options);
+                    var $imgSources = $('<input name="imgSources" type="hidden" value="" />').appendTo($form);
+                    $imgSources.val(myChart.getDataURL());
+
+                    options.toolbox.feature.magicType.show = true;
+                    options.toolbox.feature.dataZoom.show = true;
+                    options.toolbox.feature.restore.show = true;
+                    myChart.setOption(options);
+                }
+            }
+            return true;
+        }
+
+        var totalOfMeasure = {};
+        var splitColor = "#ffffff";
+        $(function() {
+            function startGenerateReport() {
+                if (options.length > currentIndex) {
+                    window.scrollTo(0, $("#chart" + currentIndex).offset().top);
+
+                    var option = options[currentIndex];
+                    var myChart = echarts.init(document.getElementById('chart' + index++), echartsTheme.default);
+                    myChart.setOption(option);
+                    charts.push(myChart);
+                    currentIndex++;
+                    setTimeout(function() {
+                        startGenerateReport();
+                    }, 1000);
+                } else {
+                    setTimeout(function() {
+                        $("#btn_Export").slideDown();
+                    }, 1000);
+                }
+            }
+
+            //var totalWidth = window.innerWidth - 250;
+            var totalWidth = 3200;
+            var maxItemCount = 0;
+            var barWidth = 40;
+            for (var i = 0; i < reports.length; i++) {
+                var r = reports[i];
+                for (var j = 0; j < r.Measures.length; j++) {
+                    var m = r.Measures[j];
+                    if (m.Items.length > maxItemCount) {
+                        maxItemCount = m.Items.length;
+                    }
+                }
+            }
+            var calcbarWidth = parseInt(totalWidth / maxItemCount);
+            if (calcbarWidth < barWidth) {
+                barWidth = calcbarWidth;
+            }
+
+            var valueOfCategory = {};
+            var index = 0;
+            var lastLevel = 0;
+            for (var i = 0; i < reports.length; i++) {
+                var report = reports[i];
+
+                for (var j = 0; j < report.Measures.length; j++) {
+                    var measure = report.Measures[j];
+                    var option = new ReportOption();
+                    option.title = {
+                        text: "@(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))",
+                        subtext: report.Teacher,
+                        textAlign: "left",
+                        x: 0,
+                        y: 0
+                    };
+                    option.tooltip.show = false;
+                    option.toolbox.feature.magicType.type = [];
+
+                    var legendTitle = report.Teachers;// calc label for bar in callback
+                    option.legend.data.push(legendTitle);
+                    option.legend.x = 10350; // hide legend
+                    option.legend.show = false;
+
+                    option.series.push({
+                        name: legendTitle,
+                        type: 'bar',
+                        stack: legendTitle,
+                        data: [],
+                        barWidth: barWidth-10,
+                        itemStyle: {
+                            normal: {
+                                barBorderWidth: 1,
+                                label: {
+                                    show: true,
+                                    position: "insideTop",
+                                    textStyle: {
+                                        color: "#000000"
+                                    }
+                                }
+                            },
+                            emphasis: {
+                                barBorderColor: '#ffffff',
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: "#000000"
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    option.xAxis = option.xAxis.slice(0, 1);
+                    option.xAxis[0].axisLabel.rotate = 90;
+                    option.xAxis[0].splitArea = {
+                        show: false,
+                        areaStyle: {
+                            color: ["#ffffff"]
+                        }
+                    };
+                    option.xAxis[0].axisLabel.formatter = function(value) {
+                        return value.toString();
+                    };
+                    var xAxis = option.xAxis[0].data;
+                    for (var itemIndex = 0; itemIndex < measure.Items.length; itemIndex++) {
+                        var item = measure.Items[itemIndex];
+                        if (lastLevel == 0) {
+                            lastLevel = item.Level.value;
+                        }
+                        if (lastLevel != item.Level.value) {
+                            xAxis.push("");
+                            option.series[0].data.push(
+                            {
+                                value: 100,
+                                itemStyle: {
+                                    normal: {
+                                        color: splitColor,
+                                        label: {
+                                            show: false
+                                        }
+                                    },
+                                    emphasis: {
+                                        label: {
+                                            show: false
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        xAxis.push(item.Description);
+                        if (!(item.CotItemNo in valueOfCategory)) {
+                            valueOfCategory[item.CotItemNo + "_"] = [];
+                        }
+                        valueOfCategory[item.CotItemNo + "_"].unshift(item.Count);
+                        valueOfCategory[item.CotItemNo + "_"].unshift(item.Count);
+
+                        option.series[0].data.push(
+                        {
+                            value: item.Count * 100 / report.Teachers,
+                            itemStyle: {
+                                normal: {
+                                    color: item.Level.text,
+                                    label: {
+                                        show: item.Count > 0,
+                                        formatter: function(legend, category, value) {
+                                            return ((legend * value * 1.0 ) / 100).toFixed(0);
+                                        },
+                                        position: 'insideTop'
+                                    }
+                                },
+                                emphasis: {
+                                    label: {
+                                        zindex: 100
+                                    }
+                                }
+                            }
+                        });
+                        lastLevel = item.Level.value;
+                    }
+                    option.yAxis[0].axisLabel.formatter = "{value} %";
+                    option.yAxis[0].splitNumber = 4;
+                    option.yAxis[0].max = 100;
+                    option.yAxis[0].min = 0;
+                    option.yAxis[0].axisLine = {
+                        show: true
+                    };
+                    option.grid.width = barWidth;
+                    option.grid.height = 190;
+                    option.grid.width = xAxis.length * option.grid.width;
+                    options.push(option);
+
+                    lastLevel = 0;
+                }
+            }
+            startGenerateReport();
+        });
+    </script>
+}

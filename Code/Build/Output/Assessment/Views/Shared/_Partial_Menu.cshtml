@@ -1,0 +1,34 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework
+@using Sunnet.Framework.Extensions
+@{
+    var currentMenu = Cli_Menus.Home;
+    if (ViewBag.CurrentMenu != null)
+    {
+        currentMenu = (Cli_Menus)ViewBag.CurrentMenu;
+    }
+
+    var menus = Cli_Menus.Home.ToList().Cast<Cli_Menus>().ToDictionary(module => module, module => module == currentMenu ? "active" : "");
+}
+<div class="nav">
+    <ul>
+        <li>
+            <a href="@(SFConfig.MainSiteDomain)" class = "@(menus[Cli_Menus.Home])">@(Cli_Menus.Home.ToDescription())</a>
+        </li>
+        <li>
+            <a href="@(SFConfig.MainSiteDomain)about" class = "@(menus[Cli_Menus.AboutUs])">@(Cli_Menus.AboutUs.ToDescription())</a>
+        </li>
+        <li>
+            <a href="@(SFConfig.MainSiteDomain)Overview" class = "@(menus[Cli_Menus.EngageOverview])">@(Cli_Menus.EngageOverview.ToDescription())</a>
+        </li>
+     <li>
+            <a href="@(SFConfig.MainSiteDomain)Parents" class = "@(menus[Cli_Menus.EngageParents])">@(Cli_Menus.EngageParents.ToDescription())</a>
+        </li>
+        <li>
+            <a href="@(SFConfig.MainSiteDomain)faq" class = "@(menus[Cli_Menus.Faq])">@(Cli_Menus.Faq.ToDescription())</a>
+        </li>
+        <li>
+            <a href="@(SFConfig.MainSiteDomain)contact" class = "@(menus[Cli_Menus.ContactUs])">@(Cli_Menus.ContactUs.ToDescription())</a>
+        </li>
+    </ul>
+</div>

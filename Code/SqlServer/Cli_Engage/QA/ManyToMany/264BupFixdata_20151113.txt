@@ -1,0 +1,17 @@
+﻿
+--修改数据语句
+--说明：由于student和之前class的关系已经解除，student和现在class的关系已经添加，只需要将student和之前school的关系修改成和现在school的关系即可
+
+SELECT * INTO dbo.SchoolStudentRelations_20151113 FROM dbo.SchoolStudentRelations
+go
+
+
+--注意：执行该语句之前，请确认所填schoolName是否正确和唯一，确认无误后再执行
+--UPDATE dbo.SchoolStudentRelations SET SchoolId= (SELECT TOP 1 ID FROM dbo.Schools WHERE Name='Kidz Crusade Childcare and Pre-K Academy #2')
+--WHERE SchoolId=(SELECT TOP 1 ID FROM dbo.Schools WHERE Name='Demo TMC McAllen')
+--go
+
+
+
+
+

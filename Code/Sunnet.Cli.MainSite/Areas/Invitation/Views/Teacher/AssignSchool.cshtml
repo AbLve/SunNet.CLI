@@ -1,0 +1,276 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Users.Models.TeacherModel
+@{
+    ViewBag.Title = Model.FullName  + " Schools";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formIdPage = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View) + "1";
+    var formId2 = PostFormHelper.GetFormId(Html.ViewContext.View) + "2";
+}
+
+@Html.AntiForgeryToken()
+
+
+ <form class="form-horizontal clearfix" role="form">
+            <div id="@formId">
+                <div class="tab-content tab-d">
+                    <div class="content-title">
+                        Unassigned Schools
+                    </div>
+                    <div class="tab-d-input">
+                        <label class="hide" for="Keyword">Keyword</label>
+                        <input class="form-control" placeholder="Enter key to search" data-bind="value: searchCriteria.name"
+                            id="Keyword" name="Keyword" type="text" value="" />
+                        <button class="mainbutton mainright-btn sreach-btn" data-bind="event: { click: search }">Search</button>
+                    </div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr data-bind="foreach: { data: headers, as: 'header' }">
+                                <!-- ko if: ($index() === 0)-->
+                                <th>
+
+                                    <input type="checkbox" onclick="CheckAll(this)" value="@formId" id="chkSelectAll" />
+                                    <label for="chkSelectAll">Select All</label>
+                                </th>
+                                <!-- /ko-->
+                                <!-- ko if: (header.order === true)-->
+                                <th data-bind="style: { width: width }">
+                                    <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                                    <span class="glyphicon"
+                                        data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                                    <span class="glyphicon"
+                                        data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                                </th>
+                                <!-- /ko-->
+                                <!-- ko if: (header.order === false) -->
+                                <th data-bind="text: text, style: { width: width }"></th>
+                                <!-- /ko-->
+
+                            </tr>
+
+                        </thead>
+                        <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+
+                            <tr>
+                                <td>
+                                    <label data-bind=" attr: { 'for': 'chkSchool' + $index() }" class="hide">hiddenChk</label>
+                                    <input type="checkbox" name="chkSchool" data-bind="value: item.ID,
+    attr: { id: 'chkSchool' + $index() }">
+                                </td>
+                                <td data-bind="text: item.SchoolName"></td>
+                            </tr>
+                        </tbody>
+                        @Html.Display("e", "NoData", new { Colspan = 2 })
+                    </table>
+                    @Html.Partial("_Partial_Pager")
+                </div>
+                <div class="tab-d-m">
+                    <a class="mainright-btn tab-save-btn cancel-btn" href="#" title="Assign user to selected Schools" data-bind="event: { click: $root.AssignAll }">
+                        <i class="icon-double-angle-right icon-large"></i>
+                    </a>
+                    <a class="mainright-btn tab-save-btn save-btn" href="#" title="Unassign user from selected Schools" data-bind="event: { click: $root.UnAssignAll }"><i class="icon-double-angle-left icon-large"></i></a>
+                </div>
+
+            </div>
+
+            <div class="tab-content tab-d" id="@formId2">
+                <div class="content-title">Assigned Schools</div>
+                <div class="tab-d-input">
+                    <label class="hide" for="Keyword2">Keyword</label>
+                    <input class="form-control" placeholder="Enter key to search" data-bind="value: searchCriteria.name"
+                        id="Keyword2" name="Keyword" type="text" value="" />
+                    <button class="mainbutton mainright-btn sreach-btn" data-bind="event: { click: search }">Search</button>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr data-bind="foreach: { data: headers, as: 'header' }">
+                            <!-- ko if: ($index() === 0)-->
+                            <th>
+
+                                <input type="checkbox" onclick="CheckAll(this)" value="@formId2" id="chkSelectAll2" />
+                                <label for="chkSelectAll2">Select All</label>
+                            </th>
+                            <!-- /ko-->
+                            <!-- ko if: (header.order === true)-->
+                            <th data-bind="style: { width: width }">
+                                <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                            </th>
+                            <!-- /ko-->
+                            <!-- ko if: (header.order === false) -->
+                            <th data-bind="text: text, style: { width: width }"></th>
+                            <!-- /ko-->
+
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                        <tr>
+                            <td>
+                                <label data-bind=" attr: { 'for': 'chkComm2' + $index() }" class="hide">hiddenChk</label>
+                                <input type="checkbox" name="chkComm" data-bind="value: item.CommunityId,
+    attr: { id: 'chkComm2' + $index() }">
+                            </td>
+                            <td data-bind="text: item.SchoolName"></td>
+
+                        </tr>
+                    </tbody>
+                    @Html.Display("e", "NoData", new { Colspan = 2 })
+                </table>
+                @Html.Partial("_Partial_Pager")
+            </div>
+        </form>
+
+
+
+
+
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function CheckAll(obj)
+        {
+            var formId = $(obj).val();
+            if ($(obj).is(":checked"))
+            {
+                $("#" + formId + " [name='chkSchool']").prop("checked", true);
+            } else
+            {
+                $("#" + formId + " [name='chkSchool']").prop("checked", false);
+            }
+        }
+
+        function GetAllCheckedItem(formId)
+        {
+            var ids = new Array();
+            $("#" + formId + " input:checked").not("#chkSelectAll").not("#chkSelectAll2").each(function (index, obj)
+            {
+                ids.push($(this).val());
+            });
+            return ids;
+        }
+
+
+
+        $(function ()
+        {
+            var list_Unassignd = {};
+            var list_assignd = {};
+            InitList = function ()
+            {
+                $("#chkSelectAll").prop("checked", false);
+                $("#chkSelectAll2").prop("checked", false);
+                list_Unassignd.search();
+                list_assignd.search();
+            }
+            list_Unassignd = new ViewModel(
+            {
+                instanceName: "list_Unassignd",
+                modalId: "modalNormal",
+                viewType: "Redirect",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchUnassigedCommunities")))',
+                orderBy: "CommunityName",
+                orderDirection: "ASC",
+                pageSize: 10,
+                headers: [
+                    {
+                        text: "Community / District Name",
+                        field: "CommunityName",
+                        order: true,
+                        width: '70%'
+                    }
+                ],
+                miniPager: true,
+                searchCriteria: {
+                    name: ko.observable(""),
+                    userId: ko.observable("@Model.ID")
+                }
+            },
+                {
+                    AssignAll: function (item)
+                    {
+
+                        var ids = GetAllCheckedItem("@formId");
+                        if (ids != "")
+                        {
+                            $.post("InsertUserCommRelations", { userId: "@Model.ID", comIds: ids }, function (data)
+                            {
+                                var res = JSON.parse(data);
+                                if (res.success == true)
+                                {
+                                    InitList();
+                                }
+                            });
+                        }
+                    },
+                    UnAssignAll: function (item)
+                    {
+                        var ids = GetAllCheckedItem("@formId2");
+                        if (ids != "")
+                        {
+                            $.post("DeleteUserCommRelations", { userId: "@Model.ID", comIds: ids }, function (data)
+                            {
+                                var res = JSON.parse(data);
+                                if (res.success == true)
+                                {
+                                    InitList();
+                                }
+                            });
+                        }
+                    }
+                }
+            );
+            list_assignd = new ViewModel(
+                {
+                    instanceName: "list_assignd",
+                    modalId: "modalNormal",
+                    viewType: "Redirect",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchAssignedCommunities")))',
+                    orderBy: "CommunityName",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    miniPager: true,
+                    headers: [
+                        {
+                            text: "Community / District Name",
+                            field: "CommunityName",
+                            order: true,
+                            width: '70%'
+                        }
+                    ],
+                    searchCriteria: {
+                        name: ko.observable(""),
+                        userId: ko.observable("@Model.ID")
+                    }
+                },
+                {
+                    UnAssignAll: function (item)
+                    {
+                        var ids = GetAllCheckedItem("@formId2");
+                        $.post("DeleteUserCommRelations", { userId: "@Model.ID", comIds: ids }, function (data)
+                        {
+                            var res = JSON.parse(data);
+                            if (res.success == true)
+                            {
+                                InitList();
+                            }
+                        });
+                    }
+                }
+            );
+            list_Unassignd.search();
+            list_assignd.search();
+            ko.applyBindings(list_Unassignd, document.getElementById("@formId"));
+            ko.applyBindings(list_assignd, document.getElementById("@formId2"));
+        });
+    </script>
+}

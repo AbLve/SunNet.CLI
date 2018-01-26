@@ -1,0 +1,56 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Edit Note";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    group_NoticeUpdated();
+                    closeModal($("#@(formId)"));
+                }
+            });
+        })();
+
+        function checkLength(obj) {
+
+            if ($(obj).val().length > 299) {
+                window.showMessage("warning", "Over the limit! There is limit of 300  characters for this text box.");
+            }
+        }
+    </script>
+}
+@using (Ajax.BeginForm("SaveNote", "Group", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="groupId" value="@ViewBag.groupId"/>
+    <input type="hidden" name="assessmentId" value="@ViewBag.assessmentId" />
+    <input type="hidden" name="year" value="@ViewBag.year" />
+    <input type="hidden" name="wave" value="@ViewBag.wave" />
+    <input type="hidden" name="isMeasure" value="@ViewBag.isMeasure" />
+    <div class="form-group">
+        <div class="col-sm-12">
+            @ViewBag.Name
+        </div>
+        <div class="col-sm-12">
+            <label for="note" class="hide">note</label>
+            <textarea id="note" name="note" rows="5" style="width: 100%" maxlength="300" onkeyup="checkLength(this)" title=" ">@ViewBag.note</textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+
+        <input type="submit" class="mainbutton mainright-btn submit-btn" value="Save" id="btnSubmit">
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

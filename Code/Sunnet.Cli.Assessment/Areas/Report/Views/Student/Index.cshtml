@@ -1,0 +1,224 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Student Summary";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    var sources = ViewData["Datas"] as Dictionary<int, List<ReportRowModel>>;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var isFirstPage = true;
+    var gray = Request.Form["Gray"];
+    AssessmentLegendEntity assessmentLegend = ViewBag.AssessmentLegend;
+}
+<style>
+    body {
+        font-family: arial;
+        font-size: 15px;
+        color: #333;
+    }
+
+    .container {
+        width: 100%;
+    }
+
+    .top-img {
+        position: absolute;
+        top: 0;
+        right: 1%;
+    }
+
+    .top-title {
+        margin: 0 auto;
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .top-left p {
+        text-align: left;
+        margin-bottom: 3px;
+    }
+
+    .top-right p {
+        text-align: right;
+        margin-bottom: 3px;
+    }
+</style>
+
+@foreach (var source in sources)
+{
+    var datas = source.Value;
+
+    <table style="width: 100%" class='header @(isFirstPage ? "" : "newpager")'>
+        <thead>
+            <tr>
+                <td>
+                    <table cellpadding="0" cellspacing="0" class="noborder header">
+                        <tr>
+                            <td colspan="2" class="top-logo">
+                                <div class="top-title">
+                                    @(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+                                    @(ViewBag.Title)
+                                </div>
+                                <div class="top-img">
+                                    <img src="@(DomainHelper.AssessmentDomain)images/cli_logo.png" style="width: 150px; height: 60px; vertical-align: middle;" alt="cli_logo" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="top-left">
+                                <p>Community:&nbsp;@(ViewBag.District)</p>
+                                <p>School:&nbsp;@ViewBag.School</p>
+                                <p>School year:&nbsp;@ViewBag.ScoolYear</p>
+                            </td>
+                            <td class="top-right">
+                                <p>Assessment Language:&nbsp;@ViewBag.Language</p>
+                                <p>Class:&nbsp;@ViewBag.Class</p>
+                                <p>Teacher:&nbsp;@Html.Raw(ViewBag.Teacher)</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <table cellpadding="0" cellspacing="0" class='report-data table_border' style="margin-top: 30px;">
+        <tr style="page-break-inside: avoid">
+            <td colspan="@(datas[1].Cells.Count + 1)"><strong>Student: @datas[0].Cells.First().Text</strong></td>
+        </tr>
+        <tr>
+            @for (var j = 0; j < datas[1].Cells.Count; j++)
+            {
+                <td rowspan="@(datas[1][j].Rowspan)"
+                    colspan="@(datas[1][j].Colspan)">
+                    <strong>
+                        @(datas[1][j].Text.ToString().CutString((datas[1][j].Colspan > 1 ? datas[1][j].Colspan : 4) * 6))
+                    </strong>
+                </td>
+            }
+        </tr>
+        @for (var i = 2; i < datas.Count; i++)
+        {
+            <tr style="page-break-inside: avoid">
+                @for (var j = 0; j < datas[i].Cells.Count; j++)
+                {
+                    <td rowspan="@(datas[i][j].Rowspan)"
+                        colspan="@(datas[i][j].Colspan)">
+                        @if (gray == "gray")
+                        {
+                            <span @(!string.IsNullOrEmpty(datas[i][j].Background) ? "class=" + datas[i][j].Background : "")>
+                                @(datas[i][j].Text.ToString())
+                            </span>  
+                        }
+                        else
+                        {
+                            <span @(!string.IsNullOrEmpty(datas[i][j].Color) ? "style=background:" + datas[i][j].Color + ";"+" class=spancolor" : "")>
+                                @(datas[i][j].Text.ToString())
+                            </span>  
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+        if (gray == "gray")
+        {
+    <table class="noborder" cellpadding="0" cellspacing="0" style="margin-bottom: 0px; margin-top: 5px;">
+        @*<tr style="page-break-inside: avoid">
+            <td class="cpalls_normal"><span>Bold</span></td>
+            <td style="text-align: left;" class="cpalls_normal">: (green) Proficient (at or above benchmark)</td>
+        </tr>
+        <tr style="page-break-inside: avoid">
+            <td class="cpalls_three"><span>#</span></td>
+            <td style="text-align: left;">: (orange) Younger than 4 years-old, Developing (below benchmark)</td>
+        </tr>
+        <tr style="page-break-inside: avoid">
+            <td class="cpalls_four"><span>#</span></td>
+            <td style="text-align: left;">: (red) 4 years-old and older, Emergent (below benchmark)</td>
+        </tr>
+        <tr style="page-break-inside: avoid">
+            <td class="cpalls_three_less"><span>#</span></td>
+            <td style="text-align: left;">: (blue)Out of age range, no benchmarks apply</td>
+        </tr>
+        <tr style="page-break-inside: avoid">
+            <td class="light_color"><span>#</span></td>
+            <td style="text-align: left;">: (light colors) For instructional planning only</td>
+        </tr>
+        <tr>
+            <td class="cpalls_no_benchmark"><span>#</span></td>
+            <td style="text-align: left;">: Measure has no benchmarks</td>
+        </tr>*@
+        <tr style="page-break-inside: avoid">
+            <td colspan="2" style="text-align: left">
+                @if (assessmentLegend != null)
+                {
+                    if (assessmentLegend.TextPosition.ToLower() == "bottom")
+                    {
+                    <img style="max-width: 100%;display:block;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.BlackWhiteFilePath)"/>
+                    @assessmentLegend.Text
+                    }
+                    else if (assessmentLegend.TextPosition.ToLower() == "top")
+                    {
+                    @assessmentLegend.Text
+                    <img style="max-width: 100%;display:block;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.BlackWhiteFilePath)"/>
+                    }
+                }
+            </td>
+        </tr>
+    </table>
+        }
+        else
+        {
+    <table class="noborder" cellpadding="0" cellspacing="0" style="margin-bottom: 0px; margin-top: 5px; text-align: left;">
+        @*<tr style="page-break-inside: avoid">
+            <td class="cpalls_normal"><span>#</span></td>
+            <td class="cpalls_normal_light" id="normal_light">&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;<span>#</span></td>
+            <td style="text-align: left;">: Proficient (at or above benchmark)</td>
+        </tr>
+        <tr style="page-break-inside: avoid">
+            <td class="cpalls_three"><span>#</span></td>
+            <td class="cpalls_three_light" id="three_light">&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;<span>#</span></td>
+            <td style="text-align: left;">: Younger than 4 years-old, Developing (below benchmark)</td>
+        </tr>
+        <tr style="page-break-inside: avoid">
+            <td class="cpalls_four"><span>#</span></td>
+            <td class="cpalls_four_light" id="four_light">&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;<span>#</span></td>
+            <td style="text-align: left;">: 4 years-old and older, Emergent (below benchmark)</td>
+        </tr>
+        <tr style="page-break-inside: avoid">
+            <td class="cpalls_three_less"><span>#</span></td>
+            <td class="cpalls_three_less_light" id="three_less_light">&nbsp;&nbsp;or&nbsp;&nbsp;&nbsp;<span>#</span></td>
+            <td style="text-align: left;">: Out of age range, no benchmarks apply</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="cpalls_no_benchmark"><span>#</span></td>
+            <td style="text-align: left;">: Measure has no benchmarks</td>
+        </tr>
+        <tr>
+            <td colspan="2"><span>Light colors</span></td>
+            <td style="text-align: left;">: For instructional planning only</td>
+        </tr>*@
+        <tr style="page-break-inside: avoid">
+            <td colspan="2" style="text-align: left">
+                @if (assessmentLegend != null)
+                {
+                    if (assessmentLegend.TextPosition.ToLower() == "bottom")
+                    {
+                    <img style="max-width: 100%;display:block;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.ColorFilePath)"/>
+                    @assessmentLegend.Text
+                    }
+                    else if (assessmentLegend.TextPosition.ToLower() == "top")
+                    {
+                    @assessmentLegend.Text
+                    <img style="max-width: 100%;display:block;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.ColorFilePath)"/>
+                    }
+                }
+            </td>
+        </tr>
+    </table>
+        }
+        isFirstPage = false;
+}

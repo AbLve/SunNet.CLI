@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Files";
+}
+
+<h2>Files</h2>
+
+@using (Html.BeginForm(null, null, FormMethod.Post))
+{
+    @Html.TextBox("folder")
+
+    foreach (var file in ViewBag.Files)
+    {
+        <div>
+            @file
+        </div>
+    }
+    <button type="submit">Submit</button>
+}

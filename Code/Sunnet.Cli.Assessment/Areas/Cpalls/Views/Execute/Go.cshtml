@@ -1,0 +1,201 @@
+﻿@{
+    Layout = "~/Areas/Cpalls/Views/Shared/_Layout_Cpalls.cshtml";
+    ViewBag.Offline = Request.QueryString.AllKeys.Contains("offline");
+
+}
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var execModel;
+        $(function ()
+        {
+            var offline = location.href.indexOf("?offline") > 0;
+            if (offline)
+            {
+                $.ajaxSetup({ cache: true });
+            }
+            window.onbeforeunload = function ()
+            {
+                if (execModel.mode == Exec_Mode.Exec
+                    && execModel.status() > Exec_Status.ready
+                    && execModel.status() < Exec_Status.saved)
+                {
+                    return getErrorMessage("CPALLS_Leave_Confirm");
+                }
+            }
+
+            $("#modalWaiting").modal("show");
+            var assessmentJson = execHelper.getLocalStorage(execHelper.keys.execCpalls);
+            assessmentJson.Mode = Exec_Mode.Exec;
+            execModel = new getAssessmentModel(assessmentJson);
+            execModel.onSyncing = function ()
+            {
+                $("#modalPause").modal("hide");
+                $("#modalSyncing").modal("show");
+            }
+            execModel.onSynced = function ()
+            {
+                execModel.complete();
+            }
+
+            $.when(execModel.prepared()).done(function ()
+            {
+                $("#modalWaiting").modal("hide");
+
+                execModel.init();
+                ko.applyBindings(execModel);//
+                if ($("#divContent").length != 0)
+                {
+                    $("#divContent").height($("#divContent").width() * (565 / 1024));
+                }
+
+                if ($("#divResponseContent").length != 0)
+                {
+                    $("#divResponseContent").height($("#divContent").height()-80);
+                }
+            });
+
+            execModel.resumedFromPause = function (event)
+            {
+                $("#modalPause").modal("hide");
+            };
+
+            $("body").on("shown.bs.modal", "#modalPause", function ()
+            {
+                execModel.pause(true);
+            });
+
+        });
+    </script>
+}
+@*<div class="item-main-disable" data-bind="visible:!visible()"></div>*@
+<style>
+    .item-main-body {
+        padding: 5px;
+    }
+    .item-container {
+        width:99%; 
+    }
+</style>
+<div class="item-warp">
+    <div class="item-container">
+        <div class="item-main">
+            <div class="item-main-header" data-bind="visible: status() != Exec_Status.resulting, style: { background: !visible() ? '#BCBCBC' : '#ffffff' }">
+                <h4>
+                    <span data-bind="html: currentMeasure().name"></span>
+                    <span data-bind="html: ': ' + currentItem().label, visible: currentItem().isShowing(), visible: window._DEBUG"></span>
+                </h4>
+                <p class="time-remaining" data-bind="visible: window._DEBUG">
+                    <a class="time-con" data-bind="text: timeRemaining"></a>
+                </p>
+                <a class="item-stop-btn  pass-btn" data-bind="event: { click: fullscreen }"><i class="icon-fullscreen"></i></a>
+                <a class="item-stop-btn stop-btn" data-toggle="modal" data-target="#modalPause" data-bind="visible: showPauseButton">
+                    <i class="icon-off"></i>Pause
+                </a>
+                <a class="item-stop-btn pass-btn" data-bind="event: { click: saveAndQuit }, visible: showPauseButton"><i class="icon-save"></i>Quit and Save</a>
+                <a class="item-stop-btn pass-btn" data-bind="event: { click: quit }, visible: showDiscardButton"><i class="icon-undo"></i>Quit and Discard</a>
+            </div>
+            @****Result Page****@
+            @Html.Partial("_Partial_MeasureResult")
+
+            @****Start Page****@
+            <!-- Measure's Parent Start Page-->
+            <!-- ko template: {
+                name:'measure_Start',
+                data:currentMeasure().parent.startPage,
+                if:currentMeasure().parent.startPage.file
+                && currentMeasure().parent.needShowStart()
+                && $root.status() == Exec_Status.ready0
+                && $root.visible()
+                }-->
+            <!-- /ko-->
+            <!-- Measure Start Page-->
+            <!-- ko template: {
+                name:'measure_Start',
+                data:currentMeasure().startPage,
+                if:currentMeasure().startPage.file && $root.status() == Exec_Status.ready && $root.visible()
+                }-->
+            <!-- /ko-->
+
+            @****Items Page****@
+            <!-- ko template: {name:$root.itemTemplate, data:currentItem(), as:'item', if: $root.status() === Exec_Status.going}-->
+            <!-- /ko-->
+            @****Checklist Page****@
+            @Html.Partial("_Partial_Checklist")
+
+            @****End Page****@
+            <!-- Measure End Page-->
+            <!-- ko template: {
+                name:'measure_End',
+                data:currentMeasure().endPage,
+                if:currentMeasure().endPage.file && $root.status() == Exec_Status.complete && $root.visible()
+                }-->
+            <!-- /ko-->
+
+            <!-- Measure's Parent End Page-->
+            <!-- ko template: {
+                name:'measure_End',
+                data:currentMeasure().parent.endPage,
+                if:currentMeasure().parent.endPage.file && currentMeasure().parent.needShowEnd() && $root.status() == Exec_Status.complete1 && $root.visible()
+            }-->
+            <!-- /ko-->
+
+            <div class="item-main-footer">
+                <div class="left-btns">
+                    <a class="item-btn previous-btn" href="#" data-bind="event: { click: previousItem }, visible: showPreviousButton">
+                        <i class='icon-hand-left'></i>Previous
+                    </a>
+                </div>
+                  <!-- ko if: false && currentItem().type === Ade_ItemType.TypedResponse.value && status() === Exec_Status.going-->
+                <div class="middle-btns">
+                  
+                    <div class="btn-group hidden" data-toggle="buttons">
+                        <label class="btn btn-primary " for="optionItem" data-bind="click: function () { currentItem().showingResponse(false); }, css: { active: !currentItem().showingResponse() }">
+                            <input type="radio" name="TypedResponse" id="optionItem" autocomplete="off" data-bind="checked: currentItem().showingResponse" value="true" />
+                            Item
+                        </label>
+                        <label class="btn btn-primary" for="optionResponse" data-bind="click: function () { currentItem().showingResponse(true); }, css: { active: currentItem().showingResponse() }">
+                            <input type="radio" name="TypedResponse" id="optionResponse" data-bind="checked: currentItem().showingResponse" autocomplete="off" value="false" /> Response
+                        </label>
+                    </div>
+            
+                </div>
+                        <!--/ko-->
+                <div class="right-btns">
+                    <a class="item-btn next-btn" href="#" id="btn_next" data-bind="event: { click: next }, visible: showNextButton, html: nextHtml">
+                    </a>
+                    <a class="item-btn wrong-btn" href="#"
+                       data-bind="event: { click: wrongNext }, visible: showChooseButtons" style="display: none;"><span class="hide">wrongNext</span></a>
+                    <a class="item-btn right-btn" href="#"
+                       data-bind="event: { click: rightNext }, visible: showChooseButtons" style="display: none;"><span class="hide">rightNext</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<iframe id="frmPdf" class="hidden" style="width:100%;display: none;height: 1000px;" src='@(Html.Raw(Url.Action("ListForExec")))'></iframe>
+@****Item tempalte****@
+@Html.Partial("_Partial_ItemTemplates")
+@Html.Partial("_Partial_Comment")
+  
+<script>
+    $(function ()
+    {
+
+        var w = $(".item-container").width();
+        var h = $(".item-container").height();
+
+        if ((w / h) > (1024 / 660))
+        {
+            $(".item-container").width(h * (1024 / 660));
+        } else
+        {
+
+        }
+        //$(".item-container").width("800px");
+
+    
+    });
+</script>

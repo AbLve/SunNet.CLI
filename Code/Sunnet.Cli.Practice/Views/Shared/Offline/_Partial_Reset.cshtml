@@ -1,0 +1,67 @@
+﻿@{
+    Layout = null;
+    ViewBag.OfflineTitle = "";
+    if (Request.Url.AbsolutePath.IndexOf("Cpalls", StringComparison.CurrentCultureIgnoreCase) > 0)
+    {
+        ViewBag.OfflineTitle = "CIRCLE Assessment Offline";
+    }
+    if (Request.Url.AbsolutePath.IndexOf("Cot", StringComparison.CurrentCultureIgnoreCase) > 0)
+    {
+        ViewBag.OfflineTitle = "COT Assessment Offline";
+    }
+    if (Request.Url.AbsolutePath.IndexOf("Cec", StringComparison.CurrentCultureIgnoreCase) > 0)
+    {
+        ViewBag.OfflineTitle = "CEC Assessment Offline";
+    }
+    if (Request.Url.AbsolutePath.IndexOf("Trs", StringComparison.CurrentCultureIgnoreCase) > 0)
+    {
+        ViewBag.OfflineTitle = "Trs Assessment Offline";
+    }
+}
+<div class="modal fade" id="resetPin" data-backdrop="static">
+    <div class="modal-dialog-sm" style=" width: 670px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span class="offline-title-pin">
+                        Engage Offline Assessment
+                        <br />Reset Personal Pin
+                    </span>
+                    <br />
+                    <span class="offline-title-content">
+                        Forget your personal pin code?<br />
+                        Enter a new personal pin code below to protect and save your offline Engage assessment data.<br />
+                        <span class="offline-title-item">
+                            Your pin must be 6-10 characters and contain at least one number and upper case letter.
+                        </span>
+                        <span class="offline-title-item">
+                            Do not use your Engage Login password or a pin code that will be easy to guess.
+                        </span>
+                        Remember this code. You will be prompted to enter it the next time you access your offline data.
+                    </span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="modal-main-content">
+                    <div class="modal-content-body">
+                        <form class="form-horizontal" novalidate="novalidate">
+                            <div class="form-group">
+                                <label for="" class="col-sm-5 control-label">PIN Code</label>
+                                <div class="col-sm-7">
+                                         <label for="anotherfakename1" style="display: none">1</label>
+                                          <label for="txtNewPin" style="display: none">2</label>
+                                    <input style="display:none;" type="password" name="anotherfakename" id="anotherfakename1" />
+                                    <input type="password" id="txtNewPin" maxlength="10" class="form-control pin" />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnResetPin">Reset</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

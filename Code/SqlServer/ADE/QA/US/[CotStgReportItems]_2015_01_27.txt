@@ -1,0 +1,5 @@
+﻿ALTER TABLE [dbo].[CotStgReportItems] ADD Sort int NULL
+GO
+UPDATE [dbo].[CotStgReportItems] SET Sort = 0;
+GO
+ALTER TABLE [dbo].[CotStgReportItems] ALTER COLUMN Sort int NOT NULL

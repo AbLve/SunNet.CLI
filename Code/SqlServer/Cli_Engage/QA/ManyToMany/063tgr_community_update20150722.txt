@@ -1,0 +1,27 @@
+﻿ 
+GO
+/****** Object:  Trigger [dbo].[tgr_community_update]    Script Date: 2015/7/22 18:46:46 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER trigger [dbo].[tgr_community_update]
+on [dbo].[Communities]
+    after update
+as
+	CREATE TABLE #Tmp  
+		(
+			CommunityID   int ,
+			OldStatus  tinyint,   
+			NewStatus  tinyint 
+		);
+begin
+	  INSERT INTO #Tmp  SELECT  ID,Status,'' FROM deleted; 
+	  UPDATE #Tmp SET  NewStatus = B.Status FROM #Tmp A ,inserted B WHERE A.CommunityID = B.ID
+	   
+	 begin 
+		   UPDATE Communities SET StatusDate = GETDATE() from #Tmp A,[Communities] B WHERE A.CommunityID = B.ID AND A.OldStatus != A.NewStatus;
+	 end
+	 
+end	 
+ 

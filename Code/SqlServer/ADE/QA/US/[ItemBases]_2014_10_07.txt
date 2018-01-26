@@ -1,0 +1,52 @@
+﻿--			Direction = 9,
+--			Cec = 1,
+--			Cot = 2,
+--			MultipleChoices = 3,
+--			Pa = 4,
+--			Quadrant = 5,
+--			RapidExpressive = 6,
+--			Receptive = 7,
+--			ReceptivePrompt = 8,
+--			Checklist = 10
+
+declare @maxItemId int;
+declare @i int;
+
+declare @type tinyint;
+declare @isMulti bit;
+declare @score decimal;
+
+set @i = 1;
+
+set @maxItemId  = (select top 1 id from ItemBases order by id desc)
+
+while(@i <= @maxItemId)
+begin
+	if exists (select 1 from [dbo].[ItemBases] where ID  = @i)
+		begin
+			set @type = (select top 1 [Type] from [dbo].[ItemBases] where ID  = @i)
+			if @type = 10
+			begin
+				set @isMulti = (select top 1 IsMultiChoice from [dbo].ChecklistItems where ID  = @i)
+			end
+			if @type = 1
+			begin
+				set @isMulti = (select top 1 IsMultiChoice from [dbo].CecItems where ID  = @i)
+			end
+
+			if @type = 3 or (@type = 10 and @isMulti = 1) or (@type = 1 and @isMulti = 1)
+			begin
+				set @score = (select SUM( Score) from Answers where ItemId = @i);
+				--print('itemid:'+cast(@i as varchar)+', type:'+cast(@type as varchar)+', isMulti:'+cast(@isMulti as varchar)+', score' + cast((@score) as varchar) );
+				update [ItemBases] set Score = @score where ID = @i
+			end
+
+			if (@type = 10 and @isMulti = 0) or (@type = 1 and @isMulti = 0)
+			begin
+				set @score = (select MAX( Score) from Answers where ItemId = @i);
+				--print('itemid:'+cast(@i as varchar)+', type:'+cast(@type as varchar)+', isMulti:'+cast(@isMulti as varchar)+', score'  + cast((@score) as varchar) );
+				update [ItemBases] set Score = @score where ID = @i
+			end
+		end
+	set @i = @i+1
+end

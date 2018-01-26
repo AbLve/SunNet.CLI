@@ -1,0 +1,38 @@
+﻿
+GO
+
+/****** Object:  StoredProcedure [dbo].[CleanClassroom]    Script Date: 2017/3/31 14:43:51 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+CREATE PROCEDURE [dbo].[CleanClassroom] 
+	@AssessmentId int
+AS
+BEGIN 
+	SET NOCOUNT ON; 
+	if @AssessmentId > 0
+	begin
+
+		select ID into #StudentMeasureIds from PracticeStudentMeasures where SAId in (select id from PracticeStudentAssessments where AssessmentId = @AssessmentId )
+
+		delete from PracticeStudentItems where SMId in (select * from #StudentMeasureIds)
+		delete from PracticeStudentMeasures where ID in (select * from #StudentMeasureIds)
+		delete from PracticeStudentAssessments  where AssessmentId = @AssessmentId
+
+		delete from PracticeDemoStudents where AssessmentId =@AssessmentId 
+		drop table #StudentMeasureIds 
+
+	end
+END
+
+
+
+GO
+
+

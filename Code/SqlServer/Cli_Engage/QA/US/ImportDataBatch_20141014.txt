@@ -1,0 +1,66 @@
+﻿/****** Object:  StoredProcedure [dbo].[ImportDataBatch]    Script Date: 2014/10/14 17:15:47 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[ImportDataBatch]
+	@ID int
+AS
+BEGIN
+--Pending = 1,        
+--Processing  =2,
+--Processed =3,
+--Error = 4
+
+UPDATE DataSchools SET  School_County = ISNULL((SELECT TOP 1 id FROM Counties WHERE name = School_County),0)
+, School_State = ISNULL((SELECT TOP 1 id FROM States WHERE name = School_State) ,0)
+, School_Type =ISNULL((SELECT TOP 1 id FROM SchoolTypes WHERE name = School_Type),0)
+,School_Primary_Contact_Title = ISNULL((SELECT TOP 1 id FROM Titles WHERE name = School_Primary_Contact_Title and model = 3),0)
+,School_Secondary_Contact_Title = ISNULL((SELECT TOP 1 id FROM Titles WHERE name = School_Secondary_Contact_Title and model = 4),0)
+,[Status] = 2
+WHERE GroupId = @ID and [Status] = 1
+
+
+DECLARE @InvitationEmail BIT
+DECLARE @CreatedBy INT 
+SELECT @InvitationEmail = SendInvitation , @CreatedBy =CreatedBy  FROM DataGroups WHERE ID = @ID
+
+DECLARE @District_TEA_ID VARCHAR(100)
+SELECT TOP 1 @District_TEA_ID = District_TEA_ID  FROM DataCommunities WHERE GroupId = @ID
+
+    DECLARE @SchoolId INT
+
+	DECLARE cur CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT ID FROM dbo.DataSchools 
+        WHERE GroupId = @ID AND [Status] = 2
+		
+	OPEN cur FETCH NEXT FROM cur INTO @SchoolId
+	
+	WHILE @@FETCH_STATUS=0
+	BEGIN
+		EXEC ImportData @SchoolId ,@District_TEA_ID,@ID,@InvitationEmail ,@CreatedBy
+	FETCH NEXT FROM cur INTO @SchoolId
+	END
+	CLOSE cur
+	DEALLOCATE cur
+
+	DECLARE @StudentCount INT
+	DECLARE @SchoolCount INT
+	SELECT @StudentCount = COUNT(*) FROM DataStudents WHERE (Status =1 OR Status = 2 ) AND GroupId = @ID
+	SELECT @SchoolCount = COUNT(*) FROM DataSchools WHERE (Status =1 OR Status = 2) AND GroupId = @ID
+	IF(@StudentCount =0 AND @SchoolCount=0)
+		UPDATE DataGroups SET Status = 3 WHERE ID = @ID 
+	ELSE
+		UPDATE DataGroups SET Status = 2 WHERE ID = @ID 
+
+	UPDATE DataGroups SET SchoolError=(SELECT COUNT(*) FROM dbo.DataSchools WHERE GroupId=@ID AND Status=4) 
+,TeacherError = ( SELECT COUNT(0) FROM (SELECT Teacher_Number FROM dbo.DataStudents WHERE GroupId=@ID AND Status=4  GROUP BY Teacher_Number ) AS A)
+,StudentError = (SELECT COUNT(*) FROM dbo.DataStudents WHERE GroupId=@ID and Student_TSDS_ID !=''   AND Status=4) 
+WHERE ID = @ID
+
+END

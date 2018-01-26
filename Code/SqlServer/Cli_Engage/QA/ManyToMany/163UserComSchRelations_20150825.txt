@@ -1,0 +1,35 @@
+﻿--sync community primary school to community user
+DECLARE @UserId int
+DECLARE @CommunityId int
+DECLARE My_Cursor CURSOR 
+FOR (select UserId,CommunityId from UserComSchRelations where UserId in (select ID from Users where Role in (105,110,115)) and SchoolId=0) 
+OPEN My_Cursor; 
+FETCH NEXT FROM My_Cursor INTO @UserId,@CommunityId; 
+WHILE @@FETCH_STATUS = 0
+    BEGIN
+		insert into UserComSchRelations select @UserId,0,S.ID,1,1,GETDATE(),1,GETDATE(),3 from 
+		(select @UserId as UserId,S.ID from Schools S inner join BasicSchools BS on BS.ID=S.BasicSchoolId left join BasicCommunities BC on BC.ID=BS.BasicCommunityID 
+		inner join Communities C on C.BasicCommunityId=BC.ID where C.ID=@CommunityId except SELECT UserId,SchoolId FROM dbo.UserComSchRelations)S
+        FETCH NEXT FROM My_Cursor INTO @UserId,@CommunityId; 
+    END
+CLOSE My_Cursor; 
+DEALLOCATE My_Cursor; 
+GO
+
+--sync community primary school's class to communityuser
+DECLARE @UserId int
+DECLARE @CommunityId int
+DECLARE My_Cursor CURSOR 
+FOR (select UserId,CommunityId from UserComSchRelations where UserId in (select ID from Users where Role in (105,110,115)) and SchoolId=0) 
+OPEN My_Cursor; 
+FETCH NEXT FROM My_Cursor INTO @UserId,@CommunityId; 
+WHILE @@FETCH_STATUS = 0
+    BEGIN
+		insert into UserClassRelations select @UserId,CL.ClassId,1,1,GETDATE(),GETDATE(),1 from 
+		(select @UserId as UserId,CL.ID as ClassId from Schools S inner join BasicSchools BS on BS.ID=S.BasicSchoolId left join BasicCommunities BC on BC.ID=BS.BasicCommunityID inner join
+ Communities C on C.BasicCommunityId=BC.ID inner join Classes CL on Cl.SchoolId=S.ID where C.ID=@CommunityId except SELECT UserId,ClassId FROM dbo.UserClassRelations)CL
+        FETCH NEXT FROM My_Cursor INTO @UserId,@CommunityId; 
+    END
+CLOSE My_Cursor; 
+DEALLOCATE My_Cursor; 
+GO

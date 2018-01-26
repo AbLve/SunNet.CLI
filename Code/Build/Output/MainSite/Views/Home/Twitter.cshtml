@@ -1,0 +1,49 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Twitter";
+    var tweets = (List<int>)ViewBag.Tweets;
+}
+
+<h2>Twitter</h2>
+@if (tweets != null && tweets.Count > 0)
+{
+    <p>
+    </p>    
+}
+else
+{
+    <p>
+        Read tweet fail.
+    </p>
+}
+<div class="contact-input">
+    <form id="queryForm">
+        <input type="text" placeholder="get | post" class="input-con" name="method" id="method" value="get" />
+        <input type="checkbox" name="base64" id="base64" value="true" /><label for="base64">Base64 Encode Authorization</label>
+        <br />
+        <br />
+        <input type="text" placeholder="api" class="input-con" name="api" id="api" value="1.1/statuses/user_timeline.json" /><br />
+        <input type="text" placeholder="query" class="input-con" name="query" id="query" value="screen_name=twitterapi&count=1" /><br />
+        <input type="text" placeholder="scheme" class="input-con" name="scheme" id="scheme" value="OAuth" /><br />
+        <textarea type="text" placeholder="authorizatioin" class="textarea-con" style="height: 200px;" id="authorization" name="authorization">oauth_consumer_key="DlO5Ii8lvyitWFye0NewRw", oauth_nonce="669f736d0d27a02703f0bc3de5c82f74", oauth_signature="krM1F309ZKG3r55tgGCIAE4mn9g%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1407466858", oauth_token="592557656-BGG68rB4qzIwJUrQrl6hdLuUHdzR6X7lK63lEluU", oauth_version="1.0"</textarea><br />
+    </form>
+    <button type="button" class="redbtn contact-sumbit" id="btnTest">Test</button><br />
+    Response:<br />
+    <textarea type="text" placeholder="result" class="textarea-con" name="result" id="result" style="height: 500px;"></textarea>
+    <br />
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        jQuery(function () {
+            jQuery("#btnTest").click(function () {
+                jQuery.get("/twitter", jQuery("#queryForm").serialize(), function (response) {
+                    jQuery("#result").val(response);
+                }).error(function () {
+                    jQuery("#result").val("Error");
+                });
+            });
+        })
+    </script>
+
+}

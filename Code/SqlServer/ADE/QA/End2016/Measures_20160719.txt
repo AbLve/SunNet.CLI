@@ -1,0 +1,15 @@
+if not exists(select * from syscolumns where id=object_id('Measures') and name='ShowLaunchPage')
+    alter table [Measures] add [ShowLaunchPage] bit 
+  go
+  update [Measures] set [ShowLaunchPage] = 1 where [ShowLaunchPage] is null
+  go
+  alter table [Measures]  alter column  [ShowLaunchPage] bit not NULL
+  GO
+ 
+if not exists(select * from syscolumns where id=object_id('Measures') and name='ShowFinalizePage')
+    alter table [Measures] add [ShowFinalizePage] bit 
+  go
+  update [Measures] set [ShowFinalizePage] = 1 where [ShowFinalizePage] is null
+  go
+  alter table [Measures]  alter column  [ShowFinalizePage] bit not NULL
+  GO

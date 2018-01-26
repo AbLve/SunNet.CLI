@@ -1,0 +1,171 @@
+﻿@model CotItemModel
+@{
+    if (Model.ID < 1)
+    {
+        ViewBag.Title = "New " + ItemType.Cot.ToDescription();
+    }
+    else
+    {
+        ViewBag.Title = Model.Label;
+    }
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control validate" };
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Detail", "Measure", new { id = Model.MeasureId });
+    
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section Scripts{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        CKEDITOR.replace('FullTargetText',
+        {
+            toolbar: 'Cli'
+        });
+        CKEDITOR.replace('PrekindergartenGuidelines',
+        {
+            toolbar: 'Cli'
+        });
+        CKEDITOR.replace('CircleManual',
+        {
+            toolbar: 'Cli'
+        });
+        CKEDITOR.replace('MentoringGuide',
+        {
+            toolbar: 'Cli'
+        });
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@Html.Raw(backUrl)");
+                }
+            });
+        })
+    </script>
+
+}
+@section BreadPath
+{
+    @Html.Partial("NEV_Item_BreadPath", Model)
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))" >Back</a>
+</div>
+@using (Ajax.BeginForm("SaveCot", "Item", null, PostFormHelper.DefaultAjaxOptions,
+        new
+        {
+            @class = "form-horizontal",
+            id = formId
+        }))
+{  
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ID" value="@Model.ID"/>
+    @Html.HiddenFor(m => m.Type)
+    @Html.HiddenFor(m => m.MeasureId)
+    @Html.Hidden("Answers", "")
+    @Html.HiddenFor(x => x.AnswerType)
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(model => model.Label, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Label)
+                </div>
+                <div class="col-sm-2">
+                    @Html.LabelFor(model => model.Status, new { @class = "hide" })
+                    @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(model => model.Description, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-sm-2 required">@Html.DisplayNameFor(model => model.Level)</div>
+                <div class="col-sm-4">
+                    @Html.RadioButtonFor(x => x.Level, CotLevel.Level1, new { id = "Level1" })
+                    @Html.Label("", "Level1", new
+                    {
+                        @for = "Level1",
+                        style = "background-color: " + CotLevel.Level1.ToDescription()
+                    })
+                    @ViewTextHelper.HtmlEmptySeparator
+                    @Html.RadioButtonFor(x => x.Level, CotLevel.Level2, new { id = "Level2" })
+                    @Html.Label("", "Level2", new
+                    {
+                        @for = "Level2",
+                        style = "background-color: " + CotLevel.Level2.ToDescription()
+                    })
+                    @ViewTextHelper.HtmlEmptySeparator
+                    @Html.RadioButtonFor(x => x.Level, CotLevel.Level3, new { id = "Level3" })
+                    @Html.Label("", "Level3", new
+                    {
+                        @for = "Level3",
+                        style = "background-color: " + CotLevel.Level3.ToDescription()
+                    })
+                    @ViewTextHelper.HtmlEmptySeparator
+                    @Html.ValidationMessageFor(model => model.Level)
+                </div>
+                <div class="control-label col-sm-2 required">@Html.DisplayNameFor(model => model.CotItemId)</div>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.CotItemId, new { @class = "form-control validate uint",maxlength=10 })
+                    @Html.ValidationMessageFor(model => model.CotItemId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ShortTargetText, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(model => model.ShortTargetText, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.ShortTargetText)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.FullTargetText, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.FullTargetText, new { @class = "form-control validate", rows = 8 })
+
+                    @Html.ValidationMessageFor(model => model.FullTargetText)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrekindergartenGuidelines, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.PrekindergartenGuidelines, new { @class = "form-control validate", rows = 8 })
+
+                    @Html.ValidationMessageFor(model => model.PrekindergartenGuidelines)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CircleManual, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.CircleManual, new { @class = "form-control validate", rows = 8 })
+
+                    @Html.ValidationMessageFor(model => model.CircleManual)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.MentoringGuide, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.MentoringGuide, new { @class = "form-control validate", rows = 8 })
+
+                    @Html.ValidationMessageFor(model => model.MentoringGuide)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="button-content">
+        <button class="mainbutton mainright-btn submit-btn" id="btnSubmit" type="submit">Submit</button>
+        <a class="mainbutton mainright-btn cancel-btn" href="@(Html.Raw(backUrl))">Cancel</a>
+    </div>
+}

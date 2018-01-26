@@ -1,0 +1,506 @@
+﻿@charset "utf-8";
+/* CSS Document */
+ 
+
+
+body {
+	font-size: 1.8em;
+    background-color: #f4f4f4;
+}
+
+.publicLayout a{
+	color:#d13f48;
+}
+
+.publicLayout a:hover, a:focus {
+    color: #2a6496;
+    text-decoration: underline;
+}
+
+.publicLayout h4 {
+
+	font-family: 'Lato', sans-serif;
+	/* font-size: 3em; */
+	font-size: 1.5em;
+	margin: 0.3em auto;
+	font-weight:300;
+} 
+
+
+.footerheader {
+	font-family: "Nobel Book", sans-serif;
+	font-size: 1.5em;
+	margin: 0.1em auto;
+	text-align: center;
+	align: center;
+}
+.footerlink {
+	background-color: #92c83e; !important;
+	color: #FFF !important;
+	text-decoration: none !important;
+	font-family: "Nobel Bold", sans-serif !important;
+	border: 0px !important;
+	font-size: 1.1em !important;
+	margin: 0px auto !important;
+}
+.footerlink:hover {
+	background-color: #e90e1d; !important;
+	color: #FFF !important;
+	text-decoration: underline !important;
+}
+.publicLayout p {
+	/*padding-bottom: .5em;*/
+}
+/*-----------------------------------------------------------
+            Fonts
+-----------------------------------------------------------*/
+
+@font-face {
+	font-family: Nobel Regular;
+	src: url('/Content/fonts/NobelRegular.otf'); 
+}
+@font-face {
+	font-family: Nobel Book;
+	src: url('/Content/fonts/NobelBook.otf');
+}
+@font-face {
+	font-family: Nobel Bold;
+	src: url('/Content/fonts/NobelBold.otf');
+}
+
+@font-face {
+	font-family: Nobel Light;
+	src: url('/Content/fonts/Nobel-Light.otf');
+}
+/*-----------------------------------------------------------
+            CSS for Items created in July 2015 makeover
+-----------------------------------------------------------*/
+
+.newsbox a {
+	color: #6d6e72;
+	text-decoration: none;
+	font-size: 1.5em;
+}
+.newsbox a:hover {
+	color: #6d6e72;
+	text-decoration: underline;
+}
+.vertrule {
+	background-image: url(/Content/images/redesign/vertrule.png);
+	background-repeat: repeat-y;
+	background-position: center;
+	margin: 2em;
+}
+.center {
+	float: none;
+	margin-left: auto;
+	margin-right: auto;
+}
+.toolicon {
+	margin: 0 auto;
+	padding: 1em;
+}
+.socialicon {
+	margin: 0 auto;
+}
+.toolheader a {
+	font-size: 1.5em;
+	margin: 0 auto;
+	text-align: center;
+	color: #6d6e72;
+	text-decoration: none;
+	
+}
+.toolheader a:hover {
+	text-decoration: underline;
+}
+
+.toolheader {
+	font-size: .9em;
+}
+
+.logbox {
+    z-index: 1000;
+	background-color: #d13f48;
+	color: #FFFFFF;
+	position: absolute;
+	top: 75px;
+	right: 0px;
+	border: 0px;
+	font-family: "Nobel Bold", sans-serif;
+	height: 50px;
+	border-radius: 10px 0px 0px 10px !important;
+	padding-top: .8em;
+	padding-bottom: .8em;
+	padding-left: 1em;
+	padding-right: 45px;
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-color: #92c83e;
+	display: table;
+	text-align: center;
+	font-size: 1.1vw;
+	
+}
+.logbox a:link, .logbox a:visited, .logbox a:active {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.logbox a:hover {
+	text-decoration: underline;
+}
+.clibar {
+	background-color: #000;
+	height: 55px;
+	color: #FFF;
+	/*font-size: 1.5vw;*/
+	font-size: 2.0vmin;
+	font-family: "Nobel Regular", sans-serif;
+	background-image: url(/Content/images/redesign/CLI-bg.png);
+}
+.clileft {
+	height: 50px;
+	position: relative;
+	text-align: left;
+}
+.clileft p {
+	margin: 0;
+	position: absolute;
+	top: 60%;
+	left: 1vmax;
+	transform: translate(0, -50%);
+}
+.cliright {
+	height: 50px;
+	position: relative;
+	color:#FFF;
+}
+.cliright p {
+	margin: 0;
+	position: absolute;
+	top: 60%;
+	right: 1vmax;
+	transform: translate(0, -50%);
+}
+.footer {
+	background: #E12428;
+	color: #ffffff;
+	text-align: center;
+}
+
+.footer a:link {
+	color: #fff;
+	text-decoration: none;
+    font-weight:700;
+}
+.footer a:visited {
+	color: #707079;
+	text-decoration: none;
+}
+.footer a:hover {
+	color: #707079;
+	text-decoration: underline;
+}
+.footer a:active {
+	color: #707079;
+	text-decoration: none;
+}
+
+.footernav {
+	font-size: .9em;
+	text-align: left;
+	
+}
+.footernav li {
+	padding: 0em 0em 1em 0em;
+	list-style-position:inside;
+	
+}
+
+.menu {
+	background-color: rgba(0,0,0,0.5);
+ filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, startColorStr="#E6FFFFFF", endColorStr="#E6FFFFFF");
+ -ms-filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, startColorStr="#E6FFFFFF", endColorStr="#E6FFFFFF");
+}
+.menutext {
+	color: #FFFFFF;
+	font-size: 1.1em;
+	white-space: nowrap;
+	display: inline-block;
+}
+
+.dropdown-menu>li>a {
+    display: block;
+    padding: 15px 20px 20px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+
+.row.text-center > div {
+	display: inline-block;
+	float: none;
+}
+.hidden-text {
+  position: absolute;
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  z-index: -1000;
+  color:#000;
+  background-color:#FFF;
+}
+
+
+.hidden-text {
+  position: absolute;
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  z-index: -1000;
+  color:#000;
+  background-color:#FFF;
+}
+    
+	
+/*-----------------------------------------------------------
+            Bootstrap Overrides
+-----------------------------------------------------------*/
+.publicLayout .btn-default, .btn-primary, .btn-success, .btn-info, .btn-warning, .btn-danger {
+	border-radius: 50px !important;
+	padding-top: .5em;
+	padding-bottom: .5em;
+	padding-left: 2em;
+	padding-right: 2em;
+}
+#btnLock{
+    background-color:#3979AF;
+}
+#btnLock:hover{
+    background-color:#4389C1;
+}
+.publicLayout .btn-default {
+	background-color: #d13f48;
+	color: #ffffff;
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-color: #d13f48;
+	display: table;
+	margin: 30px auto;
+}
+.publicLayout .btn-default:hover {
+	background-color: #e90e1d;
+	color: #ffffff;
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-color: #e90e1d;
+}
+
+.navbar-default {
+	background-color: rgba(0, 0, 0, 0.5);
+	color: #FFFFFF;
+	position: relative;
+	top: -50px;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	font-family: "Nobel Regular", sans-serif;
+}
+.navbar-default .navbar-nav > .active {
+	color: #000;
+	background: #FFFFFF;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:link, .navbar-default .navbar-nav > .active > a:visited {
+	color: #000;
+	background: #ffffff;
+}
+.navbar-default .navbar-brand {
+	color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a {
+	color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+	color: #2b2b2b;
+	background-color: #e4e4e4;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+	color: #808184;
+	background-color: #e4e4e4;
+}
+.navbar-default .navbar-nav > .dropdown > a .caret {
+	border-top-color: #ffffff;
+	border-bottom-color: #ffffff;
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret, .navbar-default .navbar-nav > .dropdown > a:focus .caret {
+	border-top-color: #808184;
+	border-bottom-color: #808184;
+}
+.navbar-default .navbar-nav > .open > a .caret, .navbar-default .navbar-nav > .open > a:hover .caret, .navbar-default .navbar-nav > .open > a:focus .caret {
+	border-top-color: #808184;
+	border-bottom-color: #808184;
+}
+.navbar-default .navbar-toggle {
+	border-color: ##808184;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+	background-color: #e4e4e4;
+}
+.navbar-default .navbar-toggle .icon-bar {
+	background-color: #ffffff;
+}
+.glyphicon {
+	height: 1em !important;
+	padding: 0px !important;
+	margin: 0px !important;
+	white-space: nowrap;
+	display: inline-block;
+}
+.dropdown-menu {
+	padding: 0px;
+}
+.dropdown-menu li a {
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-color: #656565;
+	color: #656565;
+}
+.dropdown-menu li a:hover {
+	background-color: #474747 !important;
+	color: #FFFFFF !important;
+}
+
+
+/*Style for Bigger Screens*/
+ @media (min-width: 768px) {
+.navbar-default a {
+	color: white;
+	height: 50px;
+}
+.navbar-default li a:hover {
+	color: #808184;
+}
+.navbar-nav {
+	float: none;
+	margin: 0 auto;
+	display: table;
+	table-layout: fixed;
+}
+}
+/*Style for Smaller Screens*/
+@media (max-width: 767px) {
+.navbar-default {
+	top: 0px;
+	background: #474747;
+	font-size: 1.0em;
+}
+.navbar-default li {
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-color: #FFF;
+	padding-left:15px;
+}
+.dropdown-menu li a {
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-color: #585858;
+	color: #FFFFFF;
+	background-color: #585858;
+}
+.dropdown-menu li a:hover {
+	background-color: #d13f48 !important;
+	color: #FFFFFF !important;
+}
+.menutext {
+	font-size: 1.0em;
+}
+.vertrule {
+	background-image: none;
+	margin: 2em;
+}
+
+.logbox {
+	background-color: #d13f48;
+	color: #FFFFFF;
+	position: absolute;
+	top: 75px;
+	right: 0px;
+	border: 0px;
+	font-family: "Nobel Bold", sans-serif;
+	height: 35px;
+	border-radius: 5px 0px 0px 5px !important;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	padding-left: 1em;
+	padding-right: 10px;
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-color: #92c83e;
+	display: table;
+	text-align: center;
+	font-size: 2.2vw;
+	
+}
+}
+.container-fluid {
+    padding-right: 0;
+    padding-left: 0;
+}
+a {
+    outline: none;
+    text-decoration: none;
+    color: #333;
+}
+a:hover {
+	color: #7eb530;
+	outline: none;
+	text-decoration: none;
+}
+.renderBody-style h4{
+    margin: 0;
+}
+.alert.alert-log {
+    margin: 0px;
+    padding: 0px 0px 0px 10px;
+    text-align: left;
+    width: 100%;
+}
+.panel-body-log {
+    padding: 0px;
+    height: 105px;
+    overflow-y: auto;
+}
+.new-nav li{
+    width:25%;
+    text-align:center;
+}
+.main-container1 {
+    width: 1200px;
+    margin: 0 auto;
+}
+@media (max-width:767px){
+    .new-nav{
+        padding:0 !important;
+    }
+}
+.benchmarkColor:hover{
+    color:#000 !important;
+}
+.a-hover{
+    color:#176F27;
+    font-weight:700;
+    cursor:pointer;
+}
+.a-hover:hover{
+    color:#7EB530;
+}

@@ -1,0 +1,39 @@
+﻿@using System.Web.Optimization
+
+@{
+    ViewBag.Title = "";
+}
+@*@section Banner
+{
+    <div class="container">
+        <div class="banner-pages">
+            <h1>@ViewBag.Title</h1>
+        </div>
+    </div>
+}*@
+@section Styles
+{
+    @Styles.Render("~/css/home")
+}
+<div class=" left-container">
+    <ol>
+        <li>
+            Instructions here.
+        </li>
+        <li>
+            Set 302 redirect for this page in IIS.
+        </li>
+        <li>
+            Use javascript redirect(Source Code).
+        </li>
+    </ol>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function() {
+            //location.href = "some pdf url.pdf";
+        });
+    </script>
+
+}

@@ -1,0 +1,137 @@
+﻿@using Sunnet.Cli.Assessment.Areas.Report.Controllers
+@using Sunnet.Cli.Business.Ade.Models
+@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Class Custom Score Benchmark Report";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    List<CustomScoreReportModel> customScoreReports = ViewBag.CustomScoreReports;
+    List<ScoreInitModel> customScoreInits = ViewBag.CustomScoreInits;
+    List<BenchmarkModel> benchmarkInits = ViewBag.BenchmarkInits;
+    var gray = Request.Form["Gray"];
+    AssessmentLegendEntity assessmentLegend = ViewBag.AssessmentLegend;
+    var count = 0;
+}
+
+@foreach (var customScoreReport in customScoreReports)
+{
+    count++;
+    <table style="width: 100%">
+        <thead>
+            <tr>
+                <td>
+                    <table cellpadding="0" cellspacing="0" class="noborder header">
+                        <tr>
+                            <td></td>
+                            <td style="font-size: 14px; font-weight: bold;" colspan="3">
+                                @(ViewBag.AssessmentName)<br />
+                                Class Custom Score Benchmark Report
+                            </td>
+                            <td>
+                                <img src="@(DomainHelper.AssessmentDomain)images/cli_logo.png" style="width: 150px; height: 60px; vertical-align: middle;" alt="cli_logo" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; width: 180px; vertical-align: top;" colspan="2">
+                                Community:&nbsp;@(customScoreReport.Community)
+                            </td>
+                            <td style="vertical-align: top;">&nbsp;</td>
+                            <td style="text-align: right; width: 180px; vertical-align: top;" colspan="2">
+                                Assessment Language:&nbsp;@customScoreReport.Language
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; vertical-align: top;" colspan="2">
+                                School:&nbsp;@customScoreReport.School
+                            </td>
+                            <td>&nbsp;</td>
+                            <td style="text-align: right; vertical-align: top;" colspan="2">Class:&nbsp;@customScoreReport.Class</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; vertical-align: top;" colspan="2">
+                                School year:&nbsp;@ViewBag.ScoolYear<br />
+                                Wave @customScoreReport.Wave.ToDescription()
+                            </td>
+                            <td>&nbsp;</td>
+                            <td style="text-align: right; vertical-align: top;" colspan="2">Teacher:&nbsp;@Html.Raw(customScoreReport.Teacher)</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 180px; height: 40px;"></td>
+                            <td style="width: 50px;"></td>
+                            <td></td>
+                            <td style="width: 50px;"></td>
+                            <td style="width: 180px;"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <table cellpadding="0" cellspacing="0" class='report-data' style="page-break-inside: avoid;border-top:1px solid #333;width:50%;">
+                        <tr style="page-break-inside: avoid">
+                            <td style="border-right:1px solid #333;border-bottom:1px solid #333;border-left:1px solid #333;">Custom Score</td>
+                            @foreach (var benchmarkInit in benchmarkInits)
+                            {
+                                <td style="border-right:1px solid #333;border-bottom:1px solid #333;">
+                                    <div>
+                                        <span>
+                                            @benchmarkInit.LabelText
+                                        </span>
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                        @foreach (var customScoreInit in customScoreInits)
+                        {
+                            var allScores = customScoreReport.ScoreReports.Where(e => e.ScoreId == customScoreInit.ScoreId && e.FinalScore != null && e.BenchmarkId > 0);
+                            var allScoresStudentCount = allScores.GroupBy(e => e.StudentId).Count();
+
+                            <tr style="page-break-inside: avoid">
+                                <td style="border-right:1px solid #333;border-bottom:1px solid #333;border-left:1px solid #333;">@customScoreInit.ScoreDomain</td>
+                                @foreach (var benchmarkInit in benchmarkInits)
+                                {
+                                    var currentScores = allScores.Where(e => e.BenchmarkId == benchmarkInit.ID);
+                                    var studentCount = currentScores.GroupBy(e => e.StudentId).Count();
+                                    <td style="border-right:1px solid #333;border-bottom:1px solid #333;">
+                                        <div>
+                                            <span>
+                                                @{
+                                                    decimal percentage = 0M;
+                                                    if (allScoresStudentCount > 0)
+                                                    {
+                                                        percentage = (studentCount * 100M / allScoresStudentCount);
+                                                    }
+                                                }
+                                                @(!allScores.Any() ? "*" : percentage + "%")
+                                            </span>
+                                        </div>
+                                    </td>
+                                                    }
+                            </tr>
+                                                    }
+                        @foreach (var customScoreInit in customScoreInits)
+                        {
+                            <tr style="page-break-inside: avoid">
+                                <td align="left" colspan="@(benchmarkInits.Count() + 1)">
+                                    <span>
+                                        @(customScoreInit.ScoreDomain) requires the following measures:
+                                    </span>
+                                    <span>@(string.Join("; ", customScoreInit.ScoreMeasures.Select(e => e.MeasureName).ToList()))</span>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="height: 60px"></div>
+    <div style="width: 100%; text-align: center; page-break-inside: avoid; margin: 0 auto;">
+        <img src='@(ViewData["Image" + (count-1)])' />
+    </div>
+                                                    }

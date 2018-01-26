@@ -1,0 +1,33 @@
+﻿GO
+
+/****** Object:  Table [dbo].[ReportQueue]    Script Date: 4/9/2015 16:19:13 ******/
+IF EXISTS(SELECT 1 FROM SYSOBJECTS WHERE NAME = 'ReportQueue' AND XTYPE = 'U' )
+DROP TABLE [dbo].[ReportQueue]
+GO
+
+/****** Object:  Table [dbo].[ReportQueue]    Script Date: 4/9/2015 16:19:13 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ReportQueue](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[Type] [tinyint] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[QueryParams] [nvarchar](4000) NOT NULL,
+	[Result] [text] NOT NULL,
+	[DownloadUrl] [nvarchar](200) NOT NULL,
+	[Report] [nvarchar](200) NOT NULL,
+	[Title] [nvarchar](50) NOT NULL,
+ CONSTRAINT [PK_ReportQueues] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO

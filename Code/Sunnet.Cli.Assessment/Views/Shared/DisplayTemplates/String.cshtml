@@ -1,0 +1,17 @@
+﻿@model string
+@{
+}
+
+
+@if (string.IsNullOrEmpty(Model))
+{
+    <label class="control-label-text">
+        <span style="display: none;">none</span>
+    </label>
+}
+else
+{
+    <label class="control-label-text">
+        @Model
+    </label>
+}

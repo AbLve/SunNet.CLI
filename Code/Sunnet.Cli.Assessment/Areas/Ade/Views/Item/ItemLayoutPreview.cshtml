@@ -1,0 +1,123 @@
+﻿@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    ViewBag.Title = "Preview Layout";
+}
+
+@Styles.Render("~/css/cpalls")
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var canvas_preview;
+        var preLayoutScreenWidth;
+        var curLayoutScreenWidth;
+        var layout;
+        var text; //instruction text
+        if (typeof (jsonModel) != "undefined")
+            text = jsonModel.InstructionTextNoHtml;
+        else
+            text = "@(ViewBag.InstructText)";
+
+        var isHasInstruction = false;
+
+        +(function () {
+            curLayoutScreenWidth = $(window).innerWidth() * 0.95 - 40
+
+            var ua = navigator.userAgent.toLowerCase();
+            if (ua.match(/msie/) != null || ua.match(/trident/) != null) {
+                curLayoutScreenWidth -= 40;
+            }
+            canvas_preview = new fabric.Canvas('cav_prelayout', {
+                width: curLayoutScreenWidth,  //#modal-content.width - padding
+                height: 600
+            });
+            if (typeof (canvas) != "undefined")   //edit page
+            {
+                preLayoutScreenWidth = canvas.width;
+                layout = JSON.parse(JSON.stringify(canvas.toDatalessJSON()));
+            }
+            else   //list page
+            {
+                preLayoutScreenWidth = "@(ViewBag.ScreenWidth)";
+                layout = JSON.parse('@( ViewBag.Layout=="" ? Html.Raw("{\"objects\":null}"): Html.Raw(ViewBag.Layout))');
+            }
+            if (layout.objects != null)
+                layout.objects = layout.objects.filter(function (obj) {
+                    return ((obj.type == "image" && obj.src.indexOf('layoutPlaceholder.png') < 0)
+                        || obj.type == "text")
+                });// remove lines
+
+            if (layout.backgroundImage && layout.backgroundImage.width) {
+                layout.backgroundImage.width = curLayoutScreenWidth;
+            }
+
+            if (layout.objects) {
+                for (var i = 0; i < layout.objects.length; i++) {
+                    var preLayout = layout.objects[i];
+                    if (preLayoutScreenWidth != curLayoutScreenWidth && preLayoutScreenWidth > 0)
+                        //If the screen before and now is not the same as the screen size, recalculate the left margin
+                    {
+                        var width = preLayout.width * preLayout.scaleX;
+                        //If on the left, then calculate the left margin, opposite to calculate the right margin
+                        if (preLayout.left < (preLayoutScreenWidth / 2))
+                            preLayout.left = (preLayout.left / preLayoutScreenWidth) * curLayoutScreenWidth;
+                        else
+                            preLayout.left = curLayoutScreenWidth -
+                            ((preLayoutScreenWidth - preLayout.left - width) / preLayoutScreenWidth) * curLayoutScreenWidth - width;
+                    }
+                    if (preLayout.type == "text") {  // ensure InstructionText is the latest
+                        isHasInstruction = true;
+                        preLayout.text = text;
+                    }
+                    preLayout.selectable = false;
+                }
+                layout.objects.sort(function (a, b) {
+                    return a.sort - b.sort;
+                });  //order by sort
+                canvas_preview.loadFromDatalessJSON(JSON.stringify(layout), function () {
+                    if (!isHasInstruction)
+                        addInstructionText(canvas_preview);
+                    canvas_preview.renderAll()
+                });
+            }
+            else {
+                addInstructionText(canvas_preview);
+                canvas_preview.renderAll()
+            }
+
+        })();
+
+        //在此重新定义是为了Measure列表预览时调用
+        function addInstructionText(curCanvas) {
+            if (text) {
+                var itemLabel = new fabric.Text(text, {
+                    left: 90,
+                    top: 10,
+                    fontFamily: 'Lato',
+                    fontSize: 20,
+                    backgroundColor: '#D1D1D1',
+                    selectable: false
+                });
+                curCanvas.add(itemLabel);
+            }
+        }
+    </script>
+}
+
+<div id="previewLayout" style="width:100%">
+    <canvas id="cav_prelayout">(Your browser doesn't support canvas)</canvas>
+</div>
+<div style="text-align:right">
+    @if (ViewBag.IsStop != null && ViewBag.IsStop == true)
+    {
+        <a class="item-btn stop-btn" style="color:#ffffff;float:none">
+            <i class="icon-stop"></i>Stop
+        </a>
+    }
+    @if (ViewBag.IsNext != null && ViewBag.IsNext == true)
+    {
+        <a class="item-btn next-btn">
+            <i class="icon-hand-right"></i>Next
+        </a>
+    }
+</div>

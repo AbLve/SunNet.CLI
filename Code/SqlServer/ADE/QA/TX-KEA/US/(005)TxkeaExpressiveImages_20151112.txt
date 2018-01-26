@@ -1,0 +1,32 @@
+﻿
+/****** Object:  Table [dbo].[TxkeaExpressiveImages]    Script Date: 2015/11/12 9:37:57 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[TxkeaExpressiveImages](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[TargetImage] [varchar](200) NOT NULL,
+	[ImageTimeDelay] [int] NOT NULL,
+	[TargetAudio] [varchar](200) NOT NULL,
+	[AudioTimeDelay] [int] NOT NULL,
+	[SameasImageDelay] [bit] NOT NULL,
+	[IsDeleted] [bit] NOT NULL,
+ CONSTRAINT [PK_TxkeaExpressiveImages] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+

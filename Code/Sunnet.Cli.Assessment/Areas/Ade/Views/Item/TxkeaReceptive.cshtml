@@ -1,0 +1,999 @@
+﻿@model TxkeaReceptiveItemModel
+@using Sunnet.Cli.Core.Ade.Enums
+@{
+    Layout = "~/Views/Shared/_Layout_KeaItem.cshtml";
+    if (Model.ID < 1)
+    {
+        ViewBag.Title = "New " + ItemType.TxkeaReceptive.ToDescription();
+    }
+    else
+    {
+        ViewBag.Title = Model.Label;
+    }
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Detail", "Measure", new { id = Model.MeasureId });
+}
+
+@section Styles
+{
+    @Styles.Render("~/css/cpalls")
+    @Styles.Render("~/css/colorpicker")
+    @Styles.Render("~/css/txkea")
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+
+@section BreadPath
+{
+    @Html.Partial("NEV_Item_BreadPath", Model)
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/ckeditor")
+    @Scripts.Render("~/scripts/fabric")
+    @Scripts.Render("~/scripts/fullscreen")
+    @Scripts.Render("~/scripts/TxkeaReceptive")
+
+    <script type="text/javascript">
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+        function getToFolder() {
+            return "assessment_" + "@ViewBag.AssessmentId";
+        }
+
+        function getUploadUrl() {
+            return '@(DomainHelper.StaticSiteDomain.AbsoluteUri)';
+        }
+
+        var canvas;
+        var itemModel;
+        var jsonModel;
+        var canvasElement = "cav_layout";
+        var originTarget;
+        var originoCoords;
+        var preScreenWidth = "@(Model.ScreenWidth)"; //The screen width of last time to save
+        var selectedObj;
+        var preScroll;
+        var preObjHeight; //记录上次canvas中图片高度输入框的值
+        var preObjWidth; //记录上次canvas中图片宽度输入框的值
+
+
+        jQuery(function() {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function(response) {
+                    if (!itemModel.isNext) {
+                        window.showMessage("success");
+                        setTimeout(function() { redirectBack("@Html.Raw(backUrl)") }, 2000);
+                    }
+                    if (response.data) {
+                        if (itemModel.isNext == true) {
+                            itemModel.isNext = false;
+                            var basePath = jsonModel.BasePath;
+                            jsonModel = response.data;
+                            jsonModel.BasePath = basePath;
+                            if (response.data.Answers) {
+                                var newAnswers = [];
+                                for (var i = 0; i < response.data.Answers.length; i++) {
+                                    newAnswers.push(getAnswerModel(response.data.Answers[i]));
+                                }
+                                itemModel.Answers(newAnswers);
+                                itemModel.pushImageCount(newAnswers);
+                            }
+                            switch (response.msg) {
+                            case "2":
+                                itemModel.step(2);
+                                $("input[name=ID]").val(response.data.ID);
+                                itemModel.IsStop(response.data.Stop);
+                                itemModel.IsNext(response.data.NextButton);
+                                itemModel.pushBranchingScore(jsonModel.BranchingScores);
+                                itemModel.branchingItems = jsonModel.BranchingItems;
+                                itemModel.notNeedInitCanvas(false);
+                                break;
+                            case "3":
+                                itemModel.step(3);
+                                break;
+                            case "4":
+                                initChooseLayout();
+                                InitPicture(jsonModel.ItemLayout, itemModel.Answers(),
+                                    jsonModel.BackgroundImage ? getUploadUrl() + '/upload/' + jsonModel.BackgroundImage : "");
+                                itemModel.notNeedInitCanvas(true);
+                                itemModel.step(4);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+
+            jsonModel = @Html.Raw(ViewBag.ModelJson);
+            var formEle = document.getElementById("@formId");
+            itemModel = getKeaReceptiveItemModel(jsonModel, { Answer: "#Answers" }, Number($('#NumberOfImages').val()));
+            itemModel.step = ko.observable(1);
+            itemModel.ImageCount = ko.observableArray([]);
+            itemModel.pushImageCount(itemModel.Answers());
+            itemModel.pushBranchingScore(jsonModel.BranchingScores);
+            itemModel.branchingItems = jsonModel.BranchingItems;
+            itemModel.getPreviewUrl = function() {
+                var newTab = window.open('about:blank');
+                GetLayouts("#ItemLayout", $("#BackgroundImage").val() ? $("#BackgroundImage").val() : jsonModel.LayoutBackgroundImage);
+                $.post('/Ade/Item/SaveTxkeaReceptiveItemLayout',
+                    {
+                        'id': jsonModel.ID,
+                        'ItemLayout': $("#ItemLayout").val(),
+                        'CpallsItemLayout': $("#CpallsItemLayout").val(),
+                        'ScreenWidth': $("#ScreenWidth").val(),
+                        'ScreenHeight': $("#ScreenHeight").val()
+                    },
+                    function() {
+                        newTab.location.href = "/Cpalls/Execute/Preview?itemid=" + jsonModel.ID + "&measureId=@(Model.MeasureId)";
+                    });
+            }
+
+            ko.applyBindings(itemModel, formEle);
+
+            initChooseLayout();
+            if (jsonModel.BackgroundFill != "")
+                InitCanvas("content-body-cav", jsonModel.BackgroundFill);
+            else {
+                if (jsonModel.LayoutId != "" && jsonModel.LayoutId != "0")
+                    InitCanvas("content-body-cav", (!jsonModel.BackgroundImage && !jsonModel.LayoutBackgroundImage) ? jsonModel.LayoutBackgroundFill : "");
+                else
+                    InitCanvas("content-body-cav", "");
+            }
+
+            $('#BackgroundFillColor').colorpicker({
+                color: jsonModel.BackgroundFill,
+                warning: true,
+                warningObjId: "#divBackgroundFill",
+                customOperation: "CanvasBgColorChange"
+            });
+        });
+
+        function customValid() {
+
+            if (itemModel.step() == 1) {
+                if (!$("#Label").valid()) {
+                    return false;
+                }
+                if (itemModel.branchingItems && itemModel.branchingItems.length > 0) {
+                    for (i = 0; i < itemModel.branchingScores().length; i++) {
+                        var branchingScore = itemModel.branchingScores()[i];
+                        if (branchingScore.IsDeleted)
+                            continue;
+
+                        if (+branchingScore.From > +branchingScore.To) {
+                            branchingScore.hasError(true);
+                            showMessage("hint", "TxkeaSkipIncorrect");
+                            return false;
+                            break;
+                        } else
+                            branchingScore.hasError(false);
+                    }
+
+                    var branchingComfire = false;
+                    for (i = 0; i < itemModel.branchingScores().length - 1; i++) {
+                        var branchingScore = itemModel.branchingScores()[i];
+
+                        if (branchingScore.IsDeleted)
+                            continue;
+
+                        for (j = i + 1; j < itemModel.branchingScores().length; j++) {
+                            var branchingScorej = itemModel.branchingScores()[j];
+
+                            if (branchingScorej.IsDeleted)
+                                continue;
+
+                            if (branchingScore.From < branchingScorej.From) {
+                                if (branchingScore.To >= branchingScorej.From) {
+                                    branchingComfire = true;
+                                    break;
+                                }
+                            } else if (branchingScore.From == branchingScorej.From) {
+                                branchingComfire = true;
+                                break;
+                            } else {
+                                if (branchingScore.From <= branchingScorej.To) {
+                                    branchingComfire = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (branchingComfire) {
+                            itemModel.branchingScores()[i].hasError(true);
+                            showMessage("hint", "TxkeaSkipOverlap");
+                            break;
+                        }
+                    }
+                    if (!branchingComfire) {
+                        $("#BranchingScoreList").val(JSON.stringify(itemModel.branchingScores()));
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+
+            if (itemModel.step() == 2) {
+                if ($("#TimeoutValue").length > 0 && !($("#TimeoutValue").valid()))
+                    return false;
+                if ($("input[name=BreakCondition]:checked").val() == "@(BreakCondition.StopCondition.GetValue())") {
+                    if (!$("#StopConditionX").valid() || !$("#StopConditionY").valid())
+                        return false;
+                    var xValue = Number($("#StopConditionX").val());
+                    var yValue = Number($("#StopConditionY").val());
+                    if (xValue <= 0 || yValue <= 0 || xValue > yValue) {
+                        var msg = window.getErrorMessage("ade_IncorrectValue").replace("{item}", "Stop Condition");
+                        showMessage("hint", msg);
+                        return false;
+                    }
+                }
+            }
+
+            if (itemModel.step() == 3) {
+                if ($("div[id='divStep3'] input[type=number]").length > 0 && !$("div[id='divStep3'] input[type=number]").valid()) {
+                    return false;
+                }
+
+                if ($("input[name=SequenceNumber]").length > 0 && !$("input[name=SequenceNumber]").valid()) {
+                    return false;
+                }
+
+                if ($("input[name=Score]").length > 0 && !$("input[name=Score]").valid()) {
+                    showMessage("hint", "TxkeaCorrectScore");
+                    return false;
+                }
+            }
+
+            //第一步更改数量，提交时要验证（Next不验证）   第三步要验证
+            if ((itemModel.step() == 1 && !itemModel.isNext) || itemModel.step() == 3) {
+                //图片和Audio至少填写一项
+                var answers = itemModel.ImageCount(), answer;
+                for (var i = 0; i < answers.length; i++) {
+                    answer = answers[i];
+                    if (!answer.Picture() && !answer.Audio()) {
+                        var msg = window.getErrorMessage("TxkeaAtleastOneItem").replace("[i]", i + 1);
+                        showMessage("hint", msg);
+                        return false;
+                    }
+                }
+
+                if (ValidCorrectAnswer() == false)
+                    return false;
+
+                //可选图片之间不能穿插不可选图片
+                var startIndex;
+                var selectableAnswersLength = itemModel.ImageCount().filter(function(obj) { return obj.ImageType() == 1 }).length;
+                if (selectableAnswersLength > 1) {
+                    for (var i = 0; i < itemModel.ImageCount().length; i++) {
+                        if (itemModel.ImageCount()[i].ImageType() == 1) {
+                            startIndex = i;
+                            break;
+                        }
+                    }
+                    for (var i = startIndex; i < selectableAnswersLength + startIndex; i++) {
+                        if (itemModel.ImageCount()[i].ImageType() != 1) {
+                            showMessage("hint", "SelectableGroup");
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        //验证正确答案的数量
+        function ValidCorrectAnswer() {
+            var selectionType = $("input[name='SelectionType']:checked").val();
+            var correctNumber = itemModel.ImageCount().filter(function(obj) { return obj.IsCorrect() == true && obj.ImageType() == 1 }).length;
+            //Selection Type为Single Select时，正确答案只能选择一个
+            if (selectionType == "@(SelectionType.SingleSelect.GetValue())") {
+                if (correctNumber > 1) {
+                    showMessage("hint", "AtMost_One_CorrectAnswer");
+                    return false;
+                }
+                if (correctNumber == 0) {
+                    showMessage("hint", "Item_Need_Correct_Answer");
+                    return false;
+                }
+            }
+            //Selection Type为Multi Select时，正确答案需要有多个
+            if (selectionType == "@(SelectionType.MultiSelect.GetValue())") {
+                if (correctNumber < 2) {
+                    showMessage("hint", "Multiple_CorrectAnswer");
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+}
+
+@using (Ajax.BeginForm("SaveKeaReceptive", "Item", null, PostFormHelper.DefaultAjaxOptions,
+                                        new
+                                        {
+                                            @class = "form-horizontal",
+                                            id = formId
+                                        }))
+{
+    <input type="hidden" name="ID" value="@Model.ID" />
+    @Html.AntiForgeryToken()
+    @Html.Hidden("Answers", "")
+    @Html.HiddenFor(m => m.MeasureId)
+    @Html.HiddenFor(m => m.ItemLayout)
+    @Html.HiddenFor(m => m.ScreenWidth)
+    @Html.HiddenFor(m => m.ScreenHeight)
+    @Html.HiddenFor(m => m.BackgroundFillType)
+    @Html.Hidden("step")
+    @Html.HiddenFor(m => m.Step)
+    @Html.HiddenFor(m => m.LayoutId)
+    @Html.HiddenFor(m => m.BackgroundFill)
+    @Html.HiddenFor(m => m.CpallsItemLayout)
+    @Html.Hidden("Scored", true)
+    @Html.Hidden("BranchingScoreList")
+    <input type="hidden" name="copyId" id="copyId" value="@(ViewBag.CopayId)" />
+
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+        <a class="mainbutton mainright-btn nav-btn" href="#"
+           data-bind="visible:step()==4,event:{click:getPreviewUrl}">Preview</a>
+    </div>
+
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-12 divPorcessBar">
+                    @if (Model.ID > 0)
+                    {
+                        <table>
+                            <tr>
+                                <td>
+                                    <ul class="itemProcess">
+                                        <li data-bind="event:{click:stepClick.bind($data,$root,this,1)}" class="processDescription processCompletedDesc" style="width: 170px;cursor:pointer;">
+                                            <span style="padding-left: 1px;">Item Description</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() > 1 },event:{click:stepClick.bind($data,$root,this,2)}" style="width: 170px;cursor:pointer;">
+                                            <span style="padding-left: 1px">Conditions</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() > 2},event:{click:stepClick.bind($data,$root,this,3)}" style="width: 170px;cursor:pointer;">
+                                            <span style="padding-left: 1px">Image Properties</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() == 4},event:{click:stepClick.bind($data,$root,this,4)}" style="width: 170px;cursor:pointer;">
+                                            <span style="padding-left: 1px">Layout Design</span>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul class="itemProcess">
+                                        <li><span style="padding-left: 50px">&nbsp;</span></li>
+                                        <li style="cursor:pointer" data-bind="event:{click:stepClick.bind($data,$root,this,1)}" class="roundicon completed1"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 1 , nofinishtext: step() < 2 }"><span class="processBar" style="color: #000;">&nbsp;</span></li>
+                                        <li style="cursor:pointer" class="roundicon" data-bind="css: { completed2: step() > 1 , nofinish2: step() < 2 },event:{click:stepClick.bind($data,$root,this,2)}"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 2 , nofinishtext: step() < 3 }"><span class="processBar" style="color: #000;">&nbsp;</span></li>
+                                        <li style="cursor:pointer" class="roundicon" data-bind="css: { completed3: step() > 2 , nofinish3: step() < 3 },event:{click:stepClick.bind($data,$root,this,3)}"></li>
+                                        <li class="processtext" data-bind=" css { completedtext: step()> 3 , nofinishtext: step() < 4 }"><span class="processBar" style="color: #000;">&nbsp;</span></li>
+                                        <li style="cursor:pointer" class="roundicon nofinish" data-bind=" css { completed4: step()==4 , nofinish4: step() < 4 },event:{click:stepClick.bind($data,$root,this,4)}"></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                    else
+                    {
+                        <table>
+                            <tr>
+                                <td>
+                                    <ul class="itemProcess">
+                                        <li class="processDescription processCompletedDesc" style="width: 170px;">
+                                            <span style="padding-left: 1px;">Item Description</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() > 1 }" style="width: 170px;">
+                                            <span style="padding-left: 1px">Conditions</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() > 2}" style="width: 170px;">
+                                            <span style="padding-left: 1px">Image Properties</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() == 4}" style="width: 170px;">
+                                            <span style="padding-left: 1px">Layout Design</span>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul class="itemProcess">
+                                        <li><span style="padding-left: 50px">&nbsp;</span></li>
+                                        <li class="roundicon completed1"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 1 , nofinishtext: step() < 2 }"><span class="processBar" style="color: #000;">&nbsp;</span></li>
+                                        <li class="roundicon" data-bind="css: { completed2: step() > 1 , nofinish2: step() < 2 }"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 2 , nofinishtext: step() < 3 }"><span class="processBar" style="color: #000;">&nbsp;</span></li>
+                                        <li class="roundicon" data-bind="css: { completed3: step() > 2 , nofinish3: step() < 3 }"></li>
+                                        <li class="processtext" data-bind=" css { completedtext: step()> 3 , nofinishtext: step() < 4 }"><span class="processBar" style="color: #000;">&nbsp;</span></li>
+                                        <li class="roundicon nofinish" data-bind=" css { completed4: step()==4 , nofinish4: step() < 4 }"></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="content-body" id="content-body-cav">
+            <div data-bind="visible: step() == 1" id="divStep1">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Label, "Item Label", new { @class = "control-label col-sm-2 required" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Label, baseClassObj)
+                        @Html.ValidationMessageFor(model => model.Label)
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.Status, new { @class = "hide" })
+                        @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                        @Html.ValidationMessageFor(model => model.Status)
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="checkbox">
+                            <label for="IsPractice">
+                                <span style="display: none">1</span>
+                                @Html.CheckBoxFor(x => x.IsPractice, new { data_bind = "checked:IsPractice" })
+                                @Html.DisplayNameFor(x => x.IsPractice)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBoxFor(x => x.GrayedOutDelay)
+                                @Html.DisplayNameFor(x => x.GrayedOutDelay)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2" style="display: none">
+                        <div class="checkbox">
+                            <label for="ShowAtTestResume">
+                                @Html.CheckBoxFor(x => x.ShowAtTestResume, new { data_bind = "checked:ShowAtTestResume,enable:IsPractice()" })
+                                @Html.DisplayNameFor(x => x.ShowAtTestResume)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-10">
+                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 3 })
+                        @Html.ValidationMessageFor(model => model.Description)
+                    </div>
+                </div>
+                <div class="form-group ">
+                    @Html.Label("Choose background color fill", new { @class = "control-label col-sm-2", @for = "BackgroundFillColor" })
+                    <div class="col-sm-6">
+                        @Html.TextBox("BackgroundFillColor", "", new { @class = "colorPicker evo-cp1 bgfillcolor" })
+                    </div>
+                </div>
+                <div class="form-group ">
+                    @Html.Label("Choose background image", new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-6">
+                        <div id="btnBackgroundFill" for="BackgroundFill">Browse</div>
+                        @if (Model.BackgroundFillType == BackgroundFillType.Image && !string.IsNullOrEmpty(Model.BackgroundImage))
+                        {
+                            <div class="webuploader-preview" id="divBackgroundFill">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="@Sunnet.Cli.UIBase.FileHelper.GetPreviewPathofUploadFile(Model.BackgroundImage)" width="60" height="60" alt="BackgroundFillType" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="webuploader-preview" id="divBackgroundFill" style="display: none;">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <img width="60" height="60" alt="BackgroundFillType" />
+                            </div>
+                        }
+                        <div id="BackgroundFillList" class="uploader-list"></div>
+                        @Html.HiddenFor(model => model.BackgroundImage)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.InstructionText, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-10">
+                        @Html.TextAreaFor(model => model.InstructionText, new { @class = "form-control", rows = 3 })
+                        @Html.ValidationMessageFor(model => model.InstructionText)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.InstructionAudio, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4">
+                        <div id="btnPickTargetAudio" for="InstructionAudio">Browse</div>
+                        @if (!string.IsNullOrEmpty(Model.InstructionAudio))
+                        {
+                            <div class="webuploader-preview" id="divInstructionAudio">
+                                <a href="@FileHelper.GetPreviewPathofUploadFile(Model.InstructionAudio)"
+                                   class="table-btn icon-zoom-in preview-btn" target="_blank"><span class="hide">none</span></a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="webuploader-preview" id="divInstructionAudio" style="display: none;">
+                                <a href=""
+                                   class="table-btn icon-zoom-in preview-btn" target="_blank"><span class="hide">none</span></a>
+                            </div>
+                        }
+                        <div id="TargetAudioFilelist" class="uploader-list"></div>
+                        @Html.HiddenFor(model => model.InstructionAudio)
+                    </div>
+                </div>
+                @*<div class="form-group">
+                        @Html.LabelFor(model => model.Timed, new { @class = "control-label col-sm-2" })
+                        <div class="col-sm-2 checkbox">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            @Html.CheckBoxFor(model => model.Timed)
+                        </div>
+
+                        @Html.LabelFor(model => model.Scored, new { @class = "control-label col-sm-2" })
+                        <div class="col-sm-2 checkbox">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            @Html.CheckBoxFor(model => model.Scored, new { data_bind = "checked:Scored,enable:!IsPractice()" })
+                        </div>
+                    </div>*@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NumberOfImages, new { @class = "control-label col-sm-2 required" })
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.NumberOfImages, (IEnumerable<SelectListItem>
+                        )ViewBag.NumImages, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.NumberOfImages)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SelectionType, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4 checkbox">
+                        <label style="padding-left: 0">
+                            @Html.RadioButtonFor(model => model.SelectionType, SelectionType.SingleSelect.GetValue(),
+                        new { data_bind = "checked:SelectionType,checkedValue: " + SelectionType.SingleSelect.GetValue() + "", id = "SingleSelect" })
+                            @(SelectionType.SingleSelect.ToDescription())
+                        </label>
+                        <label>
+                            @Html.RadioButtonFor(model => model.SelectionType, SelectionType.MultiSelect.GetValue(),
+     new { data_bind = "disable:ImageCount().length<=1,checked:SelectionType,checkedValue: " + SelectionType.MultiSelect.GetValue() + "", id = "MultiSelect" })
+                            @(SelectionType.MultiSelect.ToDescription())
+                        </label>
+                        @Html.ValidationMessageFor(model => model.SelectionType)
+                    </div>
+                </div>
+
+
+                <div class="modal-l-b"></div>
+                <div class="form-group">
+                    <div class="col-sm-2" style="text-align:right;">
+                        Branching/Skip Logic:
+                    </div>
+                </div>
+                @if (Model.BranchingItems != null && Model.BranchingItems.Count > 0)
+                {
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            @Html.Editor("", "BranchingScore", new { selectItems = Model.BranchingItems })
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <div class="col-sm-1">&nbsp;</div>
+                        <div class="col-sm-10">
+                            <p style="color: red">*In order for branching to be enabled, you must have an <span style="text-decoration: underline">ACTIVE</span> item following this current item.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div data-bind="visible: step() == 2" id="divStep2">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ImageSequence, new { @class = "control-label col-sm-2 shortCol2" })
+                    <div class="col-sm-3 checkbox noPadding">
+                        <label for="FixImage">
+                            @Html.RadioButtonFor(model => model.ImageSequence, OrderType.Sequenced, new { realValue = OrderType.Sequenced.GetValue(), id = "FixImage" })
+                            Fixed
+                        </label>
+                        <label for="RandomImage">
+                            @Html.RadioButtonFor(model => model.ImageSequence, OrderType.Random, new { realValue = OrderType.Random.GetValue(), id = "RandomImage" })
+                            Random
+                        </label>
+                        @Html.ValidationMessageFor(model => model.ImageSequence)
+                    </div>
+                    @Html.LabelFor(model => model.OverallTimeOut, new { @class = "control-label col-sm-2 shortCol2" })
+                    <div class="col-sm-2 checkbox noPadding smalColumn">
+                        <label>
+                            @Html.RadioButtonFor(model => model.OverallTimeOut, true, new { data_bind = "checked:OverallTimeOut,checkedValue: true", id = "YesOverall" })
+                            Yes
+                        </label>
+                        <label>
+                            @Html.RadioButtonFor(model => model.OverallTimeOut, false, new
+                       {
+                           data_bind = "checked:OverallTimeOut,checkedValue: false",
+                           id = "NoOverall"
+                       })
+                            No
+                        </label>
+                        @Html.ValidationMessageFor(model => model.OverallTimeOut)
+                    </div>
+                    <!--ko if:(OverallTimeOut()==true) -->
+                    @Html.LabelFor(model => model.TimeoutValue, new { @class = "control-label col-sm-2 shortCol2" })
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.TimeoutValue, new { @class = "form-control  timeout" })
+                            @Html.ValidationMessageFor(model => model.TimeoutValue)
+                            <span class="input-group-addon">ms</span>
+                        </div>
+                    </div>
+                    <!--/ko-->
+                </div>
+                <div class="form-group ">
+                    @Html.LabelFor(model => model.WaitTime, new { @class = "control-label col-sm-2 shortCol2" })
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            @Html.TextBoxFor(model => model.WaitTime, new { @class = "form-control  timeout" })
+                            <span class="input-group-addon">ms</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" data-bind="visible:SelectionType()==2">
+                    @Html.LabelFor(model => model.BreakCondition, new { @class = "control-label col-sm-2 shortCol2" })
+                    <div class="col-sm-3 checkbox noPadding">
+                        <label>
+                            @Html.RadioButtonFor(model => model.BreakCondition, BreakCondition.StopCondition.GetValue(),
+new { data_bind = "checked:BreakCondition,checkedValue: " + BreakCondition.StopCondition.GetValue() + "", id = "StopCondition" })
+                            @(BreakCondition.StopCondition.ToDescription())
+                        </label>
+                        <label>
+                            @Html.RadioButtonFor(model => model.BreakCondition, BreakCondition.IncorrectResponse.GetValue(),
+new { data_bind = "checked:BreakCondition,checkedValue: " + BreakCondition.IncorrectResponse.GetValue() + "", id = "IncorrectCondition" })
+                            @(BreakCondition.IncorrectResponse.ToDescription())
+                        </label>
+                        <label>
+                            @Html.RadioButtonFor(model => model.BreakCondition, BreakCondition.None.GetValue(),
+new { data_bind = "checked:BreakCondition,checkedValue: " + BreakCondition.None.GetValue() + "", id = "NoneCondition" })
+                            @(BreakCondition.None.ToDescription())
+                        </label>
+                        @Html.ValidationMessageFor(model => model.BreakCondition)
+                    </div>
+                    <div data-bind="visible:BreakCondition()==1">
+                        <label class="control-label col-sm-2 shortCol2">
+                            Stop Condition
+                            <i class="icon-question-sign question-tip" id="tooltip1" data-html="true" data-toggle="tooltip" data-placement="top"
+                               title="" data-original-title="Numerator: number of incorrect responses<br>Denominator: number of attempts"></i>
+                        </label>
+                        <div class="col-sm-1">
+                            <label for="StopConditionX"><span class="hide">none</span></label>
+                            @Html.TextBoxFor(model => model.StopConditionX, new { @class = "form-control col-sm-2" })
+                            @Html.ValidationMessageFor(model => model.StopConditionX)
+                        </div>
+                        <div class="col-sm-2 ">
+                            <label for="StopConditionY"><span class="hide">none</span></label>
+                            <span style="float: left; padding-right: 35px">/</span>
+                            @Html.TextBoxFor(model => model.StopConditionY, new { @class = "form-control col-sm-2", style = "width:44%" })
+                            @Html.ValidationMessageFor(model => model.StopConditionY, null, new { style = "float:left;padding-left:35px;width:50%" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <!--ko if:(SelectionType()==2) -->
+                    @Html.LabelFor(model => model.Scoring, new { @class = "control-label col-sm-2 shortCol2" })
+                    <div class="col-sm-3 checkbox noPadding">
+                        <label>
+                            @Html.RadioButtonFor(model => model.Scoring, ScoringType.AllorNone, new { realValue = ScoringType.AllorNone.GetValue(), id = "ScoringAllOrNone" })
+                            @(ScoringType.AllorNone.ToDescription())
+                        </label>
+                        <label>
+                            @Html.RadioButtonFor(model => model.Scoring, ScoringType.Partial, new { realValue = ScoringType.Partial.GetValue(), id = "ScoringPartial" })
+                            @(ScoringType.Partial.ToDescription())
+                        </label>
+                        @Html.ValidationMessageFor(model => model.Scoring)
+                    </div>
+                    <!--/ko-->
+                </div>
+            </div>
+
+            <div data-bind="visible: step() == 3,foreach: { data: ImageCount, as:'answer' }" id="divStep3">
+                <div style="height: 5px; background-color: #ffffff"></div>
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr style="background-color: #bfbfbf">
+                            <th colspan="9">
+                                <span width="80px" style="float: left" data-bind="text: 'Image '+($index()+1)"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2">
+                                <div class="webuploader-preview" style="width: 70px; height: 70px; border: 1px;">
+                                    <!--ko if:(Picture().length>0) -->
+                                    <a class=""
+                                       data-bind="attr: { href: $root.BasePath + Picture() }"
+                                       target="_blank">
+                                        <img data-bind="attr: { src: $root.BasePath + Picture() }" style="width: 60px; height: 60px;" alt="BasePathPicture" />
+                                    </a>
+                                    <!--/ko-->
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+                            </td>
+                            <td width="15%" style="min-width: 250px">Image type</td>
+                            <td width="*"></td>
+                            <td width="20%">Target Image</td>
+                            <td width="12%">Image Time delay (ms)</td>
+                            <td width="20%" style="text-align: right">Target Audio</td>
+                            <td width="30px"></td>
+                            <td width="12%">Audio Time delay (ms)</td>
+                            <td width="12%">Same as Image Delay</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>
+                                    <label style="display: none" data-bind="attr:{for:'ImageType'+$index()}">ImageType</label>
+                                    @Html.DropDownList("ImageType", (IEnumerable<SelectListItem>
+                                        )ViewBag.ImageType,
+             new { @class = "form-control", data_bind = "value:ImageType,attr:{id:'ImageType'+$index()}" })
+                                </div>
+                            </td>
+                            <td width="*"></td>
+                            <td>
+                                <div style="text-align: center;">
+                                    <div data-bind="attr:{id:'btnPickAnswer'+$index()+'Picture'}" style="float: none">Browse</div>
+                                    <div class="clearfix"></div>
+                                    <div data-bind="attr:{id:'Answer'+$index()+'PictureFilelist'}" class="uploader-list"></div>
+                                    <input type="hidden"
+                                           data-submitbutton="#btnSubmit"
+                                           data-accept='{"title":"Image","extensions":"gif,jpg,jpeg,bmp,png",
+                                                                        "mimeTypes":"image/gif,image/jpeg,image/bmp,image/png"}'
+                                           data-autoupload="true"
+                                           data-showprogress="true"
+                                           data-filesinglesizelimit="2097152"
+                                           data-filedequeued='fileDequeuedTargetImage'
+                                           data-uploadsuccess='uploadSuccessTargetImage'
+                                           data-bind="attr:{
+    id:'Answer'+$index()+'Picture',name:'Answer'+$index()+'Picture',
+    'data-pick':'#btnPickAnswer'+$index()+'Picture',
+    'data-container':'#Answer'+$index()+'PictureFilelist',
+    'data-targetfield':'#Answer'+$index()+'Picture'
+},
+    value:Picture(),
+    upload:true" />
+                                    <div class="field-validation-valid" data-valmsg-replace="true"
+                                         data-bind="attr:{'data-valmsg-for':'Answer'+$index()+'Picture'}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <label class="hide" data-bind="attr: { for: 'PictureTime' + $index() }">Picture Timeout</label>
+                                <input type="number" class="form-control input-sm  uint timeout" max="30000" data-bind="
+    value: PictureTime,
+    number: true,
+    enable:(Picture()),
+    attr: { name: 'PictureTime' + $index(), id: 'PictureTime' + $index()}"
+                                       style="width: 80px; display: inline-block;">
+                                <div class="field-validation-valid" data-valmsg-replace="true"
+                                     data-bind="attr: { 'data-valmsg-for': 'PictureTime' + $index() }">
+                                </div>
+                            </td>
+                            <td>
+                                <div style="text-align: center;">
+                                    <div data-bind="attr:{id:'btnPickAnswer'+$index()+'Audio'}" style="float: right">Browse</div>
+                                    <div class="clearfix"></div>
+                                    <div data-bind="attr:{id:'Answer'+$index()+'AudioFilelist'}" class="uploader-list"></div>
+                                    <input type="hidden"
+                                           data-submitbutton="#btnSubmit"
+                                           data-accept='{"title":"Audio","extensions":"mp3","mimeTypes":"audio/mpeg"}'
+                                           data-autoupload="true"
+                                           data-showprogress="true"
+                                           data-filesinglesizelimit="2097152"
+                                           data-filedequeued='fileDequeuedTargetAudio'
+                                           data-uploadsuccess='uploadSuccessTargetAudio'
+                                           data-bind="attr:{
+    id:'Answer'+$index()+'Audio',name:'Answer'+$index()+'Audio',
+    'data-pick':'#btnPickAnswer'+$index()+'Audio',
+    'data-container':'#Answer'+$index()+'AudioFilelist',
+    'data-targetfield':'#Answer'+$index()+'Audio'
+},
+    value:Audio(),
+    upload:true
+                                                                       " />
+                                    <div class="field-validation-valid" data-valmsg-replace="true"
+                                         data-bind="attr:{'data-valmsg-for':'Answer'+$index()+'Audio'}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="webuploader-preview" data-bind="visible:Audio().length>0">
+                                    <a class="table-btn icon-zoom-in preview-btn"
+                                       data-bind="attr:{href:$root.BasePath + Audio()}"
+                                       target="_blank"><span class="hide">none</span></a>
+                                </div>
+                            </td>
+                            <td>
+                                <label class="hide" data-bind="attr: { for: 'AudioTime' + $index() }">Audio Timeout</label>
+                                <input type="number" class="form-control input-sm  uint timeout" max="30000" data-bind="
+    value: AudioTime,
+    number: true,
+    enable:(!SameasImageDelay() && Audio()),
+    attr: { name: 'AudioTime' + $index(), id: 'AudioTime' + $index() }"
+                                       style="width: 80px; display: inline-block;">
+                                <div class="field-validation-valid" data-valmsg-replace="true"
+                                     data-bind="attr: { 'data-valmsg-for': 'AudioTime' + $index() }">
+                                </div>
+                            </td>
+                            <td>
+                                <label class="hide" data-bind="attr: { for: 'SameasImageDelay' + $index() }">Same as Image Delay</label>
+                                <input type="checkbox" data-bind="checked: SameasImageDelay, enable: (Audio()), attr: { id: 'SameasImageDelay' + $index() }" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td colspan="2">
+                                <div>
+                                    <span style="float: left; padding-top: 5px; padding-right: 7px">Response Audio: </span>
+                                    <div data-bind="attr:{id:'btnPickAnswer'+$index()+'ResponseAudio'}">Browse</div>
+                                    <div class="webuploader-preview" data-bind="visible:ResponseAudio().length>0">
+                                        <a class="table-btn icon-zoom-in preview-btn"
+                                           data-bind="attr:{href:$root.BasePath + ResponseAudio()}"
+                                           target="_blank"><span class="hide">none</span></a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div data-bind="attr:{id:'Answer'+$index()+'ResponseAudioFilelist'}" class="uploader-list"></div>
+                                    <input type="hidden"
+                                           data-submitbutton="#btnSubmit"
+                                           data-accept='{"title":"ResponseAudio","extensions":"mp3","mimeTypes":"audio/mpeg"}'
+                                           data-autoupload="true"
+                                           data-showprogress="true"
+                                           data-filesinglesizelimit="2097152"
+                                           data-filedequeued='fileDequeuedResponseTargetAudio'
+                                           data-uploadsuccess='uploadSuccessResponseTargetAudio'
+                                           data-bind="attr:{
+    id:'Answer'+$index()+'ResponseAudio',name:'Answer'+$index()+'ResponseAudio',
+    'data-pick':'#btnPickAnswer'+$index()+'ResponseAudio',
+    'data-container':'#Answer'+$index()+'ResponseAudioFilelist',
+    'data-targetfield':'#Answer'+$index()+'ResponseAudio'
+},
+    value:ResponseAudio(),
+    upload:true
+                                                                       " />
+                                    <div class="field-validation-valid" data-valmsg-replace="true"
+                                         data-bind="attr:{'data-valmsg-for':'Answer'+$index()+'ResponseAudio'}">
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td colspan="6" style="text-align: left">
+                                <!--ko if:(ImageType()==1) -->
+                                <label class="lbl_hidden">
+                                    <input type="checkbox" data-bind="checked:IsCorrect" />
+                                    Correct Response
+                                </label>
+                                <span style="width: 20px">&nbsp;</span>
+                                <label class="control-label" data-bind="attr:{for:'Score'+$index()}">Correct Score</label>
+                                <!--ko if:(IsCorrect()==true) -->
+                                @Html.TextBoxFor(model => model.Score, new { @style = "width:50px;border:1px solid #dddddd;background-color:#ffffff;", min = 0, data_bind = "value:Score,attr:{id:'Score'+$index()}" })
+                                <!--/ko-->
+                                <!--ko ifnot:(IsCorrect()==true) -->
+                                @Html.TextBoxFor(model => model.Score, new { @style = "width:50px;border:1px solid #dddddd;", data_bind = "disable:true,value:0,attr:{id:'Score'+$index()}" })
+                                <!--/ko-->
+                                <span style="width: 20px">&nbsp;</span>
+                                <!--ko if:(ImageType()==1 && $root.SelectionType()==2 && IsCorrect()==true) -->
+                                <label class="control-label">Correct Grouping</label>
+                                <input type="number" style="width: 80px; display: inline" class="form-control" name="SequenceNumber"
+                                       data-bind="value:SequenceNumber,required:true" />
+                                <!--/ko-->
+                                <!--/ko-->
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+
+
+            <div id="content-body" class="div-canvas" data-bind="visible: step() == 4">
+                <div class="item-main-header">
+                    <div class="col-sm-6" style="padding-top: 15px">
+                        <div id="divLayoutHead">
+                            Layout:
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="radioLayout" value="1" id="radioLayout1" checked="checked" onclick="chooseLayout(this)" />
+                            <label for="radioLayout1">Custom</label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="radioLayout" value="2" id="radioLayout2" onclick="chooseLayout(this)" />
+                            <label for="radioLayout2">Existing</label>
+                            &nbsp;&nbsp;
+                            <div class="nav-btn" id="divExistLayout" style="display: none;">
+                                <a data-bind="attr:{href:'/Ade/Item/ChooseLayout?images='+(ImageCount().length)}"
+                                   data-target="#modalSmall" data-toggle="modal" class="mainbutton mainright-btn nav-btn"
+                                   style="height: 24px; padding-top: 4px">Choose Template</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col-sm-4" style="padding-top: 15px">
+                        <span style="font-size: 14px;">
+                            <b style="margin-left: 15px; color: #247432;">Width: </b>
+                            <span id="spanCanvasWidth"></span>
+                            <b style="margin-left: 15px; color: #05468E;">Height: </b>
+                            <span id="spanCanvasHeight"></span>
+                        </span>
+                    </div>
+                    <div class="item-fullscreen-head">
+                        <a class="item-fullscreen-btn stop-btn" onclick="switchFullscreen('content-body-cav')">
+                            <i class="icon-resize-full"></i>
+                            <span class="hide">none</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="setSize" id="divShow">
+                    <span class="arrow-left-bot"></span>
+                    <span class="arrow-left-top"></span>
+
+                    <div class="setSizeCloseDiv">
+                        <a class="closeSize icon-remove" onclick="CloseSize()"><span class="hide">none</span></a>
+                    </div>
+                    <div class="setSizeDiv">
+                        <label for="txtCanvaLeft"><span class="hide">none</span></label>
+                        Left&nbsp;&nbsp;
+                        <input type="number" class="setSizeInput" id="txtCanvaLeft" />
+                        <input type="hidden" id="hidCanvaLeft" />
+                    </div>
+                    <div class="setSizeDiv">
+                        <label for="txtCanvaTop"><span class="hide">none</span></label>
+                        Top&nbsp;&nbsp;
+                        <input type="number" class="setSizeInput" id="txtCanvaTop" />
+                        <input type="hidden" id="hidCanvaTop" />
+                    </div>
+                    <div class="setSizeDiv">
+                        <label for="txtCanvaWidth">Width&nbsp;&nbsp;&nbsp;</label>
+                        <input type="number" class="setSizeInput" id="txtCanvaWidth" />
+                        <input type="hidden" id="hidCanvaWidth" />
+                    </div>
+                    <div class="setSizeDiv">
+                        <label for="txtCanvaHeight">Height&nbsp;&nbsp;</label>
+                        <input type="number" class="setSizeInput" id="txtCanvaHeight" />
+                        <input type="hidden" id="hidCanvaHeight" />
+                    </div>
+                </div>
+                <canvas id="cav_layout">(Your browser doesn't support canvas)</canvas>
+            </div>
+        </div>
+        <div class="button-content">
+            <button class="mainbutton mainright-btn submit-btn" id="btnPrevious" type="button"
+                    data-bind="event:{click:previous},visible:step() > 1">
+                Previous
+            </button>
+            <button class="mainbutton mainright-btn submit-btn submit" id="btnSubmit" type="button"
+                    data-bind="visible:(IsCompleted || step() ==4),event:{click:submit}">
+                Submit
+            </button>
+            <button class="mainbutton mainright-btn cancel-btn" id="btnNext" type="button"
+                    data-bind="event:{click:next},visible:step() < 4">
+                Next
+            </button>
+        </div>
+    </div>
+}
+

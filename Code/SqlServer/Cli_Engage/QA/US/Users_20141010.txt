@@ -1,0 +1,11 @@
+﻿create TRIGGER tgr_Users_update
+on [dbo].[Users]
+    for update
+as
+	DECLARE @ID int, @OldStatus tinyint,@NewStatus tinyint;
+	SELECT @OldStatus = Status FROM deleted;
+	SELECT @NewStatus = Status,@ID=ID FROM inserted;
+
+	IF(@OldStatus != @NewStatus)
+	UPDATE Users SET StatusDate = GETDATE() WHERE ID = @ID;
+GO

@@ -1,0 +1,204 @@
+﻿@{
+    Layout = null;
+    var sources = ViewData["Datas"] as Dictionary<int, List<ReportRowModel>>;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <style type="text/css">
+        body {
+            font-family: arial;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .pdf {
+            width: 1000px;
+            margin: 0 auto;
+            padding: 40px 50px;
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+        }
+
+
+            table th, table td {
+                border-bottom: 1px solid #ccc;
+                border-left: 1px solid #ccc;
+                text-align: center;
+            }
+
+            table th {
+                padding: 2px 8px;
+            }
+
+            table td {
+                padding: 8px;
+            }
+
+                table td:first-child {
+                    border-left: 0;
+                    text-align: left;
+                    padding: 5px 0;
+                }
+
+                table td p {
+                    font-size: 20px;
+                    line-height: 16px;
+                }
+
+                table td:first-child p {
+                    font-size: 15px;
+                    padding: 0 10px 0 0;
+                }
+
+                table td h5, table td p {
+                    margin: 0;
+                    padding: 0 10px;
+                }
+
+                table td h5 {
+                    font-size: 16px;
+                    line-height: 30px;
+                    padding: 0;
+                }
+
+                table td span {
+                    font-size: 12px;
+                }
+
+        .top {
+            text-align: left;
+            background: #444041;
+            color: #fff;
+            padding: 5px;
+        }
+
+            .top h3, .top p {
+                margin: 0;
+            }
+
+            .top h3 {
+                font-size: 24px;
+                font-weight: 500;
+            }
+
+            .top p {
+                font-weight: 500;
+                line-height: 22px;
+                font-size: 14px;
+            }
+
+        .red {
+            color: red;
+        }
+
+        .green {
+            color: #59BA4F;
+        }
+
+        .text-right {
+            text-align: right !important;
+            padding-right: 10px !important;
+        }
+
+        .orange {
+            color: orange;
+            display: inline-block;
+            width: 70%;
+            vertical-align: top;
+        }
+
+        .bg {
+            background: #eee;
+        }
+
+        .logo {
+            margin-left: -20px;
+        }
+
+            .logo div {
+                width: 33%;
+                display: inline-block;
+                font-size: 14px;
+            }
+
+                .logo div p {
+                    margin: 0;
+                    line-height: 20px;
+                }
+
+        .top-left {
+            padding-top: 30px;
+        }
+
+            .top-left img {
+                width: 50%;
+                margin-bottom: 15px;
+            }
+
+        .top-center {
+            vertical-align: top;
+        }
+
+            .top-center h2 {
+                font-size: 16px;
+                line-height: 24px;
+                text-align: center;
+            }
+
+        .top-right {
+            text-align: right;
+            padding-top: 30px;
+        }
+
+            .top-right img {
+                width: 70%;
+                margin-bottom: 15px;
+            }
+
+        td:last-child {
+            border-right: 1px solid #ccc;
+        }
+    </style>
+    <body>
+
+        <div class="pdf" id="reportHtml">
+            <div class="logo">
+                <div class="top-left">
+                    @*<img src="{MainSite}/images/ParentReport_Head_Logo.png" />*@
+            <p>School year: {SchoolYear}</p>
+            <p>Practice Class</p>
+        </div>
+        <div class="top-center">
+            <h2>{AssessmentName}<br />Student Summary</h2>
+        </div>
+        <div class="top-right">
+            <img src="{MainSite}/images/ParentReport_Head_Logo2.png"/>
+            <p>Assessment Language: {AssessmentLanguage}</p>
+            <p>@ViewBag.UserName</p>
+        </div>
+
+        <p style="font-weight:700;">Student Name:{StudentName}</p>
+    </div>
+    <table cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+            <th width="59%" rowspan="2" class="top">
+                <h3>Learning Areas  &nbsp;|&nbsp; Áreas de Aprendizaje</h3>
+                @*<p>Your child was given progress monitoring activities in the following learning areas:</p>*@
+                    </th>
+                    <th colspan="4">Your Child’s Scores</th>
+                </tr>
+                <tr>
+                    <th width="7%">BOY</th>
+                    <th width="7%">MOY</th>
+                    <th width="7%">EOY</th>
+                    <th width="20%" style="border-right:1px solid #ccc;">Links</th>
+                </tr>
+                {ReportBody}
+            </table>
+            <table class="noborder" cellpadding="0" cellspacing="0" style="margin-bottom: 0px; margin-top: 5px;">
+                {LegendBody}
+            </table>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,11 @@
+﻿
+SELECT [These Trs Assessments pdf files need to be deleted] = (SELECT  CAST(ID AS VARCHAR) + ',' FROM TRSAssessments 
+WHERE (ApproveDate < '2015-9-1' AND ApproveDate > '1753-01-01') OR (RecertificatedBy <  '2018-9-1' AND RecertificatedBy > '1753-01-01') 
+FOR XML PATH('')
+)
+
+UPDATE TRSAssessments SET ApproveDate = '2015-9-1'  
+WHERE  ApproveDate < '2015-9-1' AND ApproveDate > '1753-01-02'
+
+UPDATE TRSAssessments SET RecertificatedBy = DATEADD(YEAR,3,ApproveDate)
+WHERE  RecertificatedBy <  '2018-9-1' AND RecertificatedBy > '1753-01-02' 

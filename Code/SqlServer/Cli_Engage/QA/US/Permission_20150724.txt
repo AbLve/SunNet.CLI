@@ -1,0 +1,146 @@
+﻿--备份数据
+select * into Permission_Authority_0724 from Permission_Authority
+go
+
+update Permission_Authority set Authority='Assign',Descriptions='Assign' where ID=64
+go
+
+--备份数据
+select * into Permission_PageAuthorities_0724 from Permission_PageAuthorities
+go
+
+update Permission_PageAuthorities 
+set ActionId=64
+where ActionId in (64,256,1024,2048,16384,65536) 
+go
+
+--备份数据
+select * into Permission_RolePageAuthorities_0724 from Permission_RolePageAuthorities
+go
+
+--将Assign功能合并成一个
+update Permission_RolePageAuthorities
+set PageAction = PageAction + '64;'
+where CHARINDEX('64;', PageAction)<=0
+and(CHARINDEX('256;', PageAction)>0
+or CHARINDEX('1024;', PageAction)>0
+or CHARINDEX('2048;', PageAction)>0
+or CHARINDEX('16384;', PageAction)>0
+or CHARINDEX('65536;', PageAction)>0)
+go
+
+update Permission_RolePageAuthorities
+set PageAction = REPLACE(PageAction,'256;','')
+go
+
+update Permission_RolePageAuthorities
+set PageAction = REPLACE(PageAction,'1024;','')
+go
+
+update Permission_RolePageAuthorities
+set PageAction = REPLACE(PageAction,'2048;','')
+go
+
+update Permission_RolePageAuthorities
+set PageAction = REPLACE(PageAction,'16384;','')
+go
+
+update Permission_RolePageAuthorities
+set PageAction = REPLACE(PageAction,'65536;','')
+go
+
+delete Permission_Authority
+where ID in (256,1024,2048,16384,65536)
+go
+
+--重整功能ID
+update Permission_Authority set ID=256 where ID = 262144
+go
+
+update Permission_PageAuthorities set ActionId=256
+where ActionId=262144
+go
+
+update Permission_RolePageAuthorities
+set PageAction=REPLACE(PageAction,'262144;','256;')
+where CHARINDEX('262144;', PageAction)>0
+go
+
+update Permission_Authority set ID=1024 where ID = 4096
+go
+
+update Permission_PageAuthorities set ActionId=1024
+where ActionId=4096
+go
+
+update Permission_RolePageAuthorities
+set PageAction=REPLACE(PageAction,'4096;','1024;')
+where CHARINDEX('4096;', PageAction)>0
+go
+
+update Permission_Authority set ID=2048 where ID = 8192
+go
+
+update Permission_PageAuthorities set ActionId=2048
+where ActionId=8192
+go
+
+update Permission_RolePageAuthorities
+set PageAction=REPLACE(PageAction,'8192;','2048;')
+where CHARINDEX('8192;', PageAction)>0
+go
+
+update Permission_Authority set ID=4096 where ID = 32768
+go
+
+update Permission_PageAuthorities set ActionId=4096
+where ActionId=32768
+go
+
+update Permission_RolePageAuthorities
+set PageAction=REPLACE(PageAction,'32768;','4096;')
+where CHARINDEX('32768;', PageAction)>0
+go
+
+
+update Permission_Authority set ID=8192,Authority='Bes',Descriptions='Bes' where ID = 131072
+go
+
+update Permission_PageAuthorities set ActionId=8192
+where ActionId=131072
+go
+
+update Permission_RolePageAuthorities
+set PageAction=REPLACE(PageAction,'131072;','8192;')
+where CHARINDEX('131072;', PageAction)>0
+go
+
+
+
+--添加页面功能控制
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3200,64)
+go
+
+update Permission_RolePageAuthorities
+set PageAction=PageAction+ '64;'
+where PageId=3200 and CHARINDEX('4;',pageaction)>0
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3300,64)
+go
+
+update Permission_RolePageAuthorities
+set PageAction=PageAction+ '64;'
+where PageId=3300 and CHARINDEX('4;',pageaction)>0
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3400,64)
+go
+
+update Permission_RolePageAuthorities
+set PageAction=PageAction+ '64;'
+where PageId=3400 and CHARINDEX('4;',pageaction)>0
+go

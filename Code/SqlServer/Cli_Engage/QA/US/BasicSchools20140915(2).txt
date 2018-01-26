@@ -1,0 +1,6 @@
+﻿ UPDATE   BasicSchools SET CommunityId = B.ID  FROM BasicSchools A,BasicCommunities B, [TEA_ISD_Directory_090214$] C 
+ WHERE A.Address1 = C.[School Street Address] AND A.[City] = C.[School City] AND A.Zip = C.[School Zip]
+ AND   A.Phone = C.[School Phone] AND C.[District Name] = B.Name 
+
+
+   update BasicSchools SET StateId = (select top 1 ID from States) , CountyId =((select top 1 ID from Counties))  where StateId = 0

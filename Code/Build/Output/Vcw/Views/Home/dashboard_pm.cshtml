@@ -1,0 +1,22 @@
+﻿@using Sunnet.Cli.Business.Cpalls.Models;
+@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.CustomClass = "main-con-right-vcw-dashboard";
+}
+@section BreadPath
+{
+    Video Collaboration<i class="icon-angle-right"></i>Dashboard
+}
+<div class="right-content">
+
+    <h3 class="vcw-menu-h3">Collaborative Tools</h3>
+    <ul class="vcw-menu-dashboard">
+        <li><a class="vcw-btn" href="@Url.Action("Index", "TeacherVIP", new { area = "PM" })" >Teachers</a></li>
+
+        <li><a class="vcw-btn2" href="@Url.Action("Index", "CoachAssignment", new { area = "PM" })">Coaches</a></li>
+
+        <li><a class="vcw-btn3" href="@Url.Action("Index", "Summary", new { area = "PM" })">Go to my Collaborative Tool Summary Page</a></li>
+    </ul>
+</div>
+
+

@@ -1,0 +1,27 @@
+﻿
+GO
+
+/****** Object:  View [dbo].[V_Teachers]    Script Date: 2014/12/23 14:10:00 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[V_Teachers]
+AS
+
+SELECT	T.ID,T.UserID,T.TeacherID,U.Firstname,U.Lastname,T.TeacherType,T.CLIFundingId,T.YearsInProjectId,YIP.YearsInProject,U.[Status],
+		T.CoachId,[CoachFirstname] = Coach.Firstname,[CoachLastname] = Coach.Lastname,
+		T.SchoolId,SchoolName = BS.Name,
+		T.CommunityId,CommunityName = BC.Name
+
+FROM dbo.Cli_Engage__Teachers T LEFT JOIN dbo.Cli_Engage__Users U on T.UserId = U.ID
+	LEFT JOIN [dbo].[Cli_Engage__YearsInProjects] YIP ON T.YearsInProjectId = YIP.ID
+	LEFT JOIN dbo.Cli_Engage__Users Coach on T.CoachId  = Coach.ID 
+	LEFT JOIN [dbo].[Cli_Engage__Schools] S on T.SchoolId = S.ID LEFT JOIN [dbo].[Cli_Engage__BasicSchools] BS ON S.BasicSchoolId = BS.ID
+	LEFT JOIN [dbo].[Cli_Engage__Communities] C on T.CommunityId = C.ID LEFT JOIN [dbo].[Cli_Engage__BasicCommunities] BC ON C.BasicCommunityId = BC.ID
+
+
+GO
+  

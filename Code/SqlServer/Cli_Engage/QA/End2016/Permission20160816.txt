@@ -1,0 +1,48 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9500,'Parent Features',0,0,'',11,1,'Parent Features',GETDATE(),GETDATE())
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9501,'Promoting Language',1,9500,'',2,1,'Promoting Language',GETDATE(),GETDATE())
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9502,'Social & Emotional',1,9500,'',3,1,'Social & Emotional',GETDATE(),GETDATE())
+SET IDENTITY_INSERT Permission_Pages OFF
+
+GO
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 9501, -- PageId - int
+          1  -- ActionId - int
+          )
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 9502, -- PageId - int
+          1  -- ActionId - int
+          )
+
+		  INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9501 , -- PageId - int
+          '1;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )
+
+INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9502 , -- PageId - int
+          '1;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )

@@ -1,0 +1,211 @@
+﻿@model Sunnet.Cli.Business.Communities.Models.CommunityModel
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Communities";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Community)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Community/District", "Index", "Community"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Community/District List
+}
+@if (ViewBag.accessAdd)
+{
+    <div class="right-content-top">
+        <button type="button"  href='@Url.Action("New")' class="mainbutton mainright-btn create-btn" data-bind="click: addData" >Add Community/District</button>
+    </div>
+}
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="txtCommunity">Community/District</label>
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#CommunityId",
+                data_remote = Url.Action("GetCommunitySelectListForSearch", "Community", new { Area = "Community" }),
+                data_text = "Name",
+                placeholder = "Enter key text to search",
+                data_value = "ID",
+                id = "txtCommunity",
+                name = "txtCommunity",
+                @for = "CommunityId",
+                data_required = "false",
+                data_bind = "value: searchCriteria.communityName",
+                data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+                @Value = @ViewBag.communityName
+            })
+            @Html.HiddenFor(model => model.CommunityId,
+                new
+                {
+                    @class = "form-control",
+                    placeholder = "Selected Community",
+                    data_bind = "value: searchCriteria.communityId",
+                    @Value = @ViewBag.communityId
+                })
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        <label class="control-label col-sm-2" for="Status">Status </label>
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(m => m.Status, "All", "-1", new { @class = "form-control", data_bind = "value: searchCriteria.status" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="FundingName">Funded by</label>
+        <div class="col-sm-3">
+            @Html.DropDownListFor(model => model.FundingName, (IEnumerable<SelectListItem>)ViewBag.FundingOptions, null, new { @class = "form-control", data_bind = "value: searchCriteria.fundingId" })
+
+        </div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-3">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">Community/District</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    @*<td data-bind="text: item.ID"></td>*@
+
+                    <td data-bind="text: item.CommunityName"></td>
+                    <td data-bind="text: item.DistrictNumber"></td>
+                    <td data-bind="text: item.FundingName"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td>
+                        @if (ViewBag.accessView)
+                        {
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                        }
+                        @if (ViewBag.accessEdit)
+                        {
+                            <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                            <a class="table-btn icon-film feature-btn" data-bind='attr: { href: $root.featureData(item) }'
+                                data-toggle="modal" data-target="#modalLarge" title="Features"></a>                            
+                        }
+                        @if (ViewBag.accessAssign)
+                        {
+                            <!-- ko if: (item.Status.value == 1)-->
+                            <a class="table-btn icon-random assign-btn" data-bind='attr: { href: $root.AssignSchools(item) }'
+                                title="Assign Schools"></a>
+                            <!-- /ko-->
+                        }
+                        @if (ViewBag.accessNote)
+                        {
+                            <a class="table-btn icon-comment comment-btn" data-bind="attr: { href: $root.EditNotes(item) }" title="Custom Notifications"></a>
+                            <a class="table-btn icon-comment-alt viewcomment-btn" data-bind="attr: { href: $root.ViewNotes(item) }" data-toggle="modal" data-target="#modalNormal" title="View Custom Notifications"></a>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+            @Html.Display("e", "NoData", new { Colspan = 5 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Community = {};
+        $(function () {
+
+            list_Community = new ViewModel(
+                {
+                    instanceName: "list_Community",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: "Redirect",
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: "Redirect",
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: "Redirect",
+                    orderBy: "CommunityId",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+
+                        {
+                            text: "@Html.DisplayName("Community/District Name")",
+                            field: "@Html.NameFor(model => model.CommunityName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayName("District Number")",
+                            field: "@Html.NameFor(model => model.DistrictNumber)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Funding by")',
+                            field: "@Html.NameFor(model => model.FundingName)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                        { text: "Action", width: '15%' }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("communityId", "@ViewBag.communityId")),
+                        communityName: ko.observable(window.queryString("communityName", "@Html.Raw(ViewBag.communityName)")),
+                        fundingId: ko.observable(window.queryString("fundingId", -1)),
+                        status: ko.observable(window.queryString("status", -1)),
+                        isActiveCommunity: ko.observable(window.queryString("isActiveCommunity", false))
+                    }
+                },
+                {
+                    featureData: function (data) {
+                        var param = { communityId: data.ID };
+                        var queryString = '@Html.Raw(Url.Action(ViewBag.FeatureQueryString))';
+                        return list_Community.appendQueryString(queryString, param);
+                    },
+                    AssignSchools: function (data) {
+                        return '@Url.Action("AssignSchools")' + "?comId=" + data.ID + "&returnurl=" + list_Community.getLocation();
+                    },
+                    EditNotes: function (data) {
+                        return '@Url.Action("EditNotes")' + "?comId=" + data.ID + "&returnurl=" + list_Community.getLocation();
+                    },
+                    ViewNotes: function (data) {
+                        return '@Url.Action("ViewNotes")' + "?comId=" + data.ID + "&returnurl=" + list_Community.getLocation();
+                    }
+                }
+            );
+            list_Community.search();
+            ko.applyBindings(list_Community);
+        });
+    </script>
+}

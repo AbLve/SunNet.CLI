@@ -1,0 +1,96 @@
+﻿@using System.Collections.Generic
+@using System.Web.Optimization
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Schools.Models.SchoolModel
+@{
+    ViewBag.Title = "View School";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Layout_Base.cshtml";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.School)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("School", "Index", "School"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;View
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/module_school")
+    <script>
+        $(function ()
+        {
+            FollowSchoolType("@Model.SchoolTypeId");
+            IsShowTrs();
+        });
+        function IsShowTrs()
+        {
+            var isShow = "@ViewBag.IsShowTRS";
+            if ($("#divTRS").length > 0)
+            {
+                if (isShow.toLowerCase() == "true")
+                {
+
+
+
+                    $("#divTRS").show();
+                }
+                else
+                {
+                    $("#divTRS").hide();
+                }
+            }
+        }
+    </script>
+
+}
+@using (Ajax.BeginForm("", "", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to School List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CommunityNameText, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.CommunityNameText)
+                </div>
+                @Html.LabelFor(model => model.SchoolId, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.BasicSchoolId, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolName)
+                </div>
+                @Html.LabelFor(model => model.SchoolYear, null, new { @class = "col-sm-2 control-label " })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolYear)
+                </div>
+            </div>
+            @Html.Partial((string)ViewBag.viewPartialUrl)
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton mainright-btn create-btn" type="button" onclick='redirectBack("index")' data-dismiss="modal" id="btnBack">Back</button>
+
+     
+    </div>
+}
+

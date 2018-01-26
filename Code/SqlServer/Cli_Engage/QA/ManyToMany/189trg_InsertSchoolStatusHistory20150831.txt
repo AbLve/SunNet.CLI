@@ -1,0 +1,17 @@
+﻿ 
+GO
+/****** Object:  Trigger [dbo].[InsertSchoolsStatusHistory]    Script Date: 2015/8/31 15:42:31 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER TRIGGER [dbo].[InsertSchoolsStatusHistory] ON [dbo].[Schools] 
+FOR INSERT
+AS
+  declare @ID int,@status int 
+  select @ID = ID,@status=[Status] from Inserted
+  if(@ID is not null and @status !=3 ) begin
+  insert  SchoolStatusHistories  select  ID , Status, StatusDate from Schools
+  where id = @ID
+  end 

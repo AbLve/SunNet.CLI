@@ -1,0 +1,27 @@
+﻿ IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[ChChildrenResult]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+   DROP TABLE [dbo].[ChChildrenResult]
+GO
+
+/****** Object:  Table [dbo].[ChChildrenResult]    Script Date: 2015/1/15 15:43:24 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ChChildrenResult](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ClassId] [int] NOT NULL,
+	[CHChildrenId] [int] NOT NULL,
+	[ChildrenNumber] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_ChChildrenResult] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+

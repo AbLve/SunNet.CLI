@@ -1,0 +1,275 @@
+﻿@using System.Web.UI.WebControls
+@using Sunnet.Cli.Core.Students.Entities
+@model Sunnet.Cli.Core.Cot.Entities.CotWaveEntity
+@{
+    ViewBag.Title = "Assessment";
+    var assessmentId = (int)ViewBag.assessmentId;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Observable")
+}
+@section Styles{
+    <style type="text/css">
+        .tooltip-inner {
+            max-width: 450px;
+            text-align: left;
+        }
+    </style>
+}
+@section BreadPath
+{
+    <a href="/Observable/Observable/index">Assessment</a>
+    <i class="icon-angle-right"></i>
+    <span>@(ViewBag.objectName)</span>
+}
+@section Scripts{
+    @Scripts.Render("~/scripts/observable")
+    <script type="text/javascript">
+        var assessmentJson = @Html.Raw(ViewBag.Json);
+        var assessmentModel = new ObservableAssessment(assessmentJson);
+        var $form;
+
+        $(function() {
+            $form = $("#@(formId)");
+            $("#txtAssessmentDate").val('@(DateTime.Now.ToString("MM/dd/yyyy"))');
+            window.registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    setTimeout(function() {
+                        window.showMessage("success", "The report is in preparation.");
+                        window.location.href = "View?studentId=" + @ViewBag.studentId + "&childId=" + @ViewBag.childId + "&assessmentId=" + @assessmentId + "&observableId=" + response.data + "&returnurl=@(Server.UrlEncode(Request.QueryString["returnurl"]))";
+                    }, 1);
+                }
+            });
+            ko.applyBindings(assessmentModel, document.getElementById("@(formId)"));
+        });
+
+
+        function save() {
+            var itemMsg = "";
+            $.each($(".divAnswer"), function (index, item) {
+                if ($(item).find("[_isRequired=true]").is(":checked")==false) {
+                    $.each($(item).find("[_isRequired=true]"), function (childIndex, childItem) {
+                        var itemName = $(this).attr("_itemName");
+                        itemMsg = itemMsg + itemName + "; ";
+                        return false;
+                    });
+                }
+            });
+            if (itemMsg.length > 0) {
+                itemMsg = itemMsg.substring(0, itemMsg.lastIndexOf(';'));
+                itemMsg = "<br\><span style='color:#000'>The following items require a score before proceeding:<br /><br />Item " + itemMsg + "<span>";
+                window.showMessage("warning", itemMsg);
+                return false;
+            }
+            var strs = GetItemAnswers(assessmentModel);
+            $("#hidAnswers").val(JSON.stringify(strs));
+            $("form").submit();
+        }
+    </script>
+}
+@using (Ajax.BeginForm("SaveObservableAssessment", null, null, PostFormHelper.DefaultAjaxOptions, new { id = formId, @class = "form-horizontal" }))
+{
+    <div class="right-content-top">
+        <a href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "/Observable/Observable/AccessResults?assessmentId="+@assessmentId )" style="margin-bottom: 10px;" class="mainbutton mainright-btn nav-btn" type="button">Back</a>
+    </div>
+    <div style="padding-bottom: 10px;">
+        <label class="control-label col-sm-4 col-sm-offset-6" for="txtAssessmentDate" style="font-weight: bold">Assessment Date</label>
+        <div class="col-sm-2">
+            <input style="" type="text" id="txtAssessmentDate" name="AssessmentDate" class="form-control date" />
+        </div>
+    </div>
+    <div class="main-content">
+        <input type="hidden" name="assessmentId" id="assessmentId" value="@ViewBag.assessmentId" />
+        <input type="hidden" name="studentId" id="studentId" value="@ViewBag.studentId" />
+        <input type="hidden" name="childId" id="studentId" value="@ViewBag.childId" />
+        <input type="hidden" name="hidAnswers" id="hidAnswers" />
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false" data-bind="foreach:{data:measures,as:'measure'}">
+            <!-- ko if:measure.visible -->
+            <div class="panel panel-default">
+                <div data-toggle="collapse" data-parent="#accordion" aria-expanded="true" class="panel-heading" role="tab" style="cursor: pointer" data-bind="attr:{id:'head'+$index(),href:'#content'+$index()}">
+                    <h4 class="panel-title">
+                        <p data-toggle="collapse" data-parent="#accordion" aria-expanded="true" data-bind="attr:{'aria-controls':'content'+$index(),href:'#content'+$index()}">
+                            <a href="#" data-bind="text:name"></a>
+                            <span style="float: right;">
+                                <!-- ko foreach:{data:links,as:'link'} -->
+                                <a class="form-link2" style="margin-left: 10px" data-bind="text:link.text,attr:{href:link.url},click:$root.m_resourceClick"></a>
+                                <!-- /ko -->
+                            </span>
+                        </p>
+                    </h4>
+                </div>
+                <div class="panel-collapse collapse" role="tabpanel" data-bind="attr:{'aria-labelledby':'head'+$index(),id:'content'+$index()},css:{in:$index() == 0}">
+                    <div class="panel-body">
+                        <div class="content-body-tab">
+                            <table class="table table-hover table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10px;"><span style="display: none">#</span></th>
+                                        <th style="text-align: left;">Item</th>
+                                        <th style="width: 40%; text-align: left">Response</th>
+                                        <th style="width: 20%; text-align: left">Resources</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- ko if:items -->
+                                    <!-- ko template:{name:'_tmp_item',foreach:items,as:'item'}-->
+                                    <!-- /ko-->
+                                    <!-- /ko-->
+                                    <!-- ko if:children && children.length-->
+                                    <!-- ko foreach:{data:children,as:'childMeasure'}-->
+                                    <!-- ko if: childMeasure.visible-->
+                                    <!-- ko template:{name:'_tmp_measure',data:childMeasure}-->
+                                    <!-- /ko-->
+                                    <!-- ko template:{name:'_tmp_item',foreach:childMeasure.items,as:'item'}-->
+                                    <!-- /ko-->
+                                    <!-- /ko-->
+                                    <!-- /ko-->
+                                    <!-- /ko-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /ko-->
+        </div>
+        <div class="button-content">
+            <input type="button" class="mainbutton mainright-btn submit-btn" data-bind="click:save" value="Submit">
+        </div>
+
+    </div>
+}
+<script type="text/html" id="_tmp_item">
+    <tr>
+        <td data-bind="text:$index()+1+'.'" style="vertical-align: middle"></td>
+        <td style="text-align: left;vertical-align: middle">
+            <!-- ko if:  isRequired -->
+            <label style="color: red;">*</label>
+            <!-- /ko -->
+            <!-- ko if:  !isRequired -->
+            <label style="color: red; padding-right: 5px;"></label>
+            <!-- /ko -->
+            <label data-bind="html:fullTargetText" style="width: 90%"></label>
+        </td>
+        <td style="vertical-align: middle">
+            <!-- ko if:answers && answers.length -->
+            <!-- ko if:ismultichoice -->
+            <table class="divAnswer">
+                <tr>
+                    <td>
+                        <table>
+                            <!-- ko template:{name:'_tmp_answer_multip',foreach:answers,as:'answer'}-->
+                            <!-- /ko-->
+                        </table>
+                    </td>
+                    <td style="text-align: left; vertical-align: bottom; padding-bottom: 5px;">
+                        <!-- ko if:item.updated   -->
+                        <span style="color: blue; padding-left: 10px" data-bind="html:'Date:'+item.updated"></span>
+                        <!-- /ko-->
+                    </td>
+                </tr>
+            </table>
+            <!-- /ko-->
+            <!-- ko if:ismultichoice == false -->
+            <table class="divAnswer">
+                <tr>
+                    <td>
+                        <table>
+                            <!-- ko template:{name:'_tmp_answer_sig',foreach:answers,as:'answer'}-->
+                            <!-- /ko-->
+                        </table>
+                    </td>
+                    <td style="text-align: left; vertical-align: bottom; padding-bottom: 5px;">
+                        <!-- ko if:item.updated   -->
+                        <span style="color: blue; padding-left: 10px;" data-bind="html:'Date:'+item.updated"></span>
+                        <!-- /ko-->
+                    </td>
+                </tr>
+            </table>
+            <!-- /ko-->
+            <!-- /ko-->
+            <!-- ko if:type.value ==15 -->
+            <table style="width: 100%">
+                <tr>
+                    <!-- ko if:item.isshown  -->
+                    <td style="width: 60%">
+                        <label data-bind="attr:{for:'txt_'+itemId}" style="display: none">1</label>
+                        <input type="text" data-bind="attr:{id:'txt_'+itemId,name:itemId},value:item.res "
+                               class="form-control" style="border-color: rgba(82,168,236,.8); outline: 0; width: 95%" />
+                    </td>
+                    <td>
+                        <!-- ko if:item.updated   -->
+                        <span style="color: blue" data-bind="html:'Date:'+item.updated"></span>
+                        <!-- /ko-->
+                    </td>
+                    <!-- /ko-->
+                    <!-- ko if:!item.isshown  -->
+                    <td colspan="2" style="width: 100%">
+                        <label data-bind="attr:{for:'txt_'+itemId}" style="display: none">1</label>
+                        <input type="text" data-bind="attr:{id:'txt_'+itemId,name:itemId}"
+                               class="form-control" style="border-color: rgba(82,168,236,.8); outline: 0; width: 95%" />
+                    </td>
+                    <!-- /ko-->
+
+                </tr>
+            </table>
+            <!-- /ko-->
+
+        </td>
+
+        <td style="text-align: left;vertical-align: middle">
+            <!-- ko if:links-->
+            <!-- ko foreach:links-->
+            <a style="text-decoration: underline; color: #0759f8" target="_blank" data-bind="attr:{href:url},text:text"></a>
+            <!-- /ko-->
+            <!-- /ko-->
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_measure">
+    <tr class="info">
+        <td colspan="3" style="text-align: left;vertical-align: middle">
+            <b data-bind="text:name"></b>
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_answer_multip">
+    <tr class="info">
+
+        <!-- ko if:item.isshown &&  item.res && item.res.indexOf(','+id)>=0  -->
+        <td>
+            <input type="checkbox" checked="true" data-bind="attr:{id:'checkbox_'+id,name:itemId,_isRequired:$parent.isRequired,_itemName:$parent.fullTargetText},value:id" />
+        </td>
+        <!-- /ko-->
+        <!-- ko if: !item.isshown || !item.res ||item.res.indexOf(','+id)<0  -->
+        <td>
+            <input type="checkbox" data-bind="attr:{id:'checkbox_'+id,name:itemId,_isRequired:$parent.isRequired,_itemName:$parent.fullTargetText},value:id" />
+        </td>
+        <!-- /ko-->
+        <td style="text-align: left;vertical-align: middle">
+            &nbsp;
+            <label data-bind="text:text,attr:{'for':'checkbox_'+id}"></label>
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="_tmp_answer_sig">
+    <tr class="info">
+        <!-- ko if:item.isshown && item.res == id -->
+        <td>
+            <input type="radio" checked="checked" data-bind="attr:{id:'radio_'+id,name:itemId,_isRequired:$parent.isRequired,_itemName:$parent.fullTargetText},value:id " />
+        </td>
+        <!-- /ko-->
+        <!-- ko if:!item.isshown || item.res != id -->
+        <td>
+            <input type="radio" data-bind="attr:{id:'radio_'+id,name:itemId,_isRequired:$parent.isRequired,_itemName:$parent.fullTargetText},value:id " />
+        </td>
+        <!-- /ko-->
+        <td style="text-align: left;">
+            &nbsp;
+            <label data-bind="text:text,attr:{'for':'radio_'+id}"></label>
+        </td>
+    </tr>
+</script>
+

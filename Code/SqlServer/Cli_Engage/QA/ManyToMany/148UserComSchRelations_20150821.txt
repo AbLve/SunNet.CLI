@@ -1,0 +1,5 @@
+﻿alter table UserComSchRelations add AccessType tinyint null
+GO
+update UserComSchRelations set AccessType=2
+GO
+alter table UserComSchRelations alter column AccessType tinyint not null

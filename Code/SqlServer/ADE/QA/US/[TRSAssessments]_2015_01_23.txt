@@ -1,0 +1,5 @@
+﻿ALTER TABLE [dbo].[TRSAssessments] ADD VerifiedStar TINYINT NULL
+GO
+UPDATE [TRSAssessments] SET VerifiedStar = 0 
+GO
+ALTER TABLE [dbo].[TRSAssessments] ALTER COLUMN VerifiedStar TINYINT NOT NULL

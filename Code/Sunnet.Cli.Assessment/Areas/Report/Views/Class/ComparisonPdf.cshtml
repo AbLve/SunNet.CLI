@@ -1,0 +1,446 @@
+﻿@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Common
+@using Sunnet.Cli.Business.Cpalls
+@{
+    ViewBag.Title = "Average Report";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+
+    string[] schoolYear = ViewBag.schoolYear;
+    var json = ViewBag.json;
+    var report = ViewBag.report as Dictionary<Wave, List<ReportModel>>;
+}
+
+
+<h3>School Comparison Report</h3><br />
+<h4>School: @ViewBag.School</h4>
+
+@foreach (Wave wave in report.Keys)
+{
+    var modelList = report[wave];
+    <table cellpadding="0" cellspacing="0">
+        <caption>
+            Wave&nbsp;@(wave.ToDescription())
+        </caption>
+        <thead style="page-break-inside: avoid">
+            <tr class='fixed-columns-rotate' style="page-break-inside : avoid">
+                <th rowspan="2" colspan="1">
+                    <div style="width: 200px;">
+                        <span>
+                            <!--School-->
+                        </span>
+                    </div>
+                </th>
+                @for (int i = 0; i < modelList.Count(); i++)
+                {
+                    var parent = modelList[i];
+                    var haveChild = parent.Children != null && parent.Children.Any();
+                
+                    <th class='@(haveChild ? "fixed-columns-rotate-super" : "fixed-columns-rotate")'
+                        rowspan="@(haveChild ? 1 : 2)"
+                        colspan="@(haveChild ? parent.Children.Count : 1)">
+                        <div>
+                            <span>
+                                @(parent.MeasureName.CutString((haveChild ? parent.Children.Count : 4) * 6))
+                            </span>
+                        </div>
+                    </th>
+                }
+                <th class="noborder border-l"></th>
+                <th class="noborder"></th>
+            </tr>
+            <tr class='fixed-columns-rotate' style="page-break-inside: avoid">
+                @for (int i = 0; i < modelList.Count(); i++)
+                {
+                    if (modelList[i].Children == null)
+                    {
+                        continue;
+                    }
+                    foreach (var child in modelList[i].Children)
+                    {
+                        <th class='fixed-columns-rotate' rowspan="1" colspan="1">
+                            <div>
+                                <span>@(child.MeasureName.CutString(20))</span>
+                            </div>
+                        </th>
+                    }
+                }
+                <th class="noborder border-l"></th>
+                <th class="noborder"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int k=0;k<schoolYear.Count();k++)
+            {
+                <tr style="page-break-inside: avoid">
+                    <td>@schoolYear[k]</td>
+                    @for (int i = 0; i < modelList.Count; i++)
+                    {
+                        var parent = modelList[i];
+                        var haveChild = parent.Children != null && parent.Children.Any();
+                        if (haveChild)
+                        {
+                            for (var j = 0; j < parent.Children.Count; j++)
+                            {
+                                <td>
+                                    @parent.Children[j].Average[k]
+                                </td>
+                            }
+                        }
+                        else
+                        {
+                            <td>@parent.Average[k]</td>
+                        }
+                    }
+                    <th class="noborder border-l"></th>
+                    <th class="noborder"></th>
+                </tr>
+             }
+
+             
+        </tbody>
+    </table>
+}
+
+
+<div id="wave1" style="text-align:left;clear:both;display:none;">
+    Wave 1
+</div>
+<div id="boyStudentSummaryChart" style="width:@(160 + (int)ViewData["boyNum"] * 80)px;height:700px;display:none;clear:both;">
+</div>
+<div id="wave2" style="text-align:left;clear:both;display:none;">
+    Wave 2
+</div>
+<div id="moyStudentSummaryChart" style="width:@(160 + (int)ViewData["moyNum"] * 80)px;height:700px;display:none;clear:both;">
+</div>
+<div id="wave3" style="text-align:left;clear:both;display:none;">
+    Wave 3
+</div>
+<div id="eoyStudentSummaryChart" style="width:@(160 + (int)ViewData["eoyNum"] * 80)px;height:700px;display:none;clear:both;">
+</div>
+@using (Html.BeginForm("ComparisonPdf_Export", "Class", null, FormMethod.Post, new { target = "_blank" }))
+{
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("schoolId")    
+    @Html.Hidden("schoolYear")
+    @Html.Hidden("waves")
+                                              
+    @Html.Hidden("boyImgSource")
+    @Html.Hidden("moyImgSource")
+    @Html.Hidden("eoyImgSource")
+    @Html.Hidden("export", true)
+
+    <button type="submit" id="btn_Export" class="btn-export">
+        Export
+    </button>
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+    <script>
+        +(function () {
+            window.onload = function () {
+                var boyOption = {
+                    title: {
+                        text: '',
+                        subtext: ''
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        //for schoolYear
+                        data: []
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [
+                        {
+                            type: 'category',
+                            //for  title
+                            data: [],
+                            axisLabel: {
+                                interval: 0,
+                                formatter: function(label) {
+                                    return label.split(" ").join("\r\n");
+                                }
+                            },
+                            splitArea: { show: true }
+                        },
+                        {
+                            type: 'category',
+                            data: [],
+                            axisLabel: {
+                                interval: 0
+                            },
+                            boundaryGap: true,
+                            axisTick: { show: true }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        //for  value
+                    ]
+                };
+                var moyOption = {
+                    title: {
+                        text: '',
+                        subtext: ''
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        //for schoolYear
+                        data: []
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [
+                        {
+                            type: 'category',
+                            //for  title
+                            data: [],
+                            axisLabel: {
+                                interval: 0,
+                                formatter: function (label) {
+                                    return label.split(" ").join("\r\n");
+                                }
+                            },
+                            splitArea: { show: true }
+                        },
+                        {
+                            type: 'category',
+                            data: [],
+                            axisLabel: {
+                                interval: 0
+                            },
+                            boundaryGap: true,
+                            axisTick: { show: true }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        //for  value
+                    ]
+                };
+
+                var eoyOption = {
+                    title: {
+                        text: '',
+                        subtext: ''
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        //for schoolYear
+                        data: []
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true }
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [
+                        {
+                            type: 'category',
+                            //for  title
+                            data: [],
+                            axisLabel: {
+                                interval: 0,
+                                formatter: function (label) {
+                                    return label.split(" ").join("\r\n");
+                                }
+                            },
+                            splitArea: { show: true }
+                        },
+                        {
+                            type: 'category',
+                            data: [],
+                            axisLabel: {
+                                interval: 0
+                            },
+                            boundaryGap: true,
+                            axisTick: { show: true }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        //for  value
+                    ]
+                };
+
+                var arrSY = '@String.Join(",", schoolYear)'.split(',');
+                jQuery.each(arrSY, function (i, item) {
+                    boyOption.legend.data.push(item);
+                    boyOption.series.push({
+                        name: item,
+                        type: 'bar',
+                        data: []
+                    });
+
+                    moyOption.legend.data.push(item);
+                    moyOption.series.push({
+                        name: item,
+                        type: 'bar',
+                        data: []
+                    });
+
+                    eoyOption.legend.data.push(item);
+                    eoyOption.series.push({
+                        name: item,
+                        type: 'bar',
+                        data: []
+                    });
+                });
+
+                var json = eval('(' + '@Html.Raw(json)' + ')');
+                console.log(json);
+
+                jQuery.each(json, function (wave, item) {
+                    if (wave == "BOY" && item != undefined) {
+
+                        var boyMeasure = new ParentMeasuresModel();
+                        boyOption.xAxis[1].axisLabel.formatter = function (label) {
+                            return boyMeasure.getText(label);
+                        }
+
+                        jQuery.each(item, function (index, parent) {
+                            if (parent.Children != undefined) {
+                                jQuery.each(parent.Children,function(ii, child) {
+                                    boyOption.xAxis[0].data.push(child.MeasureName);
+                                    boyOption.xAxis[1].data.push(parent.MeasureName);
+                                    boyMeasure.add(parent.MeasureName);
+
+                                    if (!isNaN(child.Average[0])) {
+                                        boyOption.series[0].data.push(eval(child.Average[0]));
+                                    } else {
+                                        boyOption.series[0].data.push(0);
+                                    }
+                                });
+                            } else {
+                                boyOption.xAxis[0].data.push(parent.MeasureName);
+                                boyOption.xAxis[1].data.push("");
+                                if (!isNaN(parent.Average[0])) {
+                                    boyOption.series[0].data.push(eval(parent.Average[0]));
+                                } else {
+                                    boyOption.series[0].data.push(0);
+                                }
+                            }
+                        });
+
+                        jQuery("#boyStudentSummaryChart").show();
+                        jQuery("#wave1").show();
+                        var boyChart = echarts.init(document.getElementById('boyStudentSummaryChart'), echartsTheme.default);
+                        boyChart.setOption(boyOption);
+                        setTimeout(function () { document.getElementById("boyImgSource").value = boyChart.getDataURL(); }, 1000);
+
+                    } else if (wave == "MOY" && item != undefined) {
+
+                        var moyMeasure = new ParentMeasuresModel();
+                        moyOption.xAxis[1].axisLabel.formatter = function (label) {
+                            return moyMeasure.getText(label);
+                        }
+
+                        jQuery.each(item, function (index, parent) {
+                            if (parent.Children != undefined) {
+                                jQuery.each(parent.Children, function (ii, child) {
+                                    moyMeasure.add(parent.MeasureName);
+                                    moyOption.xAxis[0].data.push(child.MeasureName);
+                                    moyOption.xAxis[1].data.push(parent.MeasureName);
+
+                                    if (!isNaN(child.Average[0])) {
+                                        moyOption.series[0].data.push(eval(child.Average[0]));
+                                    } else {
+                                        moyOption.series[0].data.push(0);
+                                    }
+                                });
+                            } else {
+                                moyOption.xAxis[0].data.push(parent.MeasureName);
+                                moyOption.xAxis[1].data.push("");
+                                if (!isNaN(parent.Average[0])) {
+                                    moyOption.series[0].data.push(eval(parent.Average[0]));
+                                } else {
+                                    moyOption.series[0].data.push(0);
+                                }
+                            }
+                        });
+
+                        jQuery("#moyStudentSummaryChart").show();
+                        jQuery("#wave2").show();
+                        var moyChart = echarts.init(document.getElementById('moyStudentSummaryChart'), echartsTheme.default);
+                        moyChart.setOption(moyOption);
+                        setTimeout(function () { document.getElementById("moyImgSource").value = moyChart.getDataURL(); }, 1000);
+
+                    } else if (wave == "EOY" && item != undefined) {
+                        var eoyMeasure = new ParentMeasuresModel();
+                        eoyOption.xAxis[1].axisLabel.formatter = function (label) {
+                            return eoyMeasure.getText(label);
+                        }
+
+                        jQuery.each(item, function (index, parent) {
+                            if (parent.Children != undefined) {
+                                jQuery.each(parent.Children, function (ii, child) {
+                                    eoyMeasure.add(parent.MeasureName);
+                                    eoyOption.xAxis[1].data.push(parent.MeasureName);
+                                    eoyOption.xAxis[0].data.push(child.MeasureName);
+
+                                    if (!isNaN(child.Average[0])) {
+                                        eoyOption.series[0].data.push(eval(child.Average[0]));
+                                    } else {
+                                        eoyOption.series[0].data.push(0);
+                                    }
+                                });
+                            } else {
+                                eoyOption.xAxis[0].data.push(parent.MeasureName);
+                                eoyOption.xAxis[1].data.push("");
+                                if (!isNaN(parent.Average[0])) {
+                                    eoyOption.series[0].data.push(eval(parent.Average[0]));
+                                } else {
+                                    eoyOption.series[0].data.push(0);
+                                }
+                            }
+                        });
+                        jQuery("#eoyStudentSummaryChart").show();
+                        jQuery("#wave3").show();
+                        var eoyChart = echarts.init(document.getElementById('eoyStudentSummaryChart'), echartsTheme.default);
+                        eoyChart.setOption(eoyOption);
+                        setTimeout(function () { document.getElementById("eoyImgSource").value = eoyChart.getDataURL(); }, 1000);
+                    }
+                });
+                setTimeout(function () {
+                    $("#btn_Export").slideDown();
+                }, 2000);
+            };
+        })();
+    </script>
+}

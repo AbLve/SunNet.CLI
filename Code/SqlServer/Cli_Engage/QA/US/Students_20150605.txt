@@ -1,0 +1,7 @@
+--Delete CommunityId SchoolId in Students
+GO
+SELECT * INTO Students_0605 FROM Students
+GO
+ALTER TABLE dbo.Students DROP CONSTRAINT DF_Students_DistrictId
+GO
+ALTER TABLE dbo.Students DROP COLUMN CommunityId,SchoolId

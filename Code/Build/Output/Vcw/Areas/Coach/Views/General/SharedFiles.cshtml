@@ -1,0 +1,146 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.FileListModel
+@using Sunnet.Cli.UIBase.Models;
+@{
+    ViewBag.Title = "Coach General";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Coach_General)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Coach General", "Index", "General"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    Received Shared Files
+}
+<form class="form-horizontal">
+    <div class="form-group">
+    </div>
+    <div class="form-group">
+        <div class="nav-tab">
+            <ul id="myTab" class="nav-container" role="tablist">
+                <li><a href="@(Url.Action("Index", "General", new { returnurl = Request.QueryString["returnurl"] }))">Uploaded Files</a></li>
+                <li class="active"><a href="@(Url.Action("SharedFiles", "General", new { returnurl = Request.QueryString["returnurl"] }))">Received Shared Files</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="nav-container-main">
+        <div class="main-content main-content">
+            <div class="content-title">Shared File</div>
+            <div class="content-body-tab">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr data-bind="foreach: { data: headers, as: 'header' }">
+                            <!-- ko if: (header.order === true)-->
+                            <th data-bind="style: { width: width }">
+                                <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                                <span class="glyphicon"
+                                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                            </th>
+                            <!-- /ko-->
+                            <!-- ko if: (header.order === false) -->
+                            <th data-bind="text: text, style: { width: width }"></th>
+                            <!-- /ko-->
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                        <tr>
+                            <td data-bind="text: item.IdentifyFileName"></td>
+                            <td data-bind="text: item.Number"></td>
+                            <td data-bind="text: item.UploadDate"></td>
+                            <td data-bind="text: item.DateRecorded == minDate ? '' : item.DateRecorded"></td>
+                            <td data-bind="text: item.Strategy"></td>
+                            <td data-bind="text: item.FileExtension"></td>
+                            <td>
+                                <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                                <a class="table-btn icon-download-alt download-btn" data-bind="attr: { href: item.DownLoadFilePath }" title="Download"></a>
+                                <a class="table-btn icon-comment comment-btn" data-bind='attr: { href: $root.feedBack(item) }' data-toggle="modal" data-target="#modalNormal" href="#" title="Feedback"></a>
+                            </td>
+                        </tr>
+                    </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+                </table>
+                @Html.Partial("_Partial_Pager")
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Video = {};
+
+        $(function () {
+            list_Video = new ViewModel(
+                {
+                    instanceName: "list_Video",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchShared")))',
+                    viewDataUrl: '@Html.Raw(Url.Action("View", new { isShared = true }))',
+                    viewType: 'Redirect',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: '@Html.DisplayName("File Name")',
+                            field: "@Html.NameFor(model => model.IdentifyFileName)",
+                            order: true,
+                            width: "15%"
+                        },
+                        {
+                            text: "@Html.DisplayName("ID")",
+                            field: "@Html.NameFor(model => model.ID)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Upload Date")',
+                            field: "@Html.NameFor(model => model.UploadDate)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Date Recorded")',
+                            field: "@Html.NameFor(model => model.DateRecorded)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Strategies")',
+                            field: "@Html.NameFor(model => model.StrategyId)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: '@Html.DisplayName("File Type")',
+                            field: "@Html.NameFor(model => model.FileExtension)",
+                            width: '15%'
+                        },
+                        { text: "Action", width: '15%' }
+                    ]
+                }
+                ,
+                {
+                    feedBack: function (data) {
+                        return "@Html.Raw(Url.Action("Feedback", "Feedback"))" + "/" + data.ID;
+                    }
+                }
+            );
+
+            list_Video.search();
+            ko.applyBindings(list_Video);
+        });
+
+    </script>
+}
+
+
+

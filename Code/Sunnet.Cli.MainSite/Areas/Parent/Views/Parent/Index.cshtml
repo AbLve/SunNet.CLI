@@ -1,0 +1,157 @@
+﻿@using System.Collections.Generic
+@using Sunnet.Cli.Business.Students.Models
+@using Sunnet.Cli.MainSite.Models
+@model Sunnet.Cli.Business.Students.Models.StudentModel
+@{
+    ViewBag.Title = "Track Child's Development";
+    IList<ChildListModel> studentList = ViewBag.StudentList;
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Observable)
+}
+@section BreadPath
+{
+    <a href="/home/dashboard">Dashboard</a>&nbsp;<i class="icon-angle-right"></i>&nbsp;Track Child's Development
+}
+
+<div class="right-content-top">
+    <a id="lnkNewChild" href="/parent/index/addchild" class="mainbutton mainright-btn create-btn">Add New Child</a>
+    @if (ViewBag.assessmentId > 0)
+    {
+        <a id="lnkNewReport" href="@(Sunnet.Framework.SFConfig.AssessmentDomain)/Observable/Observable/Detail?studentId=0&childId=@(ViewBag.currentChildId)&assessmentId=@(ViewBag.assessmentId)" class="mainbutton mainright-btn create-btn">Perform Assessment</a>
+    }
+    else
+    {
+        <a id="lnkNewReport" href="@(Sunnet.Framework.SFConfig.AssessmentDomain)/Observable/Observable/ObservableList?studentId=0&childId=@(ViewBag.currentChildId)" class="mainbutton mainright-btn create-btn">Perform New Assessment</a>
+    }
+</div>
+<div class="modal-l-b">
+</div>
+<ul id="myTab" class="nav-container" role="tablist">
+    @foreach (var item in studentList)
+    {
+        <li class="@( item.ID == ViewBag.currentChildId ? "active" : "")"><a href="/parent/parent/Index?childId=@item.ID&studentId=@item.StudentId">@item.FirstName</a></li>
+    }
+</ul>
+<div class="main-content main-content">
+    <div class="content-title">
+        Reports
+    </div>
+
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.Name"></td>
+                    <td data-bind="text: item.CreateOn"></td>
+                    <td data-bind="text: item.StudentAge"></td>
+                    <td>
+                        <a class="table-btn icon-download-alt download-btn" data-bind="attr: { href: item.Url }" title="Download"></a>
+                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.DeleteReport }" href="#" title="Delete"></a>
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 5 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Reports = {};
+        $(function () {
+            list_Reports = new ViewModel(
+                {
+                    instanceName: "list_Reports",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    addType: 'Redirect',
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    viewType: 'Redirect',
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    editType: 'Redirect',
+                    deleteDataUrl: '@Html.Raw(Url.Action(""))',
+                    orderBy: "CreateOn",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "Report Name",
+                            field: "Name",
+                            order: false,
+                            width: '35%'
+                        },
+                        {
+                            text: "Date",
+                            field: "CreateOn",
+                            order: false,
+                            width: '20%'
+                        },
+                        {
+                            text: "Child's Age",
+                            field: "",
+                            order: false,
+                            width: '30%'
+                        },
+                        { text: "Action", width: '15%' }
+                    ],
+                    searchCriteria: {
+                        studentId: ko.observable('@(ViewBag.currentStudentId)'),
+                        childId: ko.observable('@(ViewBag.currentChildId)')
+                    }
+                },
+                {
+                  DeleteReport: function (item) {
+                        var msg = "Do you want to delete the " + "<b>" + item.Name + "</b> " + "report?<br /> Once deleted it cannot be recovered.";
+                        var itemId = item.ID;
+                        $.when(waitingConfirm(msg, "Delete", "Cancel")).done(function () {
+                            $.post('@Html.Raw(Url.Action("DeleteReport"))', { id: itemId }, function (response) {
+                                if (response.success) {
+                                    showMessage("success");
+                                    list_Reports.search();
+                                } else {
+                                    showMessage("fail", response.msg);
+                                }
+                            }, 'json');
+                        });
+                    }
+                }
+            );
+            list_Reports.search();
+            ko.applyBindings(list_Reports);
+
+            if (@(ViewBag.assessmentId) > 0) {
+                $("#lnkNewReport").attr("href", "@(Sunnet.Framework.SFConfig.AssessmentDomain)Observable/Observable/Detail?studentId=0"
+                    + "&childId=@(ViewBag.currentChildId)&assessmentId=@(ViewBag.assessmentId)" +
+                    "&returnurl=@(Sunnet.Framework.SFConfig.MainSiteDomain)" + list_Reports.getLocation());
+            } else {
+                $("#lnkNewReport").attr("href", "@(Sunnet.Framework.SFConfig.AssessmentDomain)Observable/Observable/ObservableList?studentId=0"
+                    + "&childId=@(ViewBag.currentChildId)" +
+                    "&returnurl=@(Sunnet.Framework.SFConfig.MainSiteDomain)" + list_Reports.getLocation());
+            }
+            $("#lnkNewChild").attr("href", "/parent/index/addchild" + "?returnurl=@(Sunnet.Framework.SFConfig.MainSiteDomain)" + list_Reports.getLocation());
+        });
+    </script>
+}

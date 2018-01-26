@@ -1,0 +1,123 @@
+﻿@model AssessmentModel
+@{
+    ViewBag.Title = Model.Label + " (" + Model.Type.ToDescription() + ")" + " - Detail";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var isCpalls = Model.Type == AssessmentType.Cpalls;
+    var isCec = Model.Type == AssessmentType.Cec;
+    var isCot = Model.Type == AssessmentType.Cot;
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/ckeditor")
+    <script type="text/javascript">
+        var list_Measure = {};
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+        function getToFolder() {
+            return "assessment";
+        }
+
+        jQuery(function () {
+            list_Measure = new ViewModel(
+            {
+                instanceName: "list_Measure",
+                modalId: "modalNormal",
+                getDataUrl: '@Html.Raw(Url.Action("Search", "Measure", new { assessmentId = Model.ID }))',
+                addDataUrl: '@Html.Raw(Url.Action("New", "Measure", new {assessmentId = Model.ID}))',
+                editDataUrl: '@Html.Raw(Url.Action("Edit", "Measure"))',
+                viewDataUrl: '@Html.Raw(Url.Action("Detail", "Measure"))',
+                viewType: "Redirect",
+                editType: '@isCpalls' == 'True' ? "Redirect" : "",
+                addType: '@isCpalls' == 'True' ? "Redirect" : "",
+                deleteDataUrl: '@Html.Raw(Url.Action("Delete", "Measure"))',
+                showField: "Label",
+                orderBy: "Sort",
+                orderDirection: "ASC",
+                pageSize: 100,
+                searchCriteria: {
+                    label: ko.observable(window.queryString("label")),
+                    name: ko.observable(window.queryString("name")),
+                    createdBy: ko.observable(window.queryString("createdBy")),
+                    status: ko.observable(window.queryString("status", -1))
+                }
+            }, {
+                onDataAdded: function (response) {
+                    list_Measure.search();
+                },
+                onDataUpdated: function (response) {
+                    list_Measure.search();
+                    list_Measure.hideDialog();
+                },
+                dataUpdater: function (oldData, newData) {
+                    var newObject = jQuery.extend({}, oldData, newData);
+                    newObject.NamePrefix = oldData.NamePrefix;
+                    return newObject;
+                },
+                getAdjustOrderHref: function (measure) {
+                    var baseUrl = "@Url.Action("AdjustOrder", "Measure")";
+                    return baseUrl + "?assessmentId=" + measure.AssessmentId + "&parentId=" + measure.ID + "&returnurl=" + this.getLocation();
+                },
+                getLinkHref: function (measure) {
+                    var baseUrl = "@Url.Action("Links", "Measure")";
+                    return baseUrl + "?id=" + measure.ID;
+                },
+                getParentActivitiesHref: function (measure) {
+                    var baseUrl = "@Url.Action("ParentActivities", "Measure")";
+                    return baseUrl + "?id=" + measure.ID;
+                }
+            });
+            list_Measure.search();
+            ko.applyBindings(list_Measure);
+        });
+    </script>
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Assessment", "Index", "Assessment"))<i class="icon-angle-right"></i>@(Model.Label + " (" + Model.Type.ToDescription() + ")")
+}
+<div class="main-content top-form">
+    <form class="form-horizontal" role="form">
+        @Html.LabelFor(model => model.Name, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.Name)
+        @ViewTextHelper.HtmlEmptySeparator
+        @Html.LabelFor(model => model.Label, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.Label)
+        @if (isCpalls)
+        {
+            @ViewTextHelper.HtmlEmptySeparator
+            @Html.LabelFor(model => model.OrderType, new { @class = "control-label" })
+            @Html.DisplayFor(x => x.OrderType)
+        }
+        @if (isCpalls || isCec)
+        {
+            @ViewTextHelper.HtmlEmptySeparator
+            @Html.LabelFor(model => model.TotalScored, new { @class = "control-label" })
+            @Html.DisplayFor(x => x.TotalScored)
+        }
+        @ViewTextHelper.HtmlEmptySeparator
+        @Html.LabelFor(model => model.Status, new { @class = "control-label" })
+        @Html.DisplayFor(x => x.Status)
+    </form>
+</div>
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to Assessment List</a>
+    <button class="mainbutton mainright-btn create-btn" type="button" data-bind="event: { click: addData }">
+        Create Measure
+    </button>
+
+    <a class="mainbutton mainright-btn nav-btn" href="@Url.Action("AdjustOrder", "Measure", new
+                                                      {
+                                                          assessmentId = Model.ID,
+                                                          parentId = 1,
+                                                          returnurl = Server.UrlEncode(Request.RawUrl)
+                                                      })" style="display: none;" data-bind="visible: showRecords().length > 0">Adjust Order</a>
+</div>
+<div class="modal-l-b"></div>
+@Html.Partial("_Partial_MeasureList", new MeasureModel() { AssessmentId = Model.ID, AssessmentType = Model.Type })

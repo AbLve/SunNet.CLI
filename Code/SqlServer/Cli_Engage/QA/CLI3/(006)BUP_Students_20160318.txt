@@ -1,0 +1,5 @@
+﻿alter table [dbo].[BUP_Students] add AssessmentLanguage tinyint
+alter table [dbo].[BUP_Students] add StudentStatus tinyint
+GO
+update BUP_Students set AssessmentLanguage=0
+update BUP_Students set StudentStatus=1

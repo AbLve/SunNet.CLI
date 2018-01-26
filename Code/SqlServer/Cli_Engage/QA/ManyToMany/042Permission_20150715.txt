@@ -1,0 +1,35 @@
+﻿insert into  Permission_Authority
+values(131072,'Batch','Batch',GETDATE(),GETDATE())
+go
+
+
+update Permission_Pages  set Sort=30 where ID=3909
+go
+
+
+SET IDENTITY_INSERT Permission_Pages ON
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(3908,'Class Roster Management',1,3000,'',20,1,'Class Roster Management',GETDATE(),GETDATE())
+SET IDENTITY_INSERT Permission_Pages OFF
+go
+
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3908,131072)
+go
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3720,131072)
+go
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3730,131072)
+go
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3745,131072)
+go
+insert into Permission_PageAuthorities(PageId,ActionId)
+values(3750,131072)
+go
+
+
+update Permission_RolePageAuthorities set PageAction = PageAction + '131072;'
+where PageId in (3720, 3730, 3745, 3750) and CHARINDEX(';2;',PageAction)>0
+go

@@ -1,0 +1,46 @@
+﻿@using Sunnet.Cli.Business.Cpalls.Models;
+@{
+    ViewBag.Title = "Dashboard";
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_TSDS")
+}
+@section BreadPath
+{
+    Assessment<em class="icon-angle-right"></em>XML File Download
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            var message = "@Html.Raw(ViewBag.Message)";
+            if (message) {
+                window.showMessage("fail", message);
+            }
+        });
+    </script>
+}
+<div class="right-content">
+    <ul class="assessment-menu-dashboard">
+        <div class="assessment-d-btns">
+            @if(ViewBag.ShowTSDS)
+            {
+               foreach (var item in @ViewBag.List as List<CpallsAssessmentModel>)
+                {
+                    <li>
+                        <a class="cpalls-btn" href="/Tsds/Tsds/RequestList?assessmentId=@item.ID">
+                            @item.Name
+                            <br/>
+                            <span style="font-weight: bold; font-size: 16px;">
+                                @item.Language
+                            </span>
+                        </a>
+                    </li>
+                }
+            }
+        </div>
+    </ul>
+</div>
+
+

@@ -1,0 +1,8 @@
+﻿@using Sunnet.Cli.UIBase.Models
+<h4 role="heading" aria-level="1"><a href="@(DomainHelper.MainSiteDomain)home/dashboard" aria-label="Dashboard (left menu)" class="main-ade-left-active"><i class="icon-dashboard"></i>Dashboard</a></h4>
+<ul>
+    <li><p>ADE</p></li>
+    <li>
+        @Html.ActionLink("Manage Assessment", "Index", "Assessment", new { Area = "Ade" }, new { @class = "active" })
+    </li>
+</ul>

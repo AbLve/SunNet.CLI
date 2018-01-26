@@ -1,0 +1,5 @@
+﻿
+
+alter table [dbo].[TeacherRoles] add ReqCycles varchar(2) not null default ('')
+go
+update TeacherRoles set ReqCycles=CoachingHours 

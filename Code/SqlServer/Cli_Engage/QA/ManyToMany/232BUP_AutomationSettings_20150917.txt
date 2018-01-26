@@ -1,0 +1,29 @@
+﻿CREATE TABLE [dbo].[BUP_AutomationSettings](
+	[ID] [INT] IDENTITY(1,1) NOT NULL,
+	[CommunityId] [INT] NOT NULL,
+	[Status] [TINYINT] NOT NULL,
+	[HostIp] [VARCHAR](50) NOT NULL,
+	[Port] [INT] NOT NULL,
+	[UserName] [VARCHAR](100) NOT NULL,
+	[PassWord] [VARCHAR](100) NOT NULL,
+	[SchoolPath] [VARCHAR](200) NOT NULL,
+	[ClassroomPath] [VARCHAR](200) NOT NULL,
+	[ClassPath] [VARCHAR](200) NOT NULL,
+	[StudentPath] [VARCHAR](200) NOT NULL,
+	[CommunityUserPath] [VARCHAR](200) NOT NULL,
+	[CommunitySpecialistPath] [VARCHAR](200) NOT NULL,
+	[PrincipalPath] [VARCHAR](200) NOT NULL,
+	[SchoolSpecialistPath] [VARCHAR](200) NOT NULL,
+	[TeacherPath] [VARCHAR](200) NOT NULL,
+	[ParentPath] [VARCHAR](200) NOT NULL,
+	[CreatedBy] [INT] NOT NULL,
+	[UpdatedBy] [INT] NOT NULL,
+	[CreatedOn] [DATETIME] NOT NULL,
+	[UpdatedOn] [DATETIME] NOT NULL,
+ CONSTRAINT [PK_BUP_AutomationSettings] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO

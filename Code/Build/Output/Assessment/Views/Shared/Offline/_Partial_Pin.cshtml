@@ -1,0 +1,47 @@
+﻿@{
+    Layout = null;
+}
+<div class="modal fade" id="locker" data-backdrop="static">
+    <div class="modal-dialog-sm" style=" width: 670px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span class="offline-title-pin">
+                        Engage Offline Assessment
+                        <br />Personal Pin
+                    </span>
+                    <br />
+                    <span class="offline-title-content">
+                        Enter a personal pin code to protect and save your offline Engage assessment data.<br />
+                        <span class="offline-title-item">
+                            Your pin must be 6-10 characters and contain at least one number and upper case letter.
+                        </span>
+                        <span class="offline-title-item">
+                            Do not use your Engage Login password or a pin code that will be easy to guess.
+                        </span>
+                        Remember this code. You will be prompted to enter it the next time you access your offline data.
+                    </span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="modal-main-content">
+                    <div class="modal-content-body">
+                        <form class="form-horizontal" novalidate="novalidate">
+                            <div class="form-group">
+                                <label for="" class="col-sm-5 control-label">PIN Code</label>
+                                <div class="col-sm-7">
+                                    <input style="display:none;" type="password" name="anotherfakename" />
+                                    <input type="password" id="txtLock" maxlength="10" autocomplete="off" class="form-control pin" />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnLock">OK</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

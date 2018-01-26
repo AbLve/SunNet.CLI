@@ -1,0 +1,99 @@
+﻿@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Business.Cpalls.Group
+@model Sunnet.Cli.Business.Cpalls.Group.GroupStudentModel
+
+@{
+    ViewBag.Title = "Student List";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    List<GroupStudentModel> list = ViewBag.List as List<GroupStudentModel>;
+}
+
+@using (Ajax.BeginForm("AddStudent", "Group", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    
+    <div class="right-content-top">
+        <input type="button" class="mainbutton mainright-btn create-btn" value=" Save to Group " onclick="return saveStudent()">
+    </div>
+    
+    
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="assessmentId" value="@ViewBag.AssessmentId" />
+    <input type="hidden" name="groupId" value="@ViewBag.GroupId" />
+    <input type="hidden" name="language" value="@ViewBag.Language" />
+    <div class="main-content main-content">
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">Select
+                        </th>
+                        <th style="width: 45%">First Name</th>
+                        <th style="width: 45%">Last Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (GroupStudentModel Item in list)
+                    {
+                        <tr>
+                            <td>
+                                @if (Item.Seleted)
+                                {
+                                    <input name="student_select" type="checkbox" value="@Item.ID" checked="checked" title=" "/>
+                                }
+                                else
+                                {
+                                    <input name="student_select" type="checkbox" value="@Item.ID" title=" "/>
+                                }</td>
+                            <td>@Item.FirstName</td>
+                            <td>@Item.LastName</td>
+                        </tr>
+                    }
+                </tbody>
+                @if (list.Count == 0)
+                {
+                    @Html.Display("e", "NoData", new { Colspan = 4 })
+                }
+            </table>
+        </div>
+    </div>  
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    group_DataEdited(response);
+                    closeModal($("#@(formId)"));
+                }
+            });
+        })();
+
+
+
+        function saveStudent() {
+            var video_select = $("input[name=student_select]:checked");
+            if (video_select.length == 0) {
+                showMessage("hint", "Noselect")
+                return false;
+            }
+            else {
+                $("#@(formId)").submit();
+                }
+                return false;
+            }
+    </script>
+}

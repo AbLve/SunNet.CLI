@@ -1,0 +1,9 @@
+﻿insert into BasicCommunities (Name,[Status],CreatedOn,UpdatedOn,[Type],Address1,City,Zip,Phone,CountyId,StateId,DistrictNumber) values 
+('CLI Parent Community',2,GETDATE(),GETDATE(),NULL,NULL,'HOUSTON',NULL,'',2636,44,'')
+GO
+insert into Communities (CommunityId,BasicCommunityId,Status,StatusDate,SchoolYear,FundingId,PhysicalAddress1,PhysicalAddress2,
+City,CountyId,StateId,Zip,PhoneNumber,PhoneNumberType,PrimarySalutation,PrimaryName,PrimaryTitleId,PrimaryPhone,PrimaryPhoneType,PrimaryEmail,
+SecondarySalutation,SecondaryName,SecondaryTitleId,SecondaryPhone,SecondaryPhoneType,SecondaryEmail,WebAddress,MouStatus,MouDocument,Notes,CreatedOn,UpdatedOn,
+DistrictNumber,Name,LogoUrl)
+values('',(select ID from BasicCommunities where Name='CLI Parent Community'),1,GETDATE(),'14-15',2,'','','',2636,44,'','',0,0,'',0,'',0,'',0,'',
+0,'',0,'','',0,'','',GETDATE(),GETDATE(),'','CLI Parent Community','')

@@ -1,0 +1,13 @@
+﻿Create table TeacherTransactions
+(
+	ID int primary key identity(1,1) not null,
+	TeacherId int not null,
+	TransactionType tinyint not null,
+	Amount money not null,
+	TISessionsAttended int not null,
+	TITotalSessions int not null,
+	FundingYear varchar(5) not null,
+	TICLIFundingId int not null,
+	CreatedOn datetime not null,
+	UpdatedOn datetime not null
+)

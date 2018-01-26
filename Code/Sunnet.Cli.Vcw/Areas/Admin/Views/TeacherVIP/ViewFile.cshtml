@@ -1,0 +1,263 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherVIPFileModel
+@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase;
+@using Sunnet.Cli.Vcw.Models;
+@{
+    ViewBag.Title = "Video Information";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    bool isSummary = !string.IsNullOrEmpty(ViewBag.Redirect);
+    ViewBag.IsVideo = true;
+    List<SelectItemModel> Languages = ViewBag.Languages as List<SelectItemModel>;
+    List<SelectItemModel> SelectionLists = ViewBag.SelectionList as List<SelectItemModel>;
+}
+
+@if (isSummary)
+{
+    @section LeftMenu
+{
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Admin_Summary)
+    }
+}
+else
+{
+    @section LeftMenu
+{
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Admin_Teachers)
+    }
+}
+
+
+@if (isSummary)
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Summary", "Index", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("Teacher Files", "TeacherFiles", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        File
+    }
+}
+else
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Teachers", "Index", "TeacherVIP"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("Teacher VIP", "Index", "TeacherVIP"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("VIP", "View", "TeacherVIP", new { id = Model.AssignmentID }, null))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        View
+    }
+}
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var isVideo = true;
+    </script>
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var backurl = "@(ViewBag.Redirect)";
+                    if (backurl != "") {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("TeacherFiles", "Summary"))");
+                    }
+                    else {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? @Url.Action("View", "TeacherVIP", new { id = Model.AssignmentID }, ""))");
+                    }
+                }
+            })
+        });
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+    </script>
+}
+
+@using (Ajax.BeginForm("EditFile", "TeacherVIP", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    <div class="right-content-top">
+        @if (isSummary)
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("TeacherFiles", "Summary"))" >Back to Files</a>
+        }
+        else
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+        Url.Action("View", "TeacherVIP", new { id = Model.AssignmentID }, ""))" >Back to VIP</a>
+        }
+    </div>
+    @Html.Partial("/Views/TeacherInfo/TeacherInfo.cshtml")
+    <div class="main-content">
+        <div class="content-title">File</div>
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            @Html.LabelFor(m => m.IdentifyFileName, new { @class = "control-label col-sm-3 required" })
+                            <div class="col-sm-9">
+                                @Html.TextBoxFor(m => m.IdentifyFileName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.IdentifyFileName)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="col-sm-6">
+                                <div class="content-con">
+                                    <div class="content-title3">
+                                        <label class="control-label" for="DateRecorded">Date Recorded</label>
+                                    </div>
+                                    <div class="inputtext-con">
+                                        @Html.TextBoxFor(m => m.DateRecorded, new { @class = "form-control date", @Value = Model.DateRecorded.Value.FormatDateString() })
+                                        @Html.ValidationMessageFor(m => m.DateRecorded)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="content-con">
+                                    <div class="content-title3">
+                                        <span class="control-label">Video language</span>
+                                    </div>
+                                    @if (Languages != null)
+                                    {
+                                        foreach (SelectItemModel item in Languages)
+                                        {
+                                        <div class="checkbox-con">
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" name="language" value="@item.ID"
+                                                @(Model.LanguageId == item.ID ? "checked" : "")>@item.Name
+                                            </label>
+                                        </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <label class="control-label" for="Description">Teacher Comments</label>
+                            </div>
+                            <div class="textarea-con">
+                                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", row = "2" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coachreview-con">
+                        <div class="coachreview-con-t">VIP Review</div>
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">@Html.LabelFor(model => model.TBRSDate)</div>
+                                </div>
+                                <div class="inputtext-con">
+                                    @Html.TextBoxFor(model => model.TBRSDate, new
+                           {
+                               @class = "form-control date",
+                               @Value = Model.TBRSDate == null ? "" : DateTime.Parse(Model.TBRSDate.ToString()).FormatDateString()
+                           })
+                                    @Html.ValidationMessageFor(model => model.TBRSDate)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Screening</div>
+                                </div>
+                                <div class="checkbox-con">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="screening" value="1" 
+                                     @(Model.Status == FileStatus.Completed ? "checked" : "")/>Accept
+                                    </label>
+                                </div>
+                                <div class="checkbox-con">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="screening" value="2" 
+                                    @(Model.Status == FileStatus.Rejected ? "checked" : "")/>Reject
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Selection List</div>
+                                </div>
+                                @if (SelectionLists != null)
+                                {
+                                    foreach (SelectItemModel item in SelectionLists)
+                                    {
+                                    <div class="checkbox-con checkbox-con-double">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="selectionlist" value="@item.ID"
+                                        @(Model.SelectionIds.Contains(item.ID) ? "checked" : "")>@item.Name
+                                        </label>
+                                    </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Link to Assignment</div>
+                                </div>
+                                <div class="upload-btn">
+                                    <a  href='@Url.Action("LinkToAssignment", "TeacherVIP", new
+                                 {
+                                     fileId = Model.ID,
+                                     redirect = Request.QueryString["redirect"],
+                                     teacherId = Model.OwnerId
+                                 })'                               
+                                class="mainbutton mainright-btn search-btn">Browse for Assignment</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <video controls="controls" class="videoplay">
+                        <source src="@(FileHelper.GetPreviewPathofUploadFile(Model.FilePath).Replace("\\", "/"))" />
+                    </video>
+                    @Html.Partial("/Areas/Coach/Views/Partials/UploadedFile2.cshtml")
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="uploadfiles" id="uploadfiles" />
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" onclick="return beforeSubmit_edit()" value="Submit" id="btnSubmit">
+            @if (isSummary)
+            {
+                <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                Url.Action("TeacherFiles", "Summary"))" >Cancel</a>
+            }
+            else
+            {
+                <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                Url.Action("View", "TeacherVIP", new { id = Model.AssignmentID }, ""))" >Cancel</a>
+            }
+        </div>
+    </div>
+}

@@ -1,0 +1,303 @@
+﻿@model Sunnet.Cli.Business.StatusTracking.Models.StatusTrackingModel
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.Core.StatusTracking.Enums
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase.Models
+
+@{
+    ViewBag.Title = "Status Tracking";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.StatusTracking)
+}
+@section BreadPath
+{
+Status Tracking
+}
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group"></div>
+    <div class="form-group">
+        @Html.Label("Approver Keyword", new { @class = "control-label col-sm-2", @for = "ApproverName" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.ApproverName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.approver"
+            })
+        </div>
+        @Html.Label("Requestor Keyword", new { @class = "control-label col-sm-2", @for = "RequestorName" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.RequestorName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.requestor"
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Supposed Approver Keyword", new { @class = "control-label col-sm-2", @for = "SApproverName" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.SApproverName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.supposedapprover"
+            })
+        </div>
+        @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.DropDownListFor(model => model.Status,
+        StatusSearchEnum.Accepted.ToSelectList().AddDefaultItem(ViewTextHelper.DefaultAllText, -1),
+        new { @class = "form-control", data_bind = "value: searchCriteria.status" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("", "Community/District", new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#CommunityId",
+           data_remote = Url.Action("GetCommunitySelectListForSearch", "Community", new { Area = "Community" }),
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtCommunity",
+           name = "txtCommunity",
+           placeholder = "Enter key text to search",
+           @for = "CommunityId",
+           data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+           data_required = "false"
+       })
+            @Html.HiddenFor(model => model.CommunityId, new
+       {
+           @class = "form-control ",
+           placeholder = "Selected Community",
+           data_bind = "value: searchCriteria.communityId"
+       })
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        @Html.Label("", "School", new { @class = "control-label col-sm-2", @for = "txtSchool" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#SchoolId",
+           data_remote = Url.Action("GetSchoolSelectList", "School", new { Area = "School" }),
+           data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtSchool",
+           placeholder = "Enter key text to search",
+           @for = "SchoolId",
+           data_extraParams = "{\"isActive\":\"#isActive\"}",
+           data_required = "false"
+       })
+            @Html.HiddenFor(model => model.SchoolId, new
+       {
+           @class = "form-control",
+           data_bind = "value: searchCriteria.schoolId"
+       })
+            @Html.Hidden("isActive", false)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Resend Number", new { @class = "control-label col-sm-2", @for = "txtResendNumber" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtResendNumber", "", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.resendnumber"
+            })
+        </div>
+        @Html.LabelFor(model => model.Type, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.Type,
+        ViewTextHelper.DefaultAllText, "-1",
+        new { @class = "form-control", data_bind = "value: searchCriteria.type" })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">Requests</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.Type.text"></td>
+                    <td data-bind="text: item.RequestorName"></td>
+                    <td data-bind="text: item.RequestTimeConvert"></td>
+                    <td data-bind="text: item.ApproverName"></td>
+                    <td data-bind="text: item.ExpiredTimeConvert"></td>
+                    <td data-bind="text: item.RealStatus"></td>
+                    <td data-bind="text: item.RequestorEmail"></td>
+                    <td data-bind="text: item.ResendTimeConvert"></td>
+                    <td data-bind="text: item.ResendNumber > 0 ? item.ResendNumber : ''"></td>
+                    <td>
+                        <!-- ko if: (item.Type.value==@((int)StatusType.Invitation)) -->
+                        <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                        <a class="table-btn icon-ok feature-btn" data-bind="event: { click: $root.approve }, visible: IfCanOperate" href="#" title="Approve"></a>
+                        <a class="table-btn icon-reply teacher-btn" data-bind="event: { click: $root.deny }, visible: IfCanOperate" href="#" title="Deny"></a>
+                        <a class="table-btn icon-envelope-alt pencil-btn" data-bind="event: { click: $root.resend }, visible: IfCanEmail" href="#" title="Resend"></a>
+                        <!-- /ko-->
+                        <!-- ko if: (item.Type.value==@((int)StatusType.AddSchool)) -->
+                        <a class="table-btn icon-folder-open view-btn" title="View" href="#" target="_blank" data-bind="attr: { href: item.ProcessAddress }"></a>
+                        <!-- /ko-->
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 10 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Package = {};
+
+        $(function () {
+
+            list_Package = new ViewModel(
+                {
+                    instanceName: "list_Package",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    viewDataUrl: '@Html.Raw(Url.Action("DetailView"))',
+                    viewType: 'Redirect',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: '@Html.DisplayName("Type")',
+                            field: "@Html.NameFor(model => model.Type)",
+                            width: '8%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Requestor")',
+                            field: "@Html.NameFor(model => model.RequestorName)",
+                            width: '8%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Request Time")',
+                            field: "@Html.NameFor(model => model.RequestTime)",
+                            order: true,
+                            width: '12%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Operator")',
+                            field: "@Html.NameFor(model => model.ApproverName)",
+                            width: '8%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Expired Time")',
+                            field: "@Html.NameFor(model => model.ExpiredTime)",
+                            order: true,
+                            width: '12%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Status")',
+                            field: "@Html.NameFor(model => model.RealStatus)",
+                            width: '*'
+                        },
+                       {
+                           text: '@Html.DisplayName("Requestor Email")',
+                           field: "@Html.NameFor(model => model.RequestorEmail)",
+                           order: true,
+                           width: '13%'
+                       },
+                       {
+                           text: '@Html.DisplayName("Resend Time")',
+                           field: "@Html.NameFor(model => model.ResendTime)",
+                           order: true,
+                           width: '12%'
+                       },
+                       {
+                           text: '@Html.DisplayName("Resend Number")',
+                           field: "@Html.NameFor(model => model.ResendNumber)",
+                           order: true,
+                           width: '13%'
+                       },
+                        { text: "Action", width: '12%' }
+                    ],
+                    searchCriteria: {
+                        approver: ko.observable(window.queryString("approver")),
+                        requestor: ko.observable(window.queryString("requestor")),
+                        supposedapprover: ko.observable(window.queryString("supposedapprover")),
+                        status: ko.observable(window.queryString("status", '@((int)StatusSearchEnum.Pending)')),
+                        communityId: ko.observable(window.queryString("communityId", -1)),
+                        schoolId: ko.observable(window.queryString("schoolId", -1)),
+                        resendnumber: ko.observable(window.queryString("resendnumber")),
+                        type: ko.observable(window.queryString("type"))
+                    }
+
+                }, {
+                    approve: function (data) {
+                        jQuery.when(waitingConfirm("Are you sure?", "Yes", "No")).done(function () {
+                            $.post("/StatusTracking/StatusTracking/Approve", { id: data.ID }, function (result) {
+                                if (JSON.parse(result).success) {
+                                    showMessage("success");
+                                    list_Package.search();
+                                } else {
+                                    showMessage("fail");
+                                }
+                            });
+                        });
+                    },
+                    deny: function (data) {
+                        jQuery.when(waitingConfirm("Are you sure?", "Yes", "No")).done(function () {
+                            $.post("/StatusTracking/StatusTracking/Deny", { id: data.ID }, function (result) {
+                                if (JSON.parse(result).success) {
+                                    showMessage("success");
+                                    list_Package.search();
+                                } else {
+                                    showMessage("fail");
+                                }
+                            });
+                        });
+                    },
+                    resend: function (data) {
+                        jQuery.when(waitingConfirm("Are you sure?", "Yes", "No")).done(function () {
+                            $.post("/StatusTracking/StatusTracking/Resend", { id: data.ID }, function (result) {
+                                if (JSON.parse(result).success) {
+                                    showMessage("success");
+                                    list_Package.search();
+                                } else {
+                                    showMessage("fail");
+                                }
+                            });
+                        });
+                    }
+                }
+            );
+            list_Package.search();
+            ko.applyBindings(list_Package);
+        });
+    </script>
+}
+

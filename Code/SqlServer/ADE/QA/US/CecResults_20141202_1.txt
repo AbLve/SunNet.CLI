@@ -1,0 +1,13 @@
+﻿CREATE TABLE [dbo].[CecResults](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CecHistoryID] [int] NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[AnswerId] [int] NOT NULL,
+	[Score] [decimal](18, 2) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL
+) ON [PRIMARY]
+
+GO

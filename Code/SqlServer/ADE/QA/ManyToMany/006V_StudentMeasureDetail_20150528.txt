@@ -1,0 +1,38 @@
+GO
+
+/****** Object:  View [dbo].[V_StudentMeasureDetail]    Script Date: 5/28/2015 10:23:10 ******/
+DROP VIEW [dbo].[V_StudentMeasureDetail]
+GO
+
+/****** Object:  View [dbo].[V_StudentMeasureDetail]    Script Date: 5/28/2015 10:23:10 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+
+
+CREATE VIEW [dbo].[V_StudentMeasureDetail]
+AS
+SELECT        SA.AssessmentId,SA.SchoolYear,SA.Wave, STU.ID AS StudentId, STU.BirthDate AS BirthDay,SM.ID, SM.MeasureId, M.Name AS MeasureName, M.ShortName AS MeasureShortName,
+                         SM.Benchmark, SM.TotalScore,SM.Goal
+FROM            dbo.Cli_Engage__Students AS STU INNER JOIN
+                         dbo.StudentAssessments AS SA ON STU.ID = SA.StudentId INNER JOIN
+                         dbo.StudentMeasures AS SM ON SA.ID = SM.SAId INNER JOIN
+                         dbo.Measures AS M ON SM.MeasureId = M.ID
+WHERE  SM.[Status] = 3 OR EXISTS(SELECT 1 FROM [dbo].[Measures] M2 WHERE M2.ParentId = M.ID)
+
+
+
+
+
+
+
+
+GO

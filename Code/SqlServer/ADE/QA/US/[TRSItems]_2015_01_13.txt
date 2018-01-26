@@ -1,0 +1,15 @@
+﻿if not exists(select * from syscolumns where id=object_id('TRSItems') and name='ShowByInfants') 
+ALTER TABLE [dbo].[TRSItems] 
+ADD ShowByInfants bit not null default(0)
+
+if not exists(select * from syscolumns where id=object_id('TRSItems') and name='ShowByToddlers') 
+ALTER TABLE [dbo].[TRSItems] 
+ADD ShowByToddlers bit not null default(0)
+
+if not exists(select * from syscolumns where id=object_id('TRSItems') and name='ShowByPreschool') 
+ALTER TABLE [dbo].[TRSItems] 
+ADD ShowByPreschool bit not null default(0)
+
+if not exists(select * from syscolumns where id=object_id('TRSItems') and name='ShowBySchoolAge') 
+ALTER TABLE [dbo].[TRSItems] 
+ADD ShowBySchoolAge bit not null default(0)

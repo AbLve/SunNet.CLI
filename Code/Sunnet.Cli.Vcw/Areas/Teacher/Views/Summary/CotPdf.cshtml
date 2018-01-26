@@ -1,0 +1,254 @@
+﻿@using Sunnet.Cli.Business.Cot.Models
+@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.Core.Ade
+@using Sunnet.Framework
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Pdf";
+    Layout = "~/Views/Shared/_Layout_STG_Report.cshtml";
+    var assessmentModel = ViewBag.model as CotAssessmentModel;
+    var dateFormat = "MM/dd/yy";
+}
+@section Styles
+{
+    <style type="text/css">
+        div.level {
+        }
+        .text {
+         display: inline-block;
+           height: 20px;
+        line-height:  20px;
+        vertical-align: top;
+        }
+        span.level1, span.level2, span.level3 {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+        color:#ffffff; text-align:center; line-height: 21px;display:inline-block;
+        }
+        span.level1 {
+            background-color: @(CotLevel.Level1.ToDescription());
+        }
+        span.level2 {
+            background-color: @(CotLevel.Level2.ToDescription());
+        }
+        span.level3 {
+            background-color: @(CotLevel.Level3.ToDescription());
+        }
+        td.level1 {
+            background-color: @(CotLevel.Level1.ToDescription());
+        }
+        td.level2 {
+            background-color: @(CotLevel.Level2.ToDescription());
+        }
+        td.level3 {
+            background-color: @(CotLevel.Level3.ToDescription());
+        }
+
+
+    .report-tab-ul tr td ul,.report-tab-ul tr td ol { margin-left:20px; }
+
+
+
+    </style>
+}
+
+<table cellpadding="0" cellspacing="0" border="0">
+    <thead>
+        <tr>
+            <td>
+                <table class="header " width="100%">
+                    <thead>
+                        <tr>
+                            <td>&nbsp;
+                            </td>
+                            <td class="title" colspan="3" style="font-size: 14px; font-weight: bold; text-align: center">@(ReportHelper.GetReportTitle(AssessmentType.Cot, ViewBag.AssessmentName))<br />
+                                COT Report
+                            </td>
+                            <td style="text-align: right;">
+                                <img src="@(SFConfig.AssessmentDomain)/Resources/cli_logo.png" alt="CLI logo" style="width: 150px; height: 60px; vertical-align: middle;" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">Communtiy/District:
+                                &nbsp;@(assessmentModel.Teacher.CommunityNameText)
+                            </td>
+                            <td></td>
+                            <td colspan="2" style="text-align: right;">
+                                @Html.DisplayNameFor(x => assessmentModel.Teacher):
+                                &nbsp;@(assessmentModel.Teacher.FullName)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">School:
+                                &nbsp;@(assessmentModel.Teacher.SchoolNameText)
+                            </td>
+                            <td></td>
+                            <td colspan="2" style="text-align: right;">
+                                @Html.DisplayNameFor(x => assessmentModel.Teacher.Coach):
+                                &nbsp;@(assessmentModel.Teacher.Coach.FullName)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @Html.DisplayNameFor(x => assessmentModel.SchoolYear):
+                                &nbsp;@(assessmentModel.FullSchoolYear)
+                            </td>
+                            <td></td>
+                            <td colspan="2" style="text-align: right;">Date:
+                                &nbsp;@(assessmentModel.UpdatedOn)
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <div>
+                    <table style="margin: 0; padding: 0" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td style="width: 80px;" colspan="1">
+                                <span class="level1">1</span><span class="text">&nbsp;= Level 1</span>
+                            </td>
+                            <td style="width: 80px;">
+                                <span class="level2">2</span><span class="text">&nbsp;= Level 2</span>
+                            </td>
+                            <td style="width: 80px;">
+                                <span class="level3">3</span><span class="text">&nbsp;= Level 3</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <table class="report-data  table_border report-tab-ul" cellpadding="0" cellspacing="0" style="width: 100%; text-align: left;">
+                    <thead>
+                        <tr>
+                            <th width="20"></th>
+                            <th width="*">Goal</th>
+                            <th width="70">Observed at BOY</th>
+                            <th width="70">Observed at MOY</th>
+                            <th width="70">COT Updates</th>
+                            <th width="20">NS</th>
+                            <th width="70">Goal Set Date</th>
+                            <th width="70">Goal Met Date</th>
+                            <th width="70">Resources</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var measure in assessmentModel.Measures)
+                        {
+                            if (measure.Visible)
+                            {
+                            <tr class="onerow">
+                                <td></td>
+                                <th class="left" colspan="7">
+                                    @(measure.Name)
+                                </th>
+                                <td>
+                                    @if (measure.Links != null)
+                                    {
+                                        foreach (var link in measure.Links)
+                                        {
+                                        <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                        <br />
+                                        }
+                                    }
+                                </td>
+                            </tr>
+
+                                    if (measure.Children != null && measure.Children.Any())
+                                    {
+                                        foreach (var child in measure.Children)
+                                        {
+                                            if (child.Visible)
+                                            {
+                            <tr class="onerow">
+                                <td></td>
+                                <th class="left" colspan="7">
+                                    @ViewTextHelper.HtmlEmptySeparator@(child.Name)
+                                </th>
+                                <td>
+                                    @if (child.Links != null)
+                                    {
+                                        foreach (var link in child.Links)
+                                        {
+                                        <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                        <br />
+                                        }
+                                    }
+                                </td>
+                            </tr>
+
+                                    foreach (var item in child.Items)
+                                    {
+                            <tr class="onerow">
+                                <td class="">
+                                    <span class="level@((int)item.Level)">@((int)item.Level)</span>
+                                </td>
+                                <td>
+                                    @Html.Raw(item.FullTargetText)
+                                </td>
+                                <td class="date">@item.BoyObsDate.FormatDateString(dateFormat)</td>
+                                <td class="date">@item.MoyObsDate.FormatDateString(dateFormat)</td>
+                                <td class="date">@item.CotUpdatedOn.FormatDateString(dateFormat)</td>
+                                <td style="text-align: center;">@(item.NeedSupport ? ReportText.No_TotalScored : "")</td>
+                                <td class="date">@item.GoalSetDate.FormatDateString(dateFormat)</td>
+                                <td class="date">@item.GoalMetDate.FormatDateString(dateFormat)</td>
+                                <td>
+                                    @if (item.Links != null)
+                                    {
+                                        foreach (var link in item.Links)
+                                        {
+                                        <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                        <br />
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                                    }
+                                            }
+                                        }
+                                    }
+
+                                    if (measure.Items != null && measure.Items.Any())
+                                    {
+                                        foreach (var item in measure.Items)
+                                        {
+                            <tr class="onerow">
+                                <td class="">
+                                    <span class="level@((int)item.Level)">@((int)item.Level)</span>
+                                </td>
+                                <td style="text-align: left;">
+                                    @Html.Raw(item.FullTargetText)
+                                </td>
+                                <td class="date">@item.BoyObsDate.FormatDateString(dateFormat)</td>
+                                <td class="date">@item.MoyObsDate.FormatDateString(dateFormat)</td>
+                                <td class="date">@item.CotUpdatedOn.FormatDateString(dateFormat)</td>
+                                <td style="text-align: center;">@(item.NeedSupport ? ReportText.No_TotalScored : "")</td>
+                                <td class="date">@item.GoalSetDate.FormatDateString(dateFormat)</td>
+                                <td class="date">@item.GoalMetDate.FormatDateString(dateFormat)</td>
+                                <td>
+                                    @if (item.Links != null)
+                                    {
+                                        foreach (var link in item.Links)
+                                        {
+                                        <a href="@(link.Link)" target="_blank">@(link.DisplayText)</a>
+                                        <br />
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                                        }
+                                    }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,62 @@
+﻿@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using System.Collections
+
+@model Sunnet.Cli.Core.Cpalls.Entities.CpallsStudentGroupEntity
+
+@{
+    ViewBag.Title = "Move to Custom Group";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    group_DataEdited(response);
+                    closeModal($("#@(formId)"));
+                }
+            });           
+        })();
+
+        function beforeMoveToGroupSubmit(sender) {
+            if ($("#Group").val() == "-1") {
+                showMessage("hint", "Please select a custom group.");
+                return false;
+            }
+            return true;
+        };
+    </script>
+}
+@using (Ajax.BeginForm("MoveToGroup", "Group", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="StudentId" value="@ViewBag.StudentId" />
+    <input type="hidden" name="ClassId" value="@ViewBag.ClassId" />
+    <input type="hidden" name="Wave" value="@ViewBag.Wave" />
+    <input type="hidden" name="Year" value="@ViewBag.Year" />
+    <input type="hidden" name="Language" value="@ViewBag.Language" />
+ 
+    <div class="form-group">
+        <label class="control-label col-sm-3 required">Custom Groups</label>
+        <div class="col-sm-9">
+            @Html.DropDownList("GroupId",(IEnumerable<SelectListItem>)ViewBag.GroupList)
+        </div>
+    </div>
+    <div class="modal-footer">
+
+        <input type="submit" class="mainbutton mainright-btn submit-btn" value="Save" id="btnSubmit" onclick="return beforeMoveToGroupSubmit(this);">
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

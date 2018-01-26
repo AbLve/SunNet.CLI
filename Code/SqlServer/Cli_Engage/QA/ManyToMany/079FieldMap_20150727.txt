@@ -1,0 +1,10 @@
+GO
+UPDATE FieldMap SET
+DisplayName='Parent User',
+AssociateSql='LEFT JOIN Users ParentUser ON CU.ParentId=ParentUser.ID',
+SelectName='ParentUser.FirstName+" "+ParentUser.LastName' WHERE ID=618;
+
+UPDATE FieldMap SET
+DisplayName='Parent User',
+AssociateSql='LEFT JOIN Users ParentUser ON Principals.ParentId=ParentUser.ID',
+SelectName='ParentUser.FirstName+" "+ParentUser.LastName' WHERE ID=822;

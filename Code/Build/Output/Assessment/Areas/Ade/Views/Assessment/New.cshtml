@@ -1,0 +1,143 @@
+﻿@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Ade.Models.AssessmentModel
+
+@{
+    ViewBag.Title = "New Assessment";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+                    response.data.Status = ko.observable(response.data.Status);
+                    var parentListObj = @Request.QueryString["listObj"];
+                    parentListObj.onDataAdded(response);
+                    closeModal($("#@(formId)"));
+                }
+            });
+            var scoreModel = getAdeScoreModel([], '@formId', 'scores', 'deleted');
+            scoreModel.wave1(true);
+            scoreModel.wave2(true);
+            scoreModel.wave3(true);
+            ko.applyBindings(scoreModel, document.getElementById("@(formId)"));
+        })();
+
+        function isCpalls(type) {
+            var cpallsType = "@((int)AssessmentType.Cpalls)";
+            return cpallsType == type;
+        }
+
+        function changeADEType(sender) {
+            if (isCpalls($(sender).val())) {
+                $("#divOrder").css("display", "");
+                $("#divTotal").css("display", "");
+                $("#divScores").css("display", "");
+                $("#divScoreItems").css("display", "");
+            }
+            else{
+                $("#divOrder").css("display", "none");
+                $("#divTotal").css("display", "none");
+                $("#divScores").css("display", "none");
+                $("#divScoreItems").css("display", "none");
+                $("#Order1").prop("checked", true);
+                $("#Language").val("1");
+            }
+        }
+    </script>
+}
+@using (Ajax.BeginForm("Save", "Assessment", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.Hidden("scores")
+    <div class="form-group">
+        @Html.LabelFor(model => model.Type, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-9">
+            @Html.EnumDropDownListFor(model => model.Type, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control", onchange = "changeADEType(this);" })
+            @Html.ValidationMessageFor(model => model.Type)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Label, baseClassObj)
+            @Html.ValidationMessageFor(model => model.Label)
+        </div>@Html.LabelFor(model => model.Name, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.Name, baseClassObj)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+    </div>
+    <div class="form-group" id="divOrder">
+        @Html.LabelFor(model => model.OrderType, new { @class = "control-label col-sm-3 required", @for = "OrderType_x" })
+        <div class="col-sm-4">
+            @Html.Hidden("OrderType_x")
+            @Html.RadioButtonFor(model => model.OrderType, OrderType.Sequenced, new { id = "Order1" })
+            @Html.Label("", OrderType.Sequenced.ToDescription(), new { @for = "Order1" })
+            @ViewTextHelper.HtmlEmptySeparator
+            @Html.RadioButtonFor(model => model.OrderType, OrderType.Random, new { id = "Order2" })
+            @Html.Label("", OrderType.Random.ToDescription(), new { @for = "Order2" })
+            <br />
+            @Html.ValidationMessageFor(model => model.OrderType)
+        </div>
+    </div>
+    <div class="form-group" id="divTotal">
+        @Html.LabelFor(model => model.TotalScored, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.EditorFor(model => model.TotalScored)
+            @Html.ValidationMessageFor(model => model.TotalScored)
+        </div>
+        @Html.LabelFor(model => model.Language, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.Language, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+            @Html.ValidationMessageFor(model => model.Language)
+        </div>
+    </div>
+    <div class="form-group" id="divScores">
+        <div class="col-sm-12">
+            Cutoff Scores:
+            @Html.ValidationMessage("FromYear", "", "div")
+            @Html.ValidationMessage("FromMonth", "", "div")
+            @Html.ValidationMessage("ToYear", "", "div")
+            @Html.ValidationMessage("ToMonth", "", "div")
+            @Html.ValidationMessage("CutoffScore", "", "div")
+        </div>
+    </div>
+    <div class="form-group" id="divScoreItems">
+        <div class="nav-tab">
+            <ul id="measureContainer" class="nav-container" role="tablist">
+                <li class="active"><a href="#Wave1" role="tab" data-toggle="tab">Wave @(Wave.BOY.ToDescription())</a></li>
+                <li><a href="#Wave2" role="tab" data-toggle="tab">Wave @(Wave.MOY.ToDescription())</a></li>
+                <li><a href="#Wave3" role="tab" data-toggle="tab">Wave @(Wave.EOY.ToDescription())</a></li>
+            </ul>
+        </div>
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade in active" id="Wave1">
+                @Html.Editor("", "CutoffScores", new { wave = Wave.BOY })
+            </div>
+            <div class="tab-pane fade" id="Wave2">
+                @Html.Editor("", "CutoffScores", new { wave = Wave.MOY })
+            </div>
+            <div class="tab-pane fade" id="Wave3">
+                @Html.Editor("", "CutoffScores", new { wave = Wave.EOY })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" data-bind="event:{click:submit}">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

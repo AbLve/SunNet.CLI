@@ -1,0 +1,47 @@
+﻿@{
+}
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th width="50%">Label</th>
+            <th width="10%">Color</th>
+            <th width="20%">Black & White</th>
+            <th width="20%">Action</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:{data:benchmarks,as:'benchmark'}">
+        <tr data-bind="css:{}">
+            <td style="line-height: 25px;">
+                <input type="hidden" name="ID" data-bind="value:ID" />
+                <label class="hide" data-bind="attr:{for:'LabelText'+$index()}">Label Text</label>
+                <input type="text" width="100%" class="form-control"
+                       data-bind="value:LabelText,attr:{id:'LabelText'+$index()}" name="LabelText" />
+            </td>
+            <td>
+                <label class="hide" data-bind="attr:{for:'BenchmarkColor' +$index()}">Color</label>
+                <input class="colorPicker evo-cp1 bgfillcolor evo-cp0 hide"
+                       data-bind="attr:{id:'BenchmarkColor'+$index()},value:Color,click:$root.colorPick($index(),Color)" name="BenchmarkColor" />
+            </td>
+            <td>
+                <label class="hide" data-bind="attr:{for:'BlackWhite'+$index()}">Black&White</label>
+                <select class="form-control" data-bind="value:BlackWhite,attr:{id:'BlackWhite'+$index()}">
+                    <option value="0">Please select...</option>
+                    <option value="1">Underline</option>
+                    <option value="2">Bold</option>
+                    <option value="3">Italics</option>
+                    <option value="4">Asterisks</option>
+                    <option value="5">Font Increase</option>
+                    <option value="6">Triangle</option>
+                    <option value="7">Rectangle</option>
+                    <option value="8">Square</option>
+                    <option value="9">Hexagon</option>
+                </select>
+            </td>
+            <td>
+                <a class="table-btn icon-plus plus-btn" href="#" data-bind="event:{click:function(){$root.newBenchmark()}}" title="New"><span style="display: none">add</span></a>
+                <a href="#" class="table-btn icon-minus minus-btn" data-bind="event:{click:$root.deleteBenchmark}" title="Delete"><span style="display: none">subtraction</span></a>
+            </td>
+        </tr>
+    </tbody>
+</table>

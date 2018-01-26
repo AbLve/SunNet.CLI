@@ -1,0 +1,49 @@
+﻿@using Sunnet.Cli.Business.Cpalls.Models;
+@{
+    ViewBag.Title = "Observable List";
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Observable")
+}
+@section BreadPath
+{
+    <a href="@(SFConfig.MainSiteDomain+"/parent/parent/index")">Track Child's Development</a> <i class="icon-angle-right"></i>Perform New Assessment
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            var message = "@Html.Raw(ViewBag.Message)";
+            if (message) {
+                window.showMessage("fail", message);
+            }
+        });
+    </script>
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back </a>
+</div>
+<div class="right-content">
+    <ul class="assessment-menu-dashboard assessment-menu-dashboard2">
+
+        <div class="assessment-d-btns">
+            @if (ViewBag.ShowTCD)
+            {
+                foreach (var item in @ViewBag.List as List<CpallsAssessmentModel>)
+                {
+                    <li>
+                        <a href='/Observable/Observable/Detail?studentId=@ViewBag.StudentId&childId=@ViewBag.childId&assessmentId=@item.ID&returnurl=@(Server.UrlEncode(Request.QueryString["returnurl"] ?? Url.Action("Index")))' class="cpalls-btn">
+                            @item.Name
+
+                            <i style="margin-top: 10px;"> <p>  @item.Description</p>  </i>
+                        </a>
+
+                    </li>
+                }
+            }
+        </div>
+
+    </ul>
+</div>
+

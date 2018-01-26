@@ -1,0 +1,18 @@
+﻿@model IEnumerable<string>
+@{
+
+    var list = (string[])ViewData["Objects"] ?? new string[] { };
+}
+@if ((Model == null || Model.Any() || Model.Count() == 0) && !list.Any())
+{
+    <label class="control-label-text">
+        <span style="display: none;">none</span>
+    </label>
+}
+else
+{
+    <label class="control-label-text">
+        @string.Join(", ", Model ?? list.ToList())
+    </label>
+}
+

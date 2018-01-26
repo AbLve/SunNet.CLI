@@ -1,0 +1,32 @@
+﻿CREATE TABLE [dbo].[CoachingStrategy_Datas](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_CoachingStrategy_Datas] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+SET IDENTITY_INSERT [dbo].[CoachingStrategy_Datas] ON 
+
+GO
+INSERT [dbo].[CoachingStrategy_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (1, N'Reflective Feedback', 1, CAST(0x0000A45F012A39B9 AS DateTime), CAST(0x0000A45F012A39B9 AS DateTime))
+GO
+INSERT [dbo].[CoachingStrategy_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (2, N'Modeling', 1, CAST(0x0000A45F012A39B9 AS DateTime), CAST(0x0000A45F012A39B9 AS DateTime))
+GO
+INSERT [dbo].[CoachingStrategy_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (3, N'Side by Side', 1, CAST(0x0000A45F012A39BA AS DateTime), CAST(0x0000A45F012A39BA AS DateTime))
+GO
+INSERT [dbo].[CoachingStrategy_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (4, N'Co-Teaching', 1, CAST(0x0000A45F012A39BA AS DateTime), CAST(0x0000A45F012A39BA AS DateTime))
+GO
+INSERT [dbo].[CoachingStrategy_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (5, N'Video Reflection', 1, CAST(0x0000A45F012A39BA AS DateTime), CAST(0x0000A45F012A39BA AS DateTime))
+GO
+INSERT [dbo].[CoachingStrategy_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (6, N'Other', 1, CAST(0x0000A45F012A39BA AS DateTime), CAST(0x0000A45F012A39BA AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[CoachingStrategy_Datas] OFF
+GO

@@ -1,0 +1,269 @@
+﻿@model Sunnet.Cli.Business.Ade.Models.TxkeaBupTaskModel
+@using Sunnet.Cli.Core.Ade
+
+@{
+    ViewBag.Title = "Item Bulk Upload";
+    ItemType Type = ViewBag.Type;
+    string rootPath = Sunnet.Framework.SFConfig.TxkeaResource.Replace("/", " / ").Replace("\\", " \\ ");
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Item Bulk Upload", "Index", "ItemBup"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    @(Type == ItemType.TxkeaReceptive ? "TX-KEA Receptive Item" : "TX-KEA Expressive Item")
+}
+
+@Html.ValidationSummary()
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn"
+       href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "ItemBup"))">Back to Item Bulk Upload List</a>
+    <a id="hrefGoOffline" href="~/Resources/XLSX/@(Type == ItemType.TxkeaReceptive ? "Receptive_Template.xlsx" : "Expressive_Template.xlsx")"
+       target="_blank" class=" mainbutton mainright-btn nav-btn pencil-btn">
+        <i class="icon-cloud-download"></i>
+        Download template
+    </a>
+</div>
+<div class="modal-l-b"></div>
+@using (Html.BeginForm(Type == ItemType.TxkeaReceptive ? "UploadReceptive" : "UploadExpressive",
+    "ItemBup", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="fileName">File Name</label>
+        <div class="col-sm-3">
+            @Html.TextBox("fileName", "", new
+        {
+            @class = "form-control",
+            placeholder = "Search item",
+            id = "fileName",
+            name = "fileName",
+            data_bind = "value: searchCriteria.fileName",
+        })
+        </div>
+        <div class="col-sm-2">
+            <input type="hidden" data-bind="value:searchCriteria.isReceptive" />
+        </div>
+        <div class="col-sm-3">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+    <div class="modal-l-b"></div>
+    <div class="form-group">
+        @Html.Label("txtAssessment", "Assessment", new { @class = "control-label col-sm-2 required" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtAssessment", "", new
+        {
+            autocomplete = "off",
+            @class = "form-control",
+            data_list = "true",
+            data_for = "#AssessmentId",
+            data_remote = Url.Action("GetAssessmentSelectList", "Public"),
+            data_text = "Label",
+            data_value = "ID",
+            id = "txtAssessment",
+            name = "txtAssessment",
+            placeholder = "Enter key text to search",
+            @for = "AssessmentId"
+        })
+            <input value="" class="form-control required validate" data-val="true" id="AssessmentId" name="AssessmentId" placeholder="Selected Assessment" type="hidden">
+            @Html.ValidationMessage("AssessmentId")
+        </div>
+        @Html.Label("txtMeasure", "Measure", new { @class = "control-label col-sm-2 required" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtMeasure", "", new
+        {
+            autocomplete = "off",
+            @class = "form-control",
+            data_list = "true",
+            data_for = "#MeasureId",
+            data_remote = Url.Action("GetMeasureSelectList", "Public"),
+            data_text = "Name",
+            data_value = "ID",
+            id = "txtMeasure",
+            name = "txtMeasure",
+            placeholder = "Enter key text to search",
+            @for = "MeasureId",
+            data_extraParams = "{\"AssessmentId\":\"#AssessmentId\"}",
+        })
+            <input value="" class="form-control required validate" data-val="true" id="MeasureId" name="MeasureId" placeholder="Selected Measure" type="hidden">
+            @Html.ValidationMessage("MeasureId")
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label required" for="ResourcePath">
+            Resource Path(from root)
+            <i class="icon-question-sign question-tip" id="tooltip1" data-toggle="tooltip" data-placement="top"
+               title="@(rootPath)"></i>
+        </label>
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.ResourcePath, new { @class = "form-control", Value = "/" })
+            @Html.ValidationMessageFor(model => model.ResourcePath)
+        </div>
+        <label class="control-label col-sm-2 required" for="dataFile">Data File(Excel)</label>
+        <div class="col-sm-3">
+            <input type="file" id="dataFile" name="dataFile" class="required form-control" />
+            @Html.ValidationMessage("dataFile")
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton modal-btn submit-btn" type="submit">Submit</button>
+        </div>
+    </div>
+}
+
+<div class="main-content main-content">
+    <div class="content-title">Process Data</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.ID"></td>
+                    <td data-bind="text: item.OriginFileName"></td>
+                    <td data-bind="datetime: item.SubmitedTime"></td>
+                    <td data-bind="datetime: item.ProcessedTime"></td>
+                    <td data-bind="datetime: item.ResourcePath"></td>
+                    <td>
+                        <table style="width:100%">
+                            <tr>
+                                <td style="width:30%"><i data-bind="attr:{class:((item.Status.value==2) ? 'icon-ok-sign' : 'icon-warning-sign')}"></i></td>
+                                <td style="width:70%" data-bind="text: item.Status.text"></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <!-- ko if: (item.Status.value == 2 || item.Status.value == 3) -->
+                        <a class="table-btn icon-folder-open view-btn" data-bind='attr: { href: $root.viewDetail(item) }'
+                           data-toggle="modal" data-target="#modalLarge" title="View Details"></a>
+                        <!-- /ko-->
+                        <!-- ko if: item.Status.value == 3 -->
+                        <a class="table-btn icon-trash trash-btn" href="#" title="Delete" data-bind="click: $root.deleteTask"></a>
+                        <!-- /ko-->
+                    </td>
+                </tr>
+            </tbody>
+            @Html.Display("e", "NoData", new { Colspan = 20 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Package = {};
+
+        $(function () {
+            $("#txtAssessment").on("change", function (obj) {
+                $("#txtMeasure").datalist("clear");
+            });
+
+            list_Package = new ViewModel(
+                {
+                    instanceName: "list_Package",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("Batch#")",
+                            field: "@Html.NameFor(model => model.ID)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayName("File Name")",
+                            field: "@Html.NameFor(model => model.OriginFileName)",
+                            order: true,
+                            width: '*'
+                        },
+                        {
+                            text: "@Html.DisplayName("File Submitted time")",
+                            field: "@Html.NameFor(model => model.CreatedOn)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: '@Html.DisplayName("File processed time")',
+                            field: "@Html.NameFor(model => model.UpdatedOn)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: '@Html.DisplayName("Resource Path")',
+                            field: "@Html.NameFor(model => model.ResourcePath)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                            { text: "Action", width: '10%' }
+                    ],
+                    searchCriteria: {
+                        fileName: ko.observable(window.queryString("fileName", "")),
+                        isReceptive: ko.observable("@(Type==ItemType.TxkeaReceptive?true:false)")
+                    }
+                },
+                {
+                    viewDetail: function (data) {
+                        return '@Url.Action("ViewDetail")' + "?taskId=" + data.ID + "&returnurl=" + list_Package.getLocation();
+                    },
+                    deleteTask: function (item, event) {
+                        $.when(window.waitingConfirm("dataprocess_Delete_Confirm", "Delete", "No")).done(function () {
+                            $.post('@Url.Action("DeleteTask")', {
+                                ID: item.ID
+                            }, function (response) {
+                                if (response.success) {
+                                    $.when(window.showMessage("success")).done(function () {
+                                        list_Package.search();
+                                    });
+                                }
+                            }, "json");
+                        });
+                    }
+                }
+                  );
+            list_Package.search();
+            ko.applyBindings(list_Package);
+        })
+
+        function doPrint() {
+            var preURL = decodeURIComponent(list_Package.getLocation());
+            $("#modalLarge").find("div.modal-header").remove();
+            $("#btnPrint").remove();
+            var prnhtml = document.getElementById("modalLarge").innerHTML;
+            window.document.body.innerHTML = prnhtml;
+            window.print();
+            location.href = preURL;
+        }
+    </script>
+}

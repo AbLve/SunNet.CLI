@@ -1,0 +1,126 @@
+﻿
+GO
+
+/****** Object:  StoredProcedure [dbo].[UpdateStudentMeasure]    Script Date: 12/12/2014 15:17:27 ******/
+IF EXISTS(SELECT 1 FROM sys.objects WHERE object_id = object_id('UpdateStudentMeasure'))
+DROP PROCEDURE [dbo].[UpdateStudentMeasure]
+GO
+
+/****** Object:  StoredProcedure [dbo].[UpdateStudentMeasure]    Script Date: 12/12/2014 15:17:27 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Jack
+-- Create date: 2014_12_12
+-- Description:	Update TotalScore,TotalScored,Bentchmark of student measure records
+-- Send '' for @StudentIds means update all students
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateStudentMeasure] 
+	-- Add the parameters for the stored procedure here
+	@AssessmentId int,
+	@SchoolYear varchar(10),
+	@Wave int,
+	@StudentIds varchar(max) = ''
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	-- Prapare student ids
+	CREATE TABLE #StudentIds(ID int);
+	IF(LEN(@StudentIds) = 0)
+	BEGIN
+		INSERT #StudentIds 
+		SELECT DISTINCT ID FROM [Cli_Engage__Students]
+	END
+	ELSE 
+	BEGIN
+		DECLARE @SQL VARCHAR (2000);
+		SET @SQL='INSERT #StudentIds SELECT '+REPLACE(@StudentIds,',',' UNION ALL SELECT ');
+		EXEC (@SQL);
+	END
+	
+	SELECT 
+	M.AssessmentId,M.SchoolYear,M.Wave,M.MeasureId,M.TotalScored,M.TotalScore,S.StudentId, Bentchmark = M.CutOffScore 
+	INTO #StudentMeasureBentchmarks
+	--*
+	FROM 
+	(SELECT AssessmentId = @AssessmentId,[SchoolYear]=@SchoolYear,Wave=@Wave, 
+		MeasureId = M.ID, M.TotalScored,M.TotalScore,
+		[COS].FromYear,[COS].FromMonth,[COS].ToYear,[COS].ToMonth,
+		[EndDate] = DATEADD(m, 0 - [COS].FromMonth, DATEADD(YY, 0 - [COS].FromYear, CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME))),
+		[StartDate] = DATEADD(m, 0 - [COS].ToMonth, DATEADD(YY, 0 - [COS].ToYear, CAST('20'+ SUBSTRING(@SchoolYear,1,2)+'-9-1' AS DATETIME))), [COS].CutOffScore 
+		FROM Measures M 
+		LEFT JOIN CutOffScores [COS] ON M.ID = [COS].HostId AND [COS].HostType='Sunnet.Cli.Core.Ade.Entities.MeasureEntity' AND [COS].Wave = @Wave ) M 
+		CROSS JOIN (SELECT StudentId = ID,Birthdate FROM [Cli_Engage__Students]) S  
+		WHERE M.AssessmentId = @AssessmentId AND M.StartDate < S.BirthDate AND S.BirthDate <= M.EndDate ;
+		 
+	DECLARE @T_SAId int;
+	DECLARE @T_AssessmentId int;
+	DECLARE @T_SchoolYear varchar(10);
+	DECLARE @T_Wave int;
+	DECLARE @T_MeasureId int;
+	DECLARE @T_StudentId int;
+
+	DECLARE @U_TotalScored bit;
+	DECLARE @U_TotalScore decimal;
+	DECLARE @U_Bentchmark decimal;
+
+		--SELECT SA.*,SM.* FROM StudentMeasures SM INNER JOIN  StudentAssessments SA ON SM.SAId = SA.ID AND EXISTS(SELECT 1 FROM #StudentIds STUS WHERE SA.StudentId = STUS.ID)
+
+	DECLARE CUR CURSOR STATIC FOR 
+	SELECT SA.ID, SA.AssessmentId,SA.SchoolYear,SA.Wave ,SM.MeasureId,SA.StudentId 
+	FROM StudentMeasures SM INNER JOIN  StudentAssessments SA ON SM.SAId = SA.ID 
+	WHERE SA.AssessmentId = @AssessmentId
+	AND SA.Wave = @Wave
+	AND SA.SchoolYear = @SchoolYear
+	AND EXISTS(SELECT 1 FROM #StudentIds STUS WHERE SA.StudentId = STUS.ID) ;
+
+	OPEN CUR FETCH NEXT FROM CUR INTO @T_SAId,@T_AssessmentId,@T_SchoolYear,@T_Wave,@T_MeasureId,@T_StudentId 
+	WHILE(@@FETCH_STATUS=0)
+	BEGIN
+		PRINT 'START,SAId:'+ CAST(@T_SAId AS VARCHAR) +', AssessmentId: ' + CAST(@T_AssessmentId AS VARCHAR) + ', SchoolYear:' + @T_SchoolYear + 
+		', Wave:'+ CAST(@T_Wave AS VARCHAR) + ', MeasureId:' + CAST(@T_MeasureId AS VARCHAR) + ', StudentId'+ CAST(@T_StudentId AS VARCHAR) ;
+		IF EXISTS (SELECT 1 FROM #StudentMeasureBentchmarks 
+			WHERE AssessmentId = @T_AssessmentId AND SchoolYear = @T_SchoolYear AND Wave = @T_Wave AND MeasureId = @T_MeasureId AND StudentId = @T_StudentId)
+		BEGIN
+			PRINT 'FOUND Bentchmark';
+			SELECT @U_TotalScored = ISNULL(TotalScored,1),@U_TotalScore = ISNULL(TotalScore,0), @U_Bentchmark = ISNULL(Bentchmark ,-1)
+			FROM #StudentMeasureBentchmarks 
+			WHERE AssessmentId = @T_AssessmentId AND SchoolYear = @T_SchoolYear AND Wave = @T_Wave AND MeasureId = @T_MeasureId AND StudentId = @T_StudentId
+		END
+		ELSE
+		BEGIN
+			PRINT 'No matched Bentchmark';
+			SELECT TOP 1 @U_TotalScored = ISNULL(TotalScored,1),@U_TotalScore = ISNULL(TotalScore,0), @U_Bentchmark = -1
+			FROM #StudentMeasureBentchmarks 
+			WHERE AssessmentId = @T_AssessmentId AND SchoolYear = @T_SchoolYear AND Wave = @T_Wave AND MeasureId = @T_MeasureId 
+			--AND StudentId = @T_StudentId
+		END
+		PRINT 'NEW VALUES, TotalScored:'+ CAST(@U_TotalScored AS VARCHAR) + ', TotalScore:'+ CAST(@U_TotalScore AS VARCHAR) + ', Bentchmark:' + CAST(@U_Bentchmark AS VARCHAR);
+		
+		UPDATE StudentMeasures SET TotalScore = @U_TotalScore, TotalScored = @U_TotalScored, Bentchmark = @U_Bentchmark ,UpdatedOn = GETDATE()
+		WHERE SAId = @T_SAId AND MeasureId = @T_MeasureId ;
+	
+		PRINT 'OVER';
+
+		FETCH NEXT FROM CUR INTO  @T_SAId,@T_AssessmentId,@T_SchoolYear,@T_Wave,@T_MeasureId,@T_StudentId ;
+	END 
+
+	CLOSE CUR
+	DEALLOCATE CUR
+
+	DROP TABLE #StudentMeasureBentchmarks;
+	DROP TABLE #StudentIds;
+
+
+END
+
+GO
+
+

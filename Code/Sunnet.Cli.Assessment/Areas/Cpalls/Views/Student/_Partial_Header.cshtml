@@ -1,0 +1,128 @@
+﻿@{
+    Layout = null;
+    var parentExists = ((List<MeasureHeaderModel>)ViewBag.ParentMeasure).Any(x => x.Subs > 0);
+    var schoolNameHeight = parentExists ? 160 : 100;
+}
+
+<thead>
+    <tr class="fixed-columns-rotate">
+        <th class="fixed-column-title" style="border-color: #fff #ddd #fff #fff; height: 30px; width: @(ViewBag.LeftWidth)px;">
+            <div style="width: 150px; margin-top: -100px">
+                @if (ViewBag.HasHide)
+                {
+                    <a href="javascript:void(0);" data-bind="click:HideShowMeasures" class="mainbutton mainright-btn nav-btn " style="margin-right: -5px; padding-left: 3px; padding-right: 1px;">Hide/Display Measures</a>
+                    <a href="javascript:void(0);" data-bind="click:HideShowMeasures" class="mainbutton mainright-btn nav-btn " data-toggle="tooltip" style="margin: 0px; padding-left: 3px; padding-right: 5px;"
+                        data-placement="top" title="" data-original-title="Some measures are hidden">
+                        <span style="color: white; background-color: #D70000; border-radius: 50%; width: 20px; height: 20px; text-align: center;">
+                            <span style="border-radius: 50%; text-align: center; cursor: pointer; padding: 0px 5px;color:#fff;">!</span>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Use this tool to hide measures from view"
+                        href="javascript:void(0);" data-bind="click:HideShowMeasures" class="mainbutton mainright-btn nav-btn ">Hide/Display Measures</a>
+                    
+                }
+            </div>
+        </th>
+        <th class="fixed-columns-rotate" style="height: 30px;"><span style="display: none">1</span></th>
+        <th class="fixed-columns-rotate" style="height: 30px;"><span style="display: none">1</span></th>
+        @foreach (var tmpItem in (List<MeasureHeaderModel>)@ViewBag.ParentMeasure)
+        {
+            if (@tmpItem.Subs == 0)
+            {
+            <th rowspan="2" class="fixed-columns-rotate" style="height: 30px;" measure="@tmpItem.MeasureId" thselected="" parent="1">
+                <div title="@(tmpItem.Name)" class="tab-th-h" data-bind="css:{active:parentMeasure[@(tmpItem.MeasureId)].selected()},click:function(){$root.select(parentMeasure[@(tmpItem.MeasureId)]);}">
+                    <span>@(tmpItem.Name.CutString(25))</span>
+                </div>
+            </th>
+            }
+            else
+            {
+            <th class="fixed-columns-rotate-super " style="height: 30px;" isparent="true" val="@(tmpItem.MeasureId)" data-bind="attr:{colspan:parentMeasure[@(tmpItem.MeasureId)].colspan()}">
+                <div title="@(tmpItem.Name)" style="left: 75px;" class="tab-th-h measure-split-line-left measure-split-line-right measure-split-line-top"
+                         data-bind="css:{'table-th-expanded':parentMeasure[@(tmpItem.MeasureId)].visible(),'table-th-collapsed':!parentMeasure[@(tmpItem.MeasureId)].visible(),active:parentMeasure[@(tmpItem.MeasureId)].selected()},attr:{title:parentMeasure[@(tmpItem.MeasureId)].visible()?'Collapse':'Expand'},click:function(){$root.select(parentMeasure[@(tmpItem.MeasureId)]);}">
+                    <span data-bind="attr:{'title-length':(parentMeasure[@(tmpItem.MeasureId)].colspan())*6},title:parentMeasure[@(tmpItem.MeasureId)].name()"></span>
+                </div>
+            </th>
+            }
+        }
+        <th style="height: 30px;"><span style="display: none">1</span></th>
+        <th style="height: 30px;"><span style="display: none">1</span></th>
+        <th style="border-color: #fff; height: 30px; width: 100%;"><span style="display: none">1</span></th>
+    </tr>
+    <tr class="fixed-columns-rotate">
+        <th class="fixed-column-title" style="border-color: #fff #fff #ddd; vertical-align: bottom; height: 130px; padding-top: 100px;">
+            <div style="width: @(ViewBag.LeftWidth)px;">
+                <span>
+                    <a href="javascript:;" data-bind="click: function(){changeStuNameOrder({field:'LastName'});}"><strong>Student Name</strong></a>
+                    <span class="glyphicon"
+                        data-bind="visible: $root.orderBy() == 'LastName' && $root.orderDirection().toUpperCase() == 'ASC' && sortMeasure()==0,
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                    <span class="glyphicon"
+                        data-bind="visible: $root.orderBy() == 'LastName' && $root.orderDirection().toUpperCase() == 'DESC' && sortMeasure()==0,
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                </span>
+            </div>
+        </th>
+        <th class="fixed-columns-rotate" style="max-width: 50px;">
+            <div class="tab-th-h fixed-columns-rotate-launch">
+                <span>Launch selected <i class="icon-question-sign question-tip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click the table headers to select measures. Click 'Multi Launch' to administer selected measures together."></i></span>
+            </div>
+        </th>
+        <th class="fixed-columns-rotate" style="max-width: 50px;">
+            <div class="tab-th-h fixed-columns-rotate-launch">
+                <span>Student Summary</span>
+            </div>
+        </th>
+        @foreach (var tmpItem in (List<MeasureHeaderModel>)ViewBag.MeasureList)
+        {
+            if (tmpItem.ParentId > 1)
+            {
+                if (tmpItem.ParentId == tmpItem.MeasureId)
+                {
+            <!-- is total of parent measure -->
+            <th measure="@tmpItem.MeasureId" parent="@tmpItem.ParentId" thselected="" class="fixed-columns-rotate">
+                <div title="@(tmpItem.Name)" class=" measure-split-line-right" data-bind="click:function(){$root.collapse(@(tmpItem.MeasureId));},css:{'table-th-expanded':parentMeasure[@(tmpItem.MeasureId)].visible(),'table-th-collapsed':!parentMeasure[@(tmpItem.MeasureId)].visible(),'measure-split-line-left':!parentMeasure[@(tmpItem.MeasureId)].visible()},attr:{title:parentMeasure[@(tmpItem.MeasureId)].visible()?'click to collapse':'click to expand'}">
+                    <span>
+                        @(tmpItem.Name.CutString(25))&nbsp;&nbsp;&nbsp;&nbsp;<i data-bind="{css:{'icon-folder-open-alt':parentMeasure[@(tmpItem.MeasureId)].visible(),'icon-folder-close-alt':!parentMeasure[@(tmpItem.MeasureId)].visible()}}"></i>
+                        <br />
+                        <!-- ko if:parentMeasure[@(tmpItem.ParentId)].visible()-->
+                        click to collapse
+                                <!-- /ko -->
+                        <!-- ko if:!parentMeasure[@(tmpItem.ParentId)].visible()-->
+                        click to expand
+                                <!-- /ko -->
+                    </span>
+                </div>
+            </th>
+                }
+                else
+                {
+            <!-- ko if:parentMeasure[@(tmpItem.ParentId)].visible()-->
+            <th class="fixed-columns-rotate " measure="@tmpItem.MeasureId" parent="@tmpItem.ParentId" thselected="">
+                <div title="@(tmpItem.Name)" class='@(tmpItem.IsFirstOfParent ? "measure-split-line-left" : "") tab-th-h' data-bind="click:function(){$root.select($root.measureById[@tmpItem.MeasureId]);},css:{'active':$root.measureById[@tmpItem.MeasureId].selected()}">
+                    <span>
+                        @(tmpItem.Name.CutString(25))
+                    </span>
+                </div>
+            </th>
+            <!-- /ko -->
+                }
+            }
+        }
+        <th class="fixed-columns-rotate" style="max-width: 50px;">
+            <div class="tab-th-h fixed-columns-rotate-launch">
+                <span>Launch selected <i class="icon-question-sign question-tip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Click the table headers to select measures. Click 'Multi Launch' to administer selected measures together."></i></span>
+            </div>
+        </th>
+        <th class="fixed-columns-rotate" style="max-width: 50px;">
+            <div class="tab-th-h fixed-columns-rotate-launch">
+                <span>Student Summary</span>
+            </div>
+        </th>
+        <th><span style="display: none">1</span></th>
+        <th style="border-color: #fff; width: 100%;"><span style="display: none">1</span></th>
+    </tr>
+</thead>

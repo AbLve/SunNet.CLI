@@ -1,0 +1,208 @@
+﻿@{
+    ViewBag.Title = "Teacher List";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+}
+<form class="form-horizontal" role="form" id="formSearchTeacher">
+    <div class="form-group">
+        @Html.Label("txtCommunity", "Community Name", new { @class = "control-label col-sm-3" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#CommunityId",
+           data_remote = Url.Action("GetCommunity", "STGSend", new { Area = "STGReport" }),
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtCommunity",
+           name = "txtCommunity",
+           placeholder = "Enter key text to search",
+           @for = "CommunityId"
+       })
+            @Html.Hidden("CommunityId", "", new
+       {
+           data_bind = "value: searchCriteria.community"
+       })
+        </div>
+
+        @Html.Label("SchoolName", "School Name", new { @class = "control-label col-sm-2" })
+
+        <div class="col-sm-3">
+            @Html.TextBox("SchoolName", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_remote = Url.Action("GetSchool", "STGSend", new { Area = "STGReport" }),
+           data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+           data_text = "Name",
+           data_value = "ID",
+           placeholder = "Enter key text to search",
+           id = "SchoolName",
+           data_extraParams = "{\"communityId\":\"#CommunityId\"}",
+           data_for = "#SchoolId",
+           @for = "SchoolId"
+       })
+            @Html.Hidden("SchoolId", "", new
+       {
+           data_bind = "value: searchCriteria.school",
+       })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("FirstName", "First Name", new { @class = "control-label col-sm-3" })
+        <div class="col-sm-3">
+            @Html.TextBox("FirstName", "", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.firstName"
+            })
+        </div>
+        @Html.Label("LastName", "Last Name", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBox("LastName", "", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.lastName"
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Code", "Teacher ID", new { @class = "control-label col-sm-3" })
+        <div class="col-sm-3">
+            @Html.TextBox("Code", "", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.teacherCode"
+            })
+        </div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-3">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+
+    <div class="main-content main-content">
+        <div class="content-title">Teachers</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }" id="tbTeachers">
+                    <tr>
+                        <td>
+                            <input type="checkbox" data-bind="value: item.ID" />
+                        </td>
+                        <td data-bind="text: item.FirstName"></td>
+                        <td data-bind="text: item.LastName"></td>
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 100 })
+            </table>
+            @Html.Partial("_Partial_Pager")
+
+            <div class="modal-footer">
+
+                <input type="button" class="mainbutton mainright-btn submit-btn" value="Save" onclick="selectTeacherToGeneral()">
+                <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+
+        function selectTeacherToGeneral() {
+            var arr = new Array();
+            if (typeof (arrSelectTeacherList) != "undefined") {
+                arr = arrSelectTeacherList;
+            }
+
+            $("#tbTeachers").find("input:checkbox:checked").each(function () {
+                var tmpId = $(this).val();
+                var tmpFistname = $(this).closest("td").next().html();
+                var tmpLastname = $(this).closest("td").next().next().html();
+                if (typeof (arrSelectTeacherList) == "undefined")
+                    arr.push({ id: tmpId, fistName: tmpFistname, lastName: tmpLastname });
+                else {
+                    var sameTeacher = false;
+                    for (var i = 0 ; i < arrSelectTeacherList.length; i++) {
+                        if (arrSelectTeacherList[i].id == tmpId) {
+                            sameTeacher = true;
+                            break;
+                        }
+                    }
+                    if (sameTeacher == false) {
+                        arr.push({ id: tmpId, fistName: tmpFistname, lastName: tmpLastname });
+                    }
+                }
+            });
+            receiveTeacherList(arr);
+            closeModal($("#formSearchTeacher"));
+        }
+
+        var list_TeacherList = {};
+        jQuery(function () {
+            $("#formSearchTeacher").find("input[data-list][data-remote]").each(function (index, input) {
+                $(input).datalist();
+            });
+
+            list_TeacherList = new ViewModel(
+            {
+                instanceName: "list_TeacherList",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchTeacher")))',
+                orderBy: "LastName",
+                orderDirection: "ASC",
+                pageSize: 10,
+                miniPager: true,
+                headers: [
+                    {
+                        text: "Select",
+                        width: '20%'
+                    },
+                    {
+                        text: "First Name",
+                        field: "FirstName",
+                        order: true,
+                        width: '40%'
+                    },
+                    {
+                        text: "Last Name",
+                        field: "LastName",
+                        order: true,
+                        width: '40%'
+                    }
+                ],
+                searchCriteria: {
+                    community: ko.observable(window.queryString("community", "0")),
+                    school: ko.observable(window.queryString("school", '0')),
+                    firstName: ko.observable(window.queryString("FirstName"), ''),
+                    lastName: ko.observable(window.queryString("LastName"), '')
+                }
+            });
+
+            list_TeacherList.search();
+            ko.applyBindings(list_TeacherList, document.getElementById("formSearchTeacher"));
+        });
+    </script>
+}

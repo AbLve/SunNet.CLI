@@ -1,0 +1,179 @@
+﻿@using Sunnet.Cli.Core.Trs
+@using System.Web.Optimization
+@{
+    ViewBag.Title = "Offline";
+    Layout = "~/Views/Shared/_Layout_Offline.cshtml";
+}
+@section Styles{
+    @Styles.Render("~/css/assessment/offline")
+    <style type="text/css">
+        .modal-backdrop.in {
+            opacity: 1;
+        }
+
+        .form-control-d {
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0) inset;
+            color: #666;
+            display: inline-block;
+            font-size: 13px;
+            height: 26px;
+            padding: 2px 4px;
+            transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+        }
+
+        .control-label-con {
+            float: left;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+}
+@Html.Partial("~/Views/Shared/Offline/_Partial_Pin.cshtml")
+@Html.Partial("~/Views/Shared/Offline/_Partial_Unlock.cshtml")
+<div class="row">
+    <div class="col-sm-6 col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Facility Infomation</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <a href="#" data-bind="click: schoolIndex" class="mainbutton mainright-btn nav-btn">Back to Facility List</a>
+                    <!--ko if:currentSchool.Action == 'edit' || currentSchool.Action == 'assessment' && currentSchool.IsCommunityTRS-->
+                    <a href="#" data-bind="click: $root.startAssessment" class="mainbutton mainright-btn nav-btn">Start Assessment</a>
+                    <!--/ko-->
+                </div>
+                <div class="form-horizontal main-content top-form">
+                    <label class="control-label">LWDB</label>
+                    <label class="control-label-text" data-bind="html: currentSchool.CommunityNames"></label>
+                    <label class="control-label" style="padding-left: 30px">School</label>
+                    <label class="control-label-text" data-bind="html: currentSchool.Name"></label>
+                    <label class="control-label" style="padding-left: 30px">Director</label>
+                    <label class="control-label-text" data-bind="html: currentSchool.NamesOfPrincipals"></label>
+                    <label class="control-label" style="padding-left: 30px">Recertification By</label>
+                    <label class="control-label-text" data-bind="datetime: currentSchool.RecertificationBy"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Log&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;<span data-bind="text: network.online() ? 'Online' : 'Offline'"></span>&nbsp;<span data-bind="    visible: network.online(), text: network.logged() ? '[Logged in]' : ''"></span>&nbsp;<span data-bind="    text: network.date(), visible: network.online()"></span></div>
+            <div class="panel-body panel-body-log" id="log_Container">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--ko ifnot:currentSchool.IsCommunityTRS-->
+<div class="main-content top-form">
+    <form class="form-horizontal-padding" role="form">
+        The specified school is not available.
+    </form>
+</div>
+<!--/ko-->
+
+<!--ko if:currentSchool.IsCommunityTRS-->
+<!--ko if:currentSchool.AssessmentList.length>0-->
+<div class="main-content">
+    <div class="content-title">Assessments</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Date Created</th>
+                    <th>Approval Date</th>
+                    <th>Assessment Type</th>
+                    <th>Calculated Star</th>
+                    <th>Verified Star</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody data-bind="foreach: currentSchool.AssessmentList.filter(function (obj) { return obj.ChangeStatus != 2 })">
+                <tr data-bind="attr: { id: guid }">
+                    <td data-bind="jsdatetime: CreatedOn"></td>
+                    <td data-bind="datetime: ApproveDate"></td>
+                    <td data-bind="text: Type ? Type.text : ''"></td>
+                    <td data-bind="text: Star.text"></td>
+                    <td data-bind="text: VerifiedStar.text"></td>
+                    <td>
+                        <!--ko if:Action=='viewAssessment'&&Status.value<30-->
+                        <button class="table-btn icon-folder-open view-btn" title="View" data-bind="click: $root.getAssessmentUrl"></button>
+                        <!--/ko-->
+                        <!--ko if:Action=='classedit'&&Status.value<30-->
+                        <button class="table-btn icon-pencil pencil-btn" title="Edit" data-bind="click: $root.getAssessmentUrl"></button>
+                        <!--/ko-->
+                        <!--ko if:Action=='edit'&&Status.value<30-->
+                        <button class="table-btn icon-pencil pencil-btn" title="Edit" data-bind="click: $root.getAssessmentUrl"></button>
+                        <button class="table-btn icon-trash trash-btn" title="Delete" data-bind="click: $root.deleteAssessment"></button>
+                        <!--/ko-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    @System.Web.Optimization.Scripts.Render("~/scripts/format/offline")
+    @System.Web.Optimization.Scripts.Render("~/scripts/trs/offline")
+
+    <script type="text/javascript">
+        function log(type, message) {
+            var log = '<div class="alert alert-' + type + ' alert-log" role="alert" title="' + message + '">' + message + '</div>';
+            $(log).appendTo($log);
+            $log.scrollTop($log[0].scrollHeight);
+        }
+
+        var offlineApp;
+        var $log;
+
+        $(function () {
+            $log = $("#log_Container");
+
+            offlineApp = getTrsOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.writeLog = log;
+            offlineApp.init(offlineApp.values.Url.school);
+
+            $.extend(offlineApp.viewModel, {
+                startAssessment: function () {
+                    if (!offlineApp.viewModel.currentSchool.Classes
+                        || offlineApp.viewModel.currentSchool.Classes.length <= 0) {
+                        window.showMessage("warning", "trs_NoClass");
+                        return;
+                    }
+                    var classesHasNoType = offlineApp.viewModel.currentSchool.Classes.filter(
+                        function (obj) { return obj.TypeOfClass.value == 0 || !obj.Ages || obj.Ages.length <= 0 });
+                    if (classesHasNoType.length > 0) {
+                        var message = window.getMessage("trs_ClassWithoutCiild");
+                        var messageArray = [];
+                        for (var item in classesHasNoType) {
+                            messageArray.push(classesHasNoType[item].Name);
+                        }
+                        message = message.replace("{0}", messageArray.join(", "));
+                        window.showMessage("warning", message);
+                        return;
+                    }
+                    offlineApp.viewModel.newAssessmentUrl();
+                }
+            })
+
+            ko.applyBindings(offlineApp.viewModel);
+
+        });
+    </script>
+}
+<!--/ko-->
+<!--ko ifnot:currentSchool.AssessmentList.length>0-->
+<div class="main-content top-form">
+    <form class="form-horizontal-padding" role="form">
+        There are no TRS reports.
+    </form>
+</div>
+<!--/ko-->
+<!--/ko-->

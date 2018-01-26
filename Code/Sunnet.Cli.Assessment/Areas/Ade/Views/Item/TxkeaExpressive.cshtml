@@ -1,0 +1,1424 @@
+﻿@model TxkeaExpressiveItemModel
+@{
+    Layout = "~/Views/Shared/_Layout_KeaItem.cshtml";
+    if (Model.ID < 1)
+    {
+        ViewBag.Title = "New " + Model.Type.ToDescription();
+    }
+    else
+    {
+        ViewBag.Title = Model.Label;
+    }
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Detail", "Measure", new { id = Model.MeasureId });
+}
+
+@section Styles
+{
+    @Styles.Render("~/css/cpalls")
+    @Styles.Render("~/css/colorpicker")
+    @Styles.Render("~/css/txkea")
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @Html.Partial("NEV_Item_BreadPath", Model)
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/ckeditor")
+    @Scripts.Render("~/scripts/fabric")
+    @Scripts.Render("~/scripts/TxkeaExpressive")
+    @Scripts.Render("~/scripts/fullscreen")
+
+    <script type="text/javascript">
+        var jsonModel;
+
+        var canvas;
+        var itemModel;
+        var jsonModel;
+        var canvasElement = "cav_layout";
+        var originTarget;
+        var originoCoords;
+        var preScreenWidth = "@(Model.ScreenWidth)";  //The screen width of last time to save
+
+        var selectedObj;
+        var preScroll;
+        var preObjHeight; //记录上次canvas中图片高度输入框的值
+        var preObjWidth; //记录上次canvas中图片宽度输入框的值
+
+        var ignoreDuplicateBranching = false;
+
+
+        function getTxkeaExpressiveItemModel(defaultValues, controls) {
+            var self = getItemModel(defaultValues, controls);
+
+            self.step = ko.observable(1);
+            self.stepTwo = ko.observable(false);
+            self.stepFour = ko.observable(false);
+            self.stepThree = ko.observable(false);
+
+            self.signSubmit = ko.observable(true);
+            self.OverallTimeOut = ko.observable(isNull("Timed", defaultValues, false));
+            self.IsCompleted = isNull("IsCompleted", defaultValues, false);
+
+            self.ImageList = ko.observableArray([]);
+            self.Images = ko.observable(isNull("Images", defaultValues,0));
+
+            self.Responses = ko.observableArray([]);
+            self.branchingScores = ko.observableArray([]);
+            self.oldBranchingScores = "";
+            self.branchingItems =[];
+
+            self.reponseType =  ko.observable(defaultValues.ResponseType.value);
+
+            self.formPrepared = function (viewModel, event) {
+                if(self.step() == 1)
+                    updateCkeditor();
+                return true;
+            };
+
+            self.pushImageList =function(defaultValues){
+                if(defaultValues){
+                    self.ImageList().length = 0;
+                    for(i = 0; i< defaultValues.length; i++){
+                        self.ImageList.push(getTxkeaExpressiveImageModel(defaultValues[i],i));
+                    }
+                }
+            };
+
+            self.prepareImageList = function($form){
+                if(self.ImageList())
+                {
+                    function TxkeaExpressiveImageModel() { };
+                    var newImageList = [];
+                    var tmpImageList = self.ImageList();
+
+                    for (var i = 0; i < tmpImageList.length; i++) {
+                        var tmpImage =new  TxkeaExpressiveImageModel();
+                        tmpImage.ID =  tmpImageList[i].ID ;
+                        tmpImage.ItemId = tmpImageList[i].ItemId;
+                        tmpImage.TargetImage = tmpImageList[i].TargetImage();
+                        tmpImage.ImageTimeDelay = tmpImageList[i].ImageTimeDelay();
+                        if(tmpImage.ImageTimeDelay == "")tmpImage.ImageTimeDelay = 0;
+                        tmpImage.TargetAudio = tmpImageList[i].TargetAudio();
+                        tmpImage.AudioTimeDelay = tmpImageList[i].AudioTimeDelay();
+                        if(tmpImage.AudioTimeDelay == "")tmpImage.AudioTimeDelay = 0;
+                        tmpImage.SameasImageDelay =  tmpImageList[i].SameasImageDelay();
+                        tmpImage.IsDeleted =  tmpImageList[i].IsDeleted;
+                        newImageList.push(tmpImage);
+                    }
+                    $form.find(controls.ImageList).val(JSON.stringify(newImageList));
+                }
+            };
+
+            self.ResponseCount = ko.observable(1);
+            self.pushResponses= function(defaultValues){
+                if(defaultValues){
+                    self.Responses().length = 0;
+                    for(i = 0; i< defaultValues.length; i++){
+                        self.Responses.push(getTxkeaExpressiveResponsesModel(defaultValues[i],i));
+                    }
+                    self.ResponseCount(self.Responses().length);
+                }
+            };
+
+            self.prepareResponses= function($form){
+                if(self.Responses())
+                {
+                    function TxkeaExpressiveResponsesModel() { };
+                    function TxkeaExpressiveOptionModel(){};
+
+                    var newResponse = [];
+                    var tmpResponses = self.Responses();
+
+                    for(var i = 0 ;i <tmpResponses.length;i++){
+                        var tmpResponseModel = new TxkeaExpressiveResponsesModel();
+                        tmpResponseModel.ID = tmpResponses[i].ID;
+                        tmpResponseModel.Text = tmpResponses[i].Text();
+                        tmpResponseModel.ItemId = tmpResponses[i].ItemId;
+                        tmpResponseModel.Mandatory= tmpResponses[i].Mandatory();
+                        tmpResponseModel.Type = tmpResponses[i].Type();
+                        tmpResponseModel.Buttons = tmpResponses[i].Buttons();
+                        tmpResponseModel.IsDeleted = tmpResponses[i].IsDeleted();
+                        tmpResponseModel.Options = [];
+
+                        var tmpResonseList= tmpResponses[i].Options();
+                        for(var j = 0; j< tmpResonseList.length; j++){
+                            var tmpOption = new TxkeaExpressiveOptionModel();
+                            tmpOption.ID= tmpResonseList[j].ID;
+                            tmpOption.ResponseId= tmpResonseList[j].ResponseId;
+                            tmpOption.IsCorrect= tmpResonseList[j].IsCorrect();
+                            tmpOption.Lable= tmpResonseList[j].Lable();
+                            tmpOption.AddTextbox= tmpResonseList[j].AddTextbox();
+                            tmpOption.Score = tmpResonseList[j].Score;
+                            tmpOption.IsDeleted= tmpResonseList[j].IsDeleted();
+                            tmpResponseModel.Options.push(tmpOption);
+                        }
+                        newResponse.push(tmpResponseModel);
+                    }
+
+                    $form.find("#Responses").val(JSON.stringify(newResponse));
+                }
+            };
+
+            self.addResponse =function(){
+                var newResponseModel = getTxkeaExpressiveResponsesModel(null,self.ResponseCount());
+                newResponseModel.ItemId =  self.ID;
+                newResponseModel.Type(3);
+                self.Responses.push(newResponseModel);
+                self.ResponseCount(self.ResponseCount() +1);
+            }
+
+            self.deleteResponse = function(item){
+                $.when(waitingConfirm("DeleteResponse", "Delete", "Cancel")).done(function () {
+                    if(item.ID ==0)
+                        self.Responses.remove(item);
+                    else
+                        item.IsDeleted(true);
+                    self.ResponseCount(self.ResponseCount() - 1);
+                });
+            }
+
+            //begin branching score
+            self.newBranchingScore = function(){
+                var branchingIndex = 1;
+                for(i =0 ; i < self.branchingScores().length; i++){
+                    if(self.branchingScores()[i].IsDeleted == false)
+                        branchingIndex ++;
+                }
+                self.branchingScores.push(getBranchingScore(0,0,0,self.ID,0,branchingIndex));
+            }
+            self.deleteBranchingScore = function (score) {
+                if(score.ID ==0 ){
+                    self.branchingScores.remove(score);
+                }
+                else{
+                    score.IsVisible(true);
+                    score.IsDeleted = true;
+                }
+                //让表单上绑定该属性的监视元素起作用
+                self.branchingScores(self.branchingScores());
+            }
+            self.pushBranchingScore = function(defaultValues){
+                if(defaultValues){
+                    self.branchingScores().length = 0;
+                    for(i =0 ;i< defaultValues.length;i++){
+                        self.branchingScores.push(getBranchingScore(defaultValues[i].ID,defaultValues[i].From,defaultValues[i].To,defaultValues[i].ItemId,defaultValues[i].SkipItemId,i+1));
+                    }
+                }
+                self.oldBranchingScores = JSON.stringify(self.branchingScores());
+                $("#BranchingScoreList").val(self.oldBranchingScores);
+            }
+
+            // end branching score
+
+            self.submit = function (viewModel, event) {
+                var $sender = $(event.target);
+                var $form = $sender.closest("form");
+
+                if (!self.formPrepared(viewModel, event)) {
+                    return false;
+                }
+
+                if(ignoreDuplicateBranching){
+                    ignoreDuplicateBranching = false;
+                }else {
+                    if(customValid(viewModel, event) == false)
+                        return false;
+                }
+
+                if ($form.valid() == false) {
+                    return false;
+                }
+
+                self.prepareImageList($form);
+                self.prepareResponses($form);
+
+                $form.find("#step").val(viewModel.step());
+
+                GetLayouts("#ItemLayout", $("#BackgroundImage").val() ? $("#BackgroundImage").val() : jsonModel.LayoutBackgroundImage);
+
+                $sender.data("clicked", false);
+                $form.submit();
+                return false;
+            }
+
+            //有变更返回True
+            self.checkStepOne =function(){
+                updateCkeditor();
+                if(jsonModel.Label != $("#Label").val())
+                    return true;
+                if(jsonModel.Status.value != $("#Status").val())
+                    return true;
+                if(jsonModel.IsPractice != $("#IsPractice").prop("checked"))
+                    return true;
+                if(jsonModel.ShowAtTestResume != $("#ShowAtTestResume").prop("checked"))
+                    return true;
+                if(jsonModel.BackgroundFill != $("#BackgroundFill").val() || jsonModel.BackgroundImage !=  $("#BackgroundImage").val())
+                    return true;
+                //html 标签的空格显示不同
+                if (encodeURI(jsonModel.InstructionText).replace(/D%0/g, "") != encodeURI($("#InstructionText").val()))
+                    return true;
+                if(jsonModel.InstructionAudio != $("#InstructionAudio").val())
+                    return true;
+                if(jsonModel.InstructionAudioTimeDelay != $("#InstructionAudioTimeDelay").val())
+                    return true;
+                if(jsonModel.Images != $("#Images").val())
+                    return true;
+                if(jsonModel.Timed){
+                    if($('input[name="Timed"]:checked').val() != "true")
+                        return true;
+                }else{
+                    if($('input[name="Timed"]:checked').val() != "false")
+                        return true;
+                }
+                if($('input[name="Timed"]:checked').val() == "true"){
+                    if(jsonModel.Timeoutvalue != $("#Timeoutvalue").val())
+                        return true;
+                }
+                if(jsonModel.ResponseType.value == 1){
+                    if($('input[name="ResponseType"]:checked').val() != "@(TxkeaExpressiveResponoseType.Simple)")
+                        return true;
+                }
+                else{
+                    if($('input[name="ResponseType"]:checked').val() != "@(TxkeaExpressiveResponoseType.Detailed)")
+                        return true;
+                }
+
+                var oldBranchingScoreList =[];
+                if( self.oldBranchingScores)
+                    oldBranchingScoreList =JSON.parse(self.oldBranchingScores);
+
+                for(i = 0 ; i < itemModel.branchingScores().length; i++){
+                    if(itemModel.branchingScores()[i].IsDeleted)
+                        return true;
+                    if(itemModel.branchingScores()[i].ID == 0)
+                        return true;
+
+                    var findItem =  oldBranchingScoreList.filter(function(item){ return item.ID == itemModel.branchingScores()[i].ID});
+                    if(findItem && findItem.length > 0){
+                        if(findItem[0].From == itemModel.branchingScores()[i].From
+                            && findItem[0].To == itemModel.branchingScores()[i].To
+                            && findItem[0].SkipItemId ==  itemModel.branchingScores()[i].SkipItemId){
+                            continue;
+                        }
+                        return true;
+                    }
+                    else
+                        return true;
+                }
+                return false;
+            }
+
+            //有变更返回True
+            self.checkStepTwo = function(){
+                var uploader ;
+                for(var i = 0 ;i < itemModel.ImageList().length; i++){
+                    if(itemModel.ImageList()[i].TargetImage() != jsonModel.ImageList[i].TargetImage)
+                        return true;
+
+                    if(itemModel.ImageList()[i].TargetImage() == "")
+                        return true;
+
+                    if(itemModel.ImageList()[i].TargetAudio() != jsonModel.ImageList[i].TargetAudio)
+                        return true;
+
+                    if(itemModel.ImageList()[i].ImageTimeDelay() != jsonModel.ImageList[i].ImageTimeDelay)
+                        return true;
+                    if(itemModel.ImageList()[i].AudioTimeDelay() != jsonModel.ImageList[i].AudioTimeDelay)
+                        return true;
+                    if(itemModel.ImageList()[i].SameasImageDelay() != jsonModel.ImageList[i].SameasImageDelay)
+                        return true;
+                }
+                return false;
+            }
+
+            self.next = function(viewModel, event){
+                switch(self.step())
+                {
+                    case 1:
+                        if($("#copyId").val() != "" && $("#copyId").val() != "0"){}
+                        else{
+                            self.reponseType($('input[name="ResponseType"]:checked').val()=="@TxkeaExpressiveResponoseType.Simple" ? 1 :2) ;
+                            if(self.checkStepOne() === false){
+                                self.step(2);
+                                if(self.stepTwo() == false){
+                                    itemModel.pushImageList(jsonModel.ImageList);
+                                    self.stepTwo(true);
+                                }
+                                return false;
+                            }
+                        }
+                        break;
+                    case 2:
+                        if(self.checkStepTwo() === false){
+                            CloseSize();
+                            self.step(3);
+                            if(self.stepThree() == false){
+                                txKeaExpressiveLayout();
+                                self.stepThree(true);
+                            }
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        GetLayouts("#ItemLayout", $("#BackgroundImage").val() ? $("#BackgroundImage").val() : jsonModel.LayoutBackgroundImage);
+                        if( $("#ItemLayout").val() == jsonModel.ItemLayout)
+                        {
+                            if($("#ScreenWidth").val() == jsonModel.ScreenWidth){
+                                self.step(4);
+                                if(self.stepFour() == false){
+                                    $($("#btnResponseBackgroundImage").children().get(1)).css({"width":77,"height":30})
+                                    itemModel.pushResponses(jsonModel.Responses);
+                                    self.stepFour(true);
+                                }
+                                return false;
+                            }
+                        }
+                        break;
+                }
+                self.signSubmit(false);
+                $("#btnSubmit").click();
+                return false;
+            }
+
+            self.previous = function(){
+                switch(self.step()){
+                    case 2:
+                        if(customValid() == false)
+                            return false;
+                        self.step(1);
+                        if ($("iframe[class='cke_wysiwyg_frame cke_reset cke_focus']").length > 0 && $("iframe[class='cke_wysiwyg_frame cke_reset cke_focus']").width() == 0) {
+                            $("iframe[class='cke_wysiwyg_frame cke_reset cke_focus']").width($("#InstructionText").width());
+                        }
+                        break;
+                    case 3:
+                        self.step(2);
+                        itemModel.pushImageList(jsonModel.ImageList);
+                        break;
+                    case 4:
+                        txKeaExpressiveLayout();
+                        self.step(3);
+                        break;
+                }
+
+                return false;
+            }
+
+            self.stepClick = function (stepNum) {
+                switch (stepNum) {
+                    case 1:
+                        self.step(1);
+                        break;
+                    case 2:
+                        self.step(2);
+                        if (self.stepTwo() == false) {
+                            itemModel.pushImageList(jsonModel.ImageList);
+                            self.stepTwo(true);
+                        }
+                        break;
+                    case 3:
+                        CloseSize();
+                        self.step(3);
+                        if (self.stepThree() == false) {
+                            txKeaExpressiveLayout();
+                            self.stepThree(true);
+                        }
+                        break;
+                    case 4:
+                        GetLayouts("#ItemLayout", $("#BackgroundImage").val() ? $("#BackgroundImage").val() : jsonModel.LayoutBackgroundImage);
+                        if ($("#ItemLayout").val() == jsonModel.ItemLayout) {
+                            if ($("#ScreenWidth").val() == jsonModel.ScreenWidth) {
+                                self.step(4);
+                                if (self.stepFour() == false) {
+                                    $($("#btnResponseBackgroundImage").children().get(1)).css({ "width": 77, "height": 30 })
+                                    itemModel.pushResponses(jsonModel.Responses);
+                                    self.stepFour(true);
+                                }
+                                return false;
+                            }
+                        }
+                        self.step(4);
+                        break;
+                }
+                return false;
+            }
+
+            return self;
+        } // end getTxkeaExpressiveItemModel
+
+
+        var getTxkeaExpressiveImageModel = function (defaultValues,index) {
+            function TxkeaExpressiveImageModel() { };
+
+            TxkeaExpressiveImageModel.prototype = getUploaderHelper();
+            var self = new TxkeaExpressiveImageModel();
+
+            self.ID = isNull("ID", defaultValues, 0);
+            self.Index = index+1;
+            self.ItemId = isNull("ItemId", defaultValues, 0);
+
+            self.TargetImage =ko.observable(isNull("TargetImage", defaultValues, ""));
+            self.ImageTimeDelay = ko.observable(isNull("ImageTimeDelay", defaultValues,0));
+            self.TargetAudio = ko.observable(isNull("TargetAudio", defaultValues, ""));
+            self.AudioTimeDelay =ko.observable( isNull("AudioTimeDelay", defaultValues, 0));
+            self.SameasImageDelay =  ko.observable(isNull("SameasImageDelay", defaultValues, false));
+            self.IsDeleted =  isNull("IsDeleted", defaultValues, true);
+
+            self.hasError = ko.observable(false);
+
+
+            self.ImageTimeDelay.subscribe(function(newVal){
+                if(self.SameasImageDelay()){
+                    self.AudioTimeDelay(newVal);
+                }
+            });
+
+            self.SameasImageDelay.subscribe(function(newVal){
+                if(newVal){
+                    self.AudioTimeDelay(self.ImageTimeDelay());
+                }
+            });
+
+            return self;
+        }  //end getTxkeaExpressiveImageModel
+
+        var getTxkeaExpressiveResponsesModel = function(defaultValues,index) {
+            function TxkeaExpressiveResponsesModel() { };
+
+            var self = new TxkeaExpressiveResponsesModel();
+
+            self.uuid = window.guid("Responses");
+            self.Index = index+1;
+            self.ID = isNull("ID", defaultValues, 0);
+            self.ItemId =  isNull("ItemId", defaultValues, 0);
+            self.Text =  ko.observable( isNull("Text", defaultValues, ""));
+            self.Mandatory = ko.observable( isNull("Mandatory", defaultValues, true));
+            self.Type = ko.observable(isNull("Type", defaultValues, {}).value);
+            self.Buttons = ko.observable(isNull("Buttons", defaultValues, 2));
+            self.Options = ko.observableArray([]);
+            self.IsDeleted =  ko.observable(isNull("IsDeleted", defaultValues, false));
+
+            if (defaultValues && defaultValues.Options) {
+                for (var i = 0; i < defaultValues.Options.length; i++) {
+                    self.Options.push(getTxkeaExpressiveOptionModel(defaultValues.Options[i]));
+                }
+            }
+
+            self.Type.subscribe(function(newVal){
+                var oldOptions = self.Options() ;
+                for(var i  =0;i< oldOptions.length; i++){
+                    oldOptions[i].Reset(false);
+                }
+            });
+
+            self.Buttons.subscribe(function(newVal){
+                var oldOptions = self.Options();
+
+                if(newVal == oldOptions.length){
+                    for(var i  =0;i< oldOptions.length; i++){
+                        if(oldOptions[i].IsDeleted() == true){
+                            oldOptions[i].Reset(true);
+                        }
+                    }
+                }
+
+                if(newVal >oldOptions.length){
+                    for(var i  =0;i< oldOptions.length; i++){
+                        if(oldOptions[i].IsDeleted() == true){
+                            oldOptions[i].Reset(true);
+                        }
+                    }
+                    for(var i = oldOptions.length; i < newVal; i++)
+                        self.Options.push(getTxkeaExpressiveOptionModel(null));
+                }
+
+                if(newVal < oldOptions.length){
+                    {
+                        for(var i = newVal;i< oldOptions.length;i++){
+                            oldOptions[i].IsDeleted(true);
+                        }
+                        for(var i = 0 ;i < newVal;i++){
+                            if(oldOptions[i].IsDeleted() == true){
+                                oldOptions[i].Reset(true);
+                            }
+                        }
+                    }
+                }
+            })
+            return self;
+        } //end getTxkeaExpressiveResponsesModel
+
+        var getTxkeaExpressiveOptionModel = function(defaultValues) {
+            function TxkeaExpressiveOption() { };
+
+            var self = new TxkeaExpressiveOption();
+            self.uuid = window.guid("Option");
+            self.ID = isNull("ID", defaultValues, 0);
+            self.ResponseId = isNull("ResponseId", defaultValues, 0);
+            self.IsCorrect = ko.observable(isNull("IsCorrect", defaultValues, false));
+            self.Lable =ko.observable(isNull("Lable", defaultValues, ""));
+            self.AddTextbox =ko.observable(isNull("AddTextbox", defaultValues, false));
+            self.IsDeleted =  ko.observable( isNull("IsDeleted", defaultValues, false));
+            self.Score = isNull("Score",defaultValues,0);
+
+            self.changeRadio = function(p,d,c){
+
+                if(p.Type() == 3 ){ //type="radio"
+                    for(var i = 0 ; i<p.Options().length; i++){
+                        p.Options()[i].IsCorrect(false);
+                    }
+                    d.IsCorrect(true);
+                    return true;
+                }
+            };
+
+            self.Reset = function(changeNum){
+                self.IsCorrect(false);
+                self.Lable("");
+                self.AddTextbox(false);
+                self.Score  =0 ;
+                if(changeNum)
+                    self.IsDeleted(false);
+            }
+            return self;
+        } //end getTxkeaExpressiveOptionModel
+
+        function txKeaExpressiveLayout(){
+            initChooseLayout();
+            if(!canvas)
+                InitCanvas("content-body",jsonModel.BackgroundFill);
+
+            InitPicture(jsonModel.ItemLayout, jsonModel.ImageList, jsonModel.BackgroundImage? getUploadUrl() +'/upload/' + jsonModel.BackgroundImage:"" );
+        }
+
+
+        //pass return true
+        function customValid(viewModel, event)
+        {
+            switch(itemModel.step())
+            {
+                case 1:
+                    if(itemModel.branchingItems && itemModel.branchingItems.length >0){
+                        for(i = 0 ;i< itemModel.branchingScores().length; i++){
+                            var branchingScore=itemModel.branchingScores()[i];
+                            if(branchingScore.IsDeleted)
+                                continue;
+
+                            if(+branchingScore.From > +branchingScore.To){
+                                branchingScore.hasError(true);
+                                showMessage("hint", "TxkeaSkipIncorrect");
+                                return false;
+                            }
+                            else
+                                branchingScore.hasError(false);
+                        }
+
+                        var branchingComfire = false;
+                        for(i = 0 ;i <  itemModel.branchingScores().length-1; i++){
+                            var branchingScore=itemModel.branchingScores()[i];
+
+                            if(branchingScore.IsDeleted)
+                                continue;
+
+                            for(j = i+1;j<itemModel.branchingScores().length ; j++){
+                                var branchingScorej=itemModel.branchingScores()[j];
+
+                                if(branchingScorej.IsDeleted)
+                                    continue;
+
+                                if(branchingScore.From < branchingScorej.From){
+                                    if(branchingScore.To >= branchingScorej.From){
+                                        branchingComfire = true;
+                                        break;
+                                    }
+                                }else  if(branchingScore.From == branchingScorej.From){
+                                    branchingComfire = true;
+                                    break;
+                                }
+                                else {
+                                    if(branchingScore.From <= branchingScorej.To){
+                                        branchingComfire = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if(branchingComfire)
+                            {
+                                itemModel.branchingScores()[i].hasError(true);
+                                showMessage("hint", "TxkeaSkipOverlap");
+                                break;
+                            }
+                        }
+                        if(!branchingComfire){
+                            $("#BranchingScoreList").val(JSON.stringify(itemModel.branchingScores()));
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    if (itemModel.signSubmit()==true) {  //提交时，验证图片数量
+                        if($("#Images").val()>jsonModel.Images)
+                        {
+                            var msg=window.getErrorMessage("TxkeaAtleastOneItem").replace("[i]", jsonModel.Images+1);
+                            showMessage("hint", msg);
+                            return false;
+                        }
+                    }
+                    break;
+                case 2:
+                    //图片和Audio至少填写一项
+                    var answers = itemModel.ImageList(), answer;
+                    for (var i = 0; i < answers.length; i++) {
+                        answer = answers[i];
+                        if (!answer.TargetImage() && !answer.TargetAudio()) {
+                            var msg=window.getErrorMessage("TxkeaAtleastOneItem").replace("[i]", i+1);
+                            showMessage("hint", msg);
+                            return false;
+                        }
+                    }
+                    break;
+            }
+            return true;
+        }
+
+    </script>
+
+    <script type="text/javascript">
+
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+
+        function getToFolder() {
+            return "assessment_" + @ViewBag.AssessmentId;
+        }
+
+        function getUploadUrl()
+        {
+            return  '@(DomainHelper.StaticSiteDomain.AbsoluteUri)';
+        }
+
+        CKEDITOR.replace('InstructionText',{    toolbar: 'Cli'});
+
+
+        var itemModel;
+        var testtt;
+
+        jQuery(function() {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function(response) {
+                    if(itemModel.signSubmit()){
+                        window.showMessage("success");
+                        setTimeout(function () { redirectBack("@Html.Raw(backUrl)") }, 2000);
+                    }
+                    else {
+                        $("#copyId").val("");
+                        itemModel.signSubmit(true);
+                        switch(response.msg)
+                        {
+                            case "2":
+                                itemModel.step(2);
+                                $("#ID").val(response.data.ID);
+                                jsonModel = response.data;
+                                itemModel.pushImageList(response.data.ImageList);
+                                itemModel.stepTwo(true);
+                                itemModel.stepThree(false);
+                                itemModel.pushBranchingScore(jsonModel.BranchingScores);
+                                itemModel.branchingItems = jsonModel.BranchingItems
+                                itemModel.reponseType(jsonModel.ResponseType.value);
+                                break;
+                            case "3":
+                                itemModel.step(3);
+                                jsonModel = response.data;
+
+                                txKeaExpressiveLayout();
+                                itemModel.stepThree(true);
+                                break;
+                            case "4":
+                                itemModel.step(4);
+                                itemModel.stepFour(true);
+                                jsonModel = response.data;
+                                itemModel.pushResponses(response.data.Responses);
+                                $($("#btnResponseBackgroundImage").children().get(1)).css({"width":77,"height":30});
+                                preScreenWidth = response.ScreenWidth;
+                                break;
+                        }
+                    }
+                }
+            });
+            jsonModel = @Html.Raw(ViewBag.ModelJson);
+            var formEle = document.getElementById("@formId");
+            itemModel = getTxkeaExpressiveItemModel(jsonModel, { ImageList: "#ImageList" });
+            itemModel.pushBranchingScore(jsonModel.BranchingScores);
+            itemModel.branchingItems = jsonModel.BranchingItems;
+            itemModel.getPreviewUrl = function () {
+                var newTab = window.open('about:blank');
+                GetLayouts("#ItemLayout", $("#BackgroundImage").val() ? $("#BackgroundImage").val() : jsonModel.LayoutBackgroundImage);
+                $.post('/Ade/Item/SaveTxkeaExpressiveItemLayout',
+                    {
+                        'id': jsonModel.ID,
+                        'ItemLayout': $("#ItemLayout").val(),
+                        'CpallsItemLayout': $("#CpallsItemLayout").val(),
+                        'ScreenWidth': $("#ScreenWidth").val(),
+                        'ScreenHeight': $("#ScreenHeight").val()
+                    },
+                    function() {
+                        newTab.location.href = "/Cpalls/Execute/Preview?itemid=" + jsonModel.ID + "&measureId=@(Model.MeasureId)";
+                    });
+            }
+
+            ko.applyBindings(itemModel, formEle);
+            $('#BackgroundFill').colorpicker({color:jsonModel.BackgroundFill, warning: true,
+                warningObjId: "#divBackgroundImage", customOperation: "CanvasBgColorChange"});
+            $('#ResponseBackgroundFill').colorpicker({color:jsonModel.ResponseBackgroundFill,  warning: true,
+                warningObjId: "#divResponseBackgroundImage", customOperation: "ResponseBgColorChange"});
+
+            $(window).scroll(function (obj) {
+                if (selectedObj && $("#divShow").css("display") == "block") {
+                    ShowSize(selectedObj);
+                }
+            });
+
+
+            //InitPicture(itemLayout, itemModel.ImageCount());
+
+            $("#txtCanvaLeft").on("change blur", function () {
+                var width = $("#txtCanvaWidth").val() / 100.00 * canvas.width;
+                var newLeft = $("#txtCanvaLeft").val() / 100.00 * canvas.width -width/2.00;
+                $("#hidCanvaLeft").val(newLeft);
+            });
+            $("#txtCanvaTop").on("change blur", function () {
+                var height = $("#txtCanvaHeight").val() / 100.00 * canvas.height;
+                var newTop = $("#txtCanvaTop").val() / 100.00 * canvas.height-height/2.00;
+                $("#hidCanvaTop").val(newTop);
+            });
+
+            $("#txtCanvaWidth").on("change blur", function () {
+                var width = $("#txtCanvaWidth").val() / 100.00 * canvas.width;
+                if (preObjWidth != width) {
+                    var rate = (selectedObj.target.scaleY * selectedObj.target.height) / (selectedObj.target.scaleX * selectedObj.target.width);
+                    $("#hidCanvaWidth").val(width);
+                    $("#hidCanvaHeight").val(Math.floor($("#hidCanvaWidth").val() * rate));
+                    $("#txtCanvaHeight").val(($("#hidCanvaHeight").val()/canvas.height*100.00).toFixed(2));
+                }
+            });
+
+            $("#txtCanvaHeight").on("change blur", function () {
+                var height = $("#txtCanvaHeight").val() / 100.00 * canvas.height;
+                if (preObjHeight != height) {
+                    var rate = (selectedObj.target.scaleX * selectedObj.target.width) / (selectedObj.target.scaleY * selectedObj.target.height);
+                    //$("#txtCanvaWidth").val(Math.floor($("#txtCanvaHeight").val() * rate));
+                    $("#hidCanvaHeight").val(height);
+                    $("#hidCanvaWidth").val(Math.floor($("#hidCanvaHeight").val() * rate));
+                    $("#txtCanvaWidth").val(($("#hidCanvaWidth").val() / canvas.height * 100.00).toFixed(2));
+                }
+            });
+
+            $("#txtCanvaHeight").on("focus",function(){
+                preObjHeight = $("#txtCanvaHeight").val()/100.00*canvas.height;
+            });
+
+            $("#txtCanvaWidth").on("focus",function(){
+                preObjWidth = $("#txtCanvaWidth").val()/100.00*canvas.width;
+            });
+
+            //resize   process only last one
+            var rtime = new Date();
+            var timeout = false;
+            var delta = 200;
+            $(window).resize(function () {
+                if (typeof (canvas) != "undefined") {
+
+                    canvas.discardActiveObject();
+                    canvas.fire('canvas:cleared');
+
+                    rtime = new Date();
+                    if (timeout === false) {
+                        timeout = true;
+                        setTimeout(resizeend, delta);
+                    }
+                }
+            });
+
+            //resize   process only last one
+            function resizeend() {
+                if (new Date() - rtime < delta) {
+                    setTimeout(resizeend, delta);
+                } else {
+                    timeout = false;
+                    if (canvas) {
+                        if (typeof (itemModel) != "undefined") {
+                            if (itemModel.step && itemModel.step() == 3) {
+                                CanvasResize(JSON.stringify(canvas.toDatalessJSON(new Array("id", "sort", "lockUniScaling", "selectable",
+                            "lockScalingX", "lockScalingY", "hasRotatingPoint", "cornerSize"))), canvas.width, "content-body");
+                            }
+                        }
+                        else {
+                            CanvasResize(JSON.stringify(canvas.toDatalessJSON(new Array("id", "sort", "lockUniScaling", "selectable",
+                            "lockScalingX", "lockScalingY", "hasRotatingPoint", "cornerSize"))),
+                                canvas.width, "content-body");
+                        }
+                    }
+                }
+            }
+
+            if(jsonModel.BackgroundFill != "")
+                InitCanvas("content-body-width",jsonModel.BackgroundFill);
+            else {
+                if(jsonModel.LayoutId != "" && jsonModel.LayoutId != "0")
+                    InitCanvas("content-body-width",(!jsonModel.BackgroundImage && !jsonModel.LayoutBackgroundImage) ? jsonModel.LayoutBackgroundFill : "");
+                else
+                    InitCanvas("content-body-width", "");
+            }
+        });
+
+        function chooseLayout(o){
+            if($(o).val() == 2){
+                $("#divExistLayout").css("display","");
+            }
+            else{  //custom
+                var tmpLayoutId = $("#LayoutId").val();
+                if(tmpLayoutId != "" && tmpLayoutId != "0"){
+                    $.when(waitingConfirm("ChangetoCustom", "Ok", "Cancel"))
+                      .done(function () {
+                          $("#LayoutId").val("0");
+                          if (typeof (jsonModel) != 'undefined')   //确保该值为最新值
+                          {
+                              jsonModel.LayoutBackgroundImage = "";
+                              jsonModel.LayoutBackgroundColor = "";
+                              jsonModel.LayoutId = 0;
+                          }
+                          $("#divExistLayout").css("display","none");
+                          $("#radioLayout1").prop("checked",true);
+                          setCustomCanvas();
+                      });
+                    $("#radioLayout2").prop("checked",true);
+                }
+                else
+                    $("#divExistLayout").css("display","none");
+            }
+        }
+    </script>
+
+
+    <script type="text/javascript">
+
+
+        function CloseSize() {
+            var $divShow = $("#divShow");
+            if ($divShow.css('display') == 'block')
+                $divShow.css('display', 'none');
+        }
+
+
+        function ShowSize(obj) {
+            if (obj.target && obj.target.id && obj.target.id != '') {
+                selectedObj = obj;
+
+                var readWith = obj.target.width * obj.target.scaleX;
+                var readHeight = obj.target.height * obj.target.scaleY;
+
+                //if out of right , then left
+                var left = obj.target.left + readWith + $("#cav_layout").offset().left + 10;
+                if (left + $("#divShow").width() > canvas.width + $("#cav_layout").offset().left) {
+                    left = obj.target.left - $("#divShow").width() + $("#cav_layout").offset().left - 10;
+                    if (left < 0)
+                        left = 0;
+                    $("span.arrow-left-bot").attr("class", "arrow-right-bot");
+                    $("span.arrow-left-top").attr("class", "arrow-right-top");
+                }
+                else {
+                    if ($("span.arrow-right-bot").length > 0)
+                        $("span.arrow-right-bot").attr("class", "arrow-left-bot");
+                    if ($("span.arrow-right-top").length > 0)
+                        $("span.arrow-right-top").attr("class", "arrow-left-top");
+                }
+
+                var $divShow = $("#divShow");
+                $divShow.css('display', 'block');
+                $divShow.css('top', obj.target.top + $("#cav_layout").offset().top - $(document).scrollTop());
+                $divShow.css('left', left);
+
+                var canvasWidth = $("#cav_layout").width();
+                var canvasHeight = $("#cav_layout").height();
+
+                $("#hidCanvaWidth").val(readWith);
+                $("#hidCanvaHeight").val(readHeight);
+                $("#hidCanvaLeft").val(obj.target.left);
+                $("#hidCanvaTop").val(obj.target.top);
+
+
+                $("#txtCanvaWidth").val((readWith / canvasWidth * 100.00).toFixed(2));
+                $("#txtCanvaHeight").val((readHeight / canvasHeight * 100.00).toFixed(2));
+                $("#txtCanvaLeft").val(((obj.target.left + readWith / 2.00) / canvasWidth * 100.00).toFixed(2));
+                $("#txtCanvaTop").val(((obj.target.top + readHeight / 2.00) / canvasHeight * 100.00).toFixed(2));
+
+                $("#spanCanvasWidth").html(canvasWidth.toFixed(2) + "px");
+                $("#spanCanvasHeight").html(canvasHeight.toFixed(2) + "px");
+                preScroll = $("#divShow").offset().top;
+            }
+        }
+
+        function ResizeObjSize() {
+            if (selectedObj && selectedObj.target) {
+                //var nHeight = Number($("#txtCanvaHeight").val());
+                //var nWidth = Number($("#txtCanvaWidth").val());
+                //var nLeft = Number($("#txtCanvaLeft").val());
+                //var nTop = Number($("#txtCanvaTop").val());
+                var nHeight = Number($("#hidCanvaHeight").val());
+                var nWidth = Number($("#hidCanvaWidth").val());
+                var nLeft = Number($("#txtCanvaLeft").val()) / 100.00 * canvas.width - nWidth / 2.00;//Number($("#hidCanvaLeft").val()) ;
+                var nTop = Number($("#txtCanvaTop").val()) / 100.00 * canvas.height - nHeight / 2.00; //Number($("#hidCanvaTop").val());
+                //var nLeft = Number($("#hidCanvaLeft").val());
+                //var nTop = Number($("#hidCanvaTop").val());
+                var selectedCanvasObj = canvas._objects.filter(function (obj) { return obj.id == selectedObj.target.id });
+
+                var rate = (selectedObj.target.scaleY * selectedObj.target.height) / (selectedObj.target.scaleX * selectedObj.target.width);
+                if (nWidth > canvas.width) {
+                    nWidth = canvas.width - minPadding;
+                    nHeight = Math.floor(nWidth * rate);
+                }
+                if (nHeight > canvas.height) {
+                    nHeight = canvas.height - minPadding;
+                    nWidth = Math.floor(nHeight / rate);
+                }
+
+                if (selectedCanvasObj.length > 0) {
+                    if (selectedObj.target.height * selectedObj.target.scaleY != nHeight ||
+                        selectedObj.target.width * selectedObj.target.scaleX != nWidth
+                        || selectedObj.target.left != nLeft ||
+                        selectedObj.target.top != nTop) {
+                        var newscaleY = nHeight / selectedObj.target.height;
+                        var newscaleX = nWidth / selectedObj.target.width;
+                        if (newscaleY > 0)
+                            selectedCanvasObj[0].scaleY = newscaleY;
+                        if (newscaleX > 0)
+                            selectedCanvasObj[0].scaleX = newscaleX;
+                        selectedCanvasObj[0].left = nLeft;
+                        selectedCanvasObj[0].top = nTop;
+
+                        selectedObj.target.scaleX = newscaleX;
+                        selectedObj.target.scaleY = newscaleY;
+                        selectedObj.target.left = nLeft;
+                        selectedObj.target.top = nTop;
+
+                        selectedCanvasObj[0].setCoords();
+                        canvas.renderAll();
+                        RePositionLayout(selectedObj);
+                        ShowSize(selectedObj);
+                    }
+                }
+            }
+        }
+
+        function fileDequeuedTargetImage(model) {
+            model.TargetImage("");
+            model.ImageTimeDelay(0);
+        }
+
+        function uploadSuccessTargetImage(model, img, id) {
+            model.TargetImage(img);
+            $("#" + id).valid();
+        }
+
+        function fileDequeuedTargetAudio(model) {
+            model.TargetAudio("");
+            model.AudioTimeDelay(0);
+            model.SameasImageDelay(false);
+        }
+
+        function uploadSuccessTargetAudio(model, img, id) {
+            model.TargetAudio(img);
+            $("#" + id).valid();
+        }
+
+        $(function () {
+            $("#txtCanvaLeft").prop("title", " ");
+            $("#txtCanvaTop").prop("title", " ");
+        });
+    </script>
+}
+
+@using (Ajax.BeginForm("SaveTxkeaExpressive", "Item", null, PostFormHelper.DefaultAjaxOptions,
+                                        new
+                                        {
+                                            @class = "form-horizontal",
+                                            id = formId
+                                        }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ID" id="ID" value="@Model.ID" />
+    @Html.HiddenFor(m => m.Type)
+    @Html.HiddenFor(m => m.MeasureId)
+    @Html.Hidden("BackgroundFillType", 1)
+    @Html.Hidden("ResponseBackgroundFillType", 1)
+    @Html.Hidden("ItemLayout")
+    @Html.HiddenFor(m => m.LayoutId)
+    @Html.Hidden("ImageList")
+    @Html.Hidden("step")
+    @Html.Hidden("ScreenWidth")
+    @Html.HiddenFor(m => m.ScreenHeight)
+    @Html.Hidden("Responses")
+    @Html.HiddenFor(m => m.CpallsItemLayout)
+    @Html.Hidden("Scored", true)
+    @Html.Hidden("BranchingScoreList")
+    <input type="hidden" name="copyId" id="copyId" value="@(ViewBag.CopayId)" />
+
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+        <a class="mainbutton mainright-btn nav-btn" href="#"
+           data-bind="visible:step()==3,event:{click:getPreviewUrl}">Preview</a>
+        <a class="mainbutton mainright-btn nav-btn" href="/Ade/Item/TxkeaExpressResponsePreview"
+           data-toggle="modal" data-target="#modalLayoutPreview" data-bind="visible:step()==4">Preview</a>
+    </div>
+
+    <div class="main-content">
+        <div class="content-body" id="content-body-width">
+            <div class="form-group">
+                <div class="col-sm-12 divPorcessBar">
+                    @if (Model.ID > 0)
+                    {
+                        <table>
+                            <tr>
+                                <td>
+                                    <ul class="itemProcess">
+                                        <li class="processDescription processCompletedDesc" data-bind="event:{click:stepClick.bind($data,1)}" style="width: 170px;cursor:pointer;">
+                                            <span style="padding-left: 1px;">Question Details</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() > 1 },event:{click:stepClick.bind($data,2)}" style="width: 175px;cursor:pointer;">
+                                            <span style="padding-left: 1px">Image Properties</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() > 2},event:{click:stepClick.bind($data,3)}" style="width: 175px;cursor:pointer;">
+                                            <span style="padding-left: 1px">Question Layout Design</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() == 4}, visible: reponseType() == 2,event:{click:stepClick.bind($data,4)}" style="width: 175px;cursor:pointer;">
+                                            <span style="padding-left: 1px">Response Details</span>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul class="itemProcess">
+                                        <li><span style="padding-left: 50px">&nbsp;</span></li>
+                                        <li style="cursor:pointer" data-bind="event:{click:stepClick.bind($data,1)}" class="roundicon completed1"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 1 , nofinishtext: step() < 2 }"><span class="processBar">&nbsp;</span></li>
+                                        <li style="cursor:pointer" class="roundicon" data-bind="css: { completed2: step() > 1 , nofinish2: step() < 2 },event:{click:stepClick.bind($data,2)}"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 2 , nofinishtext: step() < 3 }"><span class="processBar">&nbsp;</span></li>
+                                        <li style="cursor:pointer" class="roundicon" data-bind="css: { completed3: step() > 2 , nofinish3: step() < 3 },event:{click:stepClick.bind($data,3)}"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 3 , nofinishtext: step() < 4 },visible: reponseType() == 2"><span class="processBar">&nbsp;</span></li>
+                                        <li style="cursor:pointer" class="roundicon nofinish" data-bind="css: { completed4: step() == 4 , nofinish4: step() < 4 },visible: reponseType() == 2,event:{click:stepClick.bind($data,4)}"></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                    else
+                    {
+                        <table>
+                            <tr>
+                                <td>
+                                    <ul class="itemProcess">
+                                        <li class="processDescription processCompletedDesc" style="width: 170px;">
+                                            <span style="padding-left: 1px;">Question Details</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() > 1 }" style="width: 175px;">
+                                            <span style="padding-left: 1px">Image Properties</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() > 2}" style="width: 175px;">
+                                            <span style="padding-left: 1px">Question Layout Design</span>
+                                        </li>
+                                        <li class="processDescription" data-bind="css: { processCompletedDesc: step() == 4}, visible: reponseType() == 2" style="width: 175px;">
+                                            <span style="padding-left: 1px">Response Details</span>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul class="itemProcess">
+                                        <li><span style="padding-left: 50px">&nbsp;</span></li>
+                                        <li class="roundicon completed1"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 1 , nofinishtext: step() < 2 }"><span class="processBar">&nbsp;</span></li>
+                                        <li class="roundicon" data-bind="css: { completed2: step() > 1 , nofinish2: step() < 2 }"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 2 , nofinishtext: step() < 3 }"><span class="processBar">&nbsp;</span></li>
+                                        <li class="roundicon" data-bind="css: { completed3: step() > 2 , nofinish3: step() < 3 }"></li>
+                                        <li class="processtext" data-bind="css: { completedtext: step() > 3 , nofinishtext: step() < 4 },visible: reponseType() == 2"><span class="processBar">&nbsp;</span></li>
+                                        <li class="roundicon nofinish" data-bind="css: { completed4: step() == 4 , nofinish4: step() < 4 },visible: reponseType() == 2"></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" data-bind="visible: step() == 1">
+        <div class="content-body">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Label, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Label, baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Label)
+                </div>
+                <div class="col-sm-2">
+                    @Html.LabelFor(model => model.Status, new { @class = "hide" })
+                    @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultPleaseSelectText, "", baseClassObj)
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label for="IsPractice">
+                            @Html.CheckBoxFor(x => x.IsPractice, new { data_bind = "checked:IsPractice" })
+                            @Html.DisplayNameFor(x => x.IsPractice)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-2" style="display: none">
+                    <div class="checkbox">
+                        <label for="ShowAtTestResume">
+                            @Html.CheckBoxFor(x => x.ShowAtTestResume, new { data_bind = "checked:ShowAtTestResume,enable:IsPractice()" })
+                            @Html.DisplayNameFor(x => x.ShowAtTestResume)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 3 })
+                    @Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Choose background color fill", new { @class = "control-label col-sm-2", @for = "BackgroundFill" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.BackgroundFill, new { @class = "colorPicker evo-cp1", style = "width:80px;border:1px solid #dddddd;background-color:#ffffff;" })
+                </div>
+                @Html.Label("Choose background image", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-6">
+                    <div id="btnBackgroundImage" for="BackgroundImage">Browse</div>
+                    @if (!string.IsNullOrEmpty(Model.BackgroundImage))
+                    {
+                        <div class="webuploader-preview" id="divBackgroundImage">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <img src="@FileHelper.GetPreviewPathofUploadFile(Model.BackgroundImage)" width="60" height="60" alt="Background" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="webuploader-preview" id="divBackgroundImage" style="display: none;">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <img width="60" height="60" alt="Background" />
+                        </div>
+                    }
+
+                    <div id="BackgroundImageList" class="uploader-list"></div>
+                    @Html.HiddenFor(model => model.BackgroundImage)
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.InstructionText, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-8">
+                    @Html.TextAreaFor(model => model.InstructionText, new { @class = "form-control", rows = 3 })
+                    @Html.ValidationMessageFor(model => model.InstructionText)
+                </div>
+            </div>
+
+            <div class="form-group ">
+                @Html.LabelFor(model => model.InstructionAudio, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    <div id="btnPickTargetAudio" for="InstructionAudio">Browse</div>
+                    @if (!string.IsNullOrEmpty(Model.InstructionAudio))
+                    {
+                        <div class="webuploader-preview" id="divInstructionAudio">
+                            <a href="@FileHelper.GetPreviewPathofUploadFile(Model.InstructionAudio)"
+                               class="table-btn icon-zoom-in preview-btn" target="_blank"><span style="display:none;">1</span></a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="webuploader-preview" id="divInstructionAudio" style="display: none;">
+                            <a href=""
+                               class="table-btn icon-zoom-in preview-btn" target="_blank"><span style="display:none;">1</span></a>
+                        </div>
+                    }
+                </div>
+                <div class="col-sm-8">
+                    <div id="TargetAudioFilelist" class="uploader-list"></div>
+                    @Html.HiddenFor(model => model.InstructionAudio)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.InstructionAudioTimeDelay, new { @class = "control-label col-sm-2", @for = "InstructionAudioTimeDelay" })
+                <div class="col-sm-2">
+                    <div class=" input-group">
+                        @Html.TextBoxFor(model => model.InstructionAudioTimeDelay, new
+                   {
+                       @class = "form-control  timeout",
+                       placeholder = Html.DisplayNameFor(x => x.InstructionAudioTimeDelay),
+                       data_bind = "required:false"
+                   })
+                        <span class="input-group-addon">ms</span>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.InstructionAudioTimeDelay)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Images, new { @class = "control-label col-sm-2 required", @for = "Images" })
+                <div class="col-sm-2">
+                    @Html.DropDownListFor(model => model.Images, (IEnumerable<SelectListItem>)ViewBag.NumImages, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Images)
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.Label("Overall Time out", new { @class = "control-label col-sm-2" })
+
+                <div class="col-sm-2 checkbox">
+                    @Html.RadioButtonFor(model => model.Timed, true, new { id = "timed_Yes", data_bind = "checked:OverallTimeOut,checkedValue: true" })
+                    <label for="timed_Yes" style="padding-left: 4px;">Yes</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    @Html.RadioButtonFor(model => model.Timed, false, new { id = "timed_No", data_bind = "checked:OverallTimeOut,checkedValue: false" })
+                    <label for="timed_No" style="padding-left: 4px;">No</label>
+                </div>
+
+                <!--ko if:(OverallTimeOut()==true) -->
+                @Html.Label("Time out value", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    <div class=" input-group">
+                        @Html.TextBoxFor(model => model.Timeoutvalue, new
+                   {
+                       @class = "form-control timeout",
+                       placeholder = Html.DisplayNameFor(x => x.Timeoutvalue),
+                       data_bind = "required:false"
+                   })
+                        <span class="input-group-addon">ms</span>
+                    </div>
+                </div>
+                <!--/ko-->
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(model => model.WaitTime, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.WaitTime, new { @class = "form-control  timeout" })
+                        <span class="input-group-addon">ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ResponseType, new { @class = "control-label col-sm-2" })
+
+                <div class="col-sm-8 checkbox">
+                    @Html.RadioButtonFor(model => model.ResponseType, TxkeaExpressiveResponoseType.Simple, new { id = "ResponseType_1" })
+                    <label for="ResponseType_1" style="padding-left: 4px;">@TxkeaExpressiveResponoseType.Simple.ToDescription()</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    @Html.RadioButtonFor(model => model.ResponseType, TxkeaExpressiveResponoseType.Detailed, new { id = "ResponseType_2" })
+                    <label for="ResponseType_2" style="padding-left: 4px;">@TxkeaExpressiveResponoseType.Detailed.ToDescription()</label>
+                </div>
+            </div>
+
+            <div class="modal-l-b"></div>
+            <div class="form-group">
+                <div class="col-sm-1">&nbsp;</div>
+                <div class="col-sm-11">
+                    Branching/Skip Logic:
+                </div>
+            </div>
+            @if (Model.BranchingItems != null && Model.BranchingItems.Count > 0)
+            {
+                <div class="form-group">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-10">
+                        @Html.Editor("", "BranchingScore", new { selectItems = Model.BranchingItems })
+                    </div>
+                    <div class="col-sm-1">&nbsp;</div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-10">
+                        <p style="color: red">*In order for branching to be enabled, you must have an <span style="text-decoration: underline">ACTIVE</span> item following this current item.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="main-content" data-bind="visible: step() ==4">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.Label("Choose background color fill", new { @class = "control-label col-sm-3", @for = "ResponseBackgroundFill" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.ResponseBackgroundFill, new { @class = "colorPicker evo-cp1", style = "width:80px;border:1px solid #dddddd;background-color:#ffffff;" })
+                </div>
+                @Html.Label("Choose background image", new { @class = "control-label col-sm-2" })
+                <div class="col-sm-5">
+                    <div id="btnResponseBackgroundImage" for="ResponseBackgroundImage">Browse</div>
+                    @if (!string.IsNullOrEmpty(Model.ResponseBackgroundImage))
+                    {
+                        <div class="webuploader-preview" id="divResponseBackgroundImage">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <img src="@FileHelper.GetPreviewPathofUploadFile(Model.ResponseBackgroundImage)" width="60" height="60" alt="Background" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="webuploader-preview" id="divResponseBackgroundImage" style="display: none;">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <img width="60" height="60" alt="Background" />
+                        </div>
+                    }
+
+                    <div id="ResponseBackgroundImageList" class="uploader-list"></div>
+                    @Html.HiddenFor(model => model.ResponseBackgroundImage)
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.Partial("~/Areas/Ade/Views/Shared/EditorTemplates/_PartialImages.cshtml")
+
+
+    @Html.Partial("~/Areas/Ade/Views/Shared/EditorTemplates/_PartialExpressiveLayout.cshtml")
+
+    @Html.Partial("~/Areas/Ade/Views/Shared/EditorTemplates/_PartialResponses.cshtml")
+
+
+    <div class="button-content">
+        <!--ko if:step() >1-->
+        <button class="mainbutton mainright-btn submit-btn submit" id="btnPrevious" type="button" data-bind="event: { click: previous }">Previous</button>
+        <!--/ko-->
+        <button class="mainbutton mainright-btn submit-btn submit" id="btnSubmit" type="button"
+                data-bind="visible: (IsCompleted || (step() ==4 && reponseType() == 2) || (step() ==3 && reponseType() == 1)), event: { click: submit }">
+            Submit
+        </button>
+        <!--ko if:step() < 3 || (step() ==3 && reponseType() == 2)-->
+        <button class="mainbutton mainright-btn submit-btn submit" id="btnNext" type="button" data-bind="event: { click: next }">Next</button>
+        <!--/ko-->
+    </div>
+}

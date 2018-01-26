@@ -1,0 +1,274 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.ParentEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Parent Sign Up";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    IEnumerable<SelectListItem> countryOptions = ViewBag.CountryList;
+}
+@section Scripts{
+    <script type="text/javascript">
+        $(function() {
+            $("#chkAgree").click(function() {
+                if ($("#chkAgree").prop("checked") == true) {
+                    $(".submit-btn").removeAttr("disabled");
+                } else {
+                    $(".submit-btn").attr({ "disabled": "disabled" });
+                }
+            });
+            $("#ddlCountryId").val(188);
+            ShowState();
+            //$("#Relation").change(function () {
+            //    if ($("#Relation :selected").text() == "Other")
+            //        $("#RelationOther").attr("type", "text");
+            //    else {
+            //        $("#RelationOther").val("");
+            //        $("#RelationOther").attr("type", "hidden");
+            //    }
+            //})
+
+
+        });
+
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function(response) {
+                $("#confirmation").click();
+            }
+        });
+
+        function ShowState() {
+            var countryId = $("#ddlCountryId").val();
+            if (countryId != 188) {
+                $("#ddlState").val(0);
+                $("#ddlState").hide();
+            } else {
+                $("#ddlState").show();
+            }
+        }
+
+        function PublicSchoolChked(obj) {
+         
+            if (obj != "ddlState") {
+                if ($("#ddlState").val() == "44" && $("#" + obj).is(":checked")) {
+                    $("#modalMsg").modal('show');
+                }
+            } else if ($("#ddlState").val() == "44" && ($("#chk3").is(":checked") || $("#chk4").is(":checked"))) {
+                $("#modalMsg").modal('show');
+            }
+        }
+
+        function ClickOtherSetting() {
+            if ($("#chkOther").is(":checked")) {
+                $("#txtOtherSetting").show();
+            } else {
+                $("#txtOtherSetting").hide();
+                $("#txtOtherSetting").val("");
+            }
+          
+        }
+
+        function SubmitParent() {
+            $("#" + '@formId').submit();
+        }
+    </script>
+}
+@using (Html.BeginForm("ParentRegister", "Parent", null, FormMethod.Post,
+                new
+                {
+                    @class = "form-horizontal",
+                    id = formId
+                }))
+{
+    @Html.AntiForgeryToken()
+    <label class="hide" for="SchoolYear">&nbsp;</label>
+    @Html.TextBox("SchoolYear", Sunnet.Cli.Business.Common.CommonAgent.SchoolYear, new { @class = "hide" })
+    <a href="/Signup/Teacher/Confirmation" id="confirmation" data-toggle="modal" data-target="#modalNormal"></a>
+    <div id="modalNormal" class="modal" data-cache="false" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog-nomral">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="main-con">
+            @*<div class="row">
+                <div class="col-sm-12 parent-top">
+                    <h3>Sign Up for Access to CLI Engage!</h3>
+                    <p class="parent-top-first clearfix"><b>Public Users / Parents</b><span>Sign up here for access to our FREE RESOURCES including classroom and home activities, trainings, access to your child’s school reports, and more...</span></p>
+                    <p class="parent-top-last"><b>Early Education Professionals</b><span>(teachers, administrators, specialists), please complete the information below.</span></p>
+                </div>
+            </div>*@
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3><b>Public Users / Parents</b> Sign Up / <b>Registración</b> de Usuarios públicos / padres
+                    </h3>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Your First Name / Su Primer Nombre", new {@class = "col-sm-4 control-label required", @for = "UserInfo_FirstName"})
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.UserInfo.FirstName, new {@class = "form-control col-sm-4"})
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.UserInfo.FirstName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Your Last Name / Su Apellido", new {@class = "col-sm-4 control-label required", @for = "UserInfo_LastName"})
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.UserInfo.LastName, new {@class = "form-control col-sm-4"})
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.UserInfo.LastName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Email / Correo Electrónico", new {@class = "col-sm-4 control-label required", @for = "UserInfo_PrimaryEmailAddress"})
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.UserInfo.PrimaryEmailAddress, new {@class = "form-control col-sm-4 email"})
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.ValidationMessageFor(model => model.UserInfo.PrimaryEmailAddress)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="ddlCountryId">Country / País</label>
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(model => model.CountryId, countryOptions, new {@id = "ddlCountryId", @class = "form-control col-sm-4", onchange = "ShowState()", value = "188"})
+                        @Html.ValidationMessageFor(model => model.CountryId)
+                        @*<select class="form-control col-sm-4" name="CountryId">
+                        <option value="0">Please select...</option>
+                        <option value="1">USA</option>
+                    </select>*@
+                    </div>
+                    <div class="col-sm-4">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="ddlState">State / Estado</label>
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(model => model.StateId, (IEnumerable<SelectListItem>) ViewBag.StateOptions,
+                            new {@id = "ddlState", @class = "form-control", placeholder = "State", data_bind = "value:selectedState", onchange = "PublicSchoolChked('ddlState')"})
+                        @Html.ValidationMessageFor(model => model.StateId)
+                    </div>
+                    <div class="col-sm-4">
+
+                    </div>
+                </div>
+                <div class="col-sm-12  ">
+                    <p class="parent-if"> Please tell us about yourself so we can make sure you get the CLI-Engage account you need.
+                        Choose the statements below that apply to you (mark all that describe you):</p>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4 "></div>
+                    <div class="col-sm-8">
+                        <input type="checkbox" id="chk1" class="required" name="chkSetting" value="1"/>
+                        <label for="chk1">I am a parent or an unpaid caregiver of a child age 0-5</label>
+                        <br/><input type="checkbox" id="chk2" class="required" name="chkSetting" value="2"/>
+                        <label for="chk2">I am enrolled in an early childhood-related certificate or degree program</label>
+                        <br/><input type="checkbox" id="chk3" class="required" name="chkSetting" value="3" onclick="PublicSchoolChked('chk3')"/>
+                        <label for="chk3">I work in a Head Start program</label>
+                        <br/><input type="checkbox" id="chk4" class="required" name="chkSetting" value="4" onclick="PublicSchoolChked('chk4')"/>
+                        <label for="chk4">I work in a public or charter school</label>
+                        <br/><input type="checkbox" id="chk5" class="required" name="chkSetting" value="5"/>
+                        <label for="chk5">I work in a child care center</label>
+                        <br/><input type="checkbox" id="chk6" class="required" name="chkSetting" value="6"/>
+                        <label for="chk6">I work in a home-based or family child care program</label>
+                        <br/><input type="checkbox" id="chk7" class="required" name="chkSetting" value="7"/>
+                        <label for="chk7">I work for an institute of higher education</label>
+                        <br/><input type="checkbox" id="chk8" class="required" name="chkSetting" value="8"/>
+                        <label for="chk8">I work for an early childhood training and support service organization</label>
+                        <br/><input type="checkbox" id="chkOther" class="required" name="chkSetting" value="9" onchange="ClickOtherSetting()"/>
+                        <label for="chkOther">Other, please specify:</label>
+                        <input type="text" name="OtherSetting" class="required" id="txtOtherSetting" style="display: none; border: 1px solid #dddddd; border-radius: 3px; width: 300px"/>
+                        <br/><label for="txtOtherSetting"><span style="display: none">1</span></label>
+                        @Html.ValidationMessage("chkSetting")
+                    </div>
+                </div>
+
+
+
+                <div class="col-sm-12 text-center">
+                    <p class="parent-if">If you received a parent pin page from your child’s teacher, enter the information below to access your child’s reports.</p>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Parent Code / Código de Padres", new {@class = "col-sm-4 control-label", @for = "ParentCode"})
+                    <div class="col-sm-4">
+                        @Html.TextBox("ParentCode", "", new {@class = "form-control col-sm-4"})
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Child’s First Name / Primer Nombre del Niño", new {@class = "col-sm-4 control-label", @for = "ChildFirstName"})
+                    <div class="col-sm-4">
+                        @Html.TextBox("ChildFirstName", "", new {@class = "form-control col-sm-4"})
+                    </div>
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Child’s Last Name / Apellido del niño", new {@class = "col-sm-4 control-label", @for = "ChildLastName"})
+                    <div class="col-sm-4">
+                        @Html.TextBox("ChildLastName", "", new {@class = "form-control col-sm-4"})
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="logup-tip"></span>
+                    </div>
+                </div>
+                @*<div class="form-group">
+                        @Html.Label("Relation", new { @class = "col-sm-4 control-label" })
+                        <div class="col-sm-4">
+                            @Html.DropDownList("Relation", (IEnumerable<SelectListItem>)ViewBag.RelationList, new { @class = "form-control col-sm-4" })
+                            @Html.Label("RelationOther", null, new { @class = "control-label hide" })
+                            @Html.TextBox("RelationOther", "", new { @class = "form-control col-sm-4", type = "hidden", placeholder = "enter other relation" })
+                        </div>
+                        <div class="col-sm-4">
+                        </div>
+                    </div>*@
+                <div class="form-group">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8" style="display: none;">
+                        <label>
+                            @Html.CheckBox("chkAgree", new {@checked = true})
+                            I agree to the <a href="#" class="loginup-link">Terms of Service</a> and <a href="#" class="loginup-link">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12 logbtn-con">
+                        <input type="button" onclick="SubmitParent()" class="logbutton submit-btn" value="Submit / Enviar">
+                        <input type="button" class="logbutton cancel-btn" onclick="javascript: location.href = '/Home/SignUp/'" value="Cancel / Cancelar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modalMsg" class="modal" data-cache="true" data-confirm="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="$('#modalMsg').modal('hide')" ><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Warning</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-main-content">
+                        <div class="modal-content-body" id="msgContent">
+                            <p> You may qualify for TSR Online, which means you may have access to progress monitoring, observation tools, and many more courses and activities! Please click here
+                                <a  href='@(DomainHelper.MainSiteDomain)public/sign-up-for-tsr-online/'> <span class='a-hover'>(@(DomainHelper.MainSiteDomain)public/sign-up-for-tsr-online/)</span></a> to request access.
+                            </p>
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <a style="cursor:pointer" href="@(DomainHelper.MainSiteDomain)public/sign-up-for-tsr-online/" class="mainbutton modal-btn submit-btn">Request TSR Online Access</a>
+                            <a style="cursor:pointer" class="mainbutton modal-btn cancel-btn" onclick="$('#modalMsg').modal('hide')" >Continue with Public Access registration</a>
+                             
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+}

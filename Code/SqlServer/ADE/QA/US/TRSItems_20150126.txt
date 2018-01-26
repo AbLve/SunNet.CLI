@@ -1,0 +1,4 @@
+﻿update TRSItems set ShowBySchoolAge=0 where Item='P-LPC-01' and Category=3
+
+update TRSItems set ShowByInfants=1,ShowByToddlers=1,ShowByPreschool=1,ShowBySchoolAge=1
+where Item in ('P-PE-01','P-PE-02','P-PI-01','P-PI-02','P-PI-03') and Category=5

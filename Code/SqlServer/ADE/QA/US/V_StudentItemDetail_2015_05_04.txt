@@ -1,0 +1,33 @@
+﻿GO
+
+/****** Object:  View [dbo].[V_StudentItemDetail]    Script Date: 5/4/2015 11:13:41 ******/
+IF EXISTS(SELECT 1 FROM sys.objects WHERE object_id = object_id('V_StudentItemDetail'))
+DROP VIEW [dbo].[V_StudentItemDetail]
+GO
+
+/****** Object:  View [dbo].[V_StudentItemDetail]    Script Date: 5/4/2015 11:13:41 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+CREATE VIEW [dbo].[V_StudentItemDetail]
+AS
+SELECT	SA.AssessmentId,SA.SchoolYear,SA.Wave, SA.CDId,SA.SchoolId,SA.StudentId, SM.MeasureId, [SMId] = SM.ID,IB.[Description],IB.[Type],
+SI.ID,SI.ItemId,SI.Goal, SI.Score, SI.Scored, SI.IsCorrect, SI.PauseTime, SI.SelectedAnswers
+FROM
+dbo.StudentAssessments AS SA
+INNER JOIN dbo.StudentMeasures AS SM ON SA.ID = SM.SAId 
+INNER JOIN dbo.Measures AS M ON SM.MeasureId = M.ID 
+INNER JOIN [dbo].[StudentItems] AS SI ON SM.ID = SI.SMId 
+INNER JOIN [dbo].[ItemBases] AS IB ON SI.ItemId = IB.ID
+WHERE SI.[Status] = 3
+
+
+
+GO
+
+

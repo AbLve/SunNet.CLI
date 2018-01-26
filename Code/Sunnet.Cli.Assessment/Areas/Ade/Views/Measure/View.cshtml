@@ -1,0 +1,259 @@
+﻿@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Ade.Models.MeasureModel
+
+@{
+    ViewBag.Title = "Edit - " + Model.Label;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    var backUrl = Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                  Url.Action("Detail", "Assessment", new { id = Model.AssessmentId });
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Assessment", "Index", "Assessment"))
+    <i class="icon-angle-right"></i>
+    @Html.ActionLink(Model.AssessmentLabel, "Detail", "Assessment", new { id = Model.AssessmentId }, null)
+    @if (Model.Parent != null && Model.Parent.ID != 1)
+    {
+        <i class="icon-angle-right"></i>
+        @Model.Parent.Label
+    }
+    <i class="icon-angle-right"></i>@Model.Label
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Html.Raw(backUrl))">Back</a>
+</div>
+@section Styles
+{
+    <style type="text/css">
+        .inputCenter {
+            text-align: center;
+        }
+    </style>
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    <script type="text/javascript">
+        +(function() {
+            var scoreModel = getAdeScoreModel(@Html.Raw(ViewBag.Scores),'@formId','scores','deleted',@Html.Raw(ViewBag.Benchmarks));
+            ko.applyBindings(scoreModel, document.getElementById("@(formId)"));
+        })();
+    </script>
+}
+
+<form id="@formId" class="form-horizontal">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.Hidden("scores")
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ParentId, new { @class = "control-label col-sm-2 required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(x => x.Parent.Label)
+                </div>
+                @Html.LabelFor(model => model.ApplyToWave, new { @class = "control-label col-sm-2  required" })
+                <div class="col-sm-4">
+                    <input type="checkbox" name="ApplyToWave" id="ApplyToWave1" value="@((int)Wave.BOY)"
+                           @(Model.ApplyToWave.Contains(Wave.BOY) ? "checked=checked" : "") disabled="disabled" />
+                    @Html.Label("e", Wave.BOY.ToDescription(), new { @for = "ApplyToWave1" })
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <input type="checkbox" name="ApplyToWave" id="ApplyToWave2" value="@((int)Wave.MOY)"
+                           @(Model.ApplyToWave.Contains(Wave.MOY) ? "checked=checked" : "") disabled="disabled" />
+                    @Html.Label("e", Wave.MOY.ToDescription(), new { @for = "ApplyToWave2" })
+                    @ViewTextHelper.HtmlEmptySeparator
+                    <input type="checkbox" name="ApplyToWave" id="ApplyToWave3" value="@((int)Wave.EOY)"
+                           @(Model.ApplyToWave.Contains(Wave.EOY) ? "checked=checked" : "") disabled="disabled" />
+                    @Html.Label("e", Wave.EOY.ToDescription(), new { @for = "ApplyToWave3" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Label, new
+       {
+           @class = "control-label col-sm-2  required",
+           @for = formId + "_Label"
+       })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.Label)
+                </div>
+                @Html.LabelFor(model => model.Name, new
+            {
+                @class = "control-label col-sm-2  required",
+                @for = formId + "_Name"
+            })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.Name)
+                </div>
+
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-10">
+                    @Html.Raw(Model.Description)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ItemType, new { @class = "control-label col-sm-2  required" })
+                <div class="col-sm-3">
+                    @Html.DisplayFor(model => model.ItemType)
+                </div>
+                @Html.LabelFor(model => model.OrderType, new { @class = "control-label col-sm-3  required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.OrderType)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TotalScored, new { @class = "control-label col-sm-2  required", @for = formId + "_TotalScored" })
+                <div class="col-sm-1">
+                    @Html.DisplayFor(model => model.TotalScored)
+                </div>
+                <div class="col-sm-3">
+                    <label>Percentile Rank: </label>
+                    <label class="control-label-text" style="width: 16%;">@(Model.PercentileRank ? "Yes" : "No")</label>
+                </div>
+                @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2  required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.Status)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.InnerTime, new { @class = "control-label col-sm-2  required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.InnerTime, new { format = "{0} ms" })
+                </div>
+                @Html.LabelFor(model => model.Timeout, new { @class = "control-label col-sm-2  required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.Timeout, new { format = "{0} seconds" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.StartPageHtml, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @if (!string.IsNullOrEmpty(Model.StartPageHtml))
+                    {
+                        <div class="webuploader-preview">
+                            <a class="table-btn icon-zoom-in preview-btn"
+                               href="@FileHelper.GetPreviewPathofUploadFile(Model.StartPageHtml)" target="_blank"><span style="display:none;">1</span></a>
+
+                        </div>
+                    }
+                </div>
+                @Html.LabelFor(model => model.EndPageHtml, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @if (!string.IsNullOrEmpty(Model.EndPageHtml))
+                    {
+                        <div class="webuploader-preview">
+                            <a class="table-btn icon-zoom-in preview-btn"
+                               href="@FileHelper.GetPreviewPathofUploadFile(Model.EndPageHtml)" target="_blank"><span style="display:none;">1</span></a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                @if (ViewBag.RelatedMeasureName != null)
+                {
+                    @Html.LabelFor(model => model.RelatedMeasureId, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4">
+                        <label class="control-label-text">@ViewBag.RelatedMeasureName</label>
+                    </div>
+                }
+                @Html.LabelFor(model => model.ShortName, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.ShortName)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PreviousButton, new { @class = "control-label col-sm-3" })
+                <div class="col-sm-1">
+                    @Html.DisplayFor(model => model.PreviousButton)
+                </div>
+                @Html.LabelFor(model => model.StopButton, new { @class = "control-label col-sm-3" })
+                <div class="col-sm-1">
+                    @Html.DisplayFor(model => model.StopButton)
+                </div>
+                @Html.LabelFor(model => model.NextButton, new { @class = "control-label col-sm-3" })
+                <div class="col-sm-1">
+                    @Html.DisplayFor(model => model.NextButton)
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    @Html.LabelFor(model => model.GroupByParentMeasure, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4 checkbox">
+                        @Html.DisplayFor(model => model.GroupByParentMeasure)
+                    </div>
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.LightColor, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4 checkbox">
+                        @Html.DisplayFor(model => model.LightColor)
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    @Html.LabelFor(model => model.ShowLaunchPage, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4 ">
+
+                        @Html.DisplayFor(model => model.ShowLaunchPage)
+
+                    </div>
+                    @Html.LabelFor(model => model.ShowFinalizePage, new { @class = "control-label col-sm-2" })
+                    <div class="col-sm-4 ">
+                        @Html.DisplayFor(model => model.ShowFinalizePage)
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6">
+                    Cutoff Scores:
+                    @Html.ValidationMessage("FromYear")
+                    @Html.ValidationMessage("FromMonth")
+                    @Html.ValidationMessage("ToYear")
+                    @Html.ValidationMessage("ToMonth")
+                </div>
+                @Html.LabelFor(model => model.GroupByLabel, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4 checkbox">
+                    @Html.DisplayFor(model => model.GroupByLabel)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="nav-tab">
+                    <ul id="measureContainer" class="nav-container" role="tablist">
+                        <li class="active"><a href="#Wave1" role="tab" data-toggle="tab">Wave @(Wave.BOY.ToDescription())</a></li>
+                        <li><a href="#Wave2" role="tab" data-toggle="tab">Wave @(Wave.MOY.ToDescription())</a></li>
+                        <li><a href="#Wave3" role="tab" data-toggle="tab">Wave @(Wave.EOY.ToDescription())</a></li>
+                    </ul>
+                </div>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade in active" id="Wave1">
+                        @Html.Display("", "MeasureCutoffScores", new { wave = Wave.BOY })
+                    </div>
+                    <div class="tab-pane fade" id="Wave2">
+                        @Html.Display("", "MeasureCutoffScores", new { wave = Wave.MOY })
+                    </div>
+                    <div class="tab-pane fade" id="Wave3">
+                        @Html.Display("", "MeasureCutoffScores", new { wave = Wave.EOY })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn close-btn" type="button" onclick='redirectBack("@backUrl")'>Close</button>
+    </div>
+</form>

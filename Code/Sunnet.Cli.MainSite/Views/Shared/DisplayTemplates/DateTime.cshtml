@@ -1,0 +1,19 @@
+﻿@model DateTime
+@{
+    var format = ViewData["format"] ?? "{0}";
+    var toFormat = ViewData["toFormat"] ?? "MM/dd/yyyy";
+}
+
+@if (Model <= DateTime.Parse("01/01/1753"))
+{
+    <label class="control-label-text">
+        <span style="display: none;">wave</span>
+    </label>
+}
+else
+{
+    <label class="control-label-text">
+        @Model.FormatDateString(toFormat.ToString())
+    </label>
+}
+

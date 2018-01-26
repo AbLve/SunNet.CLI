@@ -1,0 +1,5 @@
+﻿alter table Classes add IsDeleted bit 
+go
+update Classes set IsDeleted=0 
+go
+alter table Classes alter column IsDeleted bit not null

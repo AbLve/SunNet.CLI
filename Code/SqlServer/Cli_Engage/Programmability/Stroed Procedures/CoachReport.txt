@@ -1,0 +1,22 @@
+﻿--coach report
+CREATE procedure CoachReport
+@coachId int,
+@fundingIds varchar(max),
+@status int
+AS
+begin
+declare @sql varchar(max)
+ set @sql='select U.Status,T.ID,F.ID,Coachs.ID, BC.Name as CommunityName,BS.Name as SchoolName,ST.Name as SchoolType,U.FirstName,U.LastName,F.Name as TeacherFunding,
+(case when T.TeacherType=0 then '''' when T.TeacherType=1 then ''Lead Teacher'' when T.TeacherType=1 then ''Lead Teacher'' when T.TeacherType=2 then ''Co-Teacher'' 
+when T.TeacherType=3 then ''Assistant Teacher'' else T.TeacherTypeOther end) as TeacherType,'''' as TargetStatus 
+from Teachers T inner join Users U on U.ID=T.UserId left join (select * from Users where role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+left join Fundings F on F.ID=T.CLIFundingId
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId left join SchoolTypes ST on ST.ID=S.SchoolTypeId 
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId 
+where F.ID in ('+CAST(@fundingIds AS varchar(max))+') and Coachs.ID='+CAST(@coachId as varchar(100))+''
+if(@status=1 or @status=2)
+	set @sql+=' and U.Status='+CAST(@status as varchar(100))+''
+set @sql+=' order by BC.Name'
+exec(@sql)
+end
+GO

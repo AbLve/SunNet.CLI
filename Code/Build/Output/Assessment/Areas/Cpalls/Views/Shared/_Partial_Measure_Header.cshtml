@@ -1,0 +1,84 @@
+﻿
+@{
+    Layout = null;
+    var childrenMeasures = ViewBag.MeasureList as List<MeasureHeaderModel>;
+    var schoolNameHeight = childrenMeasures != null && childrenMeasures.Any(x => x.ParentId > 1) ? 130 : 100;
+}
+<thead>
+    <tr class="fixed-columns-rotate">
+        <th class="fixed-column-title" style="border-color: #fff #ddd #fff #fff; height: 30px; width: @(ViewBag.LeftWidth)px;">&nbsp;</th>
+        @foreach (var tmpItem in (List<MeasureHeaderModel>)ViewBag.ParentMeasure)
+        {
+            if (@tmpItem.Subs == 0)
+            {
+                <th rowspan="2" class="fixed-columns-rotate">
+                    <div title="@(tmpItem.Name)">
+                        <span>@(tmpItem.Name.CutString(25))</span>
+                    </div>
+                </th>
+            }
+            else
+            {
+                <th class="fixed-columns-rotate-super"
+                    isparent="true" val="@tmpItem.MeasureId" data-bind="attr:{colspan:parentMeasure[@(tmpItem.MeasureId)].colspan()}">
+                    <div title="@(tmpItem.Name)" style="left: 75px;" class="measure-split-line-left measure-split-line-right measure-split-line-top" data-bind="css:{'table-th-expanded':parentMeasure[@(tmpItem.MeasureId)].visible(),'table-th-collapsed':!parentMeasure[@(tmpItem.MeasureId)].visible()}">
+                        <span data-bind="attr:{'title-length':parentMeasure[@(tmpItem.MeasureId)].colspan()*6},title:parentMeasure[@(tmpItem.MeasureId)].name()"></span>
+                    </div>
+                </th>
+            }
+        }
+        <th style="border-color: #fff; height: 30px; width: 100%">&nbsp;</th>
+    </tr>
+    <tr class="fixed-columns-rotate">
+        <th class="fixed-column-title" style="height: @(schoolNameHeight)px;padding-top: @(schoolNameHeight-30)px;">
+            <div style="width: @(ViewBag.LeftWidth)px;">
+                <span>
+                    <a href="javascript:;" data-bind="click: function(){$root.changeOrder({field:'Name'});}"><b>@(ViewBag.Target) Name</b></a>
+                    <span class="glyphicon"
+                          data-bind="visible: $root.orderBy() == 'Name' && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                    <span class="glyphicon"
+                          data-bind="visible: $root.orderBy() == 'Name' && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                </span>
+            </div>
+        </th>
+        @foreach (var tmpItem in (List<MeasureHeaderModel>)ViewBag.MeasureList)
+        {
+            if (tmpItem.ParentId > 1)
+            {
+                if (tmpItem.ParentId == tmpItem.MeasureId)
+                {
+                    <th parent="@(tmpItem.ParentId)" _m="@(tmpItem.MeasureId)" class="fixed-columns-rotate">
+                        <div title="@(tmpItem.Name)" class="measure-split-line-right" data-bind="click:function(){$root.collapse(@(tmpItem.MeasureId));},css:{'table-th-expanded':parentMeasure[@(tmpItem.MeasureId)].visible(),'table-th-collapsed':!parentMeasure[@(tmpItem.MeasureId)].visible(),'measure-split-line-left':!parentMeasure[@(tmpItem.MeasureId)].visible()},attr:{title:parentMeasure[@(tmpItem.MeasureId)].visible()?'click to collapse section':'click to expand section'}">
+                            <span>
+                                @(tmpItem.Name.CutString(25))&nbsp;&nbsp;&nbsp;&nbsp;<i data-bind="{css:{'icon-folder-open-alt':parentMeasure[@(tmpItem.MeasureId)].visible(),'icon-folder-close-alt':!parentMeasure[@(tmpItem.MeasureId)].visible()}}"></i>
+                                <br />
+                                 <!-- ko if:parentMeasure[@(tmpItem.ParentId)].visible()-->
+                                click to collapse
+                                <!-- /ko -->
+                                <!-- ko if:!parentMeasure[@(tmpItem.ParentId)].visible()-->
+                                click to expand
+                                <!-- /ko -->
+                            </span>
+                        </div>
+                    </th>
+                    }
+                    else
+                    {
+                    <!-- ko if:parentMeasure[@(tmpItem.ParentId)].visible()-->
+                    <th parent="@(tmpItem.ParentId)" _m="@(tmpItem.MeasureId)" class="fixed-columns-rotate">
+                        <div title="@(tmpItem.Name)" class='@(tmpItem.IsFirstOfParent ? "measure-split-line-left" : "")'>
+                            <span>
+                                @(tmpItem.Name.CutString(25))
+                            </span>
+                        </div>
+                    </th>
+                                            <!-- /ko -->
+                                        }
+            }
+        }
+        <th style="width: 100%">&nbsp;</th>
+    </tr>
+</thead>
+

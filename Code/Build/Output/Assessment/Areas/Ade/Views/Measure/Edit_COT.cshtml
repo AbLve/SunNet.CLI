@@ -1,0 +1,122 @@
+﻿@using Sunnet.Cli.Core.Ade
+@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Ade.Models.MeasureModel
+
+@{
+    ViewBag.Title = "Edit - " + Model.Label;
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        +(function() {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var parentListObj = @Request.QueryString["listObj"];
+                    parentListObj.onDataUpdated(response);
+                }
+            });
+            
+            var parent=JSON.parse('@Html.Raw(ViewBag.ParentData)');
+            var child=JSON.parse('@Html.Raw(ViewBag.ChildData)');
+
+            $("#ParentId").change(function() {
+                var tmpParentId = $(this).val() ;
+                if (tmpParentId == "1") {
+                    InitialDdl(parent);
+                } else {
+                    if(child){
+                        var tmpData = new Array();
+                        for(var i = 0;i<child.length ;i++)
+                        {
+                            if(child[i].ParentRelationId == tmpParentId){
+                                tmpData.push(child[i]);
+                            }
+                        }
+                        InitialDdl(tmpData);
+                    }else 
+                        InitialDdl(child);
+                }
+            });
+
+        })();
+
+        function InitialDdl(data) {        
+            $("#RelatedMeasureId").empty();            
+            $("#RelatedMeasureId").append("<option value='0'>Please select...</option>");
+            if (data!=""&&data!=undefined&&data!=false) {
+                $.each(data,function(index,item) {
+                    $("#RelatedMeasureId").append("<option value="+item.ID+">"+item.Name+"</option>");
+                });
+            }
+        }
+    </script>
+}
+@using (Ajax.BeginForm("Save", "Measure", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.Hidden("scores")
+    <input type="hidden" name="ApplyToWave" value="1" />
+    <input type="hidden" name="ApplyToWave" value="2" />
+    <input type="hidden" name="ApplyToWave" value="3" />
+    <div class="form-group">
+        @Html.LabelFor(model => model.ParentId, new { @class = "control-label col-sm-2 required" })
+        <div class="col-sm-4">
+            @Html.DropDownListFor(model => model.ParentId, (IEnumerable<SelectListItem>)ViewBag.Parents, baseClassObj)
+            @Html.ValidationMessageFor(model => model.ParentId)
+        </div>
+        @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2  required", @for = "Status_Edit" })
+        <div class="col-sm-4">
+            @Html.EnumDropDownListFor(model => model.Status, ViewTextHelper.DefaultPleaseSelectText, "",
+            new { @class = "form-control", id = "Status_Edit" })
+            @Html.ValidationMessageFor(model => model.Status)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Label, new
+        {
+            @class = "control-label col-sm-2  required",
+            @for = formId + "_Label"
+        })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.Label, new
+            {
+                @class = "form-control",
+                id = formId + "_Label"
+            })
+            @Html.ValidationMessageFor(model => model.Label)
+        </div>
+        @Html.LabelFor(model => model.Name, new
+        {
+            @class = "control-label col-sm-2  required",
+            @for = formId + "_Name"
+        })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control", id = formId + "_Name" })
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ShortName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.ShortName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ShortName)
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" id="btnSubmit" type="button" data-bind="event:{click:submit}">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

@@ -1,0 +1,20 @@
+﻿/****** Object:  Trigger [dbo].[tgr_Users_update]    Script Date: 2015/4/27 15:05:55 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER TRIGGER [dbo].[tgr_Users_update]
+on [dbo].[Users]
+    for update
+as
+	DECLARE @ID int, @OldStatus tinyint,@NewStatus tinyint;
+	SELECT @OldStatus = Status FROM deleted;
+	SELECT @NewStatus = Status,@ID=ID FROM inserted;
+
+	IF(@OldStatus != @NewStatus) BEGIN
+	UPDATE Users SET StatusDate = GETDATE() WHERE ID = @ID;
+	IF EXISTS(SELECT * FROM Users WHERE  ID = @ID AND Role = 145) --Teacher
+	 insert  TeacherStatusHistories  select  t.ID  , u.Status,GETDATE() from Teachers t
+  inner join Users u on  t.UserId = u.ID
+  where u.id = @ID
+	END

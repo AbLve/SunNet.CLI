@@ -1,0 +1,11 @@
+﻿ if exists(select * from syscolumns where id=object_id('Schools') and name='TrsProviderId')
+ BEGIN
+ ALTER tABLE Schools drop column [TrsProviderId]
+ END
+
+  if exists(select * from syscolumns where id=object_id('Schools') and name='TrsReviewDate')
+ BEGIN
+ ALTER tABLE Schools drop column [TrsReviewDate]
+ END
+
+ 

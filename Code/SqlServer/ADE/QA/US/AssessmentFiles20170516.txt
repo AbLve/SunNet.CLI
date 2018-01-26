@@ -1,0 +1,5 @@
+﻿  alter table TsdsAssessmentFiles add [UpdatedOn] datetime default getdate()
+  go
+  update TsdsAssessmentFiles set [UpdatedOn] = GETDATE()
+
+ 

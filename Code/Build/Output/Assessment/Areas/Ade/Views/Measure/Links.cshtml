@@ -1,0 +1,73 @@
+﻿@model MeasureModel
+@{
+    ViewBag.Title = "Edit Links - " + Model.Label;
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section Scripts{
+    <script type="text/javascript">
+        +(function() {
+            var defaultLinks = @Html.Raw(ViewBag.Links);
+
+            function Link() {
+                this.DisplayText ="";
+                this.Link = "";
+                this.hasError = ko.observable(false);
+            }
+
+            var ListModel = function(datas, formId, constructor) {
+                var self = this;
+                this.dataset = ko.observableArray([]);
+                $.each(datas, function(i, data) {
+                    var t = new constructor();
+                    $.extend(t, data);
+                    self.dataset.push(t);
+                });
+
+                this.newData = function() {
+                    self.dataset.push(new constructor());
+                }
+                this.delete = function(data) {
+                    self.dataset.remove(data);
+                    if(self.dataset.length<1)
+                        self.dataset.push(new constructor());
+                }
+                this.submit = function() {
+                    var links ="";
+                    for(var i = 0 ;i < $("input[name='links']").length;i++){
+                        if($("#Link" + i).val() != ""){
+                            links += $("#Link" + i).val() + "|" + $("#DisplayText" + i).val() + ";";
+                        }
+                    }
+                    $("#Links").val(links);
+                    $("#" + formId).submit();
+                }
+
+                if (this.dataset().length == 0) {
+                    this.newData();
+                }
+            }
+            var linksModel = new ListModel(defaultLinks, "@formId", Link);
+            ko.applyBindings(linksModel, document.getElementById("@(formId)"));
+        })();
+    </script>
+}
+@using (Ajax.BeginForm("Links", "Measure", null, PostFormHelper.DefaultAjaxOptions, new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("id", Model.ID)
+    <input type="hidden" name="Links" id="Links" />
+    <div class="form-group">
+        <div class="modal-body-tab">
+            @Html.Editor("e", "Links")
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" data-bind="event:{click:submit}">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

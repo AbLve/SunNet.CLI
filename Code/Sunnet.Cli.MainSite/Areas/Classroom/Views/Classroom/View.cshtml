@@ -1,0 +1,433 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Core.Classrooms.Enums
+@using Sunnet.Cli.Core.Common.Enums
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Classrooms.Models.ClassroomModel
+
+@{
+    ViewBag.Title = "View Classroom";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Layout = "~/Views/Shared/_Layout_Base.cshtml";
+    var baseClassObj = new { @class = "form-control" };
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Classroom)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Classroom", "Index", "Classroom"))
+    <i class="icon-angle-right"></i>&nbsp;View
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/module_classroom")
+    <script type="text/javascript">
+        
+        var roleJson = @Html.Raw(ViewBag.Role);
+        jQuery(function () { 
+            InitControlsByRole(); 
+        }); 
+    </script>
+}
+@using (Ajax.BeginForm("", "", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Classroom List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @*   @Html.TextBoxFor(model => model.CommunityName, new { @class = "form-control", @readonly = "true" })*@
+                    @Html.Display("CommunityName")
+                </div>
+                @Html.LabelFor(model => model.SchoolId, new { @class = "control-label col-sm-2 " })
+                <div class="col-sm-4">
+                    @*      @Html.TextBoxFor(model => model.SchoolName, new { @class = "form-control", @readonly = "true" })*@
+                    @Html.DisplayFor(model => model.SchoolName)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @*@Html.TextBoxFor(model => model.Name, baseClassObj)*@
+
+                    @Html.DisplayFor(model => model.Name)
+
+                </div>
+                @Html.LabelFor(model => model.ClassroomId, null, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @*          @Html.TextBoxFor(model => model.ClassroomId, new { @class = "form-control", @readonly = "readonly" })*@
+                    @Html.DisplayFor(model => model.ClassroomId)
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, new { @class = "control-label col-sm-2",data_bind="visible: Status != 'X'"  })
+                <div class="col-sm-4" data-bind="visible: Status != 'X'" >
+
+                    @Html.DisplayFor(model => model.Status)
+                </div>
+                @Html.LabelFor(model => model.InterventionStatus, new { @class = "control-label col-sm-2",data_bind="visible: InterventionStatus != 'X'" })
+                <div class="col-sm-4"  data-bind="visible: InterventionStatus != 'X'" >
+                    @*   @Html.DropDownListFor(model => model.InterventionStatus, (IEnumerable<SelectListItem>)ViewBag.InterventionStatusOptions,
+                        new { @class = "form-control", onchange = "InterventionChanged()" })*@
+                    @Html.Display("InterventionStatus")
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.StatusDate, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.StatusDate)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SchoolYear, new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolYear)
+                    @* @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", @readonly = "readonly" })*@
+                </div>
+                @if (Model.InterventionStatus == InterventionStatus.MaterialsEligible)
+                {
+                    @Html.LabelFor(model => model.FundingId, new { @class = "control-label col-sm-2" ,data_bind="visible: FundingId != 'X'" })
+                    <div class="col-sm-4" data-bind="visible: FundingId != 'X'" >
+                        @Html.Display("FundingName")
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    if (Model.InterventionStatus == InterventionStatus.MaterialsEligible)
+    {
+        <div id="KitOptions" class="main-content">
+            <div class="content-title">Kit Questions/Options</div>
+            <div class="content-body">
+                <div class="group-bg-b">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.KitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+                            @Html.Display("kitName")
+                        </div>
+                        @if (Model.KitId != 0)
+                        {
+                            @Html.LabelFor(model => model.KitUpdatedOn, new { @class = "control-label col-sm-2" })
+                            <div class="col-sm-2">
+                                @Html.DisplayFor(model => model.KitUpdatedOn)
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FcNeedKitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+                            @Html.Display("kitNeedName")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FcFundingId, new { @class = "control-label col-sm-6 " ,data_bind="visible: FcFundingId != 'X'" })
+                        <div class="col-sm-2" data-bind="visible: FcFundingId != 'X'" >
+                            @Html.Display("FCfundingName")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-bg-y">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Part1KitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+                            @Html.Display("part1KitName")
+                        </div>
+                        @if (Model.Part1KitId != 0)
+                        {
+                            @Html.LabelFor(model => model.Part1KitUpdatedOn, new { @class = "control-label col-sm-2" })
+                            <div class="col-sm-2">
+                                @Html.DisplayFor(model => model.Part1KitUpdatedOn)
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Part1NeedKitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+
+                            @Html.Display("part1NeedKitName")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Part1FundingId, new { @class = "control-label col-sm-6 " ,data_bind="visible: Part1FundingId != 'X'"  })
+                        <div class="col-sm-2" data-bind="visible: Part1FundingId != 'X'" >
+                            @Html.Display("part1FundingName")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-bg-b">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Part2KitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+
+                            @Html.Display("part2KitName")
+                        </div>
+                        @if (Model.Part2KitId != 0)
+                        {
+                            @Html.LabelFor(model => model.Part2KitUpdatedOn, new { @class = "control-label col-sm-2" })
+                            <div class="col-sm-2">
+
+                                @Html.DisplayFor(model => model.Part2KitUpdatedOn)
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group">
+
+                        @Html.LabelFor(model => model.Part2NeedKitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+
+                            @Html.Display("part2NeedKitName")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Part2FundingId, new { @class = "control-label col-sm-6 ", data_bind="visible: Part2FundingId != 'X'"  })
+                        <div class="col-sm-2" data-bind="visible: Part2FundingId != 'X'" >
+
+                            @Html.Display("part2FundingName")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-bg-y">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.StartupKitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+
+                            @Html.Display("StartupKitName")
+                        </div>
+                        @if (Model.StartupKitId != 0)
+                        {
+                            @Html.LabelFor(model => model.StartupKitUpdatedOn, new { @class = "control-label col-sm-2" })
+                            <div class="col-sm-2">
+                                @Html.DisplayFor(model => model.StartupKitUpdatedOn)
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group">
+
+                        @Html.LabelFor(model => model.StartupNeedKitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+
+                            @Html.Display("StartupNeedKitName")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.StartupKitFundingId, new { @class = "control-label col-sm-6 " , data_bind="visible: StartupKitFundingId != 'X'"  })
+                        <div class="col-sm-2" data-bind="visible: StartupKitFundingId != 'X'" >
+
+                            @Html.Display("StartupFundingName")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-bg-b">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CurriculumId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+                            @Html.Display("CurriculumKitName")
+                        </div>
+
+                        @if (Model.CurriculumId != 0)
+                        {
+                            @Html.LabelFor(model => model.CurriculumUpdatedOn, new { @class = "control-label col-sm-2" })
+                            <div class="col-sm-2">
+
+                                @Html.DisplayFor(model => model.CurriculumUpdatedOn)
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NeedCurriculumId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+
+                            @Html.Display("CurriculumNeedKitName")
+                        </div>
+                        @if (Model.NeedCurriculumId != 0)
+                        {
+                            @Html.LabelFor(model => model.NeedCurriculumUpdatedOn, new { @class = "control-label col-sm-2 " })
+                            <div class="col-sm-2">
+
+                                @Html.DisplayFor(model => model.NeedCurriculumUpdatedOn)
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CurriculumFundingId, new { @class = "control-label col-sm-6 " , data_bind="visible: CurriculumFundingId != 'X'" })
+                        <div class="col-sm-2"  data-bind="visible: CurriculumFundingId != 'X'" >
+
+                            @Html.Display("CurriculumFundingName")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-bg-y">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DevelopingTalkersKitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+                            @Html.Display("TalkerKitName")
+                        </div>
+                        @if (Model.DevelopingTalkersKitId != 0)
+                        {
+                            @Html.LabelFor(model => model.DevelopingTalkersKitUpdatedOn, new { @class = "control-label col-sm-2 " })
+                            <div class="col-sm-2">
+
+                                @Html.DisplayFor(model => model.DevelopingTalkersKitUpdatedOn)
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DevelopingTalkersNeedKitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+
+                            @Html.Display("TalkerNeedKitName")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DevelopingTalkerKitFundingId, new { @class = "control-label col-sm-6 " , data_bind="visible: DevelopingTalkerKitFundingId != 'X'" })
+                        <div class="col-sm-2"  data-bind="visible: DevelopingTalkerKitFundingId != 'X'" >
+
+                            @Html.Display("TalkerFundingName")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-bg-b">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FccKitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+
+                            @Html.Display("FCCKitName")
+                        </div>
+                        @if (Model.DevelopingTalkersKitId != 0)
+                        {
+                            @Html.LabelFor(model => model.FccKitUpdatedOn, new { @class = "control-label col-sm-2 " })
+                            <div class="col-sm-2">
+
+                                @Html.DisplayFor(model => model.FccKitUpdatedOn)
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FccNeedKitId, new { @class = "control-label col-sm-6 " })
+                        <div class="col-sm-2">
+
+                            @Html.Display("FCCNeedKitName")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FccKitFundingId, new { @class = "control-label col-sm-6 " , data_bind="visible: FccKitFundingId != 'X'"})
+                        <div class="col-sm-2"  data-bind="visible: FccKitFundingId != 'X'">
+                            @Html.Display("FCCFundingName")
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+    
+    <div class="main-content">
+        <div class="content-title">Internet Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.InternetSpeed, null, new { @class = "col-sm-4 control-label" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.InternetSpeed)
+                </div>
+                <div class="col-sm-6">
+                    Speed Test:
+                    <a href="http://www.speedtest.net" class="form-link2" target="_blank">http://www.speedtest.net</a>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.InternetType, null, new { @class = "col-sm-4 control-label" })
+                <div class="col-sm-2">
+
+                    @Html.DisplayFor(model => model.InternetType)
+                </div>
+                @if (Model.InternetType == InternetType.Wireless)
+                {
+                    @Html.LabelFor(model => model.WirelessType, null, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.DisplayFor(model => model.WirelessType)
+                    </div>
+                }
+
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-8">
+                    @Html.CheckBoxFor(model => model.IsInteractiveWhiteboard)
+                    @Html.LabelFor(model => model.IsInteractiveWhiteboard, null, new { style = "text-align: left" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class = "col-sm-4"></div>
+                <div class="col-sm-8">
+                    @Html.CheckBoxFor(model => model.IsUsingInClassroom)
+                    @Html.LabelFor(model => model.IsUsingInClassroom, null, new { style = "text-align: left" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ComputerNumber, new { @class = "control-label col-sm-4 _num_4" })
+                <div class="col-sm-2">
+                    @Html.DisplayFor(model => model.ComputerNumber)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Other Information</div>
+        <div class="content-body">
+            <div class="form-group">
+
+                @Html.Label("lbtemp", " Partnership Reference Data", new { @class = "col-sm-4 control-label " })
+                <div class="col-sm-8">
+                    Teacher Employed By  @Html.DisplayTextFor(model => model.RefrenceData)<br />
+                    School Type is  @Html.DisplayTextFor(model => model.SchoolType.Name)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.MaterialsNotes, new { @class = "control-label col-sm-4", data_bind="visible: MaterialsNotes != 'X'" })
+                <div class="col-sm-8" data-bind="visible: MaterialsNotes != 'X'">
+                    @Html.DisplayFor(model => model.MaterialsNotes)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TechnologyNotes, new { @class = "control-label col-sm-4" , data_bind="visible: TechnologyNotes != 'X'"})
+                <div class="col-sm-8" data-bind="visible: TechnologyNotes != 'X'">
+
+                    @Html.DisplayFor(model => model.TechnologyNotes)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton mainright-btn create-btn" type="button" onclick='redirectBack("index")' data-dismiss="modal" id="btnBack">Back</button>
+    </div>
+
+     
+}

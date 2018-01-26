@@ -1,0 +1,100 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Classrooms.Models.ClassroomModel
+
+@{
+    ViewBag.Title = "Assigned Class(es) to Classroom: "+Model.Name;
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var baseClassObj = new { @class = "form-control" };
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+    <div class="form-group" id="@formId">
+ 
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.ClassId"></td>
+                    <td data-bind="text: item.ClassName"></td>
+                    <td data-bind="text: item.ClassType.text"></td>
+                    <td data-bind="text: item.StudentNumber"></td>
+                </tr>
+            </tbody>
+            @Html.Display("e", "NoData", new { Colspan = 4 })
+        </table>
+    
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+         
+
+        var list_Classes = {};
+
+        $(function() {
+            list_Classes = new ViewModel(
+                {
+                    instanceName: "list_Classes",
+                    modalId: "modalNormal",
+                    viewType: "Redirect",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchClasses")))',
+                    orderBy: "Name",
+                    orderDirection: "ASC",
+                    pageSize: 100000,
+                    headers: [
+                        {
+                            text: "Class ID",
+                            field: "",
+                            order: false,
+                            width: '10%'
+                        },
+                        {
+                            text: "Class Name",
+                            field: "",
+                            order: false,
+                            width: '10%'
+                        },
+                        {
+                            text: "Class Type",
+                            field: "",
+                            order: false,
+                            width: '30%'
+                        },
+                        {
+                            text: "# of Students",
+                            field: "",
+                            order: false,
+                            width: '10%'
+                        }
+                    ],
+                    searchCriteria: {
+                        classroomId: ko.observable(@Model.ID)
+                    }
+                }
+            );
+
+            list_Classes.search();
+            ko.applyBindings(list_Classes, document.getElementById("@formId"));
+        });
+    </script>
+}

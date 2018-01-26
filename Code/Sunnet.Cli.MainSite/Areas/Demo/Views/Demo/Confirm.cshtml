@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "Confirm";
+}
+
+
+<h2>Confirm</h2>
+
+<button class="btn btn-success" id="btnAlert">Alert Success</button>
+<div class="clearfix"></div>
+<pre>
+    $("#btnAlert").click(function () {
+        window.showMessage("success", "test success message title");
+    });
+</pre>
+<div class="clearfix"></div>
+<button class="btn btn-success" id="btnAlertConfirm">Success Confirm</button>
+<div class="clearfix"></div>
+<pre>
+    $("#btnAlertConfirm").click(function () {
+        jQuery.when(window.waitingAlert("success", "Save data success, the window is closing")).done(function () {
+            alert("window closed.");
+        });
+    });
+</pre>
+<div class="clearfix"></div>
+<button class="btn btn-warning" id="btnWarning">Warning</button>
+<div class="clearfix"></div>
+<pre>
+    $("#btnWarning").click(function () {
+        window.showMessage("warning", "test warning message title");
+    });
+</pre>
+<div class="clearfix"></div>
+<button class="btn btn-warning" id="btnWarningConfirm">Warning Confirm</button>
+<div class="clearfix"></div>
+<pre>
+    $("#btnWarningConfirm").click(function () {
+        jQuery.when(window.waitingAlert("warning", "Save data success with warnings: details..., the window is closing")).done(function () {
+            alert("window closed.");
+        });
+    });
+</pre>
+<div class="clearfix"></div>
+<button class="btn btn-danger" id="btnError">Error </button>
+<div class="clearfix"></div>
+<pre>
+    $("#btnError").click(function () {
+        window.showMessage("fail", "test error message title");
+    });
+</pre>
+<div class="clearfix"></div>
+<button class="btn btn-danger" id="btnErrorConfirm">Error Confirm</button>
+<div class="clearfix"></div>
+<pre>
+    $("#btnErrorConfirm").click(function () {
+        jQuery.when(window.waitingAlert("fail", "Save data failed, the window is closing")).done(function () {
+            alert("window closed.");
+        });
+    });
+</pre>
+<div class="clearfix"></div>
+
+<button class="btn btn-warning" id="btnDelete">Confirm</button>
+<div class="clearfix"></div>
+<pre>
+    $("#btnDelete").click(function () {
+        jQuery.when(window.waitingConfirm("Are you sure?", "Delete", "Back")).done(function () {
+            alert("data deleted.");
+        }).fail(function () {
+            alert("action canceled.");
+        });
+    });
+</pre>
+<div class="clearfix"></div>
+
+<button class="btn btn-warning" id="btnHint">Hint</button>
+<div class="clearfix"></div>
+<pre>
+    $("#btnHint").click(function () {
+        window.showMessage("hint", "You need to do something before submit the form.");
+    });
+</pre>
+<div class="clearfix"></div>
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+
+        jQuery(function() {
+            $("#btnAlert").click(function() {
+                showMessage("success", "test success message title");
+            });
+            $("#btnAlertConfirm").click(function() {
+                jQuery.when(window.waitingAlert("success", "Save data success, the window is closing")).done(function () {
+                    alert("window closed.");
+                });
+            });
+
+            $("#btnWarning").click(function() {
+                window.showMessage("warning", "test warning message title");
+            });
+            $("#btnWarningConfirm").click(function() {
+                jQuery.when(window.waitingAlert("warning", "Save data success with warnings: details..., the window is closing")).done(function () {
+                    alert("window closed.");
+                });
+            });
+
+            $("#btnError").click(function() {
+                window.showMessage("fail", "test error message title");
+            });
+            $("#btnErrorConfirm").click(function() {
+                jQuery.when(window.waitingAlert("fail", "Save data failed, the window is closing")).done(function () {
+                    alert("window closed.");
+                });
+            });
+
+            $("#btnDelete").click(function() {
+                jQuery.when(window.waitingConfirm("Are you sure?", "Delete", "Back")).done(function () {
+                    alert("data deleted.");
+                }).fail(function() {
+                    alert("action canceled.");
+                });
+            });
+
+            $("#btnHint").click(function () {
+                window.showMessage("hint", "You need to do something before submit the form.");
+            });
+        });
+    </script>
+}

@@ -1,0 +1,8 @@
+﻿if not exists(select * from syscolumns where id=object_id('Answers') and name='ResponseAudio')
+  alter table Answers  add ResponseAudio VARCHAR(100) 
+  go
+  update Answers set ResponseAudio = '' where ResponseAudio is null
+  go
+  alter table Answers  alter column  ResponseAudio VARCHAR(100) not NULL
+  GO
+ 

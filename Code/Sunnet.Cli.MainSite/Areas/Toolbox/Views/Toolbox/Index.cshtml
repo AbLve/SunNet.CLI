@@ -1,0 +1,61 @@
+﻿@using Sunnet.Cli.MainSite.Models
+
+@{
+    ViewBag.Title = "Toolbox";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Toolbox)
+}
+
+@section Styles{
+    <style type="text/css">
+        .ade-menu-dashboard li {
+            width: 170px;
+        }
+
+            .ade-menu-dashboard li a {
+                width: 170px;
+            }
+    </style>
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Toolbox", "Index", "Toolbox"))&nbsp;<i class="icon-angle-right"></i>&nbsp;Index
+}
+<ul class="ade-menu-dashboard">
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=Fundings" class="administrative-con"><span><i></i>Fundings</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownListOther?name=Titles" class="administrative-con"><span><i></i>Object Titles</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownListOther?name=Positions" class="administrative-con"><span><i></i>User Titles</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=Languages" class="administrative-con"><span><i></i>Languages</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=Curriculums" class="administrative-con"><span><i></i>Curriculums</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=TrsProviders" class="administrative-con"><span><i></i>TRS Provider</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=ParentAgencies" class="administrative-con"><span><i></i>Parent Agency</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=InternetServiceProviders" class="administrative-con"><span><i></i>Internet Service Providers</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownListOther?name=SchoolTypes" class="administrative-con"><span><i></i>School Types</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=Kits" class="administrative-con"><span><i></i>Kits</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=MonitoringTools" class="administrative-con"><span><i></i>Monitoring Tool</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=YearsInProject" class="administrative-con"><span><i></i>Years In Project</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=Certificates" class="administrative-con"><span><i></i>Certificates</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=Affiliations" class="administrative-con"><span><i></i>Affiliations</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=ProfessionalDevelopments" class="administrative-con"><span><i></i>Professional Development</span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=UploadTypes" class="administrative-con">
+        <span><i></i>CT_UploadTypes </span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=Sessions" class="administrative-con">
+        <span><i></i>CT_Sessions </span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=Waves" class="administrative-con">
+        <span><i></i>CT_Waves </span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=Contexts" class="administrative-con">
+        <span><i></i>CT_Contexts </span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=VideoLanguages" class="administrative-con">
+        <span><i></i>CT_VideoLanguages </span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=AssignmentContents" class="administrative-con">
+        <span><i></i>CT_AssignmentContents </span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=VideoContents" class="administrative-con">
+        <span><i></i>CT_VideoContents </span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=CoachingStrategies" class="administrative-con">
+        <span><i></i>CT_CoachingStrategies </span></a></li>
+    <li><a href="@(Sunnet.Cli.UIBase.Models.DomainHelper.MainSiteDomain)Toolbox/Toolbox/DropDownList?name=SelectionLists" class="administrative-con">
+        <span><i></i>CT_SelectionLists </span></a></li>
+</ul>

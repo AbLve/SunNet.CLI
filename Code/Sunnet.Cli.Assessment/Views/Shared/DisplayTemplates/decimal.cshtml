@@ -1,0 +1,18 @@
+﻿@model decimal
+    @{
+        var format = ViewData["format"] ?? "{0}";
+        var toFormat = ViewData["toFormat"] ?? "";
+    }
+
+@if (string.IsNullOrEmpty(toFormat.ToString()))
+{
+    <label class="control-label-text">
+        <span style="display: none;">none</span>
+    </label>
+}
+else
+{
+    <label class="control-label-text">
+        @string.Format(format.ToString(), Model.ToString(toFormat.ToString()))
+    </label>
+}

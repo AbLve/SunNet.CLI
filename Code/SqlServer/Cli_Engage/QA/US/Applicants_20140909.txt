@@ -1,0 +1,5 @@
+﻿alter table Applicants add JobTitle tinyint not null default 0
+
+alter table Applicants add JobTitleOther varchar(100) not null default ''
+
+alter table Applicants add IsDeleted bit not null default 0

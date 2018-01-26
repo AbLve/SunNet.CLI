@@ -1,0 +1,91 @@
+﻿@using System.Web.Optimization
+@model IEnumerable<Sunnet.Cli.MainSite.Areas.Demo.Models.Products>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/javascript">
+        var viewModel;
+        jQuery(function () {
+            viewModel = new ViewModel(
+                {
+                    modalId:"modalLarge",
+                    instanceName: "viewModel",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchProducts")))',
+                    addDataUrl: '@Html.Raw(Url.Action("Create"))',
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    viewDataUrl: '@Html.Raw(Url.Action("Details"))',
+                    deleteDataUrl: '@Html.Raw(Url.Action("Delete"))',
+                    orderBy: "Name",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        { text: "@Html.DisplayNameFor(model => model.Name)", order: true, width: '10%' },
+                        { text: "@Html.DisplayNameFor(model => model.Description)", field: "Description", width: '30%' },
+                        { text: "@Html.DisplayNameFor(model => model.Logo)", width: '20%' },
+                        { text: "@Html.DisplayNameFor(model => model.Price)", order: true, width: '10%' },
+                        { text: "Action", width: '30%' }
+                    ],
+                    searchCriteria: { keyword: ko.observable("") }
+                }, {
+                    test: function (data) {
+                        alert("test custom function, you choose " + data.Name);
+                    }
+                }
+            );
+            //viewModel.searchCriteria.keyword("A");
+            viewModel.search();
+            ko.applyBindings(viewModel);
+        });
+    </script>
+}
+<div class="progress" data-bind="waitting: isDisplaying">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+        <span class="sr-only">45% Complete</span>
+    </div>
+</div>@*@Html.DisplayNameFor(model => model.Description)*@
+<table class="table" id="tblMain">
+    <thead>
+        <tr data-bind="foreach: { data: headers, as: 'header' }">
+            <!-- ko if: (header.order === true)-->
+            <th data-bind="style: { width: width }">
+                <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                <span class="glyphicon"
+                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                <span class="glyphicon"
+                    data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+            </th>
+            <!-- /ko-->
+            <!-- ko if: (header.order === false) -->
+            <th data-bind="text: text, style: { width: width }"></th>
+            <!-- /ko-->
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+        <tr>
+            <td data-bind="text: $index() + 1 + ' - ' + item.Name"></td>
+            <td data-bind="text: item.Description"></td>
+            <td data-bind="text: item.Logo"></td>
+            <td data-bind="text: item.Price"></td>
+            <td>
+                <button class="btn btn-small  btn-success" data-bind="event: { click: $root.viewData }">Details</button>
+                <button class="btn btn-small btn-success" data-bind="event: { click: $root.updateData }">Edit</button>
+                <button class="btn btn-small btn-danger" data-bind="event: { click: $root.deleteData }">Delete</button>
+                <button class="btn btn-small btn-success" data-bind="event: { click: $root.test }">Test</button>
+            </td>
+        </tr>
+    </tbody>
+    @Html.Display("e", "NoData", new { Colspan = 5 })
+</table>
+@Html.Partial("_Partial_Pager")

@@ -1,0 +1,275 @@
+﻿@model Sunnet.Cli.Business.Permission.Models.RoleModel
+@using Sunnet.Cli.UIBase.Models;
+@using Sunnet.Cli.Core.Permission.Entities;
+@using Sunnet.Cli.MainSite.Models;
+@using Sunnet.Framework.Extensions
+
+@{
+    ViewBag.Title = "Assign Role and Scope to Custom Package";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    Array Scops = Enum.GetValues(typeof(AssignedType));
+    int DistrictValue = (int)AssignedType.District;
+    int SchoolValue = (int)AssignedType.School;
+}
+
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Permission)
+}
+
+@section BreadPath
+{
+    @if (ViewBag.isCustom == true)
+    {
+        @(Html.ActionLink("Custom Package List", "Custom", "Package"))
+    }
+    else
+    {
+        @(Html.ActionLink("Default Package List", "Default", "Package")) 
+    }
+
+    <i class="icon-angle-right"></i>Assign Scope
+}
+@section Styles{
+    <style type="text/css">
+        .alert {
+            position: relative;
+            width: auto;
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+        }
+    </style>
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        //get assigned packages
+        function GetPackages() {
+            var jsonArr = "";
+            jsonArr = "[";
+            $("#div_District,#div_School").each(
+                function () {
+                    var pack;
+                    $(this).find("a[userid]").each(
+                        function () {
+                            pack = "{" + '"ScopeId":"' + this.attributes.userid.value + '","ScopeName":"'
+                                    + this.attributes.username.value + '","Type":"'
+                                    + this.attributes.usertype.value + '"},';
+                            jsonArr += pack;
+                        }
+                        )
+                }
+                )
+            jsonArr += "]";
+
+            $("#assignedPackages").val(jsonArr);
+        }
+
+        //remove element
+        function DeleteItem(obj) {
+            var deletename = obj.attributes.name.value;
+            $("#div_School label").remove("label[name=" + deletename + "]");
+            $("#div_District label").remove("label[name=" + deletename + "]");
+        }
+
+
+        $(function () {
+            $("#btn_District").click(
+                function () {
+                    var value = $("#valueDistrict")[0].value;
+                    var text = $("#txtDistrict")[0].value;
+                    if ($("a[name=lbl_Dist" + value + "]").length == 0 && value) {
+
+                        var addElement = "<a class='del-btn alert' style='margin-top: 5px; margin-right: 10px' name='lbl_Dist" + value + "' usertype='" +@DistrictValue +"' userid='" + value + "' username='" + text + "'>" +
+                                            "<button type='button' class='close' style='font-size: 18px' data-dismiss='alert'>" +
+                                                "<span aria-hidden='true'>&times;</span>" +
+                                                "<span class='sr-only'>Close</span>" +
+                                        "</button>" + text +
+                                        "</a>";
+
+                        $("#div_District").append(addElement);
+                    }
+
+                    $("#txtDistrict").val("");
+                }
+                );
+
+            $("#btn_School").click(
+                function () {
+                    var value = $("#valueSchool")[0].value;
+                    var text = $("#txtSchool")[0].value;
+                    if ($("a[name=lbl_School" + value + "]").length == 0 && value) {
+                        var addElement = "<a class='del-btn alert' style='margin-top: 5px; margin-right: 10px' name='lbl_School" + value + "' usertype='" +@SchoolValue +"' userid='" + value + "' username='" + text + "'>" +
+                                            "<button type='button' class='close' style='font-size: 18px' data-dismiss='alert'>" +
+                                                "<span aria-hidden='true'>&times;</span>" +
+                                                "<span class='sr-only'>Close</span>" +
+                                            "</button>" + text +
+                                        "</a>";
+
+                        $("#div_School").append(addElement);
+                    }
+
+                    $("#txtSchool").val("");
+                }
+                );
+        })
+
+            registerFormCallbacks("@(formId)", {
+            onResponsed: function (response) {
+                redirectBack("index");
+            }
+        })
+
+    </script>
+}
+
+@using (Ajax.BeginForm("SaveInvitation", "AssignedPackage", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    @class = "form-horizontal",
+    id = formId
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        @if (ViewBag.isCustom == true)  // if it is custom package
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Custom", "Package"))" >Back to Custom Package List</a>
+        }
+        else
+        {
+            <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Default", "Package"))" >Back to Default Package List</a>
+        }
+    </div>   
+       
+    <div class="main-content">
+        <div class="content-body">
+            @Html.HiddenFor(model => model.ID)
+            <div class="form-group approved">
+                <div class="col-sm-12">
+                    <div class="col-sm-3 control-label">
+                        @Html.LabelFor(model => model.Name)
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.Name, new { @style = "width:100%", @disabled = "disabled" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group approved">
+                <div class="col-sm-12">
+                    <div class="col-sm-3 control-label">
+                        @Html.LabelFor(model => model.UserType)
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.TextBox("UserType", Model.UserType.ToDescription(), new { @disabled = "disabled" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group approved">
+                <div class="col-sm-12">
+                    <div class="col-sm-3 control-label">
+                        <label for="txtDistrict">Apply Scope to District</label>
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBox("txtDistrict", "", new
+                    {
+                        autocomplete = "off",
+                        @class = "form-control",
+                        data_list = "true",
+                        data_for = "#valueDistrict",
+                        data_remote = Url.Action("GetCommunitySelectList", "Community", new { Area = "Community" }),
+                        data_text = "Name",
+                        data_value = "ID",
+                        id = "txtDistrict",
+                        placeholder = "Enter key text to search",
+                        name = "txtDistrict",
+                        @for = "valueDistrict"
+                    })
+
+                        @Html.Hidden("valueDistrict")
+                    </div>
+                    <div class="col-sm-5">
+                        <input type="button" id="btn_District" value="Assign" class="mainbutton mainright-btn sreach-btn" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group approved">
+                <div class="col-sm-12">
+                    <div class="col-sm-3">
+                        <span class="hide">&nbsp;</span>
+                    </div>
+                    <div id="div_District" class="col-sm-9">
+                        @foreach (AssignedPackageEntity item in Model.DistrictsAndSchools.Where(a => (int)a.Type == DistrictValue))
+                        {                                                                               
+                            <a class="del-btn  alert" name="lbl_Dist@(item.ScopeId)" style="margin-top: 5px; margin-right: 10px" usertype="@item.Type" 
+                                username="@item.ScopeName" userid="@item.ScopeId">
+                                <button type="button" class="close" style="font-size: 18px" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                    <span class="sr-only">Close</span>
+                                </button>
+                                @item.ScopeName
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group approved">
+                <div class="col-sm-12">
+                    <div class="col-sm-3 control-label">
+                        <label for="txtSchool">Apply Scope to School</label>
+                    </div>
+                    <div class="col-sm-3">
+                        @Html.TextBox("txtSchool", "", new
+                   {
+                       autocomplete = "off",
+                       @class = "form-control",
+                       data_list = "true",
+                       data_for = "#valueSchool",
+                       data_remote = Url.Action("GetSchoolSelectList", "School", new { Area = "School" }),
+                       data_text = "Name",
+                       data_value = "ID",
+                       id = "txtSchool",
+                       name = "txtSchool",
+                       placeholder = "Enter key text to search",
+                       @for = "valueSchool"
+                   })
+                        @Html.Hidden("valueSchool")
+                    </div>
+                    <div class="col-sm-5">
+                        <input type="button" id="btn_School" value="Assign" class="mainbutton mainright-btn sreach-btn" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group approved">
+                <div class="col-sm12">
+                    <div class="col-sm-3">
+                        <span class="hide">&nbsp;</span>
+                    </div>
+                    <div id="div_School" class="col-sm-9">
+                        @foreach (AssignedPackageEntity item in Model.DistrictsAndSchools.Where(a => (int)a.Type == SchoolValue))
+                        {                           
+                            <a class="del-btn alert" name="lbl_Dist@(item.ScopeId)" style="margin-top: 5px; margin-right: 10px" usertype="@item.Type"
+                                 username="@item.ScopeName" userid="@item.ScopeId">
+                                <button type="button" class="close" style="font-size: 18px" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                    <span class="sr-only">Close</span>
+                                </button>
+                                @item.ScopeName
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @Html.Hidden("assignedPackages")
+        </div>
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" onclick="GetPackages()">
+            <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+        </div>
+    </div>   
+}

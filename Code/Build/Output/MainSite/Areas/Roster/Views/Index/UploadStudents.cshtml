@@ -1,0 +1,84 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.UIBase.Models 
+@{
+    ViewBag.Title = "Upload Students";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View); 
+}
+ @section Scripts
+ {
+     @Scripts.Render("~/scripts/jquery_form")
+     <script type="text/javascript" language="javascript">
+
+         function BeforeSubmit()
+         {
+
+             if ("@ViewBag.comId" <= 0)
+             {
+                 window.showMessage("fail", "Community can not be null.");
+                 return false;
+             }
+             if ("@ViewBag.schoolId" <= 0)
+             {
+                 window.showMessage("fail", "School can not be null.");
+                 return false;
+             }
+             if ("@ViewBag.teacherId" <= 0)
+             {
+                 window.showMessage("fail", "Home Teacher can not be null.");
+                 return false;
+             }
+             if ("@ViewBag.classDayType" <= 0)
+             {
+                 window.showMessage("fail", "Class Day Type can not be null.");
+                 return false;
+             }
+
+             $("#@(formId)").ajaxSubmit({
+                 success: function(data) {
+                     var res = JSON.parse(data);
+                     if (res.success == true) {
+                         window.refresh = true;
+                         closeModal("#@(formId)");
+
+                     } else {
+                         showMessage("fail", res.msg);
+                     }
+                 }
+             });
+         }
+     </script>
+ }
+@using (Ajax.BeginForm("UploadStudents", "Index", null ,PostFormHelper.DefaultAjaxOptions,  new
+ {
+ enctype = "multipart/form-data",
+     @class = "form-horizontal",
+ role = "form",
+     id = formId
+ })) 
+ {  @Html.AntiForgeryToken()
+     <div class="form-group">
+         <label class="control-label col-sm-3 required" for="dataFile">Data File(Excel)</label>
+         <div class="col-sm-6">
+             <input type="file" id="dataFile" name="dataFile" class="required form-control" /> 
+             @Html.ValidationMessage("dataFile")
+             <p class="redtext">The maximum records are 50.</p>
+ 
+         </div>
+         <div class="col-sm-3">
+             <a class="form-link2" href="/resource/XLSX/BES Template.xlsx" target="_blank">Sample Template.xlsx</a>
+         </div>
+     </div>
+     <div class="modal-footer">
+         <input type="hidden" value="@ViewBag.comId" id="comId" name="comId" /> 
+         <input type="hidden" value="@ViewBag.schoolId" id="schoolId" name="schoolId"  /> 
+         <input type="hidden" value="@ViewBag.classId" id="schoolId" name="classId"  /> 
+         <input type="hidden" value="@ViewBag.teacherId" id="teacherId" name="classDayType"  /> 
+         <input type="hidden" value="@ViewBag.classDayType" id="classDayType" name="classDayType"  /> 
+
+         <button class="mainbutton modal-btn submit-btn" onclick="BeforeSubmit()" type="button">Submit</button>
+         <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+     </div>
+
+ }

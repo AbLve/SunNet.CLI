@@ -1,0 +1,5 @@
+﻿update [dbo].[FieldMap] set SelectName = 'ParentUser.FirstName+'' ''+ParentUser.LastName'  where SelectName = 'ParentUser.FirstName+" "+ParentUser.LastName'
+
+ 
+   select * into  ExportInfo20160805 from [dbo].[ExportInfo]  where ExecuteSQL like '%" "%'
+  update [dbo].[ExportInfo] set ExecuteSQL =replace(convert(varchar(max),ExecuteSQL),'" "',''' ''')  where ExecuteSQL like '%" "%'

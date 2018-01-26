@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "Preview Layout";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var canvas_preview;
+        var preLayoutScreenWidth;
+        var curLayoutScreenWidth;
+        var layout;
+        +(function () {
+            var $divPreviewLayout = $("#previewLayout");
+            if ($("#ResponseBackgroundFill").val() != "")
+                $divPreviewLayout.css("background-color", $("#ResponseBackgroundFill").val());
+            else if ($("#ResponseBackgroundImage").val() != "") {
+                var tmpImage = getUploadUrl() + '/upload/' + $("#ResponseBackgroundImage").val();
+                $divPreviewLayout.css("background-image", "url(" + tmpImage + ")");
+                $divPreviewLayout.css("background-size", "100% 100%");
+            }
+
+            if (($(window).height() - 300) > 300)
+                $divPreviewLayout.css("height", $(window).height() - 300 + "px");
+
+            var previewResponses = itemModel.Responses();
+            for (var i = 0; i < previewResponses.length; i++) {
+                if (previewResponses[i].IsDeleted() == false) {
+                    var $divPreview = $("#divPreview" + previewResponses[i].Index);
+                    $divPreview.css("display", "");
+                    $divPreview.children().get(0).innerHTML = previewResponses[i].Text();
+                    var tmpOptions = previewResponses[i].Options();
+                    if (previewResponses[i].Type() == 1) {
+                        $divPreview.append('<div><textarea  cols="20" role="2" style="width:400px;height:100px;" ></textarea></div>');
+                    }
+                    else {
+                        for (var j = 0; j < tmpOptions.length; j++) {
+                            if (tmpOptions[j].IsDeleted() == false) {
+                                var tmpOptionHtml = '<div style="height:30px;">';
+                                if (previewResponses[i].Type() == 3) {
+                                    tmpOptionHtml += '<input type="radio" name="radio' + previewResponses[i].Index + '"/>   ';
+                                }
+                                else
+                                    tmpOptionHtml += '<input type="checkbox"/>   ';
+
+                                if (tmpOptions[j].Lable()) {
+                                    tmpOptionHtml += tmpOptions[j].Lable();
+                                }
+                                if (tmpOptions[j].AddTextbox()) {
+                                    tmpOptionHtml += '   <input type="text" style="width:200px;border:1px solid #dddddd;background-color:#ffffff;" />';
+                                }
+                                tmpOptionHtml += "</div>";
+                                $divPreview.append(tmpOptionHtml);
+                            }
+                        }
+                    }
+                }
+            }
+        })();
+    </script>
+}
+
+<div id="previewLayout" style="width: 100%; min-height: 300px; overflow-y: auto;">
+    <div style="padding-top: 80px; padding-left: 100px; display: none;" id="divPreview1">
+        <h2></h2>
+        <br />
+        @*<input type="checkbox" style="width:80px;border:1px solid #dddddd;background-color:#ffffff;"/>*@
+        @*<input type="text" style="width:200px;" />*@
+        @*<textarea  cols="20" role="2"  style="width:300px; height:100px;"></textarea>*@
+    </div>
+    <div style="padding-top: 80px; padding-left: 100px; display: none;" id="divPreview2">
+        <h2></h2>
+        <br />
+    </div>
+    <div style="padding-top: 80px; padding-left: 100px; display: none;" id="divPreview3">
+        <h2></h2>
+        <br />
+    </div>
+    <div style="padding-top: 80px; padding-left: 100px; display: none;" id="divPreview4">
+        <h2></h2>
+        <br />
+    </div>
+    <div style="padding-top: 80px; padding-left: 100px; display: none;" id="divPreview5">
+        <h2></h2>
+        <br />
+    </div>
+
+    <div>
+        <div style="float: right; margin-right: 100px;"> <img src="@(Sunnet.Framework.SFConfig.StaticDomain)/Content/images/banner_btn_r_24.png" /> </div>
+    </div>
+</div>
+

@@ -1,0 +1,237 @@
+﻿@{
+    var wave = (byte)ViewData["wave"];
+    var enableWave = "wave" + wave;
+}
+
+<div id="MeasureOrCoefficientsDefineDiv@(wave)">
+    <div class="form-group" style="margin-top:20px;">
+        <div style="height:1px;width:100%;background:#00CCFF;overflow:hidden;"> </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label" style="text-align:left;padding-left:23px;">Select Measure/Define Coefficients</label>
+    </div>
+    <div class="form-group">
+        <div class="tab-content">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th style="width:65%;">Measure/Submeasure</th>
+                        <th style="width:20%;">Coefficients</th>
+                        <th style="width:15%;">Action</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach:{ data: coefficients, as: 'coefficient' }">
+                    <tr data-bind="if:Wave == @(wave),css:{},visible:Wave == @(wave)">
+                        <td>
+                            <select class="form-control required" data-bind="
+                                    options:$root.measures,optionsText:'label',optionsValue:'id'
+                                    ,value:Measure,optionsAfterRender:$root.setSubMeasure,
+                                    attr:{id:'Measure'+$index()+'Wave'+Wave,name:'Measure'+$index(),'aria-label':'Measure'+$index()+'Wave'+Wave,name:'Measure'+$index()}">
+                            </select>
+                            <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'Measure'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                                <span data-bind="attr:{id:'Measure'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                            </span>
+                        </td>
+                        <td style="line-height: 25px;">
+                            <input type="text" class="form-control input-sm required _numfloat3" data-Coefficient="Coefficients"
+                                   data-bind="value: Coefficient, attr: { id: 'Coefficient' + $index()+'Wave'+Wave,name: 'Coefficients' + $index(),'aria-label':'Coefficient' + $index()+'Wave'+Wave,name: 'Coefficients' + $index() }" maxlength="8"
+                                   style="display: inline-block;">
+                            <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'Coefficient'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                                <span data-bind="attr:{id:'Coefficient'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event:{click:function(){$root.addCoefficient(@(wave));}}" title="New"><span style="display:none">New</span></a>
+                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.delCoefficient }" title="Delete"><span style="display:none">Delet</span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="form-group" style="margin-top:20px;">
+        <div style="height:1px;width:100%;background:#00CCFF;overflow:hidden;"> </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label" style="text-align:left;padding-left:23px;">Create Age/Wave Bands</label>
+    </div>
+    <div class="form-group">
+        <div class="tab-content">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        @*<th width="15%">Wave</th>*@
+                        <th style="width:15%;">Age Min</th>
+                        <th style="width:15%;">Age Max</th>
+                        <th style="width:20%;">Age/Wave Mean</th>
+                        <th style="width:20%;">Age/Wave SD</th>
+                        <th style="width:15%;">Action</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: bands, as: 'band' }">
+                    <tr data-bind="if:Wave == @(wave),visible:Wave == @(wave)">
+                        <td>
+                            <input type="text" class="form-control input-sm required _numfloat1" data-AgeMins="AgeMins"
+                                   data-bind="value: AgeMin, attr: { id: 'AgeMin' + $index()+'Wave'+Wave,name: 'AgeMin' + $index(),name: 'AgeMin' + $index(),'aria-label':'AgeMin' + $index()+'Wave'+Wave}" maxlength="6"
+                                   style="display: inline-block;">
+                            <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'AgeMin'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                                <span data-bind="attr:{id:'AgeMin'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                            </span>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm required _numfloat1"
+                                   data-bind="value: AgeMax, attr: { id: 'AgeMax' + $index()+'Wave'+Wave,name: 'AgeMax' + $index(),'aria-label':'AgeMax' + $index()+'Wave'+Wave }" maxlength="6"
+                                   style="display: inline-block;">
+                            <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'AgeMax'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                                <span data-bind="attr:{id:'AgeMax'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                            </span>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm required _numfloat2"
+                                   data-bind="value: AgeOrWaveMean, attr: { id: 'AgeOrWaveMean' + $index()+'Wave'+Wave,name: 'AgeOrWaveMean' + $index(),'aria-label':'AgeOrWaveMean' + $index()+'Wave'+Wave }" maxlength="7"
+                                   style="display: inline-block;">
+                            <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'AgeOrWaveMean'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                                <span data-bind="attr:{id:'AgeOrWaveMean'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                            </span>
+                        </td>
+                        <td>
+                            <input type="text" name="AgeOrWave" class="form-control input-sm required _numfloat2"
+                                   data-bind="value: AgeOrWave, attr: { id: 'AgeOrWave' + $index()+'Wave'+Wave,name: 'AgeOrWave' + $index(),'aria-label':'AgeOrWave' + $index()+'Wave'+Wave }" maxlength="7"
+                                   style="display: inline-block;">
+                            <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'AgeOrWave'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                                <span data-bind="attr:{id:'AgeOrWave'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" class="table-btn icon-plus plus-btn" data-bind="event:{click:function(){$root.addBand(@(wave));}}" title="New"><span style="display:none">New</span></a>
+                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.delBand }" title="Delete"><span style="display:none">Delete</span></a>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="form-group" style="margin-top:20px;">
+        <div style="height:1px;width:100%;background:#00CCFF;overflow:hidden;"> </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-6">
+            Benchmark Builder - Age Range / Score Range
+            @Html.ValidationMessage("FromYear", "", "div")
+            @Html.ValidationMessage("FromMonth", "", "div")
+            @Html.ValidationMessage("ToYear", "", "div")
+            @Html.ValidationMessage("ToMonth", "", "div")
+            @Html.ValidationMessage("CutoffScore", "", "div")
+        </div>
+    </div>
+</div>
+
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th style="width:2px;"></th>
+            <th>Label</th>
+            <th style="width:5px;">Color</th>
+            <th style="width:12px;">Black&White</th>
+            <th style="width:5px;">Group</th>
+            <th style="width:5px;">Year</th>
+            <th style="width:5px;">Month</th>
+            <th style="width:2px;">to</th>
+            <th style="width:5px;">Year</th>
+            <th style="width:5px;">Month</th>
+            <th style="width:5px;"></th>
+            <th colspan="3" style="width:15px;">Total Score Range</th>
+            <th style="width:10px;">Action</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:{data:scores,as:'score'}">
+        <tr data-bind="css:{'has-error':score.hasError},if:score.Wave == @(wave),visible:score.Wave == @(wave)">
+            <td>
+                <span style="font-weight:bold" data-bind="text:(lineNum()+1)+'.'"></span>
+            </td>
+            <td>
+                <select style="width:95%" data-bind="options:$root.benchmarks,optionsText:'LabelText',value:selectedBenchmark,event:{change:$root.benchmarkChange},enable:$root.@(enableWave),attr:{id:'label'+$index()+'Wave'+Wave,'aria-label':'label'+$index()+'Wave'+Wave}" class="form-control"></select>
+            </td>
+            <td>
+                <div style="border:solid 1px #c3c3c3; width:18px; height:18px; margin:0 auto;"
+                     data-bind="style:{background:selectedBenchmark().Color,color:selectedBenchmark().Color}"></div>
+            </td>
+            <td>
+                <span style="margin:0 auto;" data-bind="text:selectedBenchmark().BlackWhiteText"></span>
+                @*<select data-bind="options:$root.benchmarksWave@(wave),optionsText:'BlackWhiteText',value:selectedBenchmark,enable:$root.@(enableWave)" class="form-control"></select>*@
+            </td>
+            <td>
+                <fieldset style="border:0px;float:left;">
+                    <legend style="display:none">Show On Group</legend>
+                    <input type="checkbox" data-bind="checked:ShowOnGroup,attr:{id:'showOnGroup'+$index()+'Wave'+Wave,'aria-label':'showOnGroup'+$index()+'Wave'+Wave}" />
+                </fieldset>
+            </td>
+            <td style="line-height: 25px;">
+                <input type="hidden" name="ID" data-bind="value:ID" />
+                <input type="text" name="FromYear" class="form-control input-sm uint _number inputCenter" int="2" float="0" maxlength="2"
+                       data-bind="value:FromYear,attr:{id:'FromYear'+$index()+'Wave'+Wave,'aria-label':'FromYear'+$index()+'Wave'+Wave},enable:$root.@(enableWave)"
+                       style="width: 50px; display: inline-block;">
+                <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'FromYear'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                    <span data-bind="attr:{id:'FromYear'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                </span>
+            </td>
+            <td style="line-height: 25px;">
+                <input type="text" name="FromMonth" class="form-control input-sm uint _number inputCenter" int="2" float="0" maxlength="2"
+                       data-bind="value:FromMonth,attr:{id:'FromMonth'+$index()+'Wave'+Wave,'aria-label':'FromMonth'+$index()+'Wave'+Wave},enable:$root.@(enableWave)"
+                       style="width: 50px; display: inline-block;">
+                <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'FromMonth'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                    <span data-bind="attr:{id:'FromMonth'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                </span>
+            </td>
+            <td>~</td>
+            <td style="line-height: 25px;">
+                <input type="text" name="ToYear" class="form-control input-sm uint _number inputCenter" int="2" float="0" maxlength="2"
+                       data-bind="value:ToYear,attr:{id:'ToYear'+$index()+'Wave'+Wave,'aria-label':'ToYear'+$index()+'Wave'+Wave},enable:$root.@(enableWave)"
+                       style="width: 50px; display: inline-block;">
+                <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'ToYear'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                    <span data-bind="attr:{id:'ToYear'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                </span>
+            </td>
+            <td style="line-height: 25px;">
+                <input type="text" name="ToMonth" class="form-control input-sm uint _number inputCenter" int="2" float="0" maxlength="2"
+                       data-bind="value:ToMonth,attr:{id:'ToMonth'+$index()+'Wave'+Wave,'aria-label':'ToMonth'+$index()+'Wave'+Wave},enable:$root.@(enableWave)"
+                       style="width: 50px; display: inline-block;">
+                <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'ToMonth'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                    <span data-bind="attr:{id:'ToMonth'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                </span>
+            </td>
+            <td></td>
+            <td>
+                <input type="text" name="LowerScore" class="form-control input-sm uint _number inputCenter" int="4" float="0" maxlength="5"
+                       data-bind="value:LowerScore,attr:{id:'LowerScore'+$index()+'Wave'+Wave,'aria-label':'LowerScore'+$index()+'Wave'+Wave},enable:$root.@(enableWave)"
+                       style="width: 50px; display: inline-block;">
+                <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'LowerScore'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                    <span data-bind="attr:{id:'LowerScore'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                </span>
+            </td>
+            <td>~</td>
+            <td>
+                <input type="text" name="HigherScore" class="form-control input-sm uint _number inputCenter" int="4" float="0" maxlength="5"
+                       data-bind="value:HigherScore,attr:{id:'HigherScore'+$index()+'Wave'+Wave,'aria-label':'HigherScore'+$index()+'Wave'+Wave},enable:$root.@(enableWave)"
+                       style="width: 50px; display: inline-block;">
+                <span class="field-validation-error" data-bind="attr:{'data-valmsg-for':'HigherScore'+$index()+'Wave'+Wave}" data-valmsg-replace="true">
+                    <span data-bind="attr:{id:'HigherScore'+$index()+'Wave'+Wave+'-error'}" class=""></span>
+                </span>
+            </td>
+            <td>
+                <a class="table-btn icon-plus plus-btn" href="#"
+                   data-bind="event:{click:function(){$root.newScore(@(wave));}},visible:$root.@(enableWave)" title="New"><span style="display: none">add</span></a>
+                <a href="#" class="table-btn icon-minus minus-btn" data-bind="event:{click:$root.deleteScore}" title="Delete"><span style="display: none">subtraction</span></a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+

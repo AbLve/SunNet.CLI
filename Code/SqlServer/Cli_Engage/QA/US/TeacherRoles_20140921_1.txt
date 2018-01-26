@@ -1,0 +1,61 @@
+﻿INSERT INTO [dbo].[TeacherRoles]
+     VALUES
+           (
+		    115,--<RoleId, varchar(2),>  
+           'educational specialist',--<RoleName, varchar(50),>
+           'RW',--<UserInfo_GoogleId, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           getdate(),--<UpdatedOn, datetime,>
+           'RW',--<CommunityId, varchar(2),>
+           'RW',--<SchoolId, varchar(2),>
+           'RW',--<TeacherId, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<UserInfo_FirstName, varchar(2),>
+           'RW',--<UserInfo_MiddleName, varchar(2),>
+           'RW',--<UserInfo_LastName, varchar(2),>
+           'RW',--<UserInfo_PreviousLastName, varchar(2),>
+           'R',--<BirthDate, varchar(2),>
+           'R',--<Gender, varchar(2),>
+           'X',--<Ethnicity, varchar(2),>
+           'X',--<VendorCode, varchar(2),>
+           'X',--<PrimaryLanguageId, varchar(2),>
+           'RW',--<EmployedBy, varchar(2),>
+           'X',--<SecondaryLanguageId, varchar(2),>
+           'X',--<CLIFundingId, varchar(2),>
+           'R',--<MediaRelease, varchar(2),>
+           'RW',--<UserInfo_Status, varchar(2),>
+           'X',--<HomeMailingAddress, varchar(2),>
+           'X',--<HomeMailingAddress2, varchar(2),>
+           'X',--<City, varchar(2),>
+           'X',--<CountyId, varchar(2),>
+           'X',--<StateId, varchar(2),>
+           'X',--<Zip, varchar(2),>
+           'RW',--<UserInfo_PrimaryPhoneNumber, varchar(2),>
+           'RW',--<UserInfo_PrimaryNumberType, varchar(2),>
+           'RW',--<UserInfo_SecondaryPhoneNumber, varchar(2),>
+           'RW',--<UserInfo_SecondaryNumberType, varchar(2),>
+           'RW',--<UserInfo_FaxNumber, varchar(2),>
+           'RW',--<UserInfo_PrimaryEmailAddress, varchar(2),>
+           'RW',--<UserInfo_SecondaryEmailAddress, varchar(2),>
+           'R',--<TotalTeachingYears, varchar(2),>
+           'R',--<AgeGroup, varchar(2),>
+           'RW',--<CurrentAgeGroupTeachingYears, varchar(2),>
+           'RW',--<TeacherType, varchar(2),>
+           'R',--<UserPDRelations, varchar(2),>
+           'R',--<EducationLevel, varchar(2),>
+           'R',--<UserCertificateRelations, varchar(2),>
+           'R',--<CoachId, varchar(2),>
+		   'R',--<CoachAssignmentWay, varchar(2),>
+           'R',--<ECIRCLEAssignmentWay, varchar(2),>
+           'R',--<YearsInProjectId, varchar(2),>
+           'RW',--<CoreAndSupplemental, varchar(2),>
+           'RW',--<CoreAndSupplemental2, varchar(2),>
+           'RW',--<CoreAndSupplemental3, varchar(2),>
+           'RW',--<CoreAndSupplemental4, varchar(2),>
+           'RW',--<Permission_UserRole, varchar(2),>
+		   'X',--<IsAssessmentEquipment,varchar(2),>
+           'RW',--<TeacherNotes, varchar(2),>
+           'RW',--<TeacherClassRelations, varchar(2),>
+           'X'--<TeacherTransactions, varchar(2),>
+		   )
+GO

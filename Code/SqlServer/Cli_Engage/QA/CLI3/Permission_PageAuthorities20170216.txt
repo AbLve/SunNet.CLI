@@ -1,0 +1,9 @@
+﻿INSERT INTO dbo.Permission_PageAuthorities  ( PageId, ActionId )
+select ID,16384 from [Permission_Pages] where ParentID
+   in (  select ID from [Permission_Pages] where ParentID =2000)
+
+
+   GO
+
+   insert into [dbo].[Permission_Authority](ID,Authority,Descriptions,CreatedOn,UpdatedOn)
+values(16384,'AssessmentPracticeArea','Assessment Practice Area',GETDATE(),GETDATE())

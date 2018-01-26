@@ -1,0 +1,12 @@
+﻿ALTER FUNCTION [dbo].[GetClassroomCode] 
+(
+	 @schoolYear varchar(5)
+)
+RETURNS varchar(50)
+AS
+BEGIN
+     DECLARE @count int
+	 select @count = count(1) from Classrooms where SchoolYear = @schoolYear
+	  
+	  return 'ECR'+ left(@schoolYear,2)+RIGHT('00000'+CONVERT(VARCHAR(50),(@count+1)),'5')
+END

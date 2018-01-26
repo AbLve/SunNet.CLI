@@ -1,0 +1,73 @@
+﻿@{
+    Layout = null;
+}
+@*18px 0px 0px 16px*@
+<div class="content-footer" data-bind="visible: totalPageCount() > 0 & miniPager">
+    <div data-bind="css: { 'col-md-12': miniPager, 'col-sm-12': miniPager, 'col-md-6': !miniPager, 'col-sm-12 ': !miniPager }">
+        <ul class="pagination tables-paginate" style="margin: 18px 0px 0px 0px;float:left;">
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == 1 }">
+                <a data-bind="    click: function (data, event) { $root.trunPage(1, event); }" href="#">First</a>
+            </li>
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == 1 }">
+                <a data-bind="click: function (data, event) { $root.trunPage('-1', event); }" href="#">Previous</a>
+            </li>
+            <!-- ko foreach:{data:pages,as:'page'}-->
+            <li data-bind="css: { active: $root.currentPageIndex() == page.value }, click: $root.trunPage">
+                <a href="javascript:;" data-bind="text: page.text" onclick="clearePageCache();"></a>
+            </li>
+            <!-- /ko -->
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == totalPageCount() }">
+                <a data-bind="click: function (data, event) { $root.trunPage('+1', event); }" href="#">Next</a>
+            </li>
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == totalPageCount() }">
+                <a data-bind="click: function (data, event) { $root.trunPage(-1, event); }" href="#">Last</a>
+            </li>
+
+        </ul>
+    </div>
+    <div class="col-md-12 col-sm-12 table-info" style="line-height:60px;">
+        Showing <strong class="text-muted" data-bind="text: showFromRecord"></strong> to <strong class="text-muted" data-bind="    text: showToRecord"></strong> of <strong class="text-muted" data-bind="    text: recordCount"></strong> entries.
+        Display
+        <select class="input-sm" name="ddlDisplayPerPage" title="Display count per page" data-bind="options: displayPerPageOptions,
+    optionsText: 'text',
+    value: displayPerPage,
+    attr: { id: instanceName + '_ddlDisplayPerPage' }"></select>
+        per page.<br />
+    </div>
+</div>
+<div class="content-footer" data-bind="visible: totalPageCount() > 0 & !miniPager">
+    <div class="col-md-6 col-sm-12 table-info" data-bind="visible: !miniPager">
+        Showing <strong class="text-muted" data-bind="text: showFromRecord"></strong> to <strong class="text-muted" data-bind="    text: showToRecord"></strong> of <strong class="text-muted" data-bind="    text: recordCount"></strong> entries.
+        Display
+        <select class="input-sm" name="ddlDisplayPerPage2" title="Display count per page" data-bind="options: displayPerPageOptions,
+    optionsText: 'text',
+    value: displayPerPage,
+    attr: { id: instanceName + '_ddlDisplayPerPage2' }"></select>
+        per page.<br />
+    </div>
+    <div data-bind="css: { 'col-md-12': miniPager, 'col-sm-12': miniPager, 'col-md-6': !miniPager, 'col-sm-12 ': !miniPager }">
+        <ul class="pagination tables-paginate">
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == 1 }">
+                <a data-bind="    click: function (data, event) { $root.trunPage(1, event); }" href="#">First</a>
+            </li>
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == 1 }">
+                <a data-bind="click: function (data, event) { $root.trunPage('-1', event); }" href="#">Previous</a>
+            </li>
+            <!-- ko foreach:{data:pages,as:'page'}-->
+            <li data-bind="css: { active: $root.currentPageIndex() == page.value }, click: $root.trunPage">
+                <a href="javascript:;" onclick="clearePageCache();" data-bind="text: page.text"></a>
+            </li>
+            <!-- /ko -->
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == totalPageCount() }">
+                <a data-bind="click: function (data, event) { $root.trunPage('+1', event); }" href="#">Next</a>
+            </li>
+            <li class="paginate_button " data-bind="css: { disabled: currentPageIndex() == totalPageCount() }">
+                <a data-bind="click: function (data, event) { $root.trunPage(-1, event); }" href="#">Last</a>
+            </li>
+
+        </ul>
+    </div>
+</div>
+@*<button class="btn btn-default" data-bind="visible: hasMore, event: { click: loadMore }">load more</button>
+    <br />*@
+

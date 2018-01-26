@@ -1,0 +1,55 @@
+﻿ALTER PROCEDURE [dbo].[CoachingHoursbyCommunity] 
+AS
+BEGIN
+
+
+with Coaches as (
+select bc.Name as CommunityName , c.ID as CommunityId,SUM(ISNULL(F2FAvailableHours,0)) as F2FAvailableHours,
+SUM(ISNULL(RemAvailableCycle,0)) as RemAvailableCycle
+ from Communities c
+inner join BasicCommunities bc on c.BasicCommunityId = bc.ID
+left join UserComSchRelations ucs on ucs.CommunityId=c.ID
+inner join  CoordCoachs cc on cc.UserId = ucs.UserId
+inner join Users u on cc.UserId = u.ID and u.Status = 1 and u.IsDeleted=0 
+where c.Status = 1
+group by bc.Name ,c.ID
+),
+TeacherCount as(
+select c.ID as CommunityId , COUNT(*) as TeacherTotal from Communities c 
+left join UserComSchRelations ucs on ucs.CommunityId=c.ID
+inner join Users u on ucs.UserId = u.ID and u.Status =1 and u.IsDeleted=0 
+inner join Teachers t on u.ID = t.UserId 
+
+group by c.ID
+),
+TeacherF2F as (
+select c.ID as CommunityId , COUNT(*) as NmberofF2F from Communities c
+left join UserComSchRelations ucs on ucs.CommunityId=c.ID
+inner join Users u on ucs.UserId = u.ID and u.Status =1 and u.IsDeleted=0 
+inner join Teachers t on u.ID = t.UserId and t.CoachAssignmentWay =1
+group by c.ID
+),
+TeacherRem as (
+select c.ID as CommunityId , COUNT(*) as NmberofRem from Communities c 
+left join UserComSchRelations ucs on ucs.CommunityId=c.ID
+inner join Users u on ucs.UserId = u.ID and u.Status =1 and u.IsDeleted=0 
+inner join Teachers t on u.ID = t.UserId and t.CoachAssignmentWay =2
+group by c.ID
+),
+TeacherGroup as (
+select usc.CommunityId , SUM(ISNULL(t.CoachingHours,0)) as ReqHours , SUM(ISNULL(t.ReqCycles,0)) as ReqCycles from Teachers t 
+inner join Users u on t.UserId = u.ID and u.Status = 1 and u.IsDeleted=0
+inner join UserComSchRelations usc on usc.UserId=u.ID
+group by usc.CommunityId
+)
+select c.* ,ISNULL(f.NmberofF2F,0) AS NmberofF2F ,ISNULL(r.NmberofRem,0) AS NmberofRem,ISNULL(t.TeacherTotal,0) AS TeacherTotal 
+,ISNULL(g.ReqHours,0) as ReqHours ,ISNULL(g.ReqCycles,0) as  ReqCycles
+from Coaches c
+left join TeacherCount t on c.CommunityId = t.CommunityId
+left join TeacherF2F f on f.CommunityId =c.CommunityId
+left join TeacherRem r on r.CommunityId = c.CommunityId
+left join TeacherGroup g on g.CommunityId = c.CommunityId
+left join Communities comm on comm.ID = c.CommunityId
+
+
+END

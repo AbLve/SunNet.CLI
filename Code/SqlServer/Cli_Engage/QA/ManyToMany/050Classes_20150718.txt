@@ -1,0 +1,5 @@
+﻿alter table Classes add ClassInternalID varchar(32)
+go
+update Classes set ClassInternalID = '' 
+go
+alter table Classes alter column ClassInternalID varchar(32) not null

@@ -1,0 +1,78 @@
+﻿if not exists(select * from syscolumns where id=object_id('CHChildrens') and name='AgeArea') 
+ALTER TABLE [dbo].[CHChildrens] 
+ADD AgeArea tinyint not null default(0)
+
+GO
+TRUNCATE TABLE [dbo].[CHChildrens]
+GO
+SET IDENTITY_INSERT [dbo].[CHChildrens] ON 
+
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (1, N'0-12 mos', 10, N'NMAC', 1, CAST(N'2015-01-08 15:15:14.703' AS DateTime), CAST(N'2015-01-08 15:15:14.703' AS DateTime), 1)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (2, N'13-17 mos', 12, N'NMAC', 1, CAST(N'2015-01-08 15:15:14.703' AS DateTime), CAST(N'2015-01-08 15:15:14.703' AS DateTime), 1)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (3, N'18-23 mos', 14, N'NMAC', 1, CAST(N'2015-01-08 15:15:14.703' AS DateTime), CAST(N'2015-01-08 15:15:14.703' AS DateTime), 2)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (4, N'24-35 mos', 14, N'NMAC', 1, CAST(N'2015-01-08 15:15:14.703' AS DateTime), CAST(N'2015-01-08 15:15:14.703' AS DateTime), 2)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (5, N'3 yrs old', 18, N'NMAC', 1, CAST(N'2015-01-08 15:15:14.703' AS DateTime), CAST(N'2015-01-08 15:15:14.703' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (6, N'4 yrs old', 21, N'NMAC', 1, CAST(N'2015-01-08 15:15:14.707' AS DateTime), CAST(N'2015-01-08 15:15:14.707' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (7, N'5 yrs old', 25, N'NMAC', 1, CAST(N'2015-01-08 15:15:14.707' AS DateTime), CAST(N'2015-01-08 15:15:14.707' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (8, N'6-8 yrs old', 25, N'NMAC', 1, CAST(N'2015-01-08 15:15:14.707' AS DateTime), CAST(N'2015-01-08 15:15:14.707' AS DateTime), 4)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (9, N'9-12 yrs old', 30, N'NMAC', 1, CAST(N'2015-01-08 15:15:14.707' AS DateTime), CAST(N'2015-01-08 15:15:14.707' AS DateTime), 4)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (10, N'0-17 mos', 10, N'MAC', 1, CAST(N'2015-01-08 15:15:14.707' AS DateTime), CAST(N'2015-01-08 15:15:14.707' AS DateTime), 1)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (11, N'13-23 mos', 12, N'MAC', 1, CAST(N'2015-01-08 15:15:14.707' AS DateTime), CAST(N'2015-01-08 15:15:14.707' AS DateTime), 1)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (12, N'2-3 yrs old', 16, N'MAC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 2)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (13, N'3-4 yrs old', 18, N'MAC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (14, N'3-5 yrs old', 18, N'MAC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (15, N'4-5 yrs old', 21, N'MAC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (16, N'5-8 yrs old', 25, N'MAC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 4)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (17, N'9-12 yrs old', 30, N'MAC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 4)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (18, N'0-17 mos', 0, N'LC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 1)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (19, N'13-23 mos', 0, N'LC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 1)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (20, N'2-3 yrs old', 0, N'LC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 2)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (21, N'3-4 yrs old', 0, N'LC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (22, N'3-5 yrs old', 0, N'LC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (23, N'4-5 yrs old', 0, N'LC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (24, N'5-8 yrs old', 0, N'LC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 4)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (25, N'9-12 yrs old', 0, N'LC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 4)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (26, N'0-17 mos', 0, N'RC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 1)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (27, N'13-23 mos', 0, N'RC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 1)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (28, N'2-3 yrs old', 0, N'RC', 1, CAST(N'2015-01-08 15:15:14.710' AS DateTime), CAST(N'2015-01-08 15:15:14.710' AS DateTime), 2)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (29, N'3-4 yrs old', 0, N'RC', 1, CAST(N'2015-01-08 15:15:14.713' AS DateTime), CAST(N'2015-01-08 15:15:14.713' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (30, N'3-5 yrs old', 0, N'RC', 1, CAST(N'2015-01-08 15:15:14.713' AS DateTime), CAST(N'2015-01-08 15:15:14.713' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (31, N'4-5 yrs old', 0, N'RC', 1, CAST(N'2015-01-08 15:15:14.713' AS DateTime), CAST(N'2015-01-08 15:15:14.713' AS DateTime), 3)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (32, N'5-8 yrs old', 0, N'RC', 1, CAST(N'2015-01-08 15:15:14.713' AS DateTime), CAST(N'2015-01-08 15:15:14.713' AS DateTime), 4)
+GO
+INSERT [dbo].[CHChildrens] ([ID], [Name], [Logic], [Type], [Status], [CreatedOn], [UpdatedOn], [AgeArea]) VALUES (33, N'9-12 yrs old', 0, N'RC', 1, CAST(N'2015-01-08 15:15:14.713' AS DateTime), CAST(N'2015-01-08 15:15:14.713' AS DateTime), 4)
+GO
+SET IDENTITY_INSERT [dbo].[CHChildrens] OFF
+GO

@@ -1,0 +1,31 @@
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER VIEW [dbo].[V_StudentMeasureDetail]
+AS
+SELECT   SA.AssessmentId, SA.SchoolYear, SA.Wave, STU.ID AS StudentId, STU.BirthDate AS BirthDay, SM.ID, SM.MeasureId, 
+                M.Name AS MeasureName, M.ShortName AS MeasureShortName, SM.Benchmark, SM.TotalScore, SM.Goal, 
+                SM.UpdatedOn,
+				SM.BenchmarkId,
+				(CASE SM.BenchmarkId WHEN 0 THEN '' ELSE B.LabelText END) AS LabelText,
+				(CASE SM.BenchmarkId WHEN 0 THEN '' ELSE B.Color END) AS Color,
+				(CASE SM.BenchmarkId WHEN 0 THEN 0 ELSE B.BlackWhite END) AS BW
+FROM      dbo.Cli_Engage__Students AS STU INNER JOIN
+                dbo.StudentAssessments AS SA ON STU.ID = SA.StudentId INNER JOIN
+                dbo.StudentMeasures AS SM ON SA.ID = SM.SAId INNER JOIN
+                dbo.Measures AS M ON SM.MeasureId = M.ID LEFT JOIN
+				dbo.Benchmarks AS B ON SM.BenchmarkId = B.ID
+WHERE   (SM.Status = 3) OR
+                EXISTS
+                    (SELECT   1 AS Expr1
+                     FROM      dbo.Measures AS M2 INNER JOIN
+                                     dbo.StudentMeasures AS SM2 ON M2.ID = SM2.MeasureId AND SM2.SAId = SA.ID AND 
+                                     SM2.Status = 3
+                     WHERE   (M2.ParentId = M.ID))
+
+GO

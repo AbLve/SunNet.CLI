@@ -1,0 +1,9 @@
+﻿
+/*判断StudentNumber列是否存在*/
+IF COL_LENGTH('Classes', 'StudentNumber') IS NOT NULL  
+begin
+	--ALTER TABLE Classes  DROP StudentNumber
+	--alter table Classes add StudentNumber int not null
+	alter table Classes alter column StudentNumber int
+	EXEC  sp_rename  'Classes.StudentNumber' , 'AtRiskPercent'
+end

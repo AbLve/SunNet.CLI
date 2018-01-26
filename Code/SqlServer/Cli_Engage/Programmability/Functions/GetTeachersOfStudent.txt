@@ -1,0 +1,57 @@
+﻿GO
+
+/****** Object:  UserDefinedFunction [dbo].[GetTeachersOfStudent]    Script Date: 4/27/2015 14:20:09 ******/
+IF EXISTS(SELECT 1 FROM sys.objects WHERE object_id = object_id('GetTeachersOfStudent'))
+DROP FUNCTION [dbo].[GetTeachersOfStudent]
+GO
+
+/****** Object:  UserDefinedFunction [dbo].[GetTeachersOfStudent]    Script Date: 4/27/2015 14:20:09 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+-- =============================================
+-- Author:		Jack
+-- Create date: 2015-04-24
+-- Description:	Get teachers of student
+-- =============================================
+CREATE FUNCTION [dbo].[GetTeachersOfStudent]
+(
+	-- Add the parameters for the function here
+	@StudetnId int
+)
+RETURNS VARCHAR(1000)
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @Teachers VARCHAR(1000)
+
+	SELECT @Teachers = (
+		SELECT DISTINCT  
+			USR.FirstName + ',' , 
+			USR.LastName + ',', 
+			TEA.TeacherId + ',', 
+			TEA.TeacherNumber + ',', 
+			USR.PrimaryEmailAddress + ',', 
+			CAST((CASE CLS.LeadTeacherId WHEN TCR.TeacherId THEN 1 ELSE 0 END) AS VARCHAR) + ';'
+			FROM [dbo].[TeacherClassRelations] TCR 
+			INNER JOIN [dbo].[Teachers] TEA ON TCR.TeacherId = TEA.ID
+			INNER JOIN [dbo].[Users] USR ON TEA.UserId = USR.ID 
+			INNER JOIN [dbo].[Classes] CLS ON TCR.ClassId = CLS.ID
+			WHERE EXISTS (SELECT 1 FROM [dbo].[StudentClassRelations] SCR WHERE SCR.StudentId = @StudetnId AND SCR.ClassId = TCR.ClassId) 
+			FOR XML PATH('') 
+	)
+	-- Return the result of the function
+	RETURN @Teachers
+
+END
+
+
+
+GO
+
+

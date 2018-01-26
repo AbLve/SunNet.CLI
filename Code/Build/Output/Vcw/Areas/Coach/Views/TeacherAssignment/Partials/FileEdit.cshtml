@@ -1,0 +1,173 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherAssignmentFileModel
+@using Sunnet.Cli.UIBase.Models;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase;
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        @Html.LabelFor(m => m.IdentifyFileName, new { @class = "control-label required" })
+                    </div>
+                    <div class="inputtext-con">
+                        @Html.TextBoxFor(m => m.IdentifyFileName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.IdentifyFileName)
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <label class="control-label" for="DateRecorded">Date Video Recorded</label>
+                    </div>
+                    <div class="inputtext-con">
+                        @Html.TextBoxFor(m => m.DateRecorded, new { @class = "form-control date", @Value = Model.DateRecorded.Value.FormatDateString() })
+                        @Html.ValidationMessageFor(m => m.DateRecorded)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <span class="control-label">Video language</span>
+                    </div>
+                    <div class="checkbox-con">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(m => m.Language, LanguageEnum.English, new { @value = LanguageEnum.English, id = "Language_English" })
+                            @LanguageEnum.English.ToDescription()</label>
+                    </div>
+                    <div class="checkbox-con">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(m => m.Language, LanguageEnum.Bilingual, new { @value = LanguageEnum.Bilingual, id = "Language_Bilingual" })
+                            @LanguageEnum.Bilingual.ToDescription()</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Video Context</div>
+                    </div>
+                    @foreach (ContextEnum item in Enum.GetValues(typeof(ContextEnum)))
+                    {
+                        if (item != ContextEnum.None)
+                        {
+                            bool isChecked = Model.ContextId == item;
+                            if (item == ContextEnum.Other)
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="Context" value="@(item.GetValue())"  @(isChecked ? "checked" : "")/>@item.ToDescription()
+                            </label>
+                            <label>
+                                @if (Model.ContextId == ContextEnum.Other)
+                                {
+                                    @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control", disabled = "disabled" })  
+                                }
+                            </label>
+                            @Html.ValidationMessageFor(model => model.ContextOther)
+                        </div>
+                            }
+                            else
+                            {
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="Context" value="@(item.GetValue())" @(isChecked ? "checked" : "")/>@item.ToDescription()
+                            </label>
+                        </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">
+                            Description
+                            <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                        </div>
+                        <label for="Description" class="hide">&nbsp;</label>
+                    </div>
+                    <div class="textarea-con">
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "2" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="coachreview-con">
+                <div class="coachreview-con-t">Coach Review</div>
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Screening</div>
+                        </div>
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="screening" value="1" 
+                                     @(Model.Status == FileStatus.Completed ? "checked" : "")/>Accept
+                            </label>
+                        </div>
+                        <div class="checkbox-con">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="screening" value="2" 
+                                    @(Model.Status == FileStatus.Rejected ? "checked" : "")/>Reject
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Selection List</div>
+                        </div>
+                        @foreach (SelectionEnum item in Enum.GetValues(typeof(SelectionEnum)))
+                        {
+                            <div class="checkbox-con">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="selectionlist"value="@item.GetValue()"
+                                        @(Model.SelectionList.Contains(item) ? "checked" : "")>@item.ToDescription()
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Link Video</div>
+                        </div>
+                        <div class="upload-btn">
+                            <a  href='@Url.Action("LinkToAssignment", "TeacherAssignment", new { fileId = Model.ID, redirect = Request.QueryString["redirect"], teacherId = Model.OwnerId })'                               
+                                class="mainbutton mainright-btn search-btn">Browse for VIP</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div id='div_sunnet'>
+                <div style='width:100%;height:450px; text-align:center; background:#333333 url(@(Sunnet.Framework.SFConfig.AssessmentDomain)/images/not-played.jpg) no-repeat center center; line-height:450px;'>
+                </div>
+            </div>
+        </div>
+        @Html.Partial("/Areas/Coach/Views/Partials/UploadedFile.cshtml")
+    </div>
+</div>

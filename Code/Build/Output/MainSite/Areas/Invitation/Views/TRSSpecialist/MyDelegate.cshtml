@@ -1,0 +1,199 @@
+﻿@model Sunnet.Cli.Business.Users.Models.UserModel
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.Core.Users.Enums
+@{                            
+    ViewBag.Title = "My Delegate";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.User)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("User Management", "Dashboard", "Public")) <i class="icon-angle-right"></i>My Delegate List
+}
+@if (ViewBag.accessAdd)
+{
+    <div class="right-content-top">
+        <button type="button" class="mainbutton mainright-btn create-btn" data-bind="click: $root.addData">Add My Delegate</button>
+    </div>
+}
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        @Html.LabelFor(m => m.FirstName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.FirstName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.firstName"
+            })
+        </div>
+        @Html.LabelFor(m => m.LastName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.LastName, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.lastName"
+            })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Status, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultAllText, "-1", new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.status"
+            })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">My Delegates</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.FirstName"></td>
+                    <td data-bind="text: item.LastName"></td>
+                    <td data-bind="text: item.SchoolName"></td>
+                    <td data-bind="text: item.GoogleId == '' ? 'False' : 'True'"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td align="left" style="padding-left: 45px;">
+                        @if (ViewBag.accessView)
+                        {
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a> 
+                        }
+                        @if (ViewBag.accessEdit)
+                        {     
+                            <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                        }
+                        @*@if (ViewBag.accessPermission)
+                        { 
+                            <a class="table-btn icon-lock permission-btn" data-bind='attr: { href: $root.permissionData(item) }' data-toggle="modal" data-target="#modalNormal" title="Permission"></a>
+                        }*@
+                        @if (ViewBag.accessAdd)
+                        {
+                            <a class="table-btn icon-share-alt message-btn" data-bind="visible: (item.GoogleId == '' ? false : true), event: { click: $root.reInvite }" href="#" title="Reset and Send Invitation"></a>
+                        }
+                    </td>
+                </tr>
+            </tbody>@Html.Display("e", "NoData", new { Colspan = 6 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_TRSSpecialistInvitation = {};
+
+        jQuery(function () {
+            $(".table.table-striped.table-hover td").css("word-break", "break-all");
+            list_TRSSpecialistInvitation = new ViewModel(
+                {
+                    instanceName: "list_TRSSpecialistInvitation",
+                    modalId: "modalNormal",
+                    addDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("New", new { roleType = (int)ViewBag.RoleType })))',
+                    addType: "Redirect",
+                    editDataUrl: '@Html.Raw(Url.Action("Edit", new { roleType = (int)ViewBag.RoleType }))',
+                    editType: "Redirect",
+                    viewDataUrl: '@Html.Raw(Url.Action("View", new { roleType = (int)ViewBag.RoleType }))',
+                    viewType: "Redirect",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    orderBy: "LastName",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayNameFor(model => model.FirstName)",
+                            field: "@Html.NameFor(model => model.FirstName)",
+                            order: true,
+                            width: '20%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.LastName)",
+                            field: "@Html.NameFor(model => model.LastName)",
+                            order: true,
+                            width: '20%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.SchoolName)",
+                            field: "@Html.NameFor(model => model.SchoolName)",
+                            order: true,
+                            width: '20%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.GoogleId)",
+                            field: "@Html.NameFor(model => model.GoogleId)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                        { text: "Action", width: '10%' }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("CommunityId")),
+                        txtCommunity: ko.observable(window.queryString("txtCommunity")),
+                        schoolId: ko.observable(window.queryString("SchoolId")),
+                        txtSchool: ko.observable(window.queryString("txtSchool")),
+                        principalCode: ko.observable(window.queryString("principalCode")),
+                        firstName: ko.observable(window.queryString("firstName")),
+                        lastName: ko.observable(window.queryString("lastName")),
+                        status: ko.observable(window.queryString("status", -1)),
+                        roleType: ko.observable(window.queryString("roleType", '@((int)Role.TRS_Specialist_Delegate)'))
+                    }
+                }
+                , {
+                    permissionData: function (myDelegate) {
+                        return '@Url.Action("AssignPermission", "Public")' + "?userId=" + myDelegate.UserId;
+                    },
+                    reInvite: function (myDelegate) {
+                        jQuery.when(waitingConfirm("Are you sure?", "Yes", "No")).done(function () {
+                            $.post("/Invitation/Public/ReInvite?userId=" + myDelegate.UserId, function (result) {
+                                if (!result) {
+                                    showMessage("success", "Email has been sent successfully.");
+                                    list_TRSSpecialistInvitation.search();
+                                } else {
+                                    showMessage("fail");
+                                }
+                            });
+                        });
+                    }
+                });
+
+            list_TRSSpecialistInvitation.search();
+            ko.applyBindings(list_TRSSpecialistInvitation);
+        });
+    </script>
+}

@@ -1,0 +1,395 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.CoachFileModel
+@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase;
+@using Sunnet.Cli.Vcw.Models;
+@using Sunnet.Framework
+@{
+    ViewBag.Title = "Video Information";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    bool isSummary = !string.IsNullOrEmpty(ViewBag.Redirect);
+    List<SelectItemModel> Languages = ViewBag.Languages as List<SelectItemModel>;
+    List<SelectItemModel> Contents = ViewBag.Contents as List<SelectItemModel>;
+    List<SelectItemModel> Contexts = ViewBag.Contexts as List<SelectItemModel>;
+    List<SelectItemModel> SelectionLists = ViewBag.SelectionList as List<SelectItemModel>;
+    List<SelectItemModel> Strategies = ViewBag.Strategies as List<SelectItemModel>;
+}
+
+@if (isSummary)
+{
+    @section LeftMenu
+    {
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Admin_Summary)
+    }
+}
+else
+{
+    @section LeftMenu
+    {
+        @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Admin_Coaches)
+    }
+}
+
+@if (isSummary)
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Summary", "Index", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("Coach Files", "Index", "Summary"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        File
+    }
+}
+else
+{
+    @section BreadPath
+    {
+        @(Html.ActionLink("Coaches", "Index", "CoachGeneral"))
+        &nbsp;<i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("Coach Assignments", "Index", "CoachAssignment"))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;
+        @(Html.ActionLink("Assignment", "View", "CoachAssignment", new { id = Model.AssignmentId }, null))&nbsp;
+        <i class="icon-angle-right"></i>&nbsp;    
+        View
+    }
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    var backurl = "@(ViewBag.Redirect)";
+                    if (backurl != "") {
+                        redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("TeacherFiles", "Summary"))");
+                    }
+                    else {
+                        redirectBack("@Url.Action("ViewAssignmentFiles", "CoachAssignment", new { id = Model.AssignmentId }, "")");
+                    }
+                }
+            })
+        });
+
+        function getUploaderPrefix() {
+            return "@(ViewBag.EncryptUserID)_";
+        }
+    </script>
+}
+
+@using (Ajax.BeginForm("EditFile", "CoachAssignment", new { IsPM = ViewBag.IsPM }, PostFormHelper.DefaultAjaxOptions, new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    <div class="right-content-top">
+        @if (isSummary)
+        {
+            <a class="mainbutton nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+            Url.Action("CoachFiles", "Summary"))" >Back to Files</a>
+        }
+        else
+        {
+            <a class="mainbutton nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+            Url.Action("ViewAssignmentFiles", "CoachAssignment"))" >Back to Assignment</a>
+        }
+    </div>
+    @Html.Partial("/Views/TeacherInfo/CoachInfo.cshtml")
+    <div class="main-content">
+        <div class="content-title">Selected File Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    @Html.LabelFor(model => model.IdentifyFileName, new { @class = "control-label required" })
+                                </div>
+                                <div class="inputtext-con">
+                                    @Html.TextBoxFor(model => model.IdentifyFileName, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdentifyFileName)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <label class="control-label" for="DateRecorded">Date Video Recorded</label>
+                                </div>
+                                <div class="textarea-con">
+                                    @Html.TextBoxFor(m => m.DateRecorded, new { @class = "form-control date", @Value = Model.DateRecorded.Value.FormatDateString() })
+                                    @Html.ValidationMessageFor(m => m.DateRecorded)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Video language</div>
+                                </div>
+                                @if (Languages != null)
+                                {
+                                    foreach (SelectItemModel item in Languages)
+                                    {
+                                    <div class="checkbox-con">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="language" value="@item.ID"
+                                                @(Model.LanguageId == item.ID ? "checked" : "")>@item.Name
+                                        </label>
+                                    </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="content-con">
+                                <div class="content-title3">
+                                    <div class="control-label">Video Context</div>
+                                </div>
+                                @if (Contexts != null)
+                                {
+                                    foreach (SelectItemModel item in Contexts)
+                                    {
+                                        bool isChecked = Model.ContextId == item.ID;
+                                        if (item.Name.Trim().ToLower() == SFConfig.ContextOther)
+                                        {
+                                    <div class="checkbox-con">
+                                        <label class="checkbox-inline checkbox-other">
+                                            <input type="checkbox" name="Context" value="@(item.ID)"  @(isChecked ? "checked" : "") isOther="true"/>@item.Name
+                                        </label>
+                                        <label class="textbox-other"><span style="display:none;">1</span>
+                                            @if (isChecked)
+                                            {
+                                                @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control" })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control", disabled = "disabled" })  
+                                            }
+                                        </label>
+                                        @Html.ValidationMessageFor(model => model.ContextOther)
+                                    </div>
+                                        }
+                                        else
+                                        {
+                                    <div class="checkbox-con">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="Context" value="@(item.ID)" @(isChecked ? "checked" : "")/>@item.Name
+                                        </label>
+                                    </div>
+                                        }
+
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <video controls="controls" class="videoplay">
+                        <source src="@(FileHelper.GetPreviewPathofUploadFile(Model.FilePath).Replace("\\", "/"))" />
+                    </video>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Video Content</div>
+                        </div>
+                        @if (Contents != null)
+                        {
+                            foreach (SelectItemModel item in Contents)
+                            {
+                                bool isChecked = Model.ContentIds.Contains(item.ID);
+                                if (item.Name.Trim().ToLower() == SFConfig.VideoContentOther)
+                                {
+                            <div class="checkbox-con  checkbox-con-double">
+                                <label class="checkbox-inline checkbox-other">
+                                    <input type="checkbox" name="Content" onclick="ContentClick(this)" 
+                                                    value="@item.ID" @(isChecked ? "checked" : "")>@item.Name
+                                    &nbsp;&nbsp;
+                                </label>
+                                <label class="textbox-other"><span style="display:none;">1</span>
+                                    @if (isChecked)
+                                    {
+                                        @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control" })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control", @disabled = "disabled" })   
+                                    }
+                                </label>
+                                @Html.ValidationMessageFor(model => model.ContentOther)
+                            </div>
+                                }
+                                else
+                                {
+                            <div class="checkbox-con  checkbox-con-double">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="Content"  
+                                                    value="@item.ID" @(isChecked ? "checked" : "") >
+                                    @item.Name
+                                </label>
+                            </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">Coaching Strategies</div>
+                        </div>
+                        @if (Strategies != null)
+                        {
+                            foreach (SelectItemModel item in Strategies)
+                            {
+                                bool isChecked = Model.StrategyIds.Contains(item.ID);
+                                if (item.Name.Trim().ToLower() == SFConfig.StrategyOther)
+                                {
+                            <div class="checkbox-con checkbox-con-double">
+                                <label class="checkbox-inline checkbox-other">
+                                    <input type="checkbox" name="Strategy" onclick="StrategyClick(this)" 
+                                                    value="@item.ID" @(isChecked ? "checked" : "")>@item.Name
+                                </label>
+                                <label class="textbox-other"><span style="display:none;">1</span>
+                                    @if (isChecked)
+                                    {
+                                        @Html.TextBoxFor(model => model.StrategyOther, new { @class = "form-control form-control-double" })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(model => model.StrategyOther, new
+                                   {
+                                       @class = "form-control form-control-double",
+                                       @disabled = "disabled"
+                                   }) 
+                                    }
+                                </label>
+                                @Html.ValidationMessageFor(model => model.StrategyOther)
+                            </div>
+                                }
+                                else
+                                {
+                            <div class="checkbox-con checkbox-con-double">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="Strategy"  
+                                                    value="@item.ID" @(isChecked ? "checked" : "") >@item.Name
+                                </label>
+                            </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">
+                                Coaching Objectives
+                        <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                            </div>
+                            <label class="hide" for="Objectives"><span style="display:none;">1</span></label>
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextAreaFor(m => m.Objectives, new { @class = "form-control", row = "2" })
+                            @Html.ValidationMessageFor(m => m.Objectives)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="content-con">
+                        <div class="content-title3">
+                            <div class="control-label">
+                                Coaching Effectiveness
+                        <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                            </div>
+                            <label class="hide" for="Effectiveness"><span style="display:none;">1</span></label>
+                        </div>
+                        <div class="textarea-con">
+                            @Html.TextAreaFor(m => m.Effectiveness, new { @class = "form-control", row = "2" })
+                            @Html.ValidationMessageFor(m => m.Effectiveness)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("/Areas/Coach/Views/Partials/UploadedFile.cshtml")
+            <div class="form-group">
+                <div class="coachreview-con">
+                    <div class="coachreview-con-t">PM Review</div>
+                    <div class="col-sm-6">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <div class="control-label">Screening</div>
+                            </div>
+                            <div class="checkbox-con">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="screening" value="1" 
+                                     @(Model.Status == FileStatus.Completed ? "checked" : "")/>Accept
+                                </label>
+                            </div>
+                            <div class="checkbox-con">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="screening" value="2" 
+                                    @(Model.Status == FileStatus.Rejected ? "checked" : "")/>Reject
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <div class="control-label">Selection List</div>
+                            </div>
+                            @if (SelectionLists != null)
+                            {
+                                foreach (SelectItemModel item in SelectionLists)
+                                {
+                                <div class="checkbox-con checkbox-con-double">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="selectionlist" value="@item.ID"
+                                        @(Model.SelectionIds.Contains(item.ID) ? "checked" : "")>@item.Name
+                                    </label>
+                                </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="uploadfiles" id="uploadfiles" />
+            <div class="button-content">
+                <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" onclick="return beforeSubmit_edit()" id="btnSubmit">
+                @if (isSummary)
+                {
+                    <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                    Url.Action("CoachFiles", "Summary"))" >Cancel</a>
+                }
+                else
+                {
+                    <a class="mainbutton modal-btn cancel-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ??
+                    Url.Action("ViewAssignmentFiles", "CoachAssignment", new { id = Model.AssignmentId }, ""))" >Cancel</a>
+                }
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,198 @@
+﻿@model Sunnet.Cli.Core.BUP.Entities.AutomationSettingEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "Add Automation Setting";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.BUP)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Data Management", "Index", "BUP"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;Add Automation Setting
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        jQuery(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("index");
+                }
+            });
+
+            $("#connect").hide();
+        })
+
+        function CheckDuplicatePath() {
+            var isDuplicate = false;
+            $("#filePath input[type=text]").each(function () {
+                var path = $(this).val().toLowerCase();
+                if (path && path.length > 1 &&
+                    $("#filePath input[type='text']").filter(function () { return $(this).val().toLowerCase() == path }).length > 1) {
+                    isDuplicate = true;
+                    return;
+                }
+            })
+            if (isDuplicate) {
+                showMessage("hint", "Duplicate path found.");
+                return false;
+            }
+        }
+
+        function TestConnect(obj) {
+            $(obj).hide();
+            $("#connect").show();
+            $.post(
+                "/BUP/Automation/TestConnect",
+                {
+                    ip: $("#HostIp").val(),
+                    port: $("#Port").val(),
+                    username: $("#UserName").val(),
+                    password: $("#PassWord").val()
+                },
+                function (response) {
+                    if (response == "true") {
+                        alert("Connection success!");
+                    }
+                    else {
+                        alert("Connection failure!");
+                    }
+                    $(obj).show();
+                    $("#connect").hide();
+                })
+        }
+    </script>
+}
+
+@using (Ajax.BeginForm("New", "Automation", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    HttpMethod = "Post",
+    role = "form",
+    id = formId,
+    @class = "form-horizontal"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Automation Setting List</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.CommunityId, (IEnumerable<SelectListItem>)ViewBag.Communities, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.CommunityId)
+                </div>
+                @Html.LabelFor(model => model.Status, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.Status, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.HostIp, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.HostIp, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.HostIp)
+                </div>
+                @Html.LabelFor(model => model.Port, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Port, new { @class = "form-control", @Value = 22 })
+                    @Html.ValidationMessageFor(model => model.Port)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserName)
+                </div>
+                @Html.LabelFor(model => model.PassWord, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.PassWord, new { @class = "form-control", type = "password" })
+                    @Html.ValidationMessageFor(model => model.PassWord)
+                </div>
+                <input type="button" value="Test Connection" style="background: sandybrown" onclick="TestConnect(this)" />
+                <span id="connect">Connecting...</span>
+            </div>
+            <div class="content-title">File folders(from root)</div>
+            <div class="form-group"></div>
+            <div id="filePath">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SchoolPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.SchoolPath, new { @class = "form-control", @Value = "/School" })
+                        @Html.ValidationMessageFor(model => model.SchoolPath)
+                    </div>
+                    @Html.LabelFor(model => model.ClassroomPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.ClassroomPath, new { @class = "form-control", @Value = "/Classroom" })
+                        @Html.ValidationMessageFor(model => model.ClassroomPath)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ClassPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.ClassPath, new { @class = "form-control", @Value = "/Class" })
+                        @Html.ValidationMessageFor(model => model.ClassPath)
+                    </div>
+                    @Html.LabelFor(model => model.StudentPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.StudentPath, new { @class = "form-control", @Value = "/Student" })
+                        @Html.ValidationMessageFor(model => model.StudentPath)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CommunityUserPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.CommunityUserPath, new { @class = "form-control", @Value = "/CommunityUser" })
+                        @Html.ValidationMessageFor(model => model.CommunityUserPath)
+                    </div>
+                    @Html.LabelFor(model => model.CommunitySpecialistPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.CommunitySpecialistPath, new { @class = "form-control", @Value = "/CommunitySpecialist" })
+                        @Html.ValidationMessageFor(model => model.CommunitySpecialistPath)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PrincipalPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.PrincipalPath, new { @class = "form-control", @Value = "/Principal" })
+                        @Html.ValidationMessageFor(model => model.PrincipalPath)
+                    </div>
+                    @Html.LabelFor(model => model.SchoolSpecialistPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.SchoolSpecialistPath, new { @class = "form-control", @Value = "/SchoolSpecialist" })
+                        @Html.ValidationMessageFor(model => model.SchoolSpecialistPath)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TeacherPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.TeacherPath, new { @class = "form-control", @Value = "/Teacher" })
+                        @Html.ValidationMessageFor(model => model.TeacherPath)
+                    </div>
+                    @Html.LabelFor(model => model.ParentPath, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(model => model.ParentPath, new { @class = "form-control", @Value = "/Parent" })
+                        @Html.ValidationMessageFor(model => model.ParentPath)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="button-content">
+        <button class="mainbutton modal-btn submit-btn" type="submit" id="btnSubmit" onclick="return CheckDuplicatePath()">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+    </div>
+}

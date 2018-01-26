@@ -1,0 +1,33 @@
+﻿IF EXISTS (SELECT * FROM SYS.all_objects WHERE NAME = 'TypedResponseOptions')
+DROP TABLE TypedResponseOptions
+GO
+IF EXISTS (SELECT * FROM SYS.all_objects WHERE NAME = 'TypedResonses')
+DROP TABLE TypedResonses
+GO
+IF EXISTS (SELECT * FROM SYS.all_objects WHERE NAME = 'TypedResponseItems')
+DROP TABLE TypedResponseItems
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TypedResponseItems](
+	[ID] [int] NOT NULL,
+	[Timeout] [int] NOT NULL,
+	[TargetText] [nvarchar](1000) NOT NULL,
+	[TargetTextTimeout] [int] NOT NULL,
+	[TargetAudio] [nvarchar](100) NOT NULL,
+	[TargetAudioTimeout] [int] NOT NULL,
+ CONSTRAINT [PK_TypedResponseItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[TypedResponseItems]  WITH CHECK ADD  CONSTRAINT [FK_TypedResponseItems_ItemBases] FOREIGN KEY([ID])
+REFERENCES [dbo].[ItemBases] ([ID])
+GO
+ALTER TABLE [dbo].[TypedResponseItems] CHECK CONSTRAINT [FK_TypedResponseItems_ItemBases]
+GO

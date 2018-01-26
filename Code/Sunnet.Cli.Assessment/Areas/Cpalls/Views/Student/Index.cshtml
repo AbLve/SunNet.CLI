@@ -1,0 +1,1245 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@{
+    ViewBag.Title = "Student View";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var baseClassObj = new { @class = "form-control" };
+    ClassModel classModel = ViewBag.ClassModel;
+    string backSchool = Url.Action("Index", "School", new { assessmentId = Request.QueryString["assessmentId"], wave = Request.QueryString["wave"] });
+    string backUrl = Url.Action("Index", "Class", new
+    {
+        assessmentId = Request.QueryString["assessmentId"],
+        schoolId = ViewBag.SchoolId,
+        year = Request.QueryString["year"],
+        wave = Request.QueryString["wave"],
+        communityId = Request.QueryString["communityId"],
+        communityName = Request.QueryString["communityName"]
+    });
+    string assessmentId = Request.QueryString["assessmentId"];
+    string classId = Request.QueryString["classId"];
+    int leftWidth = 150;
+    ViewBag.LeftWidth = leftWidth; // Partial
+    ViewBag.Target = "Student";
+    List<AssessmentReportEntity> assessmentReports = ViewBag.AssessmentReports;
+    List<AssessmentReportEntity> assessmentReportReports = ViewBag.AssessmentReportStudents;
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    <a href="/">@(ViewBag.AssessmentName)</a>
+    @if (ViewBag.ShowSchoolback)
+    {
+        <i class="icon-angle-right"></i>
+        <a href="@backSchool">School View</a>
+    }
+    <i class="icon-angle-right"></i><a href="@backUrl">Class View</a>
+    <i class="icon-angle-right"></i>Student View
+}
+@section Styles
+{
+    @Styles.Render("~/css/assessment/offline")
+    @*@Styles.Render("~/css/cpalls/offline")*@
+    <style type="text/css">
+        .benchmarkColor {
+            color: #000;
+            font-weight: bold;
+            border-radius: 20px;
+            height: 19px;
+            line-height: 19px;
+            width: 20px;
+            margin: 0 2px;
+            display: inline-table;
+            text-align: center;
+        }
+         .fixed-header {
+             margin-left: 166px;
+         }
+
+        .table-btn {
+            border-radius: 20px;
+            height: 19px;
+            line-height: 19px;
+            width: 20px;
+        }
+
+        a:hover {
+        }
+
+        .fixed-columns-rotate-launch {
+            background: #f6dcc3;
+            height: 50px !important;
+            left: 50px !important;
+        }
+
+        .fixed-columns-rotate-launch span {
+            height: 32px !important;
+        }
+
+        .fixed-columns-rotate-launch:hover {
+            background: #f6dcc3 !important;
+        }
+
+        tr:last-child > td.fixed-column div {
+            height: 44px;
+        }
+
+        .fixed-column div {
+            height: 43px;
+        }
+
+        .main-content, .right-content-top {
+            margin-top: 5px;
+        }
+
+        .modal-l-b {
+            margin: 5px 0;
+        }
+
+        .form-horizontal .control-label {
+            padding-right: 5px;
+        }
+
+        .form-group > div {
+            padding-left: 5px;
+            margin-top: 5px;
+        }
+
+        .switch{
+            width: 40px;
+            height: 20px;
+            background: #999999;
+            position: relative;
+            border-radius: 15px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            display: inline-block;
+            color:#000;
+        }
+        .switch-text{
+            display: inline-block;
+            vertical-align: top;
+        }
+        .switch-btn{
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            position: absolute;
+            top: 0;
+            right: 19px;
+            border-radius: 50%;
+        }
+        #btnResetPin{
+            background:#3979AF !important;
+        }
+    </style>
+}
+@Html.Partial("Offline/_Partial_Reset")
+@Html.Partial("Offline/_Partial_Pin")
+<div class="main-content top-form">
+    <div class="form-horizontal">
+        <label class="control-label" for="Name">Community/District</label>
+        @Html.DisplayFor(x => classModel.School.CommunitiesText)
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label" for="Name">School</label>
+        @Html.DisplayFor(x => classModel.School.Name)
+        @ViewTextHelper.HtmlEmptySeparator
+        <label class="control-label" for="Name">Class</label>
+        @Html.DisplayFor(x => classModel.ClassName)
+        @ViewTextHelper.HtmlEmptySeparator
+        @if (!string.IsNullOrEmpty(ViewBag.Teacher.ToString()) && (ViewBag.Teacher.Count > 0))
+        {
+            <label class="control-label" for="Name">Teacher</label>
+            @Html.Display("Teacher", "List")
+        }
+    </div>
+</div>
+
+<div class="right-content-top">
+    <div class="btn-group">
+        <a type="button" class="mainbutton mainright-btn nav-btn" href="@backUrl">
+            <i class=" icon-double-angle-left"></i>
+            Class View
+        </a>
+    </div>
+
+    @if (ViewBag.ClassId > 0)
+    {
+        <div class="btn-group">
+            <a  style="cursor: pointer;" class="mainbutton mainright-btn nav-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="icon-bar-chart"></i>
+                Reports <span class="caret"></span>
+            </a>
+
+            <ul class="dropdown-menu">
+                @if (assessmentReports.Any(e => e.Report == ReportEnum.Completion))
+                {
+                    <li>
+                        <a href="javascript:void(0);" data-bind="click:completion_report">Class Completion Report
+                        </a>
+                    </li>
+                }
+                @if (assessmentReports.Any(e => e.Report == ReportEnum.Summary))
+                {
+                    <li>
+                        @Html.ActionLink("Class Summary Report", "Summary", "Student",
+                            new
+                            {
+                                Area = "Report",
+                                assessmentId = ViewBag.AssessmentId,
+                                year = ViewBag.Year,
+                                classId = ViewBag.ClassId,
+                                @class = classModel.ClassName,
+                                export = "true"
+                            },
+                            new
+                            {
+                                data_toggle = "modal",
+                                data_target = "#modalNormal",
+                                data_confirm = "false"
+                            })
+                    </li>
+                }
+                @if (assessmentReports.Any(e => e.Report == ReportEnum.CustomScoreReport))
+                {
+                    <li>
+                        @Html.ActionLink("Custom Score Report", "CustomScoreReportView", "Student",
+                            new
+                            {
+                                Area = "Report",
+                                assessmentId = ViewBag.AssessmentId,
+                                year = ViewBag.Year,
+                                classId = ViewBag.ClassId,
+                                @class = classModel.ClassName
+                            },
+                            new
+                            {
+                                data_toggle = "modal",
+                                data_target = "#modalNormal",
+                                data_confirm = "false"
+                            })
+                    </li>
+                }
+                @if (assessmentReports.Any(e => e.Report == ReportEnum.PercentileRank))
+                {
+                    <li>
+                        @Html.ActionLink("Class Summary (Percentile Rank)", "ClassPercentileRank", "Student",
+                            new
+                            {
+                                Area = "Report",
+                                assessmentId = ViewBag.AssessmentId,
+                                year = ViewBag.Year,
+                                classId = ViewBag.ClassId,
+                                @class = classModel.ClassName,
+                                export = "true"
+                            },
+                            new
+                            {
+                                data_toggle = "modal",
+                                data_target = "#modalNormal",
+                                data_confirm = "false"
+                            })
+                    </li>
+                }
+                @if (assessmentReports.Any(e => e.Report == ReportEnum.Growth))
+                {
+                    <li>
+                        @Html.ActionLink("Class Growth Report", "Growth", "Student",
+                            new
+                            {
+                                Area = "Report",
+                                assessmentId = ViewBag.AssessmentId,
+                                year = ViewBag.Year,
+                                classId = ViewBag.ClassId,
+                                schoolId = ViewBag.SchoolId,
+                                class1 = classModel.ClassName
+                            },
+                            new
+                            {
+                                data_toggle = "modal",
+                                data_target = "#modalNormal",
+                                data_confirm = "false"
+                            })
+                    </li>
+                }
+            </ul>
+
+        </div>
+        <div class="btn-group">
+            <a class="mainbutton mainright-btn nav-btn" href='@(Html.Raw(Url.Action("Index", "Group",
+                                                                    new
+                                                                    {
+                                                                        Area = "Cpalls",
+                                                                        assessmentId = ViewBag.AssessmentId,
+                                                                        year = ViewBag.Year,
+                                                                        classId = ViewBag.ClassId,
+                                                                        schoolId = ViewBag.SchoolId,
+                                                                        wave = ViewBag.Wave,
+                                                                        language = ViewBag.Language,
+
+                                                                    })))'>
+                <i class="icon-group"></i>
+                View Groups
+            </a>
+
+            @if (ViewBag.HasAnotherVersion)
+            {
+                <a class="mainbutton mainright-btn nav-btn "
+                   href='@(Html.Raw(Url.Action("Index", "Student", new
+                     {
+                         assessmentId = ViewBag.OtherAssessmentId,
+                         classId = Request.QueryString["classId"],
+                         year = Request.QueryString["year"],
+                         wave = Request.QueryString["wave"]
+                     })))'>
+                    <i class="icon-exchange"></i>
+                    @(ViewData["OtherVersion"].ToString())
+                </a>
+            }
+
+        </div>
+        
+            if (@ViewBag.CpallsOffline)
+            {
+        <div class="btn-group">
+            <button id="hrefGoOffline" href="@(ViewBag.OfflineUrl)" class=" mainbutton mainright-btn pencil-btn">
+                <i class=" icon-cloud-download"></i>
+                Offline Assessment
+            </button>
+            <button class=" mainbutton mainright-btn pencil-btn hidden" type="button" id="btnOpenResetPin">
+                <i class="icon-key"></i>
+                Reset PIN
+            </button>
+        </div>
+            }
+    }
+</div>
+
+<div class="modal-l-b"></div>
+<div class="form-horizontal " id="formSearch">
+    <div class="form-group row">
+        <label class="control-label col-sm-2 col-md-2 col-lg-1" for="firstname">First Name</label>
+        <div class=" col-sm-4 col-md-2  col-lg-1">
+            <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" data-bind="value: searchCriteria.firstname" />
+        </div>
+        <label class="control-label col-sm-2  col-md-2  col-lg-1" for="lastname">Last Name</label>
+        <div class=" col-sm-4 col-md-2  col-lg-1">
+            <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name" data-bind="value: searchCriteria.lastname" />
+        </div>
+        <label class="control-label col-sm-2  col-md-2  col-lg-1" for="year">Year</label>
+        <div class=" col-sm-4 col-md-2  col-lg-1">
+            @Html.DropDownList("year", (IEnumerable<SelectListItem>)ViewBag.YearOptions, new { @class = "form-control", data_bind = "value: searchCriteria.year" })
+            <span id="year-error"></span>
+        </div>
+        <label class="control-label col-sm-2  col-md-2  col-lg-1" for="wave">Wave</label>
+        <div class=" col-sm-4 col-md-2  col-lg-1">
+            @Html.DropDownList("wave", (IEnumerable<SelectListItem>)ViewBag.WaveOptions, new { @class = "form-control", data_bind = "value: searchCriteria.wave,event:{change:WaveChanged}" })
+            <span id="wave-error"></span>
+        </div>
+        <label class="control-label col-sm-2  col-md-2  col-lg-1" for="Class">Class Name</label>
+        <div class=" col-sm-4 col-md-2  col-lg-1">
+            @Html.DropDownList("Class", (IEnumerable<SelectListItem>)ViewBag.ClassOptions, new { @class = "form-control", data_bind = "value: searchCriteria.classId" })
+        </div>
+        <div class=" col-sm-4 col-sm-offset-2 col-md-2 col-md-offset-2 col-lg-offset-0 col-lg-2">
+            <button class="mainbutton mainright-btn search-btn" type="button" data-bind="event: { click: customSearch }">Search</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-l-b"></div>
+<div class="main-content">
+    <div class="content-body-tab" id="div_tableWidth">
+        @if (ViewBag.DisplayPercentileRank)
+        {
+            <div>
+                <div class="switch-text">Display Percentile Ranks</div>
+                <div class="switch" data-bind="event: { click: DisplayRanks }">
+                    <span class="switch-btn"></span>
+                </div>
+            </div>
+        }
+        <label style="width:0px;" for="isDisplayRanks"><span style="display:none">2</span></label>
+        <input type="text" class="form-control" id="isDisplayRanks" name="isDisplayRanks" value="0" data-bind="value: searchCriteria.isDisplayRanks" style="display: none; width: 0px; height: 0px;" />
+        @if (ViewBag.HaveMeasure)
+        {
+            <div id="fixed_header_container" class="fixed-header-container">
+                <div class="fixed-header">
+                    <table class="table table-striped table-hover">
+                        @Html.Partial("_Partial_Header")
+                    </table>
+                </div>
+            </div>
+
+            <div class=" fixed-columns-container">
+                <div class="fixed-columns-overflow" id="fixed_container" style="margin-left: @(leftWidth - 1)px">
+                    <table class="table table-striped table-hover">
+                        @Html.Partial("_Partial_Header")
+                        <tbody>
+                            @if (ViewBag.Start)
+                            {
+                                <tr>
+                                    <td class="fixed-column" style="padding: 0px; text-align: right;">
+                                        <div style="top:160px; width: @(leftWidth)px;">
+                                            <strong>Exclude All</strong>
+                                        </div>
+                                    </td>
+                                    <td>&nbsp;
+                                    </td>
+                                    <td>&nbsp;
+                                    </td>
+                                    @foreach (var tmpItem in (List<MeasureHeaderModel>)ViewBag.MeasureList)
+                                    {
+                                        if (tmpItem.MeasureId == tmpItem.ParentId)
+                                        {
+                                            <td data-bind="css:{'measure-split-line-left':!parentMeasure[@(tmpItem.MeasureId)].visible()}" class="measure-split-line-right"></td>
+                                        }
+                                        else
+                                        {
+                                            <!-- ko if: @(tmpItem.ParentId) == 1 || $root.parentMeasure[@(tmpItem.ParentId)].visible()-->
+                                            <td class='@(tmpItem.IsFirstOfParent ? "measure-split-line-left" : "")'>
+                                                <a name="lnkLockAll" id="lnkLockAll@(tmpItem.MeasureId)" href="#" class="tab-btn " data-bind="click:function(data,event){lockAllStudents(@tmpItem.MeasureId    ,event);},css:{'off-btn':$root.measureById[@(tmpItem.MeasureId)].initialised()==0,'on-btn':$root.measureById[@(tmpItem.MeasureId)].initialised()>0},visible:$root.measureById[@(tmpItem.MeasureId)].initialised()+$root.measureById[@(tmpItem.MeasureId)].excluded()>0 && $root.inExecDate,attr:{title:$root.measureById[@(tmpItem.MeasureId)].initialised()==0?'Restore All':'Exclude All'}"
+                                                   style="padding: 3px 10px;">
+                                                    <i class="icon-circle"></i>
+
+                                                    <span style="display: none">1</span>
+                                                </a>
+                                                <img alt="loading" name="lnkLoading" src="/images/loading.gif" id="lnkLoading@(tmpItem.MeasureId)" style="display:none"/>
+                                            </td>
+                                            <!-- /ko-->
+                                        }
+                                    }
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td style="width: 100%;">&nbsp;</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td class="fixed-column" style="text-align: right;">
+                                    <div style="top:201px; width: @(leftWidth)px;">
+                                        <strong>Maximum Score</strong>
+                                    </div>
+                                </td>
+                                <td>&nbsp;
+                                </td>
+                                <td>&nbsp;
+                                </td>
+                                @foreach (var tmpItem in (List<MeasureHeaderModel>)ViewBag.MeasureList)
+                                {
+                                    if (tmpItem.MeasureId == tmpItem.ParentId)
+                                    {
+                                        <td data-bind="css:{'measure-split-line-left':!parentMeasure[@(tmpItem.MeasureId)].visible()}" class="measure-split-line-right">@(tmpItem.TotalScore.ToPrecisionString(2, "-"))</td>
+                                    }
+                                    else
+                                    {
+                                        <!-- ko if:@(tmpItem.ParentId) == 1 || $root.parentMeasure[@(tmpItem.ParentId)].visible()-->
+                                        <td class='@(tmpItem.IsFirstOfParent ? "measure-split-line-left" : "")'>@(tmpItem.TotalScore.ToPrecisionString(2, "-"))</td>
+                                        <!-- /ko-->
+                                    }
+                                }
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td style="width: 100%;">&nbsp;</td>
+                            </tr>
+
+                            <tr>
+                                <td class="fixed-column" style="text-align: center;">
+                                    <div style="top:236px; width: @(leftWidth)px; height:35px">
+                                        <span data-bind="visible:showSortName,click: function(){changeStuNameOrder({field:'LastName'});}" style="cursor: pointer"><strong><i class="icon-sort icon-large"></i></strong></span>
+                                        <span style="cursor: pointer" data-bind="visible:$root.orderBy() == 'LastName' && $root.orderDirection().toUpperCase() == 'DESC' && sortMeasure()==0,click: function(){changeStuNameOrder({field:'LastName'});}"><i class="icon-sort-down icon-large"></i></span>
+                                        <span style="cursor: pointer" data-bind="visible:$root.orderBy() == 'LastName' && $root.orderDirection().toUpperCase() == 'ASC' && sortMeasure()==0,click: function(){changeStuNameOrder({field:'LastName'});}"><i class="icon-sort-up icon-large"></i></span>
+                                    </div>
+                                </td>
+                                <td>&nbsp;
+                                </td>
+                                <td>&nbsp;
+                                </td>
+                                @foreach (var tmpItem in (List<MeasureHeaderModel>)ViewBag.MeasureList)
+                                {
+                                    if (tmpItem.MeasureId == tmpItem.ParentId)
+                                    {
+                                        <td data-bind="css:{'measure-split-line-left':!parentMeasure[@(tmpItem.MeasureId)].visible()}" class="measure-split-line-right">
+                                            <span style="cursor:pointer" data-bind="visible:sortMeasure()==0||sortMeasure()!=@(tmpItem.MeasureId)    ,event:{ click:sortClick.bind($data,@(tmpItem.MeasureId)    ,'@tmpItem.ParentMeasureName    ')}"><i class="icon-sort icon-large"></i></span>
+                                            <span style="cursor:pointer" data-bind="visible:sortMeasure()==@(tmpItem.MeasureId)  &&  showSortDown,event:{ click:sortClick.bind($data,@(tmpItem.MeasureId)    ,'@tmpItem.ParentMeasureName    ')}"><i class="icon-sort-down icon-large"></i></span>
+                                            <span style="cursor:pointer" data-bind="visible:sortMeasure()==@(tmpItem.MeasureId)  && showSortUp,event:{click:sortClick.bind($data,@(tmpItem.MeasureId)    ,'@tmpItem.ParentMeasureName    ')}"><i class="icon-sort-up icon-large"></i></span>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <!-- ko if:@(tmpItem.ParentId) == 1 || $root.parentMeasure[@(tmpItem.ParentId)].visible()-->
+                                        <td class='@(tmpItem.IsFirstOfParent ? "measure-split-line-left" : "")'>
+                                            <span style="cursor:pointer" data-bind="visible:sortMeasure()==0||sortMeasure()!=@(tmpItem.MeasureId)    ,event:{ click:sortClick.bind($data,@(tmpItem.MeasureId)    ,'@tmpItem.Name    ')}"><i class="icon-sort icon-large"></i></span>
+                                            <span style="cursor:pointer" data-bind="visible:sortMeasure()==@(tmpItem.MeasureId)  &&  showSortDown,event:{ click:sortClick.bind($data,@(tmpItem.MeasureId)    ,'@tmpItem.Name    ')}"><i class="icon-sort-down icon-large"></i></span>
+                                            <span style="cursor:pointer" data-bind="visible:sortMeasure()==@(tmpItem.MeasureId)  && showSortUp,event:{click:sortClick.bind($data,@(tmpItem.MeasureId)    ,'@tmpItem.Name    ')}"><i class="icon-sort-up icon-large"></i></span>
+                                        </td>
+                                        <!-- /ko-->
+                                    }
+                                }
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td style="width: 100%;">&nbsp;</td>
+                            </tr>
+
+                            <!-- ko foreach: { data: showRecords, as: 'item' } -->
+                            <tr>
+                                <td class="fixed-column">
+                                    <div style="width: 20px; z-index: 99; font-weight: bold"
+                                         data-bind="style:{top:271+$index()*41 + 'px'},text:$index()+1">
+                                    </div>
+                                    <div data-title-length="15" style="width: @(leftWidth)px;"
+                                         data-bind="style:{top:271+$index()*41 + 'px'},title:item.FirstName + ' ' + item.LastName">
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (ViewBag.Start)
+                                    {
+                                        <a class="tab-btn" data-bind="click: $root.koPlayAllMeasure" title="Multi Launch"><i class="icon-play-more"></i></a>
+                                    }
+                                </td>
+                                <td>
+                                    <a class="tab-btn on-btn" data-bind="click: $root.student_Summary_report,visible:item.ID>0" title="Student Reports"><i class="icon-bar-chart"></i></a>
+                                </td>
+                                <!--ko template:{name:'_td_Measure',foreach:$root.measures,as:'measure'}-->
+                                <!--/ko-->
+                                <td>
+                                    @if (ViewBag.Start)
+                                    {
+                                        <a class="tab-btn" data-bind="click: $root.koPlayAllMeasure" title="Multi Launch"><i class="icon-play-more"></i></a>
+                                    }
+                                </td>
+                                <td>
+                                    <a class="tab-btn on-btn" data-bind="click: $root.student_Summary_report,visible:item.ID>0" title="Student Reports"><i class="icon-bar-chart"></i></a>
+                                </td>
+                                <td style="width: 100%;">&nbsp;</td>
+                            </tr>
+                            <!-- /ko -->
+                        </tbody>
+                        @Html.Display("e", "NoData", new { Colspan = 6 + ((List<MeasureHeaderModel>)@ViewBag.MeasureList).Count })
+                    </table>
+                </div>
+            </div>
+            @Html.Partial("_Partial_Pager")
+        }
+        else
+        {
+            <h2>@ViewTextHelper.NoRecordFound</h2>
+        }
+    </div>
+</div>
+@Html.Partial("_Partial_Templates")
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    @Scripts.Render("~/scripts/cpalls/offline")
+    @if (ViewBag.Mobile)
+    {
+        @Scripts.Render("~/scripts/hammer")
+    }
+    <script type="text/javascript">
+        var Cpalls_Status = {
+            Initialised: 1,
+            Paused: 2,
+            Finished: 3,
+            Locked: 4
+        };
+        var list_Assessment = {};
+        var excludeAll = {
+            measures: [],
+            start: function() {
+
+
+                var that = this;
+                if (this.measures && this.measures.length) {
+                    this.measures = this.measures.reverse();
+
+                    var measure = this.measures.pop();
+                    $("[name='lnkLockAll']").hide();
+                    $("[name='lnkLoading']").show();
+                    $.when(this.exclude(measure)).done(function() {
+                        that.start();
+                    });
+                } else {
+                    $("[name='lnkLockAll']").show();
+                    $("[name='lnkLoading']").hide();
+                }
+            },
+            exclude: function(measure) {
+
+                var targetStatus = -1;
+                if (measure.Status.value() == Cpalls_Status.Initialised) {
+                    targetStatus = measure.Status.value();
+                }
+                if (measure.Status.value() == Cpalls_Status.Locked) {
+                    targetStatus = measure.Status.value();
+                }
+                if (targetStatus < 0) {
+                    var deferred = $.Deferred();
+                    setTimeout(deferred.resolve(), 10);
+                    return deferred.promise();
+                }
+                return jQuery.post("student/LockMeasure",
+                {
+                    studentId: measure.StudentId,
+                    measureId: measure.MeasureId,
+                    assessmentId: '@(ViewBag.AssessmentId)',
+                    studentAssessmentId: measure.StudentAssessmentId,
+                    schoolId: "@(classModel.School.ID)",
+                    wave: '@(ViewBag.Wave)',
+                    year: '@(ViewBag.Year)',
+                    classId: '@(ViewBag.ClassId)',
+                    status: targetStatus
+                }, function(msg) {
+                    if (msg.success) {
+                        measure.Status.value(targetStatus);
+                    } else {
+                        window.showMessage("fail", msg.msg);
+                        list_Assessment.customSearch();
+                    }
+                }, "json").promise();
+            }
+        };
+
+        jQuery(function() {
+            var $fixedHeaderContainer = $("#fixed_header_container");
+            var $container = $("#div_tableWidth");
+            var adjustHeight = 0;
+            $(window).on("scroll", function(event) {
+                // show float header when scroll to bottom
+                var limit = $container[0].getBoundingClientRect().top;
+                var top = limit + adjustHeight;
+                if (top <= 0) {
+                    $fixedHeaderContainer.show();
+                } else {
+                    $fixedHeaderContainer.hide();
+                }
+            }).trigger("scroll");
+            var $fixed_container = $("#fixed_container");
+            var $fixed_header = $fixedHeaderContainer.find("table");
+            var initLeftMargin = 0 - parseInt($fixed_header.css("margin-left"));
+            $fixed_container.on("scroll", function() {
+                // sync float header when scroll table body
+                var newLeftMargin = initLeftMargin - $fixed_container.scrollLeft();
+                $fixed_header.css("margin-left", newLeftMargin);
+            });
+
+            $(window).resize(function() {
+                var adjust = 0;
+                $fixedHeaderContainer.width($container.width() + adjust);
+            }).trigger("resize");
+
+            var startX;
+            var newX;
+            if (typeof Hammer === "function" && $.fn.hammer) {
+                $fixedHeaderContainer.hammer().bind("panstart", function() {
+                    startX = parseInt("" + $fixed_header.css("margin-left"), 10);
+                }).bind("panleft panright", function(event) {
+                    newX = startX + event.gesture.deltaX;
+                    var hammer = $fixedHeaderContainer.data("hammer");
+                    if (newX > 0) {
+                        newX = 0;
+                        hammer && hammer.stop();
+                    }
+                    $fixed_container.scrollLeft(Math.abs(newX));
+                    var realNewX = $fixed_container.scrollLeft();
+                    if (realNewX < Math.abs(newX)) {
+                        newX = 0 - realNewX;
+                        hammer && hammer.stop();
+                    }
+                    $fixed_header.css("margin-left", newX);
+                }).bind("panend", function(event) {
+                    startX = newX;
+                });
+            }
+
+
+            list_Assessment = new ViewModel({
+                instanceName: "list_Assessment",
+                modalId: "modalNormal",
+                getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search", "Student", new { schoolId = ViewBag.SchoolId, language = ViewBag.Language, assessmentId = ViewBag.AssessmentId })))',
+                orderBy: "LastName",
+                orderDirection: "ASC",
+                pageSize: 50,
+                searchCriteria: {
+                    firstname: ko.observable(window.queryString("firstname")),
+                    lastname: ko.observable(window.queryString("lastname")),
+                    year: ko.observable(window.queryString("year", @ViewBag.Year)),
+                    wave: ko.observable(window.queryString("wave", @ViewBag.Wave)),
+                    classId: ko.observable(window.queryString("classId", @ViewBag.ClassId)),
+                    sortMeasureId: ko.observable(window.queryString("measureId", 0)),
+                    isDisplayRanks: ko.observable(window.queryString("isDisplayRanks"), 1)
+                }
+            }, {
+                sortMeasure: ko.observable(0),
+                sortMeasureName: ko.observable(""),
+                showSortDown: ko.observable(true),
+                showSortUp: ko.observable(false),
+                showSortName: ko.observable(false),
+                sortClick: function(measureId, measureName) {
+                    if (measureId == list_Assessment.sortMeasure()) {
+                        list_Assessment.showSortDown(!list_Assessment.showSortDown());
+                        list_Assessment.showSortUp(!list_Assessment.showSortUp());
+                    } else {
+                        list_Assessment.showSortDown(false);
+                        list_Assessment.showSortUp(true);
+                    }
+                    list_Assessment.orderDirection(list_Assessment.showSortUp() ? "ASC" : "DESC");
+                    list_Assessment.sortMeasure(measureId);
+                    list_Assessment.sortMeasureName(measureName);
+                    list_Assessment.searchCriteria.sortMeasureId(measureId);
+                    list_Assessment.showSortName(true);
+                    list_Assessment.customSearch();
+                },
+
+                changeStuNameOrder: function(header, event) {
+                    if (list_Assessment.orderBy() != header.field) {
+                        list_Assessment.orderDirection("ASC");
+                    } else {
+                        list_Assessment.orderDirection(list_Assessment.orderDirection().toUpperCase() == "ASC" ? "DESC" : "ASC");
+                    }
+                    list_Assessment.sortMeasure(0);
+                    list_Assessment.sortMeasureName("");
+                    list_Assessment.searchCriteria.sortMeasureId(0);
+                    list_Assessment.orderBy(header.field);
+                    list_Assessment.showSortName(false);
+                    list_Assessment.search();
+                },
+
+                dataProcessor: function(items) {
+                    for (var i = 0; i < items.length; i++) {
+                        for (var k in items[i].DicMeasure) {
+                            if (typeof(items[i].DicMeasure[k].Status.value) == "number") {
+                                items[i].DicMeasure[k].Status.value = ko.observable(items[i].DicMeasure[k].Status.value);
+                            }
+                        }
+                    }
+                    for (var measureId in this.measureById) {
+                        var header = this.measureById[measureId];
+                        header.initialised(0);
+                        header.excluded(0);
+                        for (var i = 0; i < items.length; i++) {
+                            if (items[i].DicMeasure && measureId in items[i].DicMeasure) {
+                                if (items[i].DicMeasure[measureId].Status.value() == Cpalls_Status.Initialised) {
+                                    header.initialised(header.initialised() + 1);
+                                }
+                                if (items[i].DicMeasure[measureId].Status.value() == Cpalls_Status.Locked) {
+                                    header.excluded(header.excluded() + 1);
+                                }
+                            } else {
+                                header.initialised(header.initialised() + 1);
+                            }
+                        }
+                    }
+                    return items;
+                },
+                getViewUrl: function(studentMeasure) {
+
+
+                    return '/Cpalls/Execute/View?id=' + studentMeasure.StudentAssessmentId + '&measure=' + studentMeasure.MeasureId + '&classId=@(ViewBag.ClassId)';
+                },
+                lockAllStudents: function(measureId, event) {
+                    var that = this;
+                    var header = that.measureById[measureId];
+                    var allExcluded = header.initialised() == 0;
+                    var allInitialised = header.initialised() > 0;
+                    $.each(this.showRecords(), function(i, student) {
+                        for (var j in student.DicMeasure) {
+                            var measure = student.DicMeasure[j];
+                            if (j && measure && measure.MeasureId && measure.MeasureId == measureId) {
+                                var pushed = false;
+                                if (allInitialised && measure.Status.value() == Cpalls_Status.Initialised) {
+                                    header.initialised(header.initialised() - 1);
+                                    header.excluded(header.excluded() + 1);
+
+                                    measure.Status.value(Cpalls_Status.Locked);
+                                    excludeAll.measures.push(measure);
+                                    pushed = true;
+                                } else if (!pushed && allExcluded && measure.Status.value() == Cpalls_Status.Locked) {
+                                    header.initialised(header.initialised() + 1);
+                                    header.excluded(header.excluded() - 1);
+
+                                    measure.Status.value(Cpalls_Status.Initialised);
+                                    excludeAll.measures.push(measure);
+                                }
+                            }
+                        }
+                    });
+                    excludeAll.start();
+                },
+                koLockMeasure: function(item, event) {
+                    var header = list_Assessment.measureById[item.MeasureId];
+                    jQuery.post("student/LockMeasure",
+                    {
+                        studentId: item.StudentId,
+                        measureId: item.MeasureId,
+                        assessmentId: '@(ViewBag.AssessmentId)',
+                        studentAssessmentId: item.StudentAssessmentId,
+                        schoolId: "@(classModel.School.ID)",
+                        wave: '@(ViewBag.Wave)',
+                        year: '@(ViewBag.Year)',
+                        classId: '@(ViewBag.ClassId)',
+                        status: Cpalls_Status.Locked
+                    }, function(msg) {
+                        if (msg.success) {
+                            header.initialised(header.initialised() - 1);
+                            header.excluded(header.excluded() + 1);
+                            item.Status.value(Cpalls_Status.Locked);
+                        } else {
+                            window.showMessage("fail", msg.msg);
+                            list_Assessment.customSearch();
+                        }
+                    }, "json").promise();
+                },
+
+                koUnlockMeasure: function(item, event) {
+                    var header = list_Assessment.measureById[item.MeasureId];
+                    jQuery.post("student/LockMeasure",
+                    {
+                        studentId: item.StudentId,
+                        measureId: item.MeasureId,
+                        assessmentId: @ViewBag.AssessmentId,
+                        studentAssessmentId: item.StudentAssessmentId,
+                        schoolId: "@(classModel.School.ID)",
+                        wave: '@(ViewBag.Wave)',
+                        year: '@(ViewBag.Year)',
+                        classId: @ViewBag.ClassId,
+                        status: Cpalls_Status.Initialised
+                    }, function(msg) {
+                        if (msg.success) {
+                            header.initialised(header.initialised() + 1);
+                            header.excluded(header.excluded() - 1);
+                            item.Status.value(Cpalls_Status.Initialised);
+                        } else {
+                            window.showMessage("fail", msg.msg);
+                            list_Assessment.customSearch();
+                        }
+                    }, "json");
+                },
+
+                koPlayMeasure: function(item, event) {
+                    var wait = function() {
+                        var dtd = $.Deferred();
+                        if ('@(ViewBag.Mobile)' == 'True') {
+                            jQuery.post('student/IsExistMobileAudio?measureIds=' + item.MeasureId, function(data) {
+                                if (data > 0) {
+                                    window.showMessage('warning', 'Because of limitations in the way that CLI Engage interacts with tablets, ' +
+                                        'the CLI Engage platform will give a poor user experience for measures with audio files.  ' +
+                                        'We encourage you to use a desktop or laptop for performing assessments on these measures.');
+                                    return;
+                                }
+                                dtd.resolve();
+                            });
+                        } else
+                            dtd.resolve();
+                        return dtd.promise();
+                    };
+                    $.when(wait())
+                        .done(function() {
+                            jQuery.post("student/PlayMeasure",
+                            {
+                                studentId: item.StudentId,
+                                measureIds: item.MeasureId,
+                                assessmentId: '@(ViewBag.AssessmentId)',
+                                studentAssessmentId: item.StudentAssessmentId,
+                                wave: '@(ViewBag.Wave)',
+                                classId: '@(ViewBag.ClassId)',
+                                year: '@(ViewBag.Year)'
+                            }, function(msg) {
+                                if (msg.success) {
+                                    if (msg.OtherMsg == "")
+                                        location.href = msg.data;
+                                    else {
+                                        var execJson = msg.data;
+                                        var jsonStr = '';
+                                        var execModel;
+                                        jsonStr = JSON.stringify(execJson);
+                                        execHelper.setLocalStorage(execHelper.keys.execCpalls, jsonStr);
+                                        execModel = new getAssessmentModel(execJson);
+                                        execModel.prepared();
+                                        location.replace('/Cpalls/Execute/Go');
+                                    }
+
+                                } else {
+                                    showMessage("fail", msg.msg);
+                                    list_Assessment.customSearch();
+                                }
+                            }, "json");
+                        })
+                        .fail(function() { showMessage("fail", "error"); });
+                },
+
+                viewMeasure: function(item, event) {
+                    jQuery.post("student/CheckStudentMeasure",
+                    {
+                        studentId: item.StudentId,
+                        measureIds: item.MeasureId,
+                        assessmentId: '@(ViewBag.AssessmentId)',
+                        studentAssessmentId: item.StudentAssessmentId,
+                        wave: '@(ViewBag.Wave)',
+                        classId: '@(ViewBag.ClassId)',
+                        year: '@(ViewBag.Year)'
+                    }, function(msg) {
+                        if (msg.success) {
+                            var url = '/Cpalls/Execute/View?id=' + item.StudentAssessmentId + '&measure=' + item.MeasureId + '&classId=@(ViewBag.ClassId)';
+                            location.replace(url);
+
+                        } else {
+                            showMessage("fail", msg.msg);
+                            list_Assessment.customSearch();
+                        }
+                    }, "json");
+                },
+                koPlayAllMeasure: function(student, event) {
+                    var tmpMeasureId = list_Assessment.selectedMeasures().join(",");
+                    if (tmpMeasureId == "") {
+                        showMessage("hint", 'Selected_Measure');
+                        return;
+                    }
+                    var executableMeasure = false;
+                    $.each(list_Assessment.selectedMeasures(), function(index, measureId) {
+                        if (student.DicMeasure[measureId].Status.value() == 1 || student.DicMeasure[measureId].Status.value() == 2) {
+                            executableMeasure = true
+                        }
+                    });
+                    if (executableMeasure == false) {
+                        showMessage("warning", "All assessments complete. Assessment must first be Invalidated to re-launch this assessment.");
+                        return;
+                    }
+
+                    var wait = function() {
+                        var dtd = $.Deferred();
+                        if ('@(ViewBag.Mobile)' == 'True') {
+                            jQuery.post('student/IsExistMobileAudio?measureIds=' + tmpMeasureId, function(data) {
+                                if (data > 0) {
+                                    window.showMessage('warning', 'Because of limitations in the way that CLI Engage interacts with tablets, ' +
+                                        'the CLI Engage platform will give a poor user experience for measures with audio files.  ' +
+                                        'We encourage you to use a desktop or laptop for performing assessments on these measures.');
+                                    return;
+                                }
+                                dtd.resolve();
+                            });
+                        } else
+                            dtd.resolve();
+                        return dtd.promise();
+                    };
+                    $.when(wait())
+                        .done(function() {
+                            jQuery.post("student/PlayMeasure",
+                            {
+                                studentId: student.ID,
+                                measureIds: tmpMeasureId,
+                                assessmentId: '@(ViewBag.AssessmentId)',
+                                studentAssessmentId: student.StudentAssessmentId,
+                                wave: '@(ViewBag.Wave)',
+                                classId: '@(ViewBag.ClassId)',
+                                year: '@(ViewBag.Year)'
+                            }, function(msg) {
+                                if (msg.success) {
+                                    if (msg.OtherMsg == "")
+                                        location.href = msg.data;
+                                    else {
+                                        var execJson = msg.data;
+                                        var jsonStr = '';
+                                        var execModel;
+                                        jsonStr = JSON.stringify(execJson);
+                                        execHelper.setLocalStorage(execHelper.keys.execCpalls, jsonStr);
+                                        execModel = new getAssessmentModel(execJson);
+                                        execModel.prepared();
+                                        location.replace('/Cpalls/Execute/Go');
+                                    }
+
+                                } else {
+                                    showMessage("fail", msg.msg);
+                                    list_Assessment.customSearch();
+                                }
+                            }, "json");
+                        })
+                        .fail(function() { showMessage("fail", "error"); });
+                },
+                customSearch: function() {
+                    if ('@(ViewBag.Year)' == list_Assessment.searchCriteria.year()
+                        && '@(ViewBag.Wave)' == list_Assessment.searchCriteria.wave()) {
+                        list_Assessment.search();
+                    } else {
+                        location.href = "?assessmentId=@(ViewBag.AssessmentId)&classId=@(ViewBag.ClassId)&year="
+                            + list_Assessment.searchCriteria.year()
+                            + "&wave=" + list_Assessment.searchCriteria.wave() + "&firstname=" + list_Assessment.searchCriteria.firstname()
+                            + "&lastname=" + list_Assessment.searchCriteria.lastname() + "&schoolId=@(ViewBag.SchoolId)" + "&isDisplayRanks=" + list_Assessment.searchCriteria.isDisplayRanks();
+                    }
+                },
+                WaveChanged: function() {
+                    if (list_Assessment.searchCriteria.wave() > 0) {
+                        $.post("/Cpalls/Student/LogUserWave", { wave: list_Assessment.searchCriteria.wave(), assessmentId: @(ViewBag.AssessmentId) }, function(res) {
+                            list_Assessment.customSearch();
+                        });
+                    }
+                },
+                student_Summary_report: function(student) {
+                    if ("@(assessmentReportReports.Any())" == "True") {
+                        var reportUrl = '@Html.Raw(Url.Action("StudentReportWaves", "Student", new { Area = "Report", assessmentId = ViewBag.AssessmentId, year = ViewBag.Year, classId = ViewBag.ClassId }))' + '&id=' + student.ID;
+                        $("#modalNormal").modal({ remote: reportUrl, confirm: false });
+                    } else {
+                        window.showMessage('warning', "This report is not available for this assessment.");
+                    }
+                },
+                collapse: function(measureId) {
+                    if (list_Assessment.parentMeasure[measureId]) {
+                        if (list_Assessment.parentMeasure[measureId].visible()) {
+                            list_Assessment.parentMeasure[measureId].visible(false);
+                            list_Assessment.parentMeasure[measureId].colspan(1);
+                        } else {
+                            list_Assessment.parentMeasure[measureId].visible(true);
+                            list_Assessment.parentMeasure[measureId].colspan(list_Assessment.parentMeasure[measureId]._colspan);
+                        }
+                        list_Assessment.parentMeasure[measureId].name(list_Assessment.parentMeasure[measureId].name());
+                    }
+                },
+                getMeasureTemplate: function(measureHeaderModel, studentModel, measureScoreModel) {
+
+                    var finalMeasure = list_Assessment.getMeasureData(measureHeaderModel, studentModel, measureScoreModel);
+                    if (finalMeasure.ParentId && finalMeasure.ParentId > 1
+                        && finalMeasure.IsTotal == false
+                        && list_Assessment.parentMeasure[finalMeasure.ParentId]
+                        && list_Assessment.parentMeasure[finalMeasure.ParentId].visible() == false && finalMeasure.MeasureName != "T") {
+                        return "_td_Null";
+                    }
+
+                    if (finalMeasure.IsTotal) {
+                        return "_td_Total";
+                    }
+                    if (finalMeasure.Status.value() == Cpalls_Status.Initialised) {
+                        return "_td_Play";
+                    }
+                    if (finalMeasure.Status.value() == Cpalls_Status.Paused) {
+                        return "_td_Paused";
+                    }
+                    if (finalMeasure.Status.value() == Cpalls_Status.Locked) {
+                        return "_td_Locked";
+                    }
+                    if (finalMeasure.Status.value() == Cpalls_Status.Finished) {
+                        return "_td_Score";
+                    }
+                    return "_td_Null";
+                },
+                getMeasureData: function(measureHeaderModel, studentModel, measureScoreModel) {
+                    var props = {};
+                    if (measureScoreModel) {
+                        $.extend(props, {
+                            ParentId: measureScoreModel.ParentId,
+                            ParentName: measureScoreModel.MeasureName,
+                            StudentId: measureScoreModel.StudentId,
+                            Status: measureScoreModel.Status,
+                            IsTotal: measureScoreModel.IsTotal,
+                            ShowText: measureScoreModel.ShowText,
+                            Color: measureScoreModel.Color,
+                            Goal: measureScoreModel.Goal,
+                            PercentileRank: measureScoreModel.PercentileRank,
+                            BenchmarkColor:measureScoreModel.BenchmarkColor
+
+                        });
+                    } else {
+                        studentModel.DicMeasure = studentModel.DicMeasure || {};
+                        var status = { value: ko.observable(Cpalls_Status.Initialised) };
+                        if (studentModel.DicMeasure[measureHeaderModel.MeasureId]) {
+                            status = studentModel.DicMeasure[measureHeaderModel.MeasureId].Status;
+                        }
+                        $.extend(props, { Status: status });
+                    }
+                    if (studentModel) {
+                        $.extend(props, {
+                            StudentId: studentModel.ID,
+                            StudentAssessmentId: studentModel.StudentAssessmentId
+                        });
+                    }
+                    var finalMeasure = $.extend({
+                        StudentAssessmentId: 0,
+                        MeasureId: measureHeaderModel.MeasureId,
+                        MeasureName: measureHeaderModel.Name,
+                        ParentId: measureHeaderModel.ParentId,
+                        IsTotal: measureHeaderModel.MeasureId == measureHeaderModel.ParentId,
+                        ShowText: '-',
+                        TotalScored: measureHeaderModel.TotalScored,
+                        LightColor: measureHeaderModel.LightColor
+
+                    }, props);
+                    if (!studentModel.DicMeasure[measureHeaderModel.MeasureId]) {
+                        studentModel.DicMeasure[measureHeaderModel.MeasureId] = finalMeasure;
+                    }
+                    return finalMeasure;
+                },
+                completion_report: function() {
+                    if (eval('@classId') <= 0) {
+                        showMessage("hint", "Cpalls_Report_need_ClassId");
+                        return false;
+                    }
+
+                    $("#modalNormal").modal({
+                        remote: '@Url.Action("Completion", "Student", new { Area = "Report", assessmentId = ViewBag.AssessmentId })'
+                            + '&classId=@classId&schoolId=@(classModel.School.ID)'
+                            + "&year=" + $("#year").val(),
+                        confirm: false
+                    });
+                },
+                HideShowMeasures: function() {
+                    $("#modalNormal").modal({
+                        remote: '@Url.Action("HideMeasures", "School", new { Area = "Cpalls", assessmentId = ViewBag.AssessmentId })'
+                            + '&year=' + $("#year").val()
+                            + "&wave=" + $("#wave").val()
+                    });
+                },
+                select: function(measure) {
+                    //console.log(measure);
+                    measure.selected(!measure.selected());
+                    var that = this;
+                    if (measure.isParent) {
+                        $.each(this.measureById, function(measureId, child) {
+                            if (child.ParentId == measure.MeasureId && child.MeasureId != child.ParentId) {
+                                child.selected(measure.selected());
+                                if (measure.selected()) {
+                                    that.selectedMeasures.push(child.MeasureId);
+                                } else {
+                                    that.selectedMeasures.remove(child.MeasureId);
+                                }
+                            }
+                        });
+                        if ($("#tb_report_tableHeadClone").find("th[val='" + measure.MeasureId + "'] div").hasClass("active")) {
+                            $("#tb_report_tableHeadClone").find("th[val='" + measure.MeasureId + "'] div").removeClass("active");
+                            $("#tb_report_tableHeadClone").find("th[parent='" + measure.MeasureId + "']").each(function() {
+                                if ($(this).attr("measure") != measure.MeasureId)
+                                    $(this).find("div").removeClass("active");
+                            });
+                        } else {
+
+                            $("#tb_report_tableHeadClone").find("th[val='" + measure.MeasureId + "'] div").addClass("active");
+                            $("#tb_report_tableHeadClone").find("th[parent='" + measure.MeasureId + "']").each(function() {
+                                if ($(this).attr("measure") != measure.MeasureId)
+                                    $(this).find("div").addClass("active");
+                            });
+                        }
+                    } else {
+                        if (measure.selected()) {
+                            this.selectedMeasures.push(measure.MeasureId);
+                            $("#tb_report_tableHeadClone").find("th[measure='" + measure.MeasureId + "'] div").addClass("active");
+
+                            var parentMeasure = measure.ParentId > 1 && this.parentMeasure && this.parentMeasure[measure.ParentId];
+                            if (parentMeasure) {
+                                var selected = 0;
+                                $.each(this.measureById, function(measureId, child) {
+                                    if (child.ParentId == measure.ParentId && child.selected()) {
+                                        selected++;
+                                    }
+                                });
+                                if (selected == parentMeasure._colspan - 1) {
+                                    parentMeasure.selected(true);
+                                    $("#tb_report_tableHeadClone").find("th[val='" + measure.ParentId + "'] div").addClass("active");
+                                }
+                            }
+                        } else {
+                            this.selectedMeasures.remove(measure.MeasureId);
+                            $("#tb_report_tableHeadClone").find("th[measure='" + measure.MeasureId + "'] div").removeClass("active");
+
+                            parentMeasure = measure.ParentId > 1 && this.parentMeasure && this.parentMeasure[measure.ParentId];
+                            if (parentMeasure) {
+                                parentMeasure.selected(false);
+                                $("#tb_report_tableHeadClone").find("th[val='" + measure.ParentId + "'] div").removeClass("active");
+                            }
+                        }
+                    }
+                    //fixedTableOlnyCopy = true;
+                    //$(window).trigger("resize");
+                    //fixedTableOlnyCopy = false;
+                },
+
+                keepSelectMeasure: function(measureIds) {
+                    if (measureIds == undefined || measureIds == "")return;
+                    var measureIdList = measureIds.split(",");
+                    for (var i = 0; i < measureIdList.length; i++) {
+                        var tmpMeasure = list_Assessment.parentMeasure[measureIdList[i]];
+                        if (tmpMeasure != undefined)
+                            this.select(tmpMeasure);
+                        else {
+                            tmpMeasure = list_Assessment.measureById[measureIdList[i]];
+                            if (tmpMeasure != undefined)
+                                this.select(tmpMeasure);
+                        }
+                    }
+                },
+
+                DisplayRanks: function() {
+                    if ($(".switch-btn").css("right") == "0px") {
+                        $(".switch-btn").css("right", "19px");
+                        $(".switch").css("background-color", "#999999");
+                        $("#isDisplayRanks").val(false);
+                    } else {
+                        $(".switch-btn").css("right", "0px");
+                        $(".switch").css("background-color", "#008000");
+                        $("#isDisplayRanks").val(true);
+                    }
+                    $("#isDisplayRanks").change();
+                    list_Assessment.customSearch();
+                },
+
+                inExecDate: "@(ViewBag.Start.ToString().ToLower())" === "true"
+            });
+            var measures = @(Html.Raw(ViewBag.Measures));
+            list_Assessment["measureById"] = {};
+            for (var i = 0; i < measures.length; i++) {
+                measures[i].selected = ko.observable(false);
+                measures[i].initialised = ko.observable(0);
+                measures[i].excluded = ko.observable(0);
+                list_Assessment.measureById[measures[i].MeasureId] = measures[i];
+            }
+            list_Assessment["measures"] = measures;
+            list_Assessment["parentMeasure"] = ParentMeasures(@Html.Raw(ViewBag.Parents));
+            list_Assessment["selectedMeasures"] = ko.observableArray([]);
+            list_Assessment.search();
+            ko.applyBindings(list_Assessment);
+
+            $("th[isparent]").each(function() {
+                var $this = $(this);
+                var $table = $this.closest("table");
+                //tab-td-b-l
+                var $childMeasures = $table.find("th[parent=" + $this.attr("val") + "]");
+                $childMeasures.first().addClass("tab-td-b-l");
+                $childMeasures.last().next().addClass("tab-td-b-l");
+            });
+
+            $("#Class").on("change", function() {
+                location.href = "?assessmentId=@(ViewBag.AssessmentId)&schoolId=@(ViewBag.SchoolId)&classId=" + list_Assessment.searchCriteria.classId()
+                    + "&year=" + list_Assessment.searchCriteria.year()
+                    + "&wave=" + list_Assessment.searchCriteria.wave();
+            });
+
+            offlineApp = getCpallsOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.init();
+
+            $("#hrefGoOffline").click(function() {
+                var url = $(this).attr("href");
+                if (offlineApp.status === offlineApp.values.Status.Changed) {
+                    $.when(window.waitingConfirm("confirm_To_Offline_Changed", "Go to Offline", "Cancel")).done(function() {
+                        location.href = "/Offline";
+                    });
+                } else {
+                    offlineApp.showLocker(url);
+                }
+                return false;
+            });
+            if (offlineApp.status === offlineApp.values.Status.None) {
+                $("#btnOpenResetPin").remove();
+            } else {
+                $("#btnOpenResetPin").removeClass("hidden").click(function() {
+                    offlineApp.resetPin();
+                });
+            }
+            list_Assessment.keepSelectMeasure("@(Request.QueryString["measures"])");
+        }); //end jQuery
+
+        function ReLoadFunction() {
+            location.href = "?assessmentId=@(ViewBag.AssessmentId)&classId=@(ViewBag.ClassId)&year="
+                + list_Assessment.searchCriteria.year()
+                + "&wave=" + list_Assessment.searchCriteria.wave() + "&firstname=" + list_Assessment.searchCriteria.firstname()
+                + "&lastname=" + list_Assessment.searchCriteria.lastname() + "&schoolId=" + "@ViewBag.SchoolId";
+        }
+
+
+    </script>
+}

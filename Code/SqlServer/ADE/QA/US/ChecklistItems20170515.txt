@@ -1,0 +1,3 @@
+﻿alter table [ChecklistItems] add [IsRequired] bit default 0
+go
+update [ChecklistItems] set [IsRequired] =0

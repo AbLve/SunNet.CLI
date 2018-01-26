@@ -1,0 +1,47 @@
+﻿@using Sunnet.Cli.Business.Cpalls.Models;
+@{
+    ViewBag.Title = "Dashboard";
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Observable")
+}
+@section BreadPath
+{
+    Assessment<i class="icon-angle-right"></i>Observables
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            var message = "@Html.Raw(ViewBag.Message)";
+            if (message) {
+                window.showMessage("fail", message);
+            }
+        });
+    </script>
+}
+  <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back </a>
+    </div>
+<div class="right-content">
+    <ul class="assessment-menu-dashboard assessment-menu-dashboard2">
+
+        <div class="assessment-d-btns">
+            @if (ViewBag.ShowTCD)
+            {
+                foreach (var item in @ViewBag.List as List<CpallsAssessmentModel>)
+                {
+                    <li>
+                        @Html.ActionLink(@item.Name, "AccessResults", "Observable",
+                            new { Area = "Observable", assessmentId = @item.ID },
+                            new { @class = "cpalls-btn" })
+                    </li>
+                }
+            }
+        </div>
+
+    </ul>
+</div>
+
+

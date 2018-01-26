@@ -1,0 +1,940 @@
+﻿
+
+drop table Permission_PageAuthorities
+go
+drop table Permission_Pages
+go
+drop table Permission_RolePageAuthorities
+go
+
+
+/****** Object:  Table [dbo].[Permission_PageAuthorities]    Script Date: 2014/9/22 17:43:38 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Permission_PageAuthorities](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[PageId] [int] NOT NULL,
+	[ActionId] [int] NOT NULL,
+ CONSTRAINT [PK_PermissionN_PageAuthorities_1] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Permission_Pages]    Script Date: 2014/9/22 17:43:38 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Permission_Pages](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[IsPage] [bit] NOT NULL,
+	[ParentID] [int] NOT NULL,
+	[Url] [nvarchar](100) NOT NULL,
+	[Sort] [int] NOT NULL,
+	[IsShow] [bit] NOT NULL,
+	[Descriptions] [nvarchar](200) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_PermissionN_Pages] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Permission_RolePageAuthorities]    Script Date: 2014/9/22 17:43:38 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Permission_RolePageAuthorities](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[PageId] [int] NOT NULL,
+	[PageAction] [nvarchar](100) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK__Permissi__3214EC27308E3499] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET IDENTITY_INSERT [dbo].[Permission_PageAuthorities] ON 
+
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (1, 3100, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (3, 3200, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (4, 3200, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (5, 3300, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (6, 3300, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (7, 3400, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (8, 3400, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (9, 3500, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (10, 3500, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (11, 3600, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (12, 3600, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (13, 3780, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (17, 3800, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (18, 3800, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (19, 3900, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (20, 3900, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (22, 3200, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (24, 3300, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (25, 3300, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (26, 3200, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (27, 3400, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (28, 3400, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (29, 3500, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (30, 3500, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (31, 3500, 256)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (32, 3600, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (33, 3600, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (35, 3710, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (36, 3710, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (37, 3710, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (38, 3720, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (39, 3720, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (40, 3720, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (41, 3730, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (42, 3730, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (43, 3730, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (44, 3740, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (45, 3740, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (46, 3740, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (47, 3750, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (48, 3750, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (49, 3750, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (50, 3760, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (51, 3760, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (52, 3760, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (53, 3770, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (54, 3770, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (55, 3770, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (56, 21, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (58, 21, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (59, 3780, 8)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (61, 3710, 1024)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (62, 3600, 512)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (63, 3780, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (65, 3720, 1024)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (67, 3730, 1024)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (69, 3740, 1024)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (70, 3750, 2048)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (71, 3750, 4096)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (72, 3750, 8192)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (73, 3800, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (74, 3800, 8)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (75, 3800, 8192)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (76, 3900, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (77, 3900, 8)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (78, 3900, 16384)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (79, 3800, 64)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (80, 3900, 1024)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (81, 3750, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (82, 3750, 1024)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (83, 3710, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (84, 3720, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (85, 3730, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (86, 3740, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (87, 3760, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (88, 3770, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (89, 21, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (90, 21, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (91, 21, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (92, 21, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (93, 22, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (94, 22, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (95, 22, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (96, 22, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (97, 23, 1)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (98, 23, 2)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (99, 23, 4)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (100, 23, 32)
+GO
+INSERT [dbo].[Permission_PageAuthorities] ([ID], [PageId], [ActionId]) VALUES (101, 3800, 32)
+GO
+SET IDENTITY_INSERT [dbo].[Permission_PageAuthorities] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Permission_Pages] ON 
+
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (1000, N'ADE', 0, 0, N'', 2, 1, N'ADE', CAST(0x0000A3AA00E7E8C9 AS DateTime), CAST(0x0000A3AA00E7E8E7 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (2000, N'Assessment', 0, 0, N'', 3, 1, N'Assessment', CAST(0x0000A3AA00E805F2 AS DateTime), CAST(0x0000A3AA00E805F4 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3000, N'Administrative', 0, 0, N'/Community/Community/Index', 1, 1, N'Administrative', CAST(0x0000A3AA00E7F8BF AS DateTime), CAST(0x0000A3AA00E7F8C0 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3100, N'Dashboard', 1, 3000, N'/Home/Dashboard', 1, 1, N'Dashboard', CAST(0x0000A3A90046454A AS DateTime), CAST(0x0000A3A900CA1BC4 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3200, N'Community Management', 1, 3000, N'/Community/Community/Index', 2, 1, N'Community Management', CAST(0x0000A3A90046D6B7 AS DateTime), CAST(0x0000A3A900CAACBA AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3300, N'School Management', 1, 3000, N'/School/School/Index', 3, 1, N'School Management', CAST(0x0000A3A900469D5C AS DateTime), CAST(0x0000A3A900CA7364 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3400, N'Classroom Management', 1, 3000, N'/Classroom/Classroom/Index', 4, 1, N'Classroom Management', CAST(0x0000A3A90046F270 AS DateTime), CAST(0x0000A3A900CAC873 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3500, N'Class Management', 1, 3000, N'/Class/Class/Index', 5, 1, N'Class Management', CAST(0x0000A3A900BC4E97 AS DateTime), CAST(0x0000A3A901402499 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3600, N'Student Management', 1, 3000, N'/Student/Student/Index', 6, 1, N'Student Management', CAST(0x0000A3A900BC0CCC AS DateTime), CAST(0x0000A3A9013FE2D3 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3700, N'User Management', 0, 3000, N'/Invitation/Teacher/Dashboard', 8, 1, N'User Management', CAST(0x0000A3A900D298CA AS DateTime), CAST(0x0000A3A901566ED7 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3710, N'Community ', 1, 3700, N'/Invitation/Community/Index', 1, 1, N'Community / District User', CAST(0x0000A3AD012E3430 AS DateTime), CAST(0x0000A3AD012E349B AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3720, N'Community  Specialist', 1, 3700, N'/Invitation/CommunitySpecialist/Index', 2, 1, N'Community / District Specialist List ', CAST(0x0000A3AD013190C0 AS DateTime), CAST(0x0000A3AD013190C3 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3730, N'Principal Director', 1, 3700, N'/Invitation/Principal/Index', 3, 1, N'Principal / Director', CAST(0x0000A3AD01319DB3 AS DateTime), CAST(0x0000A3AD01319DB6 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3740, N'School Specialist', 1, 3700, N'/Invitation/SchoolSpecialist/Index', 4, 1, N'School Specialist', CAST(0x0000A3AD0131AB5E AS DateTime), CAST(0x0000A3AD0131AB61 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3750, N'Teacher ', 1, 3700, N'/Invitation/Teacher/Index', 5, 1, N'Teacher ', CAST(0x0000A3AD0131B736 AS DateTime), CAST(0x0000A3AD0131B73A AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3760, N'Statewide', 1, 3700, N'/Invitation/StateWide/Index', 6, 1, N'Statewide', CAST(0x0000A3AD0131CDDA AS DateTime), CAST(0x0000A3AD0131CDDC AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3770, N'Auditor', 1, 3700, N'/Invitation/Auditor/Index', 7, 1, N'Auditor ', CAST(0x0000A3AD0131DBA5 AS DateTime), CAST(0x0000A3AD0131DBA8 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3780, N'User Verification', 1, 3700, N'/UserVerification/VerificationRequest/Index', 8, 1, N'User Verification', CAST(0x0000A3AD0131EDCF AS DateTime), CAST(0x0000A3AD0131EDD2 AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3800, N'CLI User Management', 1, 3000, N'/Invitation/InternalUser/Index', 9, 1, N'CLI User Management', CAST(0x0000A3AD01321CC6 AS DateTime), CAST(0x0000A3AD01321CCA AS DateTime))
+GO
+INSERT [dbo].[Permission_Pages] ([ID], [Name], [IsPage], [ParentID], [Url], [Sort], [IsShow], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (3900, N'Permission Management', 1, 3000, N'/Permission/Package/Index', 10, 1, N'Permission Management', CAST(0x0000A3A900BEC6F0 AS DateTime), CAST(0x0000A3A901429CF4 AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[Permission_Pages] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Permission_RolePageAuthorities] ON 
+
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (76, 18, 1000, N'128;', CAST(0x0000A3A400ADE1AF AS DateTime), CAST(0x0000A3A400ADE1AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (77, 18, 2000, N'128;', CAST(0x0000A3A400ADE1AF AS DateTime), CAST(0x0000A3A400ADE1AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (78, 18, 3000, N'128;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (79, 18, 3100, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (80, 18, 3200, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (81, 18, 3300, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (82, 18, 3400, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (83, 18, 3500, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (84, 18, 3600, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (85, 18, 3780, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (86, 18, 3700, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (87, 18, 3800, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (88, 18, 3900, N'1;2;', CAST(0x0000A3A400ADE1B2 AS DateTime), CAST(0x0000A3A400ADE1B2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (115, 14, 1000, N'128;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (116, 14, 2000, N'128;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (117, 14, 3000, N'128;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (118, 14, 3100, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (119, 14, 3200, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (120, 14, 3300, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (121, 14, 3400, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (122, 14, 3500, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (123, 14, 3600, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (124, 14, 3780, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (125, 14, 3700, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (126, 14, 3800, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (127, 14, 3900, N'1;2;', CAST(0x0000A3A400AF2C06 AS DateTime), CAST(0x0000A3A400AF2C06 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (206, 17, 1000, N'128;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (207, 17, 2000, N'128;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (208, 17, 3000, N'128;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (209, 17, 3100, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (210, 17, 3200, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (211, 17, 3300, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (212, 17, 3400, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (213, 17, 3500, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (214, 17, 3600, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (215, 17, 3780, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (216, 17, 3700, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (217, 17, 3800, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (218, 17, 3900, N'1;2;', CAST(0x0000A3A400AFC5B6 AS DateTime), CAST(0x0000A3A400AFC5B6 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (232, 19, 1000, N'128;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (233, 19, 2000, N'128;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (234, 19, 3000, N'128;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (235, 19, 3100, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (236, 19, 3200, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (237, 19, 3300, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (238, 19, 3400, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (239, 19, 3500, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (240, 19, 3600, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (241, 19, 3780, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (242, 19, 3700, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (243, 19, 3800, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (244, 19, 3900, N'1;2;', CAST(0x0000A3A400AFEC05 AS DateTime), CAST(0x0000A3A400AFEC05 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (347, 21, 3000, N'128;', CAST(0x0000A3AA00C1909A AS DateTime), CAST(0x0000A3AA00C1909A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (348, 21, 3600, N'1;32;', CAST(0x0000A3AA00C1909A AS DateTime), CAST(0x0000A3AA00C1909A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1157, 4, 3000, N'128;', CAST(0x0000A3AD01097662 AS DateTime), CAST(0x0000A3AD01097662 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1158, 4, 3100, N'1;', CAST(0x0000A3AD01097662 AS DateTime), CAST(0x0000A3AD01097662 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1159, 4, 3200, N'1;4;32;', CAST(0x0000A3AD01097662 AS DateTime), CAST(0x0000A3AD01097662 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1160, 4, 3300, N'1;2;4;32;', CAST(0x0000A3AD01097662 AS DateTime), CAST(0x0000A3AD01097662 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1161, 4, 3400, N'1;2;4;32;', CAST(0x0000A3AD01097662 AS DateTime), CAST(0x0000A3AD01097662 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1162, 4, 3500, N'1;2;4;32;256;', CAST(0x0000A3AD01097662 AS DateTime), CAST(0x0000A3AD01097662 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1163, 4, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD01097662 AS DateTime), CAST(0x0000A3AD01097662 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1164, 4, 3700, N'128;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1165, 4, 3710, N'1;2;4;32;1024;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1166, 4, 3720, N'1;2;4;32;1024;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1167, 4, 3730, N'1;2;4;32;1024;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1168, 4, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1169, 4, 3750, N'1;2;4;32;2048;4096;8192;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1170, 4, 3760, N'1;2;4;32;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1171, 4, 3770, N'1;2;4;32;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1172, 4, 3780, N'1;4;8;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1173, 4, 1000, N'128;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1174, 4, 2000, N'128;', CAST(0x0000A3AD01097663 AS DateTime), CAST(0x0000A3AD01097663 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1175, 10, 3000, N'128;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1176, 10, 3100, N'1;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1177, 10, 3200, N'1;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1178, 10, 3300, N'1;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1179, 10, 3400, N'1;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1180, 10, 3500, N'1;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1181, 10, 3600, N'1;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1182, 10, 3700, N'128;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1183, 10, 3710, N'1;4;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1184, 10, 3720, N'1;4;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1185, 10, 3730, N'1;4;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1186, 10, 3740, N'1;4;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1187, 10, 3750, N'1;4;32;4096;8192;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1188, 10, 3760, N'1;4;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1189, 10, 3770, N'1;2;4;32;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1190, 10, 2000, N'128;', CAST(0x0000A3AD01099118 AS DateTime), CAST(0x0000A3AD01099118 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1191, 12, 3000, N'128;', CAST(0x0000A3AD0109A281 AS DateTime), CAST(0x0000A3AD0109A281 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1192, 12, 3100, N'1;', CAST(0x0000A3AD0109A281 AS DateTime), CAST(0x0000A3AD0109A281 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1193, 12, 3200, N'1;4;32;', CAST(0x0000A3AD0109A281 AS DateTime), CAST(0x0000A3AD0109A281 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1194, 12, 3300, N'1;2;4;32;', CAST(0x0000A3AD0109A281 AS DateTime), CAST(0x0000A3AD0109A281 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1195, 12, 3400, N'1;2;4;32;', CAST(0x0000A3AD0109A281 AS DateTime), CAST(0x0000A3AD0109A281 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1196, 12, 3500, N'1;2;4;32;256;', CAST(0x0000A3AD0109A281 AS DateTime), CAST(0x0000A3AD0109A281 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1197, 12, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD0109A281 AS DateTime), CAST(0x0000A3AD0109A281 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1198, 12, 3700, N'128;', CAST(0x0000A3AD0109A282 AS DateTime), CAST(0x0000A3AD0109A282 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1199, 12, 3710, N'1;2;4;32;1024;', CAST(0x0000A3AD0109A282 AS DateTime), CAST(0x0000A3AD0109A282 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1200, 12, 3720, N'1;2;4;32;1024;', CAST(0x0000A3AD0109A282 AS DateTime), CAST(0x0000A3AD0109A282 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1201, 12, 3730, N'1;2;4;32;1024;', CAST(0x0000A3AD0109A282 AS DateTime), CAST(0x0000A3AD0109A282 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1202, 12, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AD0109A282 AS DateTime), CAST(0x0000A3AD0109A282 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1203, 12, 3750, N'1;2;4;32;2048;4096;8192;', CAST(0x0000A3AD0109A282 AS DateTime), CAST(0x0000A3AD0109A282 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1204, 12, 3780, N'1;4;8;', CAST(0x0000A3AD0109A282 AS DateTime), CAST(0x0000A3AD0109A282 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1205, 12, 2000, N'128;', CAST(0x0000A3AD0109A282 AS DateTime), CAST(0x0000A3AD0109A282 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1242, 13, 3000, N'128;', CAST(0x0000A3AD0109E0CB AS DateTime), CAST(0x0000A3AD0109E0CB AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1243, 13, 3100, N'1;', CAST(0x0000A3AD0109E0CB AS DateTime), CAST(0x0000A3AD0109E0CB AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1244, 13, 3200, N'1;4;32;', CAST(0x0000A3AD0109E0CB AS DateTime), CAST(0x0000A3AD0109E0CB AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1245, 13, 3300, N'1;2;4;32;', CAST(0x0000A3AD0109E0CB AS DateTime), CAST(0x0000A3AD0109E0CB AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1246, 13, 3400, N'1;2;4;32;', CAST(0x0000A3AD0109E0CB AS DateTime), CAST(0x0000A3AD0109E0CB AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1247, 13, 3500, N'1;2;4;32;256;', CAST(0x0000A3AD0109E0CB AS DateTime), CAST(0x0000A3AD0109E0CB AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1248, 13, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD0109E0CB AS DateTime), CAST(0x0000A3AD0109E0CB AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1249, 13, 3700, N'128;', CAST(0x0000A3AD0109E0CC AS DateTime), CAST(0x0000A3AD0109E0CC AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1250, 13, 3720, N'1;2;4;32;1024;', CAST(0x0000A3AD0109E0CC AS DateTime), CAST(0x0000A3AD0109E0CC AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1251, 13, 3730, N'1;2;4;32;1024;', CAST(0x0000A3AD0109E0CC AS DateTime), CAST(0x0000A3AD0109E0CC AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1252, 13, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AD0109E0CC AS DateTime), CAST(0x0000A3AD0109E0CC AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1253, 13, 3750, N'1;2;4;32;2048;4096;8192;', CAST(0x0000A3AD0109E0CC AS DateTime), CAST(0x0000A3AD0109E0CC AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1254, 13, 3780, N'1;4;8;', CAST(0x0000A3AD0109E0CC AS DateTime), CAST(0x0000A3AD0109E0CC AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1255, 13, 2000, N'128;', CAST(0x0000A3AD0109E0CC AS DateTime), CAST(0x0000A3AD0109E0CC AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1274, 7, 3000, N'128;', CAST(0x0000A3AD010A09AE AS DateTime), CAST(0x0000A3AD010A09AE AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1275, 7, 3100, N'1;', CAST(0x0000A3AD010A09AE AS DateTime), CAST(0x0000A3AD010A09AE AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1276, 7, 3200, N'1;4;32;', CAST(0x0000A3AD010A09AE AS DateTime), CAST(0x0000A3AD010A09AE AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1277, 7, 3300, N'1;2;4;32;', CAST(0x0000A3AD010A09AE AS DateTime), CAST(0x0000A3AD010A09AE AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1278, 7, 3400, N'1;2;4;32;', CAST(0x0000A3AD010A09AE AS DateTime), CAST(0x0000A3AD010A09AE AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1279, 7, 3500, N'1;2;4;32;256;', CAST(0x0000A3AD010A09AE AS DateTime), CAST(0x0000A3AD010A09AE AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1280, 7, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD010A09AE AS DateTime), CAST(0x0000A3AD010A09AE AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1281, 7, 3700, N'128;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1282, 7, 3710, N'1;2;4;32;1024;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1283, 7, 3720, N'1;2;4;32;1024;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1284, 7, 3730, N'1;2;4;32;1024;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1285, 7, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1286, 7, 3750, N'1;2;4;32;2048;4096;8192;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1287, 7, 3760, N'1;2;4;32;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1288, 7, 3770, N'1;2;4;32;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1289, 7, 3780, N'1;4;8;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1290, 7, 1000, N'128;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1291, 7, 2000, N'128;', CAST(0x0000A3AD010A09AF AS DateTime), CAST(0x0000A3AD010A09AF AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1335, 11, 3000, N'128;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1336, 11, 3100, N'1;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1337, 11, 3200, N'1;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1338, 11, 3300, N'1;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1339, 11, 3400, N'1;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1340, 11, 3500, N'1;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1341, 11, 3600, N'1;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1342, 11, 3700, N'128;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1343, 11, 3710, N'1;4;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1344, 11, 3720, N'1;4;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1345, 11, 3730, N'1;4;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1346, 11, 3740, N'1;4;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1347, 11, 3750, N'1;4;32;4096;8192;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1348, 11, 3760, N'1;2;4;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1349, 11, 3770, N'1;4;32;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1350, 11, 2000, N'128;', CAST(0x0000A3AD010A5253 AS DateTime), CAST(0x0000A3AD010A5253 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1524, 15, 3000, N'128;', CAST(0x0000A3AD011F6E90 AS DateTime), CAST(0x0000A3AD011F6E90 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1525, 15, 3100, N'1;', CAST(0x0000A3AD011F6E90 AS DateTime), CAST(0x0000A3AD011F6E90 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1526, 15, 3300, N'1;4;32;', CAST(0x0000A3AD011F6E90 AS DateTime), CAST(0x0000A3AD011F6E90 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1527, 15, 3400, N'1;2;4;32;', CAST(0x0000A3AD011F6E90 AS DateTime), CAST(0x0000A3AD011F6E90 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1528, 15, 3500, N'1;2;4;32;256;', CAST(0x0000A3AD011F6E90 AS DateTime), CAST(0x0000A3AD011F6E90 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1529, 15, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD011F6E90 AS DateTime), CAST(0x0000A3AD011F6E90 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1530, 15, 3700, N'128;', CAST(0x0000A3AD011F6E91 AS DateTime), CAST(0x0000A3AD011F6E91 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1531, 15, 3730, N'1;2;4;32;1024;', CAST(0x0000A3AD011F6E91 AS DateTime), CAST(0x0000A3AD011F6E91 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1532, 15, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AD011F6E91 AS DateTime), CAST(0x0000A3AD011F6E91 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1533, 15, 3750, N'1;2;4;32;2048;4096;8192;', CAST(0x0000A3AD011F6E91 AS DateTime), CAST(0x0000A3AD011F6E91 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1534, 15, 3780, N'1;4;8;', CAST(0x0000A3AD011F6E91 AS DateTime), CAST(0x0000A3AD011F6E91 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1535, 15, 2000, N'128;', CAST(0x0000A3AD011F6E91 AS DateTime), CAST(0x0000A3AD011F6E91 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1536, 20, 3000, N'128;', CAST(0x0000A3AD013B17C1 AS DateTime), CAST(0x0000A3AD013B17C1 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1537, 20, 3100, N'1;', CAST(0x0000A3AD013B17C1 AS DateTime), CAST(0x0000A3AD013B17C1 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1538, 20, 3300, N'1;32;', CAST(0x0000A3AD013B17C1 AS DateTime), CAST(0x0000A3AD013B17C1 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1539, 20, 3400, N'1;4;32;', CAST(0x0000A3AD013B17C1 AS DateTime), CAST(0x0000A3AD013B17C1 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1540, 20, 3500, N'1;4;32;', CAST(0x0000A3AD013B17C1 AS DateTime), CAST(0x0000A3AD013B17C1 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1541, 20, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD013B17C1 AS DateTime), CAST(0x0000A3AD013B17C1 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1542, 20, 3700, N'128;', CAST(0x0000A3AD013B17C2 AS DateTime), CAST(0x0000A3AD013B17C2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1543, 20, 3750, N'1;4;32;1024;2048;4096;8192;', CAST(0x0000A3AD013B17C2 AS DateTime), CAST(0x0000A3AD013B17C2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1544, 20, 2000, N'128;', CAST(0x0000A3AD013B17C2 AS DateTime), CAST(0x0000A3AD013B17C2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1545, 16, 3000, N'128;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1546, 16, 3100, N'1;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1547, 16, 3300, N'1;4;32;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1548, 16, 3400, N'1;2;4;32;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1549, 16, 3500, N'1;2;4;32;256;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1550, 16, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1551, 16, 3700, N'128;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1552, 16, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1553, 16, 3750, N'1;2;4;32;2048;4096;8192;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1554, 16, 3780, N'1;4;8;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1555, 16, 2000, N'128;', CAST(0x0000A3AD013B7BF2 AS DateTime), CAST(0x0000A3AD013B7BF2 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1569, 6, 3000, N'128;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1570, 6, 3100, N'1;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1571, 6, 3200, N'1;32;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1572, 6, 3300, N'1;32;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1573, 6, 3400, N'1;32;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1574, 6, 3500, N'1;32;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1575, 6, 3600, N'1;32;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1576, 6, 3700, N'128;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1577, 6, 3740, N'1;32;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1578, 6, 3750, N'1;32;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1579, 6, 3800, N'1;32;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1580, 6, 1000, N'128;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1581, 6, 2000, N'128;', CAST(0x0000A3AD013C66E8 AS DateTime), CAST(0x0000A3AD013C66E8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1630, 9, 3000, N'128;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1631, 9, 3100, N'1;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1632, 9, 3200, N'1;32;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1633, 9, 3300, N'1;32;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1634, 9, 3400, N'1;32;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1635, 9, 3500, N'1;32;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1636, 9, 3600, N'1;2;4;32;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1637, 9, 3700, N'128;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1638, 9, 3730, N'1;32;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1639, 9, 3750, N'1;32;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1640, 9, 3760, N'1;2;4;32;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1641, 9, 3770, N'1;2;4;32;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1642, 9, 3780, N'1;4;8;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1643, 9, 1000, N'128;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1644, 9, 2000, N'128;', CAST(0x0000A3AD013D86D9 AS DateTime), CAST(0x0000A3AD013D86D9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1645, 1, 3000, N'128;', CAST(0x0000A3AD01486EE7 AS DateTime), CAST(0x0000A3AD01486EE7 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1646, 1, 3100, N'1;', CAST(0x0000A3AD01486EE7 AS DateTime), CAST(0x0000A3AD01486EE7 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1647, 1, 3200, N'1;2;4;32;', CAST(0x0000A3AD01486EE7 AS DateTime), CAST(0x0000A3AD01486EE7 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1648, 1, 3300, N'1;2;4;32;', CAST(0x0000A3AD01486EE7 AS DateTime), CAST(0x0000A3AD01486EE7 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1649, 1, 3400, N'1;2;4;32;', CAST(0x0000A3AD01486EE7 AS DateTime), CAST(0x0000A3AD01486EE7 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1650, 1, 3500, N'1;2;4;32;256;', CAST(0x0000A3AD01486EE7 AS DateTime), CAST(0x0000A3AD01486EE7 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1651, 1, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD01486EE7 AS DateTime), CAST(0x0000A3AD01486EE7 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1652, 1, 3700, N'128;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1653, 1, 3710, N'1;2;4;32;1024;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1654, 1, 3720, N'1;2;4;32;1024;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1655, 1, 3730, N'1;2;4;32;1024;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1656, 1, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1657, 1, 3750, N'1;2;4;32;1024;2048;4096;8192;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1658, 1, 3760, N'1;2;4;32;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1659, 1, 3770, N'1;2;4;32;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1660, 1, 3780, N'1;4;8;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1661, 1, 3800, N'1;2;4;8;32;64;8192;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1662, 1, 3900, N'1;2;4;8;1024;16384;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1663, 1, 1000, N'128;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1664, 1, 2000, N'128;', CAST(0x0000A3AD01486EE8 AS DateTime), CAST(0x0000A3AD01486EE8 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1665, 2, 3000, N'128;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1666, 2, 3100, N'1;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1667, 2, 3200, N'1;32;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1668, 2, 3300, N'1;32;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1669, 2, 3400, N'1;32;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1670, 2, 3500, N'1;32;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1671, 2, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1672, 2, 3700, N'128;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1673, 2, 3710, N'1;2;4;32;1024;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1674, 2, 3720, N'1;2;4;32;1024;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1675, 2, 3730, N'1;2;4;32;1024;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1676, 2, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1677, 2, 3750, N'1;2;4;32;2048;4096;8192;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1678, 2, 3760, N'1;2;4;32;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1679, 2, 3770, N'1;2;4;32;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1680, 2, 3780, N'1;4;8;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1681, 2, 3800, N'1;2;4;8;32;64;8192;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1682, 2, 1000, N'128;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1683, 2, 2000, N'128;', CAST(0x0000A3AD0148805A AS DateTime), CAST(0x0000A3AD0148805A AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1684, 3, 3000, N'128;', CAST(0x0000A3AD014889E9 AS DateTime), CAST(0x0000A3AD014889E9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1685, 3, 3100, N'1;', CAST(0x0000A3AD014889E9 AS DateTime), CAST(0x0000A3AD014889E9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1686, 3, 3200, N'1;2;4;32;', CAST(0x0000A3AD014889E9 AS DateTime), CAST(0x0000A3AD014889E9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1687, 3, 3300, N'1;2;4;32;', CAST(0x0000A3AD014889E9 AS DateTime), CAST(0x0000A3AD014889E9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1688, 3, 3400, N'1;2;4;32;', CAST(0x0000A3AD014889E9 AS DateTime), CAST(0x0000A3AD014889E9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1689, 3, 3500, N'1;2;4;32;256;', CAST(0x0000A3AD014889E9 AS DateTime), CAST(0x0000A3AD014889E9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1690, 3, 3600, N'1;2;4;32;512;', CAST(0x0000A3AD014889E9 AS DateTime), CAST(0x0000A3AD014889E9 AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1691, 3, 3700, N'128;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1692, 3, 3710, N'1;2;4;32;1024;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1693, 3, 3720, N'1;2;4;32;1024;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1694, 3, 3730, N'1;2;4;32;1024;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1695, 3, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1696, 3, 3750, N'1;2;4;32;2048;4096;8192;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1697, 3, 3760, N'1;2;4;32;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1698, 3, 3770, N'1;2;4;32;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1699, 3, 3780, N'1;4;8;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1700, 3, 3800, N'1;2;4;8;32;64;8192;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1701, 3, 1000, N'128;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1702, 3, 2000, N'128;', CAST(0x0000A3AD014889EA AS DateTime), CAST(0x0000A3AD014889EA AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1739, 8, 3000, N'128;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1740, 8, 3100, N'1;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1741, 8, 3200, N'1;32;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1742, 8, 3300, N'1;4;32;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1743, 8, 3400, N'1;2;4;32;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1744, 8, 3500, N'1;2;4;32;256;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1745, 8, 3600, N'1;2;4;32;512;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1746, 8, 3700, N'128;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1747, 8, 3710, N'1;32;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1748, 8, 3730, N'1;32;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1749, 8, 3750, N'1;32;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1750, 8, 3760, N'1;2;4;32;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1751, 8, 3770, N'1;2;4;32;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1752, 8, 3780, N'1;4;8;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1753, 8, 1000, N'128;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1754, 8, 2000, N'128;', CAST(0x0000A3AE011EA62E AS DateTime), CAST(0x0000A3AE011EA62E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1755, 5, 3000, N'128;', CAST(0x0000A3AE011F939D AS DateTime), CAST(0x0000A3AE011F939D AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1756, 5, 3100, N'1;', CAST(0x0000A3AE011F939D AS DateTime), CAST(0x0000A3AE011F939D AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1757, 5, 3200, N'1;4;32;', CAST(0x0000A3AE011F939D AS DateTime), CAST(0x0000A3AE011F939D AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1758, 5, 3300, N'1;2;4;32;', CAST(0x0000A3AE011F939D AS DateTime), CAST(0x0000A3AE011F939D AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1759, 5, 3400, N'1;2;4;32;', CAST(0x0000A3AE011F939D AS DateTime), CAST(0x0000A3AE011F939D AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1760, 5, 3500, N'1;2;4;32;256;', CAST(0x0000A3AE011F939D AS DateTime), CAST(0x0000A3AE011F939D AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1761, 5, 3600, N'1;2;4;32;512;', CAST(0x0000A3AE011F939D AS DateTime), CAST(0x0000A3AE011F939D AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1762, 5, 3700, N'128;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1763, 5, 3710, N'1;2;4;32;1024;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1764, 5, 3720, N'1;2;4;32;1024;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1765, 5, 3730, N'1;2;4;32;1024;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1766, 5, 3740, N'1;2;4;32;1024;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1767, 5, 3750, N'1;2;4;32;2048;4096;8192;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1768, 5, 3760, N'1;2;4;32;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1769, 5, 3770, N'1;2;4;32;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1770, 5, 3780, N'1;4;8;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1771, 5, 1000, N'128;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+INSERT [dbo].[Permission_RolePageAuthorities] ([ID], [RoleId], [PageId], [PageAction], [CreatedOn], [UpdatedOn]) VALUES (1772, 5, 2000, N'128;', CAST(0x0000A3AE011F939E AS DateTime), CAST(0x0000A3AE011F939E AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[Permission_RolePageAuthorities] OFF
+GO
+
+
+
+
+truncate table Permission_UserRole
+go
+truncate table Permission_UserAuthorities
+go
+
+
+insert into Permission_UserRole(UserId,RoleId)
+select a.ID as 'UserId',b.ID as 'RoleId' from Users a
+inner join 
+Permission_Roles b 
+on a.Role=b.UserType
+and b.IsDefault=1
+
+
+insert into Permission_UserRole(UserId,RoleId)
+select ID, 12 from Users where Role=120
+
+insert into Permission_UserRole(UserId,RoleId)
+select ID,13 from Users where Role=140
+
+insert into Permission_UserRole(UserId,RoleId)
+select ID,16 from Users where Role=142
+
+insert into Permission_UserRole(UserId,RoleId)
+select ID,15 from Users where Role=135
+
+
+
+----登陆网站 ，执行 主站点下  /Permission/page/AddUserAuthority  然后重启 IIS

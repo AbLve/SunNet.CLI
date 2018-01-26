@@ -1,0 +1,7 @@
+﻿insert into Permission_PageAuthorities(PageId,ActionId)
+values(3908,1)
+go
+
+
+update Permission_RolePageAuthorities set PageAction='1;'+ PageAction where PageId=3908
+go

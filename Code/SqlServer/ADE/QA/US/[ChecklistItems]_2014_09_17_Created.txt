@@ -1,0 +1,32 @@
+﻿GO
+
+/****** Object:  Table [dbo].[ChecklistItems]    Script Date: 9/17/2014 9:54:53 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ChecklistItems](
+	[ID] [int] NOT NULL,
+	[TargetText] [nvarchar](1000) NOT NULL,
+	[ResponseCount] [int] NOT NULL,
+	[IsMultiChoice] [bit] NOT NULL,
+	[Direction] [tinyint] NOT NULL,
+ CONSTRAINT [PK_ChecklistItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[ChecklistItems]  WITH CHECK ADD  CONSTRAINT [FK_ChecklistItems_ItemBases] FOREIGN KEY([ID])
+REFERENCES [dbo].[ItemBases] ([ID])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[ChecklistItems] CHECK CONSTRAINT [FK_ChecklistItems_ItemBases]
+GO
+
+

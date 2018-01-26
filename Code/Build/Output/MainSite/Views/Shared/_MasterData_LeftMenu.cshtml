@@ -1,0 +1,106 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Core.Users.Enums
+@model Sunnet.Cli.MainSite.Models.Leftmenu_MainSite
+@{   
+    List<int> UserPages = ViewBag.UserPages as List<int>;
+    var menuClasses = Leftmenu_MainSite.Community.ToList().Cast<Leftmenu_MainSite>()
+        .ToDictionary(module => module, module => module == Model ? "active" : "");
+    Role userrole = (Role)ViewBag.UserRoleType;
+}
+<h4>
+    <a href="/Home/Dashboard" class="main-ade-left-active"><i class="icon-dashboard"></i>Dashboard</a>
+</h4>
+<ul>
+    @if (UserPages.Contains((int)PagesModel.Community_Management))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.Community]" href="/Community/Community/Index">Community Management</a>
+        </li>
+    }
+    @if (UserPages.Contains((int)PagesModel.School_Management))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.School]" href="/School/School/index">School Management</a>
+        </li>
+    }
+    @if (UserPages.Contains((int)PagesModel.Classroom_Management))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.Classroom]" href="/Classroom/Classroom/index">Classroom Management</a>
+        </li>
+    }
+    @if (UserPages.Contains((int)PagesModel.Class_Management))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.Class]" href="/Class/Class/index">Class Management</a>
+        </li>
+    }
+    @if (UserPages.Contains((int)PagesModel.Student_Management))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.Student]" href="/Student/Student/index">Student Management</a>
+        </li>
+    }
+    @if (UserPages.Contains((int)PagesModel.User_Management))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.User]" href="/Invitation/Public/Dashboard">User Management</a>
+        </li>
+    }
+    @if (UserPages.Contains((int)PagesModel.CLI_User_Management))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.CLIUser]" href="/Invitation/InternalUser/index">CLI User Management</a>
+        </li>
+    }
+    @if (UserPages.Contains((int)PagesModel.Permission_Management))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.Permission]" href="/Permission/Package/Index">Permission Management</a>
+        </li>
+    }
+    @if (UserPages.Contains((int)PagesModel.ClassRoster))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.Roster]" href="/roster/index">Class Roster Management</a>
+        </li>
+    }
+    <li><a class="@menuClasses[Leftmenu_MainSite.My_Profile]" href="/Profile/MyProfile/Index">My Profile</a>
+    </li>
+
+    @if (userrole == Role.Parent)
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.My_Children]" href="/Student/Student/ProfileIndex">My Children</a>
+        </li>
+    }
+
+    @if (userrole == Role.Principal || userrole == Role.Principal_Delegate ||
+        userrole == Role.TRS_Specialist || userrole == Role.TRS_Specialist_Delegate ||
+        userrole == Role.School_Specialist || userrole == Role.School_Specialist_Delegate || userrole == Role.Teacher)
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.My_School]" href="/School/School/SchoolProfile">My School</a>
+        </li>
+    }
+
+    @if (userrole == Role.Community || userrole == Role.District_Community_Delegate ||
+        userrole == Role.District_Community_Specialist || userrole == Role.Community_Specialist_Delegate)
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.My_DistrictCommunity]" href="/Community/Community/CommunityProfile">My Community/District</a>
+        </li>
+    }
+
+    @if (UserPages.Contains((int)PagesModel.Toolbox))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.Toolbox]" href="/Toolbox/Toolbox/Index">Toolbox</a>
+        </li>
+    }
+
+    @if (UserPages.Contains((int)PagesModel.DataProcess))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.DataProcess]" href="/DataProcess/DataProcess/Index">Data Process</a>
+        </li>
+    }
+
+    @if (UserPages.Contains((int)PagesModel.Reports))
+    {
+        <li><a class="@menuClasses[Leftmenu_MainSite.Reports]" href="/Report/Index">Reports</a>
+        </li>
+    }
+    <li><a class="@menuClasses[Leftmenu_MainSite.StatusTracking]" href="/StatusTracking/StatusTracking/Index">Status Tracking</a>
+    </li>
+
+    <li><a class="@menuClasses[Leftmenu_MainSite.Export]" href="/Export/Export/Index">Export</a>
+    </li>
+</ul>

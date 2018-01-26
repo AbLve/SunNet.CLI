@@ -1,0 +1,59 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(3550,'TRS Class Management',1,3000,'',5,1,'TRS Class Management',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+GO
+
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 3550, -- PageId - int
+          1  -- ActionId - int
+          )
+GO
+
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 3550, -- PageId - int
+          2  -- ActionId - int
+          )
+GO
+
+
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 3550, -- PageId - int
+          4  -- ActionId - int
+          )
+GO
+
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 3550, -- PageId - int
+          8  -- ActionId - int
+          )
+GO
+
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 3550, -- PageId - int
+          32  -- ActionId - int
+          )
+GO
+
+
+INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          3550 , -- PageId - int
+          '1;2;4;8;32;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )
+GO

@@ -1,0 +1,43 @@
+﻿@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+
+<div class="form-group">
+    <div class="col-sm-5">
+        <div class="content-con" style="min-height: 138px">
+            <div class="content-title3">
+                <div class="control-label">Uploaded File</div>
+            </div>
+            <div class="uploader-list" id="uploader-list">
+                @if (!string.IsNullOrEmpty(Model.FileName))
+                {
+                    <div class="item">
+                        <i class="icon-paper-clip"></i>
+                        <a class="form-link2" href="@(Model.DownLoadFilePath)">@(Model.FileName)</a>
+                        <span class="delete" title="Remove this file">
+                            <a href="javascript:;" onclick="RemoveFile(this)">×</a>
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-7">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    Upload File 
+                    (<span class="redtext">@(ViewBag.IsVideo == null ? ViewTextHelper.Vcw_UploadTitle : ViewTextHelper.Vcw_VideoUploadTitle)</span>)
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                </div>
+            </div>
+            <div class="upload-btn">
+                <div id="picker">1) Select File</div>
+            </div>
+            <div id="filelists" class="uploader-list"></div>
+            <div class="upload-btn">
+                <a id="ctlBtn">2) Start Upload</a>
+            </div>
+            <input type="hidden" id="filetarget" />
+        </div>
+    </div>
+</div>

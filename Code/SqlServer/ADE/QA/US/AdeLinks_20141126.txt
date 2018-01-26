@@ -1,0 +1,2 @@
+﻿if not exists(select * from syscolumns where id=object_id('AdeLinks') and name='DisplayText')
+	alter table AdeLinks add DisplayText varchar(100) not null default('')

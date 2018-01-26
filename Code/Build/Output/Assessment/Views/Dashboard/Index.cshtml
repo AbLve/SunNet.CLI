@@ -1,0 +1,66 @@
+﻿@using Sunnet.Cli.Business.Cpalls.Models;
+@{
+    ViewBag.Title = "Dashboard";
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_Cpalls")
+}
+@section BreadPath
+{
+    Assessment<i class="icon-angle-right"></i>Dashboard
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            var message = "@Html.Raw(ViewBag.Message)";
+            if (message) {
+                window.showMessage("fail", message);
+            }
+        });
+    </script>
+}
+<div class="right-content">
+    <ul class="assessment-menu-dashboard">
+
+        <div class="assessment-d-btns">
+            @if (ViewBag.ShowCPALLS)
+            {
+                foreach (CpallsAssessmentModel item in @ViewBag.List as List<CpallsAssessmentModel>)
+                {
+                    <li>
+                        @Html.ActionLink(@item.Name, "Index", "School",
+                            new { Area = "Cpalls", assessmentId = @item.ID },
+                            new { @class = "cpalls-btn" })
+                    </li>
+                }
+            }
+            @if (ViewBag.ShowCOT)
+            {
+                foreach (var cot in @ViewBag.COTList as List<CpallsAssessmentModel>)
+                {
+                    <li>
+                        @Html.ActionLink(@cot.Name, "All", "Teacher",
+                         new { Area = "COT", ID = @cot.ID },
+                            new { @class = "cpalls-btn" })
+                    </li>
+                }
+            }
+            @if (ViewBag.ShowCEC)
+            {
+                foreach (var cec in @ViewBag.CECList as List<CpallsAssessmentModel>)
+                {
+                    <li>
+                        @Html.ActionLink(@cec.Name, "Index", "CEC",
+                          new { Area = "CEC", assessmentId = @cec.ID },
+                            new { @class = "cpalls-btn" })
+                    </li>
+                }
+            }
+        </div>
+
+    </ul>
+</div>
+
+

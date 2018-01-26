@@ -1,0 +1,38 @@
+﻿/****** Object:  StoredProcedure [dbo].[EOYCECCompletion]    Script Date: 2015/4/13 10:52:36 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[EOYCECCompletion]
+	@CECAssessmentId int ,
+		@SchoolYear varchar(5)
+AS
+BEGIN
+with Totals as (
+select t.CoachId, coachUser.FirstName ,coachUser.LastName,COUNT(*) as Total   from [dbo].[Cli_Engage__Teachers] t
+inner join [dbo].[Cli_Engage__Users] coachUser on t.CoachId = coachUser.ID and coachUser.Status =1 
+inner join [dbo].[Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+group by t.CoachId,coachUser.FirstName ,coachUser.LastName ,coachUser.ID
+),
+ Completes as (
+select CoachId,COUNT(*) as Complete from [CecHistories] cec 
+inner join [Cli_Engage__Teachers] t on cec.TeacherId = t.Id
+inner join [Cli_Engage__Users] tUser on tUser.ID = t.UserId and tUser.Status = 1
+where Wave = 3 and cec.SchoolYear = @SchoolYear and cec.AssessmentId =@CECAssessmentId
+group by t.CoachId 
+)
+select t.* , ISNULL(c.Complete,0) as Complete from Totals t 
+left join Completes c on t.CoachId = c.CoachId
+order by FirstName
+END
+
+GO
+
+

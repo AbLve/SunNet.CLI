@@ -1,0 +1,24 @@
+﻿update Permission_Pages set Name='Cpalls Offline',Descriptions='Cpalls Offline' where ID=2400
+
+SET IDENTITY_INSERT Permission_Pages ON
+IF not EXISTS (SELECT * FROM Permission_Pages WHERE ID=2500)
+begin
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(2500,'Cec Offline',1,2000,'',5,1,'Cec Offline',GETDATE(),GETDATE())
+end
+IF not EXISTS (SELECT * FROM Permission_Pages WHERE ID=2600)
+begin
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(2600,'Cot Offline',1,2000,'',6,1,'Cot Offline',GETDATE(),GETDATE())
+end
+SET IDENTITY_INSERT Permission_Pages OFF
+
+
+IF not EXISTS (SELECT * FROM Permission_PageAuthorities WHERE (PageId=2500 and ActionId=1))
+begin
+insert into Permission_PageAuthorities values(2500,1)
+end
+IF not EXISTS (SELECT * FROM Permission_PageAuthorities WHERE (PageId=2600 and ActionId=1))
+begin
+insert into Permission_PageAuthorities values(2600,1)
+end

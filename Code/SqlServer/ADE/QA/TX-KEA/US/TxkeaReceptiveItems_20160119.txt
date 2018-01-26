@@ -1,0 +1,18 @@
+﻿if not exists(select * from syscolumns where id=object_id('TxkeaReceptiveItems') and name='CpallsItemLayout')
+  alter table TxkeaReceptiveItems  add CpallsItemLayout NVARCHAR(MAX)
+  go
+  update TxkeaReceptiveItems set CpallsItemLayout = '' where CpallsItemLayout is null
+  go
+  alter table TxkeaReceptiveItems  alter column  CpallsItemLayout NVARCHAR(MAX) not NULL
+  GO
+
+
+
+
+if not exists(select * from syscolumns where id=object_id('TxkeaExpressiveItems') and name='CpallsItemLayout')
+  alter table TxkeaExpressiveItems  add CpallsItemLayout NVARCHAR(MAX)
+  go
+  update TxkeaExpressiveItems set CpallsItemLayout = '' where CpallsItemLayout is null
+  go
+  alter table TxkeaExpressiveItems  alter column  CpallsItemLayout NVARCHAR(MAX) not NULL
+  GO

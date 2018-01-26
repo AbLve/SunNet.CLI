@@ -1,0 +1,71 @@
+﻿@model StudentListModel
+@using Sunnet.Cli.Business.Students.Models
+@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Find Child's Report";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section Scripts{
+    <script type="text/javascript">
+    +(function () {
+        registerFormCallbacks("@(formId)", {
+            onResponsed: function (response) {
+                if (response.success) {
+                    window.showMessage("success", response.msg);
+                    if (response.success) {
+                        $("#@formId")[0].reset();
+                        redirectBack("/Parent/Parent/SchoolReport");
+                        } else {
+                            redirectBack("/Parent/Parent/SchoolReport");
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+}
+@using (Ajax.BeginForm("SaveParentStudentRelation", "Parent", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{     
+    @Html.AntiForgeryToken()
+   
+    <div style="padding-bottom:20px;">
+        To view a report on an assessment done at your child’s school, you will need a pin code. On CLI Engage, teachers have several options for how to share reports with parents. Please ask your child’s teacher if you have not received a paper with the pin code or if you need another copy.
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ChildFirstName, new { @class = "col-sm-4 control-label required" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.ChildFirstName, null, new { @class = "form-control col-sm-4" })
+            @Html.ValidationMessageFor(model => model.ChildFirstName)
+        </div>
+    </div>
+    
+            <div class="form-group">
+                @Html.LabelFor(model => model.ChildLastName, new { @class = "col-sm-4 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.ChildLastName, new { @class = "form-control col-sm-4" })
+                    @Html.ValidationMessageFor(model => model.ChildLastName)
+                </div>
+            </div> 
+            <div class="form-group">
+                @Html.LabelFor(model => model.ParentId, null, new { @class = "col-sm-4 control-label required" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(e => e.ParentId, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ChildLastName)
+                </div>
+            </div>
+     
+       <div class="modal-footer">
+             <button class="mainbutton modal-btn submit-btn"   type="submit">Submit</button>
+         <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        </div>
+  
+}
+

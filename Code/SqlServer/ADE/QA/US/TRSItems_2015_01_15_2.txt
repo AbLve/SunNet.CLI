@@ -1,0 +1,7 @@
+﻿if exists(select * from syscolumns where id=object_id('TRSItems') and name='SubCategory')
+begin
+update dbo.TRSItems SET SubCategoryId = SubCategory
+
+alter table dbo.TRSItems drop column SubCategory
+
+end

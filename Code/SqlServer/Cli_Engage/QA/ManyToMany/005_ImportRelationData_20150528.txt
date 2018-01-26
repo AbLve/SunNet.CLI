@@ -1,0 +1,132 @@
+﻿--Insert Data Into CommunitySchoolRelations
+TRUNCATE TABLE CommunitySchoolRelations
+go
+INSERT INTO dbo.CommunitySchoolRelations
+        ( CommunityId ,
+          SchoolId ,
+          Status ,
+          CreatedBy ,
+          CreatedOn ,
+          UpdatedOn ,
+          UpdatedBy
+        )
+SELECT
+		CommunityId,ID,1,1,GETDATE(),GETDATE(),1
+FROM dbo.Schools;
+
+--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+
+--Insert Data Into ClassroomClassRelations
+TRUNCATE TABLE ClassroomClassRelations
+go
+INSERT INTO dbo.ClassroomClassRelations
+        ( ClassroomId ,
+          ClassId ,
+          Status ,
+          CreatedBy ,
+          CreatedOn ,
+          UpdatedOn ,
+          UpdatedBy
+        )
+SELECT 
+		ClassroomId,ID,1,1,GETDATE(),GETDATE(),1
+FROM dbo.Classes;
+
+--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+
+--Insert Data Into SchoolStudentRelations
+TRUNCATE TABLE SchoolStudentRelations
+go
+INSERT INTO dbo.SchoolStudentRelations
+        ( SchoolId ,
+          StudentId ,
+          Status ,
+          CreatedBy ,
+          CreatedOn ,
+          UpdatedOn ,
+          UpdatedBy
+        )
+SELECT 
+		SchoolId,ID,1,1,GETDATE(),GETDATE(),1
+FROM dbo.Students;
+
+--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+--insert usercommunityrelations's community to UserComSchRelations
+GO
+INSERT INTO dbo.UserComSchRelations
+        ( UserId ,
+          CommunityId ,
+		  SchoolId,
+		  Status,
+		  CreatedBy,
+          CreatedOn,
+		  UpdatedBy,
+          UpdatedOn
+        )
+SELECT t.UserId,t.CommunityId,0,1,1,GETDATE(),1,GETDATE()
+FROM (
+SELECT UC.UserId,UC.CommunityId FROM dbo.UserCommunityRelations UC  WHERE UC.UserId IS NOT NULL
+EXCEPT 
+SELECT UserId,CommunityId FROM dbo.UserComSchRelations
+) t;
+
+--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+--insert community user's community to UserComSchRelations
+GO
+INSERT INTO dbo.UserComSchRelations
+        ( UserId ,
+          CommunityId ,
+		  SchoolId,
+		  Status,
+		  CreatedBy,
+          CreatedOn,
+		  UpdatedBy,
+          UpdatedOn
+        )
+SELECT t.UserId,t.CommunityId,0,1,1,GETDATE(),1,GETDATE()
+FROM (
+SELECT CU.UserId,CU.CommunityId FROM dbo.CommunityUsers CU  WHERE CU.UserId IS NOT NULL
+EXCEPT 
+SELECT UserId,CommunityId FROM dbo.UserComSchRelations
+) t;
+
+--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+--insert principal user's school to UserComSchRelations
+GO
+INSERT INTO dbo.UserComSchRelations
+        ( UserId ,
+		CommunityId,
+          SchoolId ,
+          Status ,
+          CreatedBy ,
+          CreatedOn ,
+          UpdatedOn ,
+          UpdatedBy
+        )
+SELECT t.UserId,0,t.SchoolId,1,1,GETDATE(),GETDATE(),1 
+FROM (
+SELECT p.UserId,p_s.SchoolId FROM dbo.PrincipalSchoolRelations p_s LEFT JOIN dbo.Principals p ON p_s.PrincipalId=p.ID WHERE p.UserId IS NOT NULL
+EXCEPT 
+SELECT UserId,SchoolId FROM dbo.UserComSchRelations
+) t;
+
+--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+--insert teache user's community and school to UserComSchRelations
+GO
+INSERT INTO dbo.UserComSchRelations
+        ( UserId ,
+          CommunityId ,
+		  SchoolId,
+		  Status,
+		  CreatedBy,
+          CreatedOn,
+		  UpdatedBy,
+          UpdatedOn
+        )
+SELECT t.UserId,t.CommunityId,t.SchoolId,0,1,GETDATE(),1,GETDATE()
+FROM (
+SELECT T.UserId,T.CommunityId,T.SchoolId FROM dbo.Teachers T  WHERE T.UserId IS NOT NULL
+EXCEPT 
+SELECT UserId,CommunityId,SchoolId FROM dbo.UserComSchRelations
+) t;
+

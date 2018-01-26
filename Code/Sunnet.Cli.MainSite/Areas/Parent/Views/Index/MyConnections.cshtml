@@ -1,0 +1,210 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.ParentEntity
+@using Sunnet.Cli.Business.Schools.Models
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@{
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    ViewBag.Title = "MyConnections";
+    List<AssignSchoolModel> parentCommunity = ViewBag.ParentCommunity;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var list_Students = {};
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    if ("@(ViewBag.IsFirst)" == "True") {
+                        redirectBack("/home/Dashboard");
+                    }
+                }
+            });
+
+            list_Students = new ViewModel(
+                {
+                    instanceName: "list_Students",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("MyChildreds")))',
+                    viewDataUrl: '@Html.Raw(Url.Action("ViewChild"))',
+                    viewType: 'Redirect',
+                    editDataUrl: '@Html.Raw(Url.Action("EditChild"))',
+                    deleteDataUrl: '@Html.Raw(Url.Action("DeleteChild"))',
+                    editType: 'Redirect',
+                    orderBy: "FirstName",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "First Name",
+                            field: "FirstName",
+                            order: true,
+                            width: '30%'
+                        },
+                        {
+                            text: "Last Name",
+                            field: "LastName",
+                            order: true,
+                            width: '30%'
+                        },
+                        {
+                            text: "Date of Birth",
+                            field: "BirthDate",
+                            order: true,
+                            width: '20%'
+                        },
+
+                        { text: "Action", width: '20%' }
+                    ]
+                }, {
+                    ChildEdit: function (item) {
+                        return '@Url.Action("EditChild")' + "/" + item.ID + "&returnurl=" + list_Students.getLocation();
+                    },
+                    ChildView: function (item) {
+                        return '@Url.Action("ViewChild")' + "/" + item.ID + "&returnurl=" + list_Students.getLocation();
+                    },
+                    ChildDelete: function (item) {
+                        var param = { id: item.ID };
+                        var deleteUrl = '@Html.Raw(Url.Action("DeleteChild"))';
+                        var message = "Are you sure? Deleting this record will remove any information you have entered on this child, including developmental checklists, and you will not be able to access school reports for this child.";
+
+                        $.when(waitingConfirm(message, "Continue", "Cancel")).done(function () {
+                            $.post(deleteUrl, param, function (response) {
+                                if (response.success) {
+                                    showMessage("success");
+                                    list_Students.search();
+                                } else {
+                                    showMessage("fail", response.msg);
+                                }
+                            }, 'json');
+                        });
+                    }
+                }
+            );
+
+            list_Students.search();
+            ko.applyBindings(list_Students);
+        });
+
+                function AddAnotherChild() {
+                    location.href = "/Parent/Index/AddChild" + "?returnurl=" + list_Students.getLocation();
+                }
+    </script>
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Sunnet.Cli.MainSite.Models.Leftmenu_MainSite.MyConnections)
+}
+
+@section BreadPath
+{
+    <a href="/home/dashboard">Dashboard</a>&nbsp;<i class="icon-angle-right"></i>&nbsp;My Connections
+}
+
+@using (Ajax.BeginForm("SaveParent", "Index", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(e => e.ID)
+    <div class="main-content">
+        <div class="content-title">My Profile</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.FirstName, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.FirstName)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.MiddleName, null, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.MiddleName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserInfo.LastName, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.LastName)
+                </div>
+                @Html.LabelFor(model => model.UserInfo.PrimaryEmailAddress, null, new { @class = "col-sm-3 control-label required" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.UserInfo.PrimaryEmailAddress, new { @class = "form-control email" })
+                    @Html.ValidationMessageFor(model => model.UserInfo.PrimaryEmailAddress)
+                </div>
+            </div>
+            <div class="content-title">My Children</div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                                    <!-- ko if: (header.order === true)-->
+                                    <th data-bind="style: { width: width }">
+                                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                                        <span class="glyphicon"
+                                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                                        <span class="glyphicon"
+                                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                                    </th>
+                                    <!-- /ko-->
+                                    <!-- ko if: (header.order === false) -->
+                                    <th data-bind="text: text, style: { width: width }"></th>
+                                    <!-- /ko-->
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                                <tr>
+                                    <td data-bind="text: item.FirstName"></td>
+                                    <td data-bind="text: item.LastName"></td>
+                                    <td data-bind="text: item.BirthDate"></td>
+                                  
+                                    <td>
+                                        <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                                        <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                                      
+                                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.ChildDelete }" href="#" title="Delete"></a>
+                                      
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        @Html.Partial("_Partial_Pager")
+                    </div>
+                </div>
+            </div>
+            <div class="content-title">My CLI Engage Communities and Schools</div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Community</th>
+                        <th>School Name</th>
+                        <th>Date Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in parentCommunity)
+                    {
+                        <tr>
+                            <td>@item.CommunityName</td>
+                            <td>@item.SchoolName</td>
+                            <td>@item.CreatedOn.ToString("MM/dd/yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="button-content">
+            <a class="mainbutton mainright-btn nav-btn" href="#" onclick="AddAnotherChild();">Add Another Child</a>
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit">
+        </div>
+    </div>
+}
+

@@ -1,0 +1,58 @@
+﻿@{
+    Layout = "~/Areas/Cpalls/Views/Shared/_Layout_Cpalls.cshtml";
+    var backUrl = Url.Action("Index", "Student", new
+    {
+        assessmentId = ViewBag.assessmentId,
+        classId = Request.QueryString["classId"] 
+    });
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var execModel;
+        $(function() {
+            var offline = location.href.indexOf("ViewOffline") > 0;
+            var execJson;
+            if (offline) {
+                execJson = execHelper.getLocalStorage(execHelper.keys.execCpalls);
+            } else {
+                execJson = @Html.Raw(ViewBag.Json);
+                }
+            execJson.Mode = Exec_Mode.View;
+
+            if (execJson) {
+                execHelper.setLocalStorage(execHelper.keys.execCpalls, execJson);
+                execModel = new getAssessmentModel(execJson);
+                $("#modalWaiting").modal("show");
+                $.when(execModel.prepared()).done(function() {
+                    execModel.status(Exec_Status.resulting);
+                    execModel.init();
+                    execModel.showAllItems();
+                    $("#modalWaiting").modal("hide");
+                    execModel.onInvalidated = function() {
+                        location.replace('@Html.Raw((backUrl))');
+                    }
+                    ko.applyBindings(execModel);
+                });
+            }
+
+            $("#modalSmall").on("hidden.bs.modal", function() {
+                if (window.commentChanged) {
+                    execModel.commentingMeasure().comment($(this).find("#Comment").val());
+                    delete commentChanged;
+                }
+            });
+        });
+    </script>
+}
+<div class="item-warp">
+    <div class="item-container">
+        <div class="item-main">
+            @Html.Partial("_Partial_MeasureResultView")
+            <div class="item-main-footer"></div>
+        </div>
+    </div>
+</div>
+
+<iframe id="frmPdf" class="hidden" style="width:100%;display: none;height: 1000px;" src='@(Html.Raw(Url.Action("ListForExec")))'></iframe>
+@Html.Partial("_Partial_Comment")

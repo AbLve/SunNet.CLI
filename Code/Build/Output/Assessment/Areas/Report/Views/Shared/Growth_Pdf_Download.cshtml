@@ -1,0 +1,121 @@
+﻿@using Sunnet.Cli.Assessment.Areas.Report.Controllers
+@using Sunnet.Cli.Business.Cpalls.Models
+@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    string formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+
+    var reportModels = ViewBag.Models as List<GrowthReportModel>;
+    bool isFirst = true;
+    int index = 0;
+}
+@foreach (var reportModel in reportModels)
+{
+    for (int i = 2; i < reportModel.Report.Count; )
+    {
+        <table cellpadding="0" cellspacing="0" class="noborder header  @(isFirst ? "" : "newpager") ">
+            <thead>
+                <tr>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                    <td style="width: 90px;"></td>
+                </tr>
+                <tr>
+                    <th colspan="4"></th>
+                    <th colspan="4" class="title">
+                        @(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+                        @(reportModel.Title)<br />
+                        @(reportModel.Report[i][0].Text)<br />
+                        @(reportModel.Type.ToDescription())
+                    </th>
+                    <th colspan="4">
+                        <img src="@(DomainHelper.AssessmentDomain)images/cli_logo.png" style="height: 60px; vertical-align: middle; width: 150px;" />
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Community)):&nbsp;@(reportModel.Community)
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Language)):&nbsp;@(reportModel.Language.ToDescription())
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                        @if (ViewContext.Controller is ClassController || ViewContext.Controller is StudentController)
+                        {
+                            @(Html.DisplayNameFor(x => reportModel.School))
+                            @Html.Raw(":&nbsp;")
+                            @(reportModel.School)
+                        }
+                        @if (ViewContext.Controller is SchoolController)
+                        {
+                            @(Html.DisplayNameFor(x => reportModel.Schools))
+                            @Html.Raw(":&nbsp;")
+                            @(reportModel.Schools)
+                        }
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @if (ViewContext.Controller is StudentController)
+                        {
+                            @(Html.DisplayNameFor(x => reportModel.Class))
+                            @Html.Raw(":&nbsp;")
+                            @(reportModel.Class)
+                        }
+                        @if (ViewContext.Controller is SchoolController || ViewContext.Controller is ClassController)
+                        {
+                            @(Html.DisplayNameFor(x => reportModel.Classes))
+                            @Html.Raw(":&nbsp;")
+                            @(reportModel.Classes)
+                        }
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.SchoolYear)):&nbsp;@(reportModel.SchoolYear)
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Wave1)):&nbsp;@(reportModel.Wave1.FormatDateString())
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Wave2)):&nbsp;@(reportModel.Wave2.FormatDateString())
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="heading">
+                    </th>
+                    <th colspan="3">&nbsp;</th>
+                    <th colspan="3" class="heading">
+                        @(Html.DisplayNameFor(x => reportModel.Wave3)):&nbsp;@(reportModel.Wave3.FormatDateString())
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="chart@(index)" style="height: 520px; width: @ReportHelper.GetChartWidth(reportModel.Report[i][0].Rowspan + 1,160)px;text-align: center; page-break-inside: avoid; margin: 0 auto;">
+            <img src='@(ViewData["Image" + index++])' />
+        </div>
+        {
+            isFirst = false;
+            i += reportModel.Report[i][0].Rowspan;
+        }
+    }
+}

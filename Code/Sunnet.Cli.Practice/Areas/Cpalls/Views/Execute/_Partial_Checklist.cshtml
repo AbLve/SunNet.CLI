@@ -1,0 +1,14 @@
+﻿
+<div class="item-main-body item-view-body" data-bind="if:showChecklistPanel(),visible:showChecklistPanel" style="display: none;">
+    <div class="item-view-list">
+        <table class="table-striped table">
+            <thead>
+                <tr>
+                    <th width="60%">Description</th>
+                    <th>Mark a response</th>
+                </tr>
+            </thead>
+            <tbody data-bind="template:{name:'_cpalls_Item_10_1',foreach:currentMeasure().items,as:'item',if:currentMeasure().showType == Cpalls_Measure_ShowType.List}"></tbody>
+        </table>
+    </div>
+</div>

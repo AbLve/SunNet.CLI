@@ -1,0 +1,183 @@
+﻿/****** Object:  Table [dbo].[CpallsClasses]    Script Date: 2014/9/17 11:08:42 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[CpallsClasses](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CommunityId] [int] NOT NULL,
+	[SchoolId] [int] NOT NULL,
+	[ClassId] [int] NOT NULL,
+	[SchoolYear] [varchar](5) NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[MeasureId] [int] NOT NULL,
+	[Wave] [tinyint] NOT NULL,
+ CONSTRAINT [PK_CpallsClasses] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[CpallsClassMeasures]    Script Date: 2014/9/17 11:08:42 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CpallsClassMeasures](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CpallsClassId] [int] NOT NULL,
+	[MeasureId] [int] NOT NULL,
+	[TotalScore] [decimal](18, 2) NOT NULL,
+ CONSTRAINT [PK_CpallsClassMeasures] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[CPallsSchoolMeasures]    Script Date: 2014/9/17 11:08:42 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CPallsSchoolMeasures](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CpallsSchoolId] [int] NOT NULL,
+	[MeasureId] [int] NOT NULL,
+	[TotalScore] [decimal](18, 2) NOT NULL,
+ CONSTRAINT [PK_CPallsSchoolMeasures] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[CpallsSchools]    Script Date: 2014/9/17 11:08:42 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[CpallsSchools](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CommunityId] [int] NOT NULL,
+	[SchoolId] [int] NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[SchoolYear] [varchar](5) NOT NULL,
+	[StudentAssessmentId] [int] NOT NULL,
+	[MeasureId] [int] NOT NULL,
+	[Wave] [tinyint] NOT NULL,
+ CONSTRAINT [PK_CpallsSchools] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[StudentAssessments]    Script Date: 2014/9/17 11:08:42 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[StudentAssessments](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[CDId] [int] NOT NULL,
+	[SchoolId] [int] NOT NULL,
+	[StudentId] [int] NOT NULL,
+	[AssessmentId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[SchoolYear] [varchar](5) NOT NULL,
+	[Wave] [tinyint] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[TotalGoal] [decimal](18, 2) NOT NULL,
+ CONSTRAINT [PK_StudentAssessments] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[StudentItems]    Script Date: 2014/9/17 11:08:42 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[StudentItems](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SMId] [int] NOT NULL,
+	[ItemId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[IsCorrect] [bit] NOT NULL,
+	[SelectedAnswers] [varchar](100) NOT NULL,
+	[PauseTime] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[Goal] [decimal](18, 2) NOT NULL,
+	[Scored] [bit] NOT NULL,
+	[Score] [decimal](18, 2) NOT NULL,
+ CONSTRAINT [PK_StudentItems] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[StudentMeasures]    Script Date: 2014/9/17 11:08:42 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[StudentMeasures](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[SAId] [int] NOT NULL,
+	[MeasureId] [int] NOT NULL,
+	[Status] [tinyint] NOT NULL,
+	[PauseTime] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[TotalScore] [decimal](18, 2) NOT NULL,
+	[Bentchmark] [decimal](18, 2) NOT NULL,
+	[Goal] [decimal](18, 2) NOT NULL,
+	[TotalScored] [bit] NOT NULL,
+ CONSTRAINT [PK_StudentMeasures] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+ALTER TABLE [dbo].[StudentAssessments] ADD  CONSTRAINT [DF__StudentAs__Total__5CA1C101]  DEFAULT ((0)) FOR [TotalGoal]
+GO
+ALTER TABLE [dbo].[StudentItems] ADD  CONSTRAINT [DF__StudentIte__Goal__5AB9788F]  DEFAULT ((0)) FOR [Goal]
+GO
+ALTER TABLE [dbo].[StudentItems] ADD  CONSTRAINT [DF__StudentIt__Score__5F7E2DAC]  DEFAULT ((0)) FOR [Scored]
+GO
+ALTER TABLE [dbo].[StudentItems] ADD  CONSTRAINT [DF_StudentItems_Score]  DEFAULT ((0)) FOR [Score]
+GO
+ALTER TABLE [dbo].[StudentMeasures] ADD  CONSTRAINT [DF__StudentMe__Total__5BAD9CC8]  DEFAULT ((0)) FOR [TotalScore]
+GO
+ALTER TABLE [dbo].[StudentMeasures] ADD  CONSTRAINT [DF__StudentMe__Bentc__6166761E]  DEFAULT ((0)) FOR [Bentchmark]
+GO
+ALTER TABLE [dbo].[StudentMeasures] ADD  CONSTRAINT [DF_StudentMeasures_Goal]  DEFAULT ((0)) FOR [Goal]
+GO
+ALTER TABLE [dbo].[StudentMeasures] ADD  CONSTRAINT [DF_StudentMeasures_Scored]  DEFAULT ((0)) FOR [TotalScored]
+GO

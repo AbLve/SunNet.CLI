@@ -1,0 +1,15 @@
+GO 
+UPDATE  dbo.CotWaves
+SET     Status = 5
+WHERE   CotAssessmentId IN ( SELECT CA.ID
+                             FROM   dbo.CotAssessments AS CA
+                             WHERE  CA.SchoolYear = '16-17' )
+        AND Status = 10
+        AND FinalizedOn > '1753-01-01 00:00:00.000';
+
+GO 
+UPDATE  dbo.CotAssessments
+SET     SchoolYear = '17-18'
+WHERE   ID IN ( SELECT  CW.CotAssessmentId
+                FROM    dbo.CotWaves AS CW
+                WHERE   CW.Status = 5 );

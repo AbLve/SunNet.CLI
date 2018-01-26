@@ -1,0 +1,12 @@
+﻿truncate table TRSClasses
+GO
+set identity_insert TRSClasses on
+GO
+insert into TRSClasses(ID,SchoolId,TRSClassId,Name,Status,StatusDate,SchoolYear,HomeroomTeacherId,PlaygroundId,TrsAssessorId,TrsMentorId,
+TypeOfClass,Notes,CreatedOn,UpdatedOn) select ID,SchoolId,ClassId,'TRS-'+Name,Status,StatusDate,SchoolYear,LeadTeacherId,playgroundId,TrsAssessorId,TrsMentorId,
+TypeOfClass,Notes,CreatedOn,UpdatedOn from Classes
+where (TrsAssessorId>0 
+or ID in (select TRSClassId from ChChildrenResult) 
+or ID in (select ClassId from [ADE数据库名].dbo.TRSAssessmentItems)) and ID not in (select ID from TRSClasses) 
+GO
+set identity_insert TRSClasses off

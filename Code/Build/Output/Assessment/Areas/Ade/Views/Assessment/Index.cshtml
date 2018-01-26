@@ -1,0 +1,218 @@
+﻿@model Sunnet.Cli.Business.Ade.Models.AssessmentModel
+@{
+    ViewBag.Title = "Assessments";
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_Partial_Left_Ade.cshtml")
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Assessment", "Index", "Assessment"))<i class="icon-angle-right"></i>Manage Assessment
+}
+<div class="right-content-top">
+    <button type="button" class="mainbutton mainright-btn create-btn" data-bind="event: { click: addData }">Create Assessment</button>
+</div>
+<div class="modal-l-b"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        @Html.LabelFor(m => m.Label, new { @class = "control-label col-sm-2", @for = "Label_Search" })
+        <div class="col-sm-3">
+            <input type="text" class="form-control" id="Label_Search" name="Label_Search" placeholder="Enter Label" data-bind="value: searchCriteria.label" />
+        </div>
+        @Html.LabelFor(m => m.Name, new { @class = "control-label col-sm-2", @for = "Name_Search" })
+        <div class="col-sm-3">
+            <input type="text" class="form-control" id="Name_Search" name="Name_Search" placeholder="Enter Name" data-bind="value: searchCriteria.name" />
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.CreatedByName, new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            <input type="text" class="form-control" id="CreatedByName" name="CreatedByName" placeholder="Enter First Name or Last Name" data-bind="value: searchCriteria.createdBy" />
+        </div>
+        @Html.LabelFor(m => m.Status, new { @class = "control-label col-sm-2", @for = "Status_Search" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(x => x.Status, ViewTextHelper.DefaultAllText, "-1", new
+            {
+                @class = "form-control",
+                placeholder = "Enter Name",
+                data_bind = "value: searchCriteria.status",
+                id = "Status_Search"
+            })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+</form>
+<div class="main-content main-content">
+    <div class="content-title">Assessments</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                            data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.Label"></td>
+                    <td data-bind="text: item.Name"></td>
+                    <td data-bind="text: item.OrderType.text"></td>
+                    <td data-bind="boolText: item.TotalScored"></td>
+                    <td data-bind="text: item.CreatedByName"></td>
+                    <td data-bind="text: item.UpdatedOn"></td>
+                    <td data-bind="text: item.Status().text"></td>
+                    <td>
+                        <a class="icon-unlock table-btn active-btn"
+                            data-bind="event: { click: $root.unlock }, visible: item.Locked"
+                            title="Unlock assessment" href="#"></a>
+                        <a class="icon-ban-circle table-btn active-btn" data-bind="event: { click: $root.changeStatus }, visible: item.Status().value == statusHelper.Active.value" title="Change Status" href="#"></a>
+                        <a class="icon-ban-circle table-btn inactive-btn" data-bind="event: { click: $root.changeStatus }, visible: item.Status().value == statusHelper.Inactive.value" title="Change Status" href="#"></a>
+                        <a class="table-btn icon-pencil pencil-btn" data-bind="event: { click: $root.updateData }" href="#" title="Edit"></a>
+                        <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                        <a class="table-btn icon-trash trash-btn" data-bind="event: { click: $root.deleteData }" href="#" title="Delete"></a>
+                    </td>
+                </tr>
+            </tbody>
+            @Html.Display("e", "NoData", new { Colspan = 8 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/ade")
+    <script type="text/javascript">
+        var list_Assessment = {};
+        function isCpalls(type) {
+            var cpallsType = "@((int)AssessmentType.Cpalls)";
+            return cpallsType == type;
+        }
+        jQuery(function () {
+            list_Assessment = new ViewModel(
+                {
+                    instanceName: "list_Assessment",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    viewDataUrl: '@Html.Raw(Url.Action("Detail"))',
+                    viewType: "Redirect",
+                    deleteDataUrl: '@Html.Raw(Url.Action("Delete"))',
+                    showField: "Label",
+                    orderBy: "Name",
+                    orderDirection: "ASC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Label)",
+                            field: "@Html.NameFor(model => model.Label)",
+                            order: true,
+                            width: '*'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Name)",
+                            field: "@Html.NameFor(model => model.Name)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.OrderType)",
+                            field: "@Html.NameFor(model => model.OrderType)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.TotalScored)",
+                            field: "@Html.NameFor(model => model.TotalScored)",
+                            order: true,
+                            width: '12%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.CreatedByName)",
+                            field: "@Html.NameFor(model => model.CreatedBy)",
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.UpdatedOn)",
+                            field: "@Html.NameFor(model => model.UpdatedOn)",
+                            order: true,
+                            width: '8%'
+                        },
+                        {
+                            text: "@Html.DisplayNameFor(model => model.Status)",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '8%'
+                        },
+                        { text: "Action", width: '20%' }
+                    ],
+                    searchCriteria: {
+                        label: ko.observable(window.queryString("label")),
+                        name: ko.observable(window.queryString("name")),
+                        createdBy: ko.observable(window.queryString("createdBy")),
+                        status: ko.observable(window.queryString("status", -1))
+                    }
+                },
+                {
+                    dataProcessor: function (items) {
+                        $.each(items, function (i, item) {
+                            if (typeof (item.Status) == "object") {
+                                item.Status = ko.observable(item.Status);
+                            }
+                            if (typeof (item.Locked) == "boolean") {
+                                item.Locked = ko.observable(item.Locked);
+                            }
+                            if (!isCpalls(item.Type.value)) {
+                                item.OrderType.text = "";
+                                item.TotalScored = "";
+                            }
+                        });
+                        return items;
+                    },
+                    changeStatus: function (item) {
+                        $.post('@Url.Action("Status")', { id: item.ID }, function (response) {
+                            if (response.success) {
+                                item.Status(response.data);
+                            } else {
+                                showMessage("fail", response.msg);
+                            }
+                        }, "json");
+                    },
+                    unlock: function (item) {
+                        $.when(waitingConfirm("unlock_Assessment", "Unlock", "Cancel")).done(function () {
+                            $.post('@Url.Action("Unlock")', { id: item.ID }, function (response) {
+                                if (response.success) {
+                                    item.Locked(false);
+                                    item.Status(response.data);
+                                } else {
+                                    showMessage("fail", response.msg);
+                                }
+                            }, "json");
+                        });
+                    }
+                }
+            );
+
+            //viewModel.searchCriteria.keyword("A");
+            list_Assessment.search();
+            ko.applyBindings(list_Assessment);
+        });
+    </script>
+}

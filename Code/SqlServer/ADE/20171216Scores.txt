@@ -1,0 +1,17 @@
+﻿alter table Scores add Description varchar(max)
+go
+update Scores set Description='' 
+go
+alter table Scores alter column Description varchar(max) not null
+
+alter table Scores add GroupByLabel bit
+go
+update Scores set GroupByLabel=0
+go
+alter table Scores alter column GroupByLabel bit not null
+
+alter table ScoreMeasureOrDefineCoefficients add Wave tinyint
+go
+update ScoreMeasureOrDefineCoefficients set Wave=1
+go
+alter table ScoreMeasureOrDefineCoefficients alter column Wave tinyint not null

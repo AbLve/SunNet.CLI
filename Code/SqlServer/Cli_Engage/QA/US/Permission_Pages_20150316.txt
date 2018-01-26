@@ -1,0 +1,16 @@
+﻿SET IDENTITY_INSERT Permission_Pages ON
+
+INSERT INTO Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn) 
+values(5400,'Admin',0,5000,'',4,1,'Admin',GETDATE(),GETDATE())
+
+SET IDENTITY_INSERT Permission_Pages OFF
+
+GO
+
+
+
+
+
+insert into Permission_RolePageAuthorities
+values(1,5400,'128;',GETDATE(),GETDATE())
+GO

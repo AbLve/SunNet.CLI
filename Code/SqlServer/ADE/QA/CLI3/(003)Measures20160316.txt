@@ -1,0 +1,7 @@
+﻿  alter table  [Measures] add [Note] varchar(300) not null default ''
+  go
+  update [Measures] set [Note] = ''
+  go 
+    alter table  [Measures] alter column [Note]  varchar(300) not null  
+
+ 

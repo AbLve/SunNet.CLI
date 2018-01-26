@@ -1,0 +1,19 @@
+﻿-- SyncAnswer: 
+--  1 NONE 
+-- 10 SamePlayground 
+-- 20 BetweenClass
+if not exists(select * from syscolumns where id=object_id('TRSItems') and name='SyncAnswer') 
+ALTER TABLE [dbo].[TRSItems] 
+ADD SyncAnswer TINYINT
+GO
+UPDATE [TRSItems] SET SyncAnswer = 1 WHERE SyncAnswer IS NULL
+GO
+if exists(select * from syscolumns where id=object_id('TRSItems') and name='Playground') 
+UPDATE [TRSItems] SET SyncAnswer = 10 WHERE Playground = 1
+GO
+if exists(select * from syscolumns where id=object_id('TRSItems') and name='Playground') 
+ALTER TABLE [TRSItems] DROP COLUMN Playground
+GO
+ALTER TABLE [TRSItems] ALTER COLUMN SyncAnswer TINYINT NOT NULL
+GO
+UPDATE [TRSItems] SET SyncAnswer = 20 WHERE Item IN ('S-N-01','S-N-02','S-N-03','S-N-04')

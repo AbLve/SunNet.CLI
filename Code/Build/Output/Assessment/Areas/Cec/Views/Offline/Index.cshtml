@@ -1,0 +1,209 @@
+﻿@{
+    ViewBag.Manifest = "/Cec/Offline/Manifest";
+    ViewBag.Title = "CEC Assessment Offline";
+    Layout = "~/Views/Shared/_Layout_Offline.cshtml";
+}
+@section Styles{
+    <style type="text/css">
+        .form-control-d {
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0) inset;
+            color: #666;
+            display: inline-block;
+            font-size: 13px;
+            height: 26px;
+            padding: 2px 4px;
+            transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+        }
+
+        .control-label-con {
+            float: left;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+}
+@Html.Partial("~/Views/Shared/Offline/_Partial_Pin.cshtml")
+@Html.Partial("~/Views/Shared/Offline/_Partial_Unlock.cshtml")
+<div class="row">
+    <div class="col-sm-6 col-lg-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Basic Information</div>
+            <div class="panel-body ">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="control-label col-sm-6 col-lg-2">Assessment</label>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="control-label-con">
+                                <span class="control-label-text" data-bind="html: assessmentName"></span>
+                            </div>
+                        </div>
+                        <label class="control-label   col-sm-6 col-lg-2">Community/District</label>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="control-label-con">
+                                <span class="control-label-text" data-bind="html: communityName"></span>
+                            </div>
+                        </div>
+                        <label class="control-label  col-sm-6 col-lg-2">Year</label>
+                        <div class=" col-sm-6 col-lg-4">
+                            <div class="control-label-con">
+                                <span class="control-label-text" data-bind="html: year"></span>
+
+                            </div>
+                        </div>
+                        <label class="control-label  col-sm-6 col-lg-2">School</label>
+                        <div class=" col-sm-6 col-lg-4">
+                            <div class="control-label-con">
+                                <span class="control-label-text" data-bind="html: schoolName"></span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Log&nbsp;&nbsp;&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;<span data-bind="text: network.online() ? 'Online' : 'Offline'"></span>&nbsp;<span data-bind="    visible: network.online(), text: network.logged() ? '[Logged in]' : ''"></span>&nbsp;<span data-bind="    text: network.date(), visible: network.online()"></span></div>
+            <div class="panel-body panel-body-log" id="log_Container">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clearfix" style="height: 5px;"></div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Teachers
+                <!--ko if: changed() -->
+                <button class="btn btn-default" style="display: none;" data-bind="click: $root.syncAll, enable: $root.network.online(),visible:showSyncAll">
+                    <i class="icon-cloud-upload"></i>
+                    Sync All
+                </button>
+                <!--/ko-->
+                <input type="text" value="" id="assessmentDate" class="form-control-d date " style="visibility: hidden" />
+            </div>
+            <div class="panel-body ">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <!--ko if: changed() -->
+                            <th style="width: 80px">
+
+                            </th>
+                            <!--/ko-->
+                            <th width="*">
+                                Community/District
+                            </th>
+                            <th width="10%">
+                                School Name
+                            </th>
+                            <th width="10%">
+                                First Name
+                            </th>
+                            <th width="10%">
+                                Last Name
+                            </th>
+                            <th width="10%">
+                                Coach Name
+                            </th>
+                            <th width="10%">
+                                Years in Project
+                            </th>
+                            <th width="140px">
+                                BOY
+                            </th>
+                            <th width="140px">
+                                MOY
+                            </th>
+                            <th width="140px">
+                                EOY
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: { data: teachers, as: 'teacher' }">
+                        <tr>
+                            <!--ko if: ($root.changed()) -->
+                            <td>
+                                <!--ko if: changed  -->
+                                <button class="btn btn-xs" data-bind="click:$root.sync,css:{'btn-default':syncStatus()!=OfflineStatus.Error,'btn-success':syncStatus()==OfflineStatus.Synced,'btn-danger':syncStatus()==OfflineStatus.Error},enable:$root.network.online() && syncStatus()==OfflineStatus.Changed ">
+                                    <i class=" " data-bind="css:{'icon-cloud-upload':syncStatus()==OfflineStatus.Changed,'icon-spinner':syncStatus()==OfflineStatus.Syncing,'icon-spin':syncStatus()==OfflineStatus.Syncing,'icon-ok':syncStatus()==OfflineStatus.Synced,'icon-warning-sign':syncStatus()==OfflineStatus.Error}"></i>
+                                    Sync
+                                </button>
+                                <!--/ko-->
+                            </td>
+                            <!--/ko-->
+                            <td data-bind="text: CommunitiesText"></td>
+                            <td data-bind="text: SchoolsText"></td>
+                            <td data-bind="text: FirstName"></td>
+                            <td data-bind="text: LastName"></td>
+                            <td data-bind="text: CoachName"></td>
+                            <td data-bind="text: YearsInProject"></td>
+                            <td>
+                                <!-- ko if: (teacher.BOY == "") -->
+                                <a class="tab-btn" data-bind="click: $root.getBOYUrl " title="Launch BOY"><i class="icon-play"></i></a>
+                                <!-- /ko-->
+                                <!-- ko if: !(teacher.BOY == "") -->
+                                <a data-bind="text: BOY, click: $root.getBOYReport " class="form-link2" title="BOY" target="_blank"></a>
+                                <!-- /ko-->
+                            </td>
+                            <td>
+                                <!-- ko if: teacher.MOY == ""  -->
+                                <a class="tab-btn" data-bind="click: $root.getMOYUrl " title="Launch MOY"><i class="icon-play"></i></a>
+                                <!-- /ko-->
+                                <!-- ko if: !(teacher.MOY == "") -->
+                                <a data-bind="text: MOY, click: $root.getMOYReport" class="form-link2" title="MOY" target="_blank"></a>
+                                <!-- /ko-->
+                            </td>
+                            <td>
+                                <!-- ko if: (teacher.EOY == "") -->
+                                <a class="tab-btn" data-bind="click: $root.getEOYUrl" title="Launch EOY"><i class="icon-play"></i></a>
+                                <!-- /ko-->
+                                <!-- ko if: !(teacher.EOY == "") -->
+                                <a data-bind="text: EOY, click: $root.getEOYReport" class="form-link2" title="EOY" target="_blank"></a>
+                                <!-- /ko-->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @System.Web.Optimization.Scripts.Render("~/scripts/format/offline")
+    @System.Web.Optimization.Scripts.Render("~/scripts/cec/offline")
+
+    <script type="text/javascript">
+        function log(type, message) {
+            var log = '<div class="alert alert-' + type + ' alert-log" role="alert" title="' + message + '">' + message + '</div>';
+            $(log).appendTo($log);
+            $log.scrollTop($log[0].scrollHeight);
+        }
+
+        var offlineApp;
+        var $log;
+
+        $(function() {
+            $log = $("#log_Container");
+            offlineApp = getCecOfflineApp("@(ViewBag.EncryptUserID)");
+            offlineApp.writeLog = log;
+            offlineApp.init();
+
+            ko.applyBindings(offlineApp.viewModel);
+
+        });
+        window.onload = function() {
+            $("#assessmentDate").trigger("click");
+            setTimeout(function() {
+                $dp.hide();
+            }, 10);
+        }
+    </script>
+}

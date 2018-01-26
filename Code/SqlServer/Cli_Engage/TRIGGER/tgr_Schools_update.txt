@@ -1,0 +1,33 @@
+﻿/****** Object:  Trigger [dbo].[tgr_Schools_update]    Script Date: 2015/4/27 14:55:46 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+Alter TRIGGER [dbo].[tgr_Schools_update]
+on [dbo].[Schools]
+    for update
+as
+	DECLARE @ID int,@TrsProviderId int
+	SELECT @ID = ID FROM inserted;
+
+
+    DECLARE @OldStatus tinyint,@NewStatus tinyint;
+	SELECT @OldStatus = Status FROM deleted;
+	SELECT @NewStatus = Status FROM inserted;
+
+	IF(@OldStatus != @NewStatus)
+	BEGIN
+	UPDATE Schools SET StatusDate = GETDATE() WHERE ID = @ID;
+	insert  SchoolStatusHistories  select  ID , Status, GETDATE() from Schools
+  where id = @ID
+	END
+
+	 
+
+GO
+
+

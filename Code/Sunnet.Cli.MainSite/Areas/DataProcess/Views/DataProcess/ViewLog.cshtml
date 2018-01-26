@@ -1,0 +1,45 @@
+﻿@using Sunnet.Cli.Core.DataProcess.Models
+@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    List<RecordRemarkModel> entities = ViewBag.Entities;
+    ViewBag.Title = "Initial Rosters Upload";
+}
+
+<style type="text/css">
+    .modal-main-content {
+        padding-top: 0px;
+    }
+</style>
+
+<form class="form-horizontal">
+    <div class="main-content main-content">
+        <div class="content-title">Error Records</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 2%">#</th>
+                        <th style="width: 17%">Community</th>
+                        <th style="width: 17%">School</th>
+                        <th style="width: 17%">Teacher</th>
+                        <th style="width: 17%">Student</th>
+                        <th style="width: auto">Error Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (RecordRemarkModel item in entities)
+                    {
+                        <tr>
+                            <td>@(item.LineNum)</td>
+                            <td>@(item.CommunityName)</td>
+                            <td>@(item.SchoolName)</td>
+                            <td>@(item.TeacherFirstName + " " + item.TeacherLastName)</td>
+                            <td>@(item.StudentFirstName + " " + item.StudentLastName)</td>
+                            <td style="text-align: left;">@Html.Raw((item.Remark))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,307 @@
+﻿@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Communities.Enums
+@using Sunnet.Cli.Business.Cpalls.Models
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Core.Communities.Entities.CommunityEntity
+@using Sunnet.Framework.Extensions
+@section BreadPath
+{
+    @(Html.ActionLink("Community/District", "Index", "Community"))
+    <i class="icon-angle-right"></i>View
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Community)
+}
+@{
+    ViewBag.Title = "View Community";
+     List<CpallsAssessmentModel> listAssessments = ViewBag.listAssessments;
+   var localAssessments = ViewBag.localAssessments as List<LocalAssessment>;
+    int[] assignedIds = ViewBag.assignedIds;
+}
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/module_community")
+    <script type="text/javascript">
+        jQuery(function () {
+
+            registerFormCallbacks("frmCommunity", {
+                onPosted: function (response) {
+                    redirectBack("index");
+                }
+            });
+
+            $("#divFeature :checkbox").prop("disabled", "true");
+        });
+    </script>
+}
+
+@using (Ajax.BeginForm("", "", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    HttpMethod = "Post",
+    role = "form",
+    id = "frmCommunity",
+    @class = "form-horizontal"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))" >Back to Community/District list</a>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Basic Information</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.BasicCommunityId, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.Display("communityName")
+                </div>
+
+                @Html.LabelFor(model => model.CommunityId, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.CommunityId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.Status)
+                </div>
+                @Html.LabelFor(model => model.StatusDate, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.StatusDate)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FundingId, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.Display("Fundings")
+                </div>
+                @Html.LabelFor(model => model.SchoolYear, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SchoolYear)
+                </div>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-2 control-label required">@Html.DisplayNameFor(model => model.MouStatus)</span>
+                <div class="col-sm-4">
+                    @Html.RadioButtonFor(model => model.MouStatus, true, new { id = "statusSigned", Disabled = "true" })
+                    <label for="statusSigned">Signed</label>
+                    @Html.RadioButtonFor(model => model.MouStatus, false, new { id = "statusNotSigned", Disabled = "true" })
+                    <label for="statusNotSigned">Not Signed</label>
+                </div>
+                @Html.LabelFor(model => model.MouDocument, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4" id="divMouDocument">
+                    <div class="col-sm-1">
+                        @if (!string.IsNullOrEmpty(Model.MouDocument))
+                        {
+                            <a href="@FileHelper.GetPreviewPathofUploadFile(Model.MouDocument)"  class="table-btn icon-zoom-in preview-btn" target="_blank"></a>
+                        }
+                    </div>
+                    @Html.HiddenFor(model => model.MouDocument, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.WebAddress, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    <label class="control-label-text">
+                        @Html.DisplayFor(model => model.WebAddress)
+                    </label>
+                </div>
+                @Html.LabelFor(model => model.DistrictNumber, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.DistrictNumber)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.LogoUrl, new { @class = "col-sm-2 control-label" })
+                @if (!string.IsNullOrEmpty(Model.LogoUrl))
+                {
+                    <a href="@FileHelper.GetPreviewPathofUploadFile(Model.LogoUrl)" class="table-btn icon-zoom-in preview-btn" target="_blank"></a> 
+                }
+                <div></div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Community/District Physical Address (No P.O. Boxes)</div>
+        <div class="content-body">
+            <div class="form-group">
+                <div class="col-sm-2 "></div>
+                <div class="col-sm-10">
+                    @Html.DisplayFor(model => model.PhysicalAddress1)
+                </div>
+            </div>
+            @if (Model.PhysicalAddress2 == null)
+            {
+                <div class="form-group">
+                    <div class="col-sm-2 "></div>
+                    <div class="col-sm-10">
+                        @Html.DisplayFor(model => model.PhysicalAddress2)
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                <div class="col-sm-2 "></div>
+                <div class="col-sm-10">
+                    @Html.Display("full")
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PhoneNumber, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.PhoneNumber)
+                </div>
+                @Html.LabelFor(model => model.PhoneNumberType, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.PhoneNumberType)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Community/District Primary Contact</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimarySalutation, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.PrimarySalutation)
+                </div>
+                @Html.LabelFor(model => model.PrimaryTitleId, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.Display("PrimaryTitle")
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimaryName, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.PrimaryName)
+                </div>
+                @Html.LabelFor(model => model.PrimaryEmail, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.PrimaryEmail)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrimaryPhone, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.PrimaryPhone)
+                </div>
+                @Html.LabelFor(model => model.PrimaryPhoneType, new { @class = "col-sm-2 control-label required" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.PrimaryPhoneType)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Community/District Secondary Contact</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.SecondarySalutation, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SecondarySalutation)
+                </div>
+                @Html.LabelFor(model => model.SecondaryTitleId, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.Display("SecondaryTitle")
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SecondaryName, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SecondaryName)
+                </div>
+                @Html.LabelFor(model => model.SecondaryEmail, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SecondaryEmail)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SecondaryPhone, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SecondaryPhone)
+                </div>
+                @Html.LabelFor(model => model.SecondaryPhoneType, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-4">
+                    @Html.DisplayFor(model => model.SecondaryPhoneType)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Community/District Approved Features</div>
+        <div class="content-body" id="divFeature">
+            <div class="form-group" style="border-bottom: 1px dashed #247432;  margin-right: 0px;  margin-left: 0px;">
+                
+                @for (int i = 0; i < localAssessments.Count; i++)
+                {
+                    if (assignedIds.Contains((int)localAssessments[i]))
+                    {
+                        <div class="col-sm-4">
+                            <input type="checkbox"  name="chkAssessment" id="@((int)localAssessments[i])"  checked="true" value="@((int)localAssessments[i])"/>
+                            <label for=@((int)localAssessments[i])>@localAssessments[i].ToDescription() </label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-4">
+                            <input type="checkbox"  name="chkAssessment" id="@((int)localAssessments[i])"  value="@((int)localAssessments[i])"/>
+                            <label for=@((int)localAssessments[i])>@localAssessments[i].ToDescription() </label>
+                        </div>
+                    }
+
+                }
+            </div>
+
+            <div class="form-group" style=" margin-right: 0px;  margin-left: 0px;">
+                
+                @for (int i = 0; i < listAssessments.Count; i++)
+                {
+                    if (assignedIds.Contains(listAssessments[i].ID))
+                    {
+                        <div class="col-sm-4">
+                            <input type="checkbox"  name="chkAssessment" id="@(listAssessments[i].ID)"  checked="true" value="@(listAssessments[i].ID)"/>
+                            <label for=@(listAssessments[i].ID)>@listAssessments[i].Name </label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-4">
+                            <input type="checkbox"  name="chkAssessment" id="@(listAssessments[i].ID)"  value="@(listAssessments[i].ID)"/>
+                            <label for=@(listAssessments[i].ID)>@listAssessments[i].Name </label>
+                        </div>
+                    }
+
+                }
+            </div>
+        </div>
+    </div>
+            if (ViewBag.showNotes)
+            {
+    <div class="main-content" data-bind="visible: Notes != 'X'">
+        <div class="content-title">Community/District Notes</div>
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Notes, new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-10">
+                    @Html.DisplayFor(model => model.Notes)
+                </div>
+            </div>
+        </div>
+    </div>
+            }
+    
+    <div class="button-content">
+        <button class="mainbutton mainright-btn create-btn" type="button" onclick='redirectBack("index")' id="btnBack">Back</button>
+    </div>
+}
+

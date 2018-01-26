@@ -1,0 +1,500 @@
+﻿@model Sunnet.Cli.Business.Tsds.Models.DownloadListModel
+@using System.Web.Optimization
+@using Sunnet.Cli.UIBase.Models
+
+@{
+    ViewBag.Title = "XML";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("_Partial_Left_TSDS")
+}
+@section Styles
+{
+    @Styles.Render("~/css/multiselect")
+    <style type="text/css">
+        .form-horizontal .radio, .form-horizontal .checkbox, .form-horizontal .radio-inline, .form-horizontal .checkbox-inline {
+            float: none;
+        }
+
+        .multiselect-container {
+            max-height: 300px;
+            overflow-y: scroll;
+        }
+    </style>
+}
+@section BreadPath
+{
+    @(Html.ActionLink("XML File Download", "Index", "Tsds"))&nbsp;<em class="icon-angle-right"></em>&nbsp;@ViewBag.AssessmentName
+}
+@*<form class="form-horizontal" role="form" id="formSearch">
+        <div class="form-group">
+            <div class="right-content-top">
+                <label for="txtCommunityMeta" class="control-label col-sm-2">Community/District</label>
+                <div class="col-sm-3">
+                    @Html.TextBox("txtCommunityMeta", "", new
+               {
+                   autocomplete = "off",
+                   @class = "form-control",
+                   data_list = "true",
+                   data_for = "#CommunityIdMeta",
+                   data_remote = Url.Action("GetCommunitySelectListForSearch"),
+                   data_text = "Name",
+                   placeholder = "Enter key text to search",
+                   data_value = "ID",
+                   id = "txtCommunityMeta",
+                   name = "txtCommunityMeta",
+                   @for = "CommunityIdMeta",
+                   data_required = "false",
+                   data_bind = "value: searchCriteria.communityName"
+               })
+                    @Html.Hidden("CommunityIdMeta","0")
+
+                </div>
+
+                    <div class="col-sm-7">
+                        <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: CreateAssessmentXml }">Download Assessment Meta Data</button>
+                    </div>
+
+            </div>
+        </div>
+    </form>*@
+<div style="margin-top: 20px">
+</div>
+
+@using (Ajax.BeginForm("RequestTsds", "Tsds", null, PostFormHelper.DefaultAjaxOptions,new{ @class = "form-horizontal",role = "form",id = formId }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="AssessmentId" name="AssessmentId" value="@ViewBag.AssessmentId" />
+    <div class="form-group">
+        @Html.Label("Community", "Community/District", new { @class = "control-label col-sm-2", @for = "Communities" })
+        <div class="col-sm-3">
+            <fieldset>
+                <legend style="display:none">Community/District</legend>
+                @Html.DropDownList("Communities", (IEnumerable<SelectListItem>)ViewBag.Communities,
+                new { @class = "form-control", multiple = "multiple", onchange = "communityChange()" })
+            </fieldset>
+        </div>
+        @Html.Label("School", "School", new { @class = "control-label col-sm-1", @for = "Schools" })
+        <div class="col-sm-3">
+            <fieldset>
+                <legend style="display:none">School</legend>
+                @Html.DropDownList("Schools", (IEnumerable<SelectListItem>)ViewBag.Schools,
+                new { @class = "form-control", multiple = "multiple" })
+            </fieldset>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Measures", "Measures", new { @class = "control-label col-sm-2", @for = "btnMeasures" })
+        <div class="col-sm-3">
+            <fieldset>
+                <legend style="display:none">Measures</legend>
+                <div class="btn-group" style="width: 100%;">
+                    <button type="button" class="multiselect dropdown-toggle btn btn-default" id="btnMeasures" data-toggle="dropdown" title="None selected" style="width: 100%; overflow: hidden; text-overflow: ellipsis;" aria-expanded="false">
+                        <span class="multiselect-selected-text" id="measureSelected">None selected</span>
+                        <strong class="caret"></strong>
+                    </button>
+                    <ul class="multiselect-container dropdown-menu" style="width: 100%;">
+                        <li class="multiselect-item multiselect-all" style="background: rgb(243, 243, 243); border-bottom: 1px solid rgb(234, 234, 234);">
+                            <a tabindex="0" class="multiselect-all">
+                                <label class="checkbox" style="padding: 3px 20px 3px 35px;">
+                                    <input type="checkbox" value="select-all-value" id="selAllMeasures" onclick="addOpen(this); SelectedAllMeasure(this);">
+                                    <span>Select all</span>
+                                </label>
+                            </a>
+                        </li>
+                        @foreach (var measure in (IEnumerable<SelectListItem>)ViewBag.Measures)
+                        {
+                            <li onclick="">
+                                <a tabindex="0">
+                                    <label class="checkbox">
+                                        <input type="checkbox" value="@(measure.Value)" name="Measures" onclick="addOpen(this);MeasureSelect(this);">
+                                        <span>@Html.Raw(measure.Text)</span>
+                                    </label>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                @*@Html.DropDownList("Measures", (IEnumerable<SelectListItem>)ViewBag.Measures,
+                    new { @class = "form-control", multiple = "multiple" })*@
+            </fieldset>
+        </div>
+        <label class="control-label col-sm-1" style="padding:4px">DOB Range</label>
+        <div class="col-sm-1">
+            <input type="text" class="date form-control" id="DOBStartDate" name="DOBStartDate" title="DOBStartDate" style="width:180%;" placeholder="Start date" maxdate="#F{$dp.$D(\'DOBEndDate\',{d:-1})}">
+        </div>
+        <div class="col-sm-1" style="margin-left:4%">
+            <input type="text" class="date form-control" id="DOBEndDate" name="DOBEndDate" title="DOBEndDate" style="width:180%" placeholder="End date" data-mindate="#F{$dp.$D(\'DOBStartDate\',{d:+1});}" maxdate="@(DateTime.Now.FormatDateString())">
+        </div>
+        <div class="col-sm-2" style="margin-left:4%">
+            <button class="mainbutton modal-btn submit-btn" type="submit">Generate Report</button>
+        </div>
+    </div>
+}
+
+<div class="modal-l-b">
+</div>
+<div class="content-title">Search</div>
+<br />
+<form class="form-horizontal" role="form" id="formSearchLayout">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="txtFile">File Name</label>
+        <div class="col-sm-3">
+            @Html.TextBox("txtFile", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#FileId",
+           data_remote = Url.Action("GetFileList", "Index"),
+           data_text = "Text",
+           placeholder = "Enter key text to search",
+           data_value = "Value",
+           id = "txtFile",
+           name = "txtFile",
+           @for = "FileId",
+           data_required = "false",
+           data_bind = "value: searchCriteria.fileName"
+       })
+            @Html.Hidden("FileId",
+                new
+                {
+                    data_bind = "value: searchCriteria.fileId"
+                })
+        </div>
+        <label class="control-label col-sm-1" for="txtCommunity">Community</label>
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#CommunityId",
+           data_remote = Url.Action("GetCommunitySelectListForSearch"),
+           data_text = "Name",
+           placeholder = "Enter key text to search",
+           data_value = "ID",
+           id = "txtCommunity",
+           name = "txtCommunity",
+           @for = "CommunityId",
+           data_required = "false",
+           data_bind = "value: searchCriteria.communityName"
+       })
+            @Html.Hidden("CommunityId",
+                new
+                {
+                    data_bind = "value: searchCriteria.communityId"
+                })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="SchoolName">School</label>
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_remote = Url.Action("GetSchoolSelectList"),
+           data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+           @for = "SchoolId",
+           data_for = "#SchoolId",
+           data_text = "Name",
+           data_value = "ID",
+           placeholder = "Enter key text to search",
+           id = "SchoolName",
+           data_bind = "value: searchCriteria.schoolName",
+           data_extraParams = "{\"communityId\":\"#CommunityId\"}",
+           data_required = "false"
+       })
+            @Html.Hidden("SchoolId",
+                new
+                {
+                    data_bind = "value: searchCriteria.schoolId"
+                })
+        </div>
+        <label class="control-label col-sm-1" for="UserName">By</label>
+        <div class="col-sm-3">
+            @Html.TextBox("txtUser", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_remote = Url.Action("GetDowndedUserList", "Tsds"),
+           @for = "UserId",
+           data_for = "#UserId",
+           data_text = "Name",
+           data_value = "ID",
+           placeholder = "Enter key text to search",
+           id = "UserName",
+           data_bind = "value: searchCriteria.userName",
+           data_required = "false"
+       })
+            @Html.Hidden("UserId",
+                new
+                {
+                    data_bind = "value: searchCriteria.userId"
+                })
+        </div>
+        <div class="col-sm-2">
+            <button class="mainbutton mainright-btn sreach-btn" type="submit" data-bind="event: { click: search }">Search</button>
+        </div>
+    </div>
+   
+</form>
+<div class="main-content main-content">
+    <div class="content-title">Files</div>
+    <div class="content-body-tab">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr data-bind="foreach: { data: headers, as: 'header' }">
+                    <!-- ko if: (header.order === true)-->
+                    <th data-bind="style: { width: width }">
+                        <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                        <span class="glyphicon"
+                              data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                    </th>
+                    <!-- /ko-->
+                    <!-- ko if: (header.order === false) -->
+                    <th data-bind="text: text, style: { width: width }"></th>
+                    <!-- /ko-->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                <tr>
+                    <td data-bind="text: item.FileName" style="word-break:break-word;"></td>
+                    <td data-bind="text: item.CommunityName"></td>
+                    <td data-bind="text: item.SchoolName"></td>
+                    <td data-bind="text: item.DownloadedBy"></td>
+                    <td data-bind="datetime: item.DownloadedOn"></td>
+                    <td data-bind="text: item.Status.text"></td>
+                    <td>
+                        <!-- ko if: ( item.Status.text == 'Succeed')-->
+                        <!-- ko if: (item.FileName !='') -->
+                        <a class="table-btn feature-btn icon-cloud-download" data-bind="attr: {'aria-label':'Download_'+ID, href: $root.DownloadFile(item)}" title="Download XML File"></a>
+                        <!-- /ko-->
+                        <!-- ko if: (item.MisFileName !='') -->
+                        <a class="table-btn id-btn" data-bind="attr: { 'aria-label':'Download Missing TSDS ID Report '+ID, href: $root.DownloadErrorFile(item) }" title="Download Missing TSDS ID Report"><span>I</span><span style="padding-left:2px">D</span></a>
+                        <!-- /ko-->
+                        <!-- ko ifnot: (item.FileName !='') -->
+                        No Data
+                        <!-- /ko-->
+                        <!-- /ko-->
+                        <!-- ko if: ( item.Status.text == 'Processing')-->
+                        <a class=" table-btn icon-time download-btn" data-bind="attr: {'aria-label':'Processing_'+ID}" title="XML File is on processing"></a>
+                        <!-- /ko-->
+                        <!-- ko if: ( item.Status.text == 'Error')-->
+                        <a class=" table-btn icon-remove-circle download-btn" data-bind="attr: {'aria-label':'Failed_'+ID}" title="Failed to generate XML File"></a>
+                        <!-- /ko-->
+                    </td>
+                </tr>
+            </tbody>
+            @Html.Display("e", "NoData", new { Colspan = 7 })
+        </table>
+        @Html.Partial("_Partial_Pager")
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/MultiSelect")
+
+    <script type="text/javascript">
+        var list_Download = {};
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response) {
+                    window.showMessage("successOnlyMsg", window.getErrorMessage("ProcessingReport"));
+                    list_Download.search();
+                }
+            });
+
+            $('#Measures').multiselect({
+                includeSelectAllOption: true,
+                selectAllValue: 'select-all-value',
+                numberDisplayed: 1,
+                enableCollapsibleOptGroups: true,
+                buttonWidth: '100%'
+
+            });
+            $('#Communities').multiselect({
+                includeSelectAllOption: true,
+                selectAllValue: 'select-all-value',
+                numberDisplayed: 1,
+                enableClickableOptGroups: true,
+                enableCollapsibleOptGroups: true,
+                buttonWidth: '100%'
+            });
+            $('#Schools').multiselect({
+                includeSelectAllOption: true,
+                selectAllValue: 'select-all-value',
+                numberDisplayed: 1,
+                enableClickableOptGroups: false,
+                enableCollapsibleOptGroups: false,
+                buttonWidth: '100%'
+            });
+
+            $("#txtCommunity").change(function () {
+                $("#CommunityId").val("");
+                $("#SchoolName").datalist("clear");
+                $("#SchoolId").datalist("clear");
+            });
+
+            list_Download = new ViewModel(
+                {
+                    instanceName: "list_Download",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    addDataUrl: '@Html.Raw(Url.Action("New"))',
+                    editDataUrl: '@Html.Raw(Url.Action("Edit"))',
+                    viewDataUrl: '@Html.Raw(Url.Action("View"))',
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("File Name")",
+                            field: "@Html.NameFor(model => model.FileName)",
+                            order: true,
+                            width: '25%'
+                        },
+                        {
+                            text: "@Html.DisplayName("Community")",
+                            field: "@Html.NameFor(model => model.CommunityName)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayName("School")",
+                            field: "@Html.NameFor(model => model.SchoolName)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayName("Downloaded By")",
+                            field: "@Html.NameFor(model => model.DownloadedBy)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayName("Downloaded On")",
+                            field: "@Html.NameFor(model => model.DownloadedOn)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayName("Status")",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                        { text: "Action", width: '15%' }
+                    ],
+                    searchCriteria: {
+                        assessmentId: ko.observable(@ViewBag.AssessmentId),
+                        fileId: ko.observable(window.queryString("fileId", "")),
+                        fileName: ko.observable(window.queryString("fileName", "")),
+                        communityId: ko.observable(window.queryString("communityId", "")),
+                        communityName: ko.observable(window.queryString("communityName", "")),
+                        schoolId: ko.observable(window.queryString("schoolId", "")),
+                        schoolName: ko.observable(window.queryString("schoolName", "")),
+                        userId: ko.observable(window.queryString("userId", "")),
+                        userName: ko.observable(window.queryString("userName", "")),
+                        //dobStartDate: ko.observable(window.queryString("dobStartDate", "")),
+                        //dobEndDate: ko.observable(window.queryString("dobEndDate", "")),
+                    }
+                }, {
+                    DownloadFile: function (item) {
+                        return '@Url.Action("DownloadXmlFile")' + "?Id=" + item.ID + "&returnurl=" + list_Download.getLocation();
+                    },
+                    DownloadErrorFile: function (item) {
+                        return '@Url.Action("DownloadErrorFile")' + "?Id=" + item.ID + "&returnurl=" + list_Download.getLocation();
+                    }
+
+                }
+            );
+            list_Download.search();
+            ko.applyBindings(list_Download);
+        });
+
+        function CreateAssessmentXml() {
+            if ($("#CommunityIdMeta").val() === "0") {
+                window.showMessage("fail", "Community is required.");
+                return;
+            }
+
+            window.location = "CreateAssessmentXml?assessmentId=@ViewBag.AssessmentId" + "&CommunityId=" + $("#CommunityIdMeta").val();
+        }
+
+        function communityChange() {
+            var $communities = $("#Communities");
+            var communityIds;
+            if ($communities.val() == null)
+                communityIds = "";
+            else
+                communityIds = $communities.val().toString();
+            $.post("GetCommunityChange", { communityIds: communityIds }, function (data) {
+                $("#Schools").multiselect('dataprovider', data);
+            }, 'json');
+        }
+        function addOpen(obj) {
+            //$(obj).addClass('active');
+            $(obj).parents('.btn-group').addClass('open');
+        }
+
+        function SelectedAllMeasure(obj) {
+            if ($("#selAllMeasures").prop("checked")) {
+                $("[name='Measures']").prop("checked", true);
+                $("[name='Measures']").each(function () {
+                    $(this).parent().parent().parent().addClass('active');
+                });
+                $("#selAllMeasures").parent().parent().parent().addClass('active');
+            } else {
+                $("[name='Measures']").prop("checked", false);
+                $("[name='Measures']").each(function () {
+                    $(this).parent().parent().parent().removeClass();
+                });
+                $("#selAllMeasures").parent().parent().parent().removeClass();
+            }
+            if ($("[name='Measures']:checked").length == 0) {
+                $("#measureSelected").html("None selected");
+            } else {
+                if ($("[name='Measures']:checked").length > 1) {
+                    $("#measureSelected").html($("[name='Measures']:checked").length + " selected");
+                } else {
+                    $("#measureSelected").html($("[name='Measures']:checked").next("span").html());
+                }
+            }
+        }
+
+        function MeasureSelect(obj) {
+            if ($(obj).parent().parent().parent().attr("class") == "active") {
+                $(obj).parent().parent().parent().removeClass();
+            } else {
+                $(obj).parent().parent().parent().addClass('active');
+            }
+
+            if ($("[name='Measures']:checked").length == 0) {
+                $("#measureSelected").html("None selected");
+            } else {
+                if ($("[name='Measures']:checked").length > 1) {
+                    $("#measureSelected").html($("[name='Measures']:checked").length + " selected");
+                } else {
+                    $("#measureSelected").html($("[name='Measures']:checked").next("span").html());
+                }
+            }
+            if ($("[name='Measures']:not(:checked)").length > 0) {
+                $("#selAllMeasures").prop("checked", false);
+                $("#selAllMeasures").prop("checked", false);
+                $("#selAllMeasures").parent().parent().parent().removeClass();
+            }
+        }
+
+    </script>
+}

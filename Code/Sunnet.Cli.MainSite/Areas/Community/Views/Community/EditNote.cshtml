@@ -1,0 +1,167 @@
+﻿@using System.Web.Optimization
+@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Core.Communities.Entities.CommunityNotesEntity
+@{
+    ViewBag.Title = "Custom Notification For : "+ViewBag.CommunityName ;
+ Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+ 
+@section Scripts{
+   
+   
+    <script type="text/javascript">
+      
+
+        CKEDITOR.replace('Messages',
+        {
+            toolbar: 'Community',
+            height: '300px'
+        });
+        jQuery(function() {
+            var staticDomain = window._staticDomain_;
+            staticDomain = staticDomain.substring(0, staticDomain.length - 1);
+            var strs = staticDomain.split('.');
+            document.domain = strs[strs.length - 2] + "." + strs[strs.length - 1];
+
+
+            $.validator.addMethod("compareDate", function(value, element) {
+                var starttime = $("#StartOn").val();
+                var stoptime = $("#StopOn").val();
+                var reg = new RegExp('-', 'g');
+                starttime = starttime.replace(reg, '/');
+                stoptime = stoptime.replace(reg, '/');
+                starttime = new Date(parseInt(Date.parse(starttime), 10));
+                stoptime = new Date(parseInt(Date.parse(stoptime), 10));
+                if (starttime > stoptime) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }, window.getErrorMessage('stopGreaterStart'));
+        });
+        $(function ()
+        {
+            $form = $("#@(formId)");
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function (response)
+                {
+                    if (response.success)
+                    {
+                        $form.find("#confirm").val(false);
+                        var promise;
+                        if (typeof response.data == "string")
+                        {
+                            if (response.data == "waiting")
+                            {
+                                promise = window.waitingAlert("warning", response.msg);
+                            } else
+                            {
+                                promise = window.showMessage("success", response.msg);
+                                closeModal("#@(formId)");
+                            }
+                            $.when(promise).done(function ()
+                            {
+
+                            });
+                        } else if (typeof response.data == "object")
+                        {
+                            if (response.data != null && response.data.type == "continue")
+                            {
+                                $.when(window.waitingConfirm(response.msg, "Continue", "Cancel")).done(function ()
+                                {
+                                    $form.find("#confirm").val(true);
+                                    $form.submit();
+                                }).fail(function ()
+                                {
+                                    $form.find("#confirm").val(false);
+                                });
+                            } else
+                            {
+                                window.showMessage("success", response.msg);
+                                closeModal("#@(formId)");
+                            }
+                        }
+                    }  else
+                    {
+                        window.showMessage("fail",
+                            response.msg);
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+@using (Ajax.BeginForm("EditNotes", "Community", null, PostFormHelper.DefaultAjaxOptions,
+    new { @class = "form-horizontal", id = formId }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("confirm", false)
+ <div style="text-align: left; font-weight: bold; ">
+     This Custom Notification page can be used to create a customized message that will appear for all users in your Community/District in CLI Engage every 
+time they login between the dates specified below. If the message should no longer appear, change the Status to inactive.
+ </div>
+
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.StartOn, new { @class = "control-label required ",style=" float: left;width: 80px" })
+                <div  class="col-sm-2">
+                    @Html.TextBoxFor(model => model.StartOn, new { @class = "form-control date", @Value = Model.StartOn.FormatDateString() })
+                    @Html.ValidationMessageFor(model => model.StartOn)
+                </div>
+                @Html.LabelFor(model => model.StopOn, new { @class = "control-label required",width="80px",style=" float: left;" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.StopOn, new { @class = "form-control date compareDate", @Value = Model.StopOn.FormatDateString() })
+                    @Html.ValidationMessageFor(model => model.StopOn)
+                </div>
+           
+                @Html.LabelFor(model => model.Status, new { @class = "control-label required",width="80px",style=" float: left;" })
+                <div class="col-sm-2">
+                    @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.StatusOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div> 
+               <label class=" control-label " for="DisplayLogo" width="80px" style=" float: left;"> Display Logo
+                   <i class="icon-question-sign question-tip" id="tooltip1"  onmousemove="$(this).tooltip('show')" data-toggle="tooltip" data-placement="top"
+                                        title="The Upload Logo field is located on the Community/District page under Basic Information."></i>
+                 </label> 
+                <div  style="margin-top: 5px;">
+                    @Html.CheckBoxFor(model => model.DisplayLogo)
+                </div>
+
+            </div>
+           <div  class="form-group" style="margin-bottom:0px;">
+               <label style=" float: left;width: 80px" >
+                    @Html.LabelFor(model => model.Messages, new { @class = "control-label required" ,style=" float: left;width: 80px"})
+               </label>
+                <div  style="text-align: right; padding-right: 16px">
+                   up to 1500 characters
+                </div>
+            </div>
+            <div class="form-group">
+               
+                <div class="col-sm-12"> 
+                    <textarea class="form-control validate" cols="20" data-val="true" data-val-required="The Messages field is required."
+                              data-val-length="You are over the maximum 1500 character limit for the message box."
+                             data-val-length-max="1500" id="Messages" name="Messages" rows="15" style="visibility: hidden; display: none;" placeholder="">@Model.Messages</textarea>
+
+                    <span data-valmsg-replace="true" data-valmsg-for="Messages" class="field-validation-valid"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="submit">Submit</button>
+          <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.CommunityId)
+        @Html.HiddenFor(model => model.CreatedBy)
+        @Html.HiddenFor(model => model.CreatedOn)
+
+
+    </div>
+}
+

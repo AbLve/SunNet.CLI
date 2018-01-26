@@ -1,0 +1,27 @@
+﻿select * from Permission_Pages where id>=9500
+
+SET IDENTITY_INSERT Permission_Pages ON
+insert into Permission_Pages(ID,Name,IsPage,ParentID,Url,Sort,IsShow,Descriptions,CreatedOn,UpdatedOn)
+values(9506,'Infant & Toddler Course',1,9500,'https://lms.cliengage-dev2.uth.tmc.edu/course/view.php?id=2095',6,1,'Infant & Toddler Course',GETDATE(),GETDATE())
+SET IDENTITY_INSERT Permission_Pages OFF
+
+GO
+INSERT INTO dbo.Permission_PageAuthorities
+        ( PageId, ActionId )
+VALUES  ( 9506, -- PageId - int
+          1  -- ActionId - int
+          )
+
+    INSERT INTO dbo.Permission_RolePageAuthorities
+        ( RoleId ,
+          PageId ,
+          PageAction ,
+          CreatedOn ,
+          UpdatedOn
+        )
+VALUES  ( 1 , -- RoleId - int
+          9506 , -- PageId - int
+          '1;' , -- PageAction - nvarchar(100)
+          GETDATE() , -- CreatedOn - datetime
+          GETDATE()  -- UpdatedOn - datetime
+        )

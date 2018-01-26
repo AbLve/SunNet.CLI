@@ -1,0 +1,249 @@
+﻿@using Sunnet.Cli.Business.Common
+@using Sunnet.Cli.Business.Cpalls
+@using Sunnet.Cli.Core.Ade
+
+@{
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+
+    var report = ViewBag.report as ReportList;
+    var waveNum = report.ModelList.Keys.FirstOrDefault().ToDescription();
+    var json = ViewBag.json;
+    int year = ViewBag.year;
+    var widthNum = (160 + (int)ViewBag.num * 80);
+    var breakPager = false;
+    ViewDataDictionary data = new ViewDataDictionary();
+    data.Add("AssessmentName",ViewBag.AssessmentName);
+    data.Add("report", report);
+    data.Add("breakPager", breakPager);
+
+    data.Add("title", ViewBag.Title);
+    data.Add("communityName", ViewBag.communityName);
+    data.Add("language", ViewBag.language);
+    data.Add("schoolName", "All");
+    data.Add("className", "All");
+    data.Add("schoolYear", year.ToFullSchoolYearString());
+    data.Add("wave", waveNum);
+    data.Add("teacherName", "All");
+}
+
+
+<table style="width: 100%">
+    <thead>
+        <tr>
+            <td>@Html.Partial("_Partial_Completion_Measure_Header", data) </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Html.Partial("_Partial_Completion_Measure", data)</td>
+        </tr>
+          <tr>
+            <td style="height:40px;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <div id="studentSummaryChart" style="width:@(widthNum > 500 ? widthNum : 500)px;height:530px;display:block;clear:both;">
+                </div>
+                <div style="height:20px;">&nbsp;</div>
+                <div id="studentSummaryChartPercent" style="width:@(widthNum > 500 ? widthNum : 500)px;height:530px;display:block;clear:both;">
+                </div>
+            </td>
+        </tr>
+</table>
+
+
+@using (Html.BeginForm("Completion_Dl", "School", null, FormMethod.Post, new { target = "_blank" }))
+{
+@Html.Hidden("ID", (string)ViewBag.ReportId)
+    
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("communityId") 
+    
+    @Html.Hidden("waves")
+    @Html.Hidden("language")
+    @Html.Hidden("imgSource")
+    @Html.Hidden("imgSourcePercent")
+    @Html.Hidden("export", true)
+    <button type="submit" id="btn_Export" class="btn-export">
+        Export
+    </button>
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+    <script>
+        +(function () {
+            window.onload = function () {
+                var json = @Html.Raw(json) ;
+                var option = new ReportOption();
+                option.color = ['#b5c334', '#ffffff'];
+                option.toolbox.feature.magicType.type = ['line', 'bar', 'stack'];
+                option.title.text = "Number of Students";
+                option.title.subtext = 'Wave @waveNum';
+                var tested = 'Students Tested';
+                var notTested = 'Students not Tested';
+                option.legend.data = [tested, notTested];
+                option.legend.x = 'right';
+                option.series.push({
+                    name: tested,
+                    type: 'bar',
+                    stack: tested,
+                    data: [],
+                    barWidth: 30,
+                    itemStyle: {
+                        normal: {
+                            barBorderColor: '#000000',
+                            barBorderWidth: 1
+                        }
+                    }
+                }, {
+                    name: notTested,
+                    type: 'bar',
+                    stack: tested,
+                    data: [],
+                    barWidth: 30,
+                    itemStyle: {
+                        normal: {
+                            barBorderColor: '#000000',
+                            barBorderWidth: 1
+                        }
+                    }
+                });
+                jQuery.each(json, function (wave, item) {
+                    if (item.length==0) {
+                        return true; // like 'continue' effect
+                    }
+                    var measure = new ParentMeasuresModel();
+                    option.xAxis[1].axisLabel.formatter = function (label) {
+                        return measure.getText(label);
+                    }
+
+                    jQuery.each(item, function (index, parent) {
+                        if (parent.Children != undefined) {
+                            jQuery.each(parent.Children, function (ii, child) {
+                                if (child.RelatedName==null||child.RelatedName==undefined) {
+                                    option.xAxis[0].data.push(child.MeasureName);
+                                }else{
+                                    option.xAxis[0].data.push(child.MeasureName+"\n"+child.RelatedName);
+                                }
+
+                                option.xAxis[1].data.push(parent.MeasureName);
+                                measure.add(parent.MeasureName);
+                                option.series[0].data.push(GetNumber(child.Completion));
+                                option.series[1].data.push(GetNumber(child.Incompletion));
+                                
+                            });
+                        } else {
+                            if (parent.RelatedName==null||parent.RelatedName==undefined) {
+                                option.xAxis[0].data.push(parent.MeasureName);
+                            }else{
+                                option.xAxis[0].data.push(parent.MeasureName+"\n"+parent.RelatedName);
+                            }
+
+                            option.xAxis[1].data.push("");
+                            option.series[0].data.push(GetNumber(parent.Completion));
+                            option.series[1].data.push(GetNumber(parent.Incompletion));
+                        }
+                    });
+
+                    jQuery("#studentSummaryChart").show();
+                    jQuery("#wave1").show();
+                    option.grid.width = option.xAxis[0].data.length * option.grid.width;
+                    var char = echarts.init(document.getElementById('studentSummaryChart'), echartsTheme.default);
+                    char.setOption(option);
+                    setTimeout(function () { document.getElementById("imgSource").value = char.getDataURL(); }, 2000);
+                });
+
+                var optionPercent = new ReportOption();
+                optionPercent.color = ['#3366FF', '#ffffff'];
+                optionPercent.toolbox.feature.magicType.type = ['line', 'bar', 'stack'];
+                optionPercent.yAxis[0].axisLabel.formatter = '{value}%';
+                optionPercent.yAxis[0].max = 100;
+                optionPercent.yAxis[0].splitNumber = 10;
+                optionPercent.title.text = "Percent of Students";
+                optionPercent.title.subtext = 'Wave @waveNum';
+                var testedTitle = '% of Students Tested';
+                var notTestedTitle = '% of Students not Tested';
+                optionPercent.legend.data = [testedTitle, notTestedTitle];
+                optionPercent.legend.x = 'right';
+                optionPercent.series.push({
+                    name: testedTitle,
+                    type: 'bar',
+                    data: [],
+                    stack: testedTitle,
+                    barWidth: 30,
+                    itemStyle: {
+                        normal: {
+                            barBorderColor: '#000000',
+                            barBorderWidth: 1
+                        }
+                    }
+                }, {
+                    name: notTestedTitle,
+                    type: 'bar',
+                    data: [],
+                    stack: testedTitle,
+                    barWidth: 30,
+                    itemStyle: {
+                        normal: {
+                            barBorderColor: '#000000',
+                            barBorderWidth: 1
+                        }
+                    }
+                });
+
+                jQuery.each(json, function (wave, item) {
+                    if (item.length == 0) {
+                        return true; // like 'continue' effect
+                    }
+                    var measure = new ParentMeasuresModel();
+                    optionPercent.xAxis[1].axisLabel.formatter = function (label) {
+                        return measure.getText(label);
+                    }
+
+                    jQuery.each(item, function (index, parent) {
+                        if (parent.Children != undefined) {
+                            jQuery.each(parent.Children, function (ii, child) {
+                                if (child.RelatedName==null||child.RelatedName==undefined) {
+                                    optionPercent.xAxis[0].data.push(child.MeasureName);
+                                }else{
+                                    optionPercent.xAxis[0].data.push(child.MeasureName+"\n"+child.RelatedName);
+                                }
+
+                                optionPercent.xAxis[1].data.push(parent.MeasureName);
+                                measure.add(parent.MeasureName);
+                                optionPercent.series[0].data.push(GetNumber(child.CompletionPercent));
+                                optionPercent.series[1].data.push(100-GetNumber(child.CompletionPercent));
+                            });
+                        } else {
+                            if (parent.RelatedName==null||parent.RelatedName==undefined) {
+                                optionPercent.xAxis[0].data.push(parent.MeasureName);
+                            }else{
+                                optionPercent.xAxis[0].data.push(parent.MeasureName+"\n"+parent.RelatedName);
+                            }
+
+                            optionPercent.xAxis[1].data.push("");
+                            optionPercent.series[0].data.push(GetNumber(parent.CompletionPercent));
+                            optionPercent.series[1].data.push(100 - GetNumber(parent.CompletionPercent));
+                        }
+                    });
+
+                    jQuery("#studentSummaryChartPercent").show();
+                    jQuery("#wave1").show();
+                    optionPercent.grid.width = optionPercent.xAxis[0].data.length * optionPercent.grid.width;
+                    var char = echarts.init(document.getElementById('studentSummaryChartPercent'), echartsTheme.default);
+                    char.setOption(optionPercent);
+                    setTimeout(function () { document.getElementById("imgSourcePercent").value = char.getDataURL(); }, 2000);
+                });
+
+                setTimeout(function () {
+                    $("#btn_Export").slideDown();
+                }, 2000);
+            };
+        })();
+    </script>
+}

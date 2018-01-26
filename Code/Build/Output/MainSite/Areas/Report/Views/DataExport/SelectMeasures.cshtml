@@ -1,0 +1,387 @@
+﻿@using Sunnet.Cli.Core.Cpalls
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model Sunnet.Cli.Business.Ade.Models.BaseAssessmentModel
+@{
+    ViewBag.Title = Model.Name;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Reports)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Reports", "Index", "Index"))
+    <i class="icon-angle-right"></i>
+    @(Html.ActionLink("CIRCLE Data Export", "Circle", "DataExport"))
+    <i class="icon-angle-right"></i>
+    @(ViewBag.Title)
+}
+<div class="right-content-top"></div>
+@using (Ajax.BeginForm("Export_Queue", null, PostFormHelper.DefaultAjaxOptions, new
+{
+    id = formId,
+    @class = "form-horizontal"
+}))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.Label("txtCommunity", "Community/District", new { @class = "control-label col-sm-2 required" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#CommunityId",
+           data_remote = Url.Action("GetCommunitySelectListForSearch"),
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtCommunity",
+           name = "txtCommunity",
+           placeholder = "Enter key text to search",
+           @for = "CommunityId",
+           data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+           data_bind = "value: searchCriteria.communityName"
+       })
+            <input value="" class="form-control validate" data-val="true" data-val-number="The field Community Name must be a number." data-val-required="The Community/District field is required." id="CommunityId" name="CommunityId" placeholder="Selected Community" type="hidden" aria-required="true" aria-describedby="CommunityId-error">
+            @Html.ValidationMessage("CommunityId")
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        @Html.Label("txtSchool", "School Name", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", "", new
+       {
+           autocomplete = "off",
+           @class = "form-control",
+           data_list = "true",
+           data_for = "#SchoolId",
+           data_remote = Url.Action("GetSchoolSelectList"),
+           data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+           data_text = "Name",
+           data_value = "ID",
+           id = "txtSchool",
+           placeholder = "Enter key text to search",
+           @for = "SchoolId",
+           data_extraParams = "{\"communityId\":\"#CommunityId\",\"isActive\":\"#isActive\"}",
+           data_bind = "value: searchCriteria.schoolName"
+       })
+            @Html.Hidden("SchoolId", 0, new
+       {
+           @class = "form-control",
+           data_bind = "value: searchCriteria.schoolId"
+       })
+            @Html.Hidden("isActive", false)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Year", "School Year", new { @class = "control-label col-sm-2" })
+        <div class="col-sm-3">
+            @Html.DropDownList("Year", (IEnumerable<SelectListItem>)ViewBag.YearOptions, new { @class = "form-control", data_bind = "value: searchCriteria.year" })
+        </div>
+        @Html.Label("Wave", "Wave", new { @class = "control-label col-sm-2 required" })
+        <div class="col-sm-3">
+            <div class="btn-group term-chose-l" data-toggle="buttons" data-bind="foreach:{data:waves,as:'wave'}">
+                <label class="btn nav-btn" data-bind="css:{'submit-btn':checked()},click:$root.chooseWave">
+                    <input type="checkbox" name="waves" class="required" autocomplete="off" data-bind="value:value" />
+                    <span data-bind="text:'Wave' + text"></span>
+                </label>
+            </div>
+            @Html.ValidationMessage("waves", "The Wave field is required.", "div")
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        @Html.Label("", "Time Periods", new { @class = "control-label col-sm-2", @for = "startDate" })
+        <div class="col-sm-3">
+            <div class="col-lg-6 m-l-n">
+                @Html.TextBox("startDate", "", new { @class = "form-control date", maxDate = DateTime.Now.ToString("MM/dd/yyyy") })
+            </div>
+             <label class="col-lg-1 m-l-n">
+                 to
+                 </label>
+            <div class="col-lg-6 m-l-n">
+                @Html.TextBox("endDate", "", new { @class = "form-control date", maxDate = DateTime.Now.ToString("MM/dd/yyyy") })
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="3">English Measures</th>
+                        <th>&nbsp;</th>
+                        <th colspan="3">Spanish Measures</th>
+                    </tr>
+                    <tr>
+                        <th>@(Model.Name)</th>
+                        <th style="width: 150px;">Results Report
+                        </th>
+                        <th style="width: 150px;">Item Level Report
+                        </th>
+                        <th>&nbsp;</th>
+                        <th>@(Model.Name)</th>
+                        <th style="width: 150px;">Results Report
+                        </th>
+                        <th style="width: 150px;">Item Level Report
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>
+                            <button class="mainbutton mainright-btn unchecked-btn" type="button" data-bind="text:$root.status.english.resultsReport.checked()?'Deselect All':'Select All',click:function(){$root.switchSelectAll('english','resultsReport')},css:{'checked-btn':$root.status.english.resultsReport.checked()}"></button>
+                        </th>
+                        <th>
+                            <button class="mainbutton mainright-btn unchecked-btn" type="button" data-bind="text:$root.status.english.itemLevel.checked()?'Deselect All':'Select All',click:function(){$root.switchSelectAll('english','itemLevel')},css:{'checked-btn':$root.status.english.itemLevel.checked()}"></button>
+                        </th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                        <th>
+                            <button class="mainbutton mainright-btn unchecked-btn" type="button" data-bind="text:$root.status.spanish.resultsReport.checked()?'Deselect All':'Select All',click:function(){$root.switchSelectAll('spanish','resultsReport')},css:{'checked-btn':$root.status.spanish.resultsReport.checked()}"></button>
+                        </th>
+                        <th>
+                            <button class="mainbutton mainright-btn unchecked-btn" type="button" data-bind="html:$root.status.spanish.itemLevel.checked()?'Deselect All':'Select All',click:function(){$root.switchSelectAll('spanish','itemLevel')},css:{'checked-btn':$root.status.spanish.itemLevel.checked()}"></button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach:{data:measures,as:'measure'}">
+                    <tr>
+                        <!-- ko template:{data:english,name:$root.getTemplate}-->
+                        <!-- /ko-->
+                        <td>&nbsp;</td>
+                        <!-- ko template:{data:spanish,name:$root.getTemplate}-->
+                        <!-- /ko-->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="mainbutton mainright-btn save-btn" data-bind="click:submit">
+            Export Data
+        </button>
+        <a class="mainbutton mainright-btn cancel-btn" href='@(Url.Action("Circle"))'>Cancel</a>
+    </div>
+}
+<script type="text/html" id="tmp_Measure">
+    <td data-bind="text:name"></td>
+    <td>
+        <input type="checkbox" data-bind="checked:resultsReport,attr:{name:language + 'Results'},value:id" />
+    </td>
+    <td>
+        <input type="checkbox" data-bind="checked:itemLevel,attr:{name:language + 'ItemLevel'},value:id" />
+    </td>
+</script>
+<script type="text/html" id="tmp_Null">
+    <td></td>
+    <td></td>
+    <td></td>
+</script>
+@section Scripts
+{
+    <script type="text/javascript">
+        var getMeasureModel = function(measure) {
+            var model = {};
+            /*
+            ApplyToWave: "1"
+ID: 164
+Name: "Jack M1"
+ParentId: 1
+RelatedMeasureId: 176
+ShortName: "JM"
+Sort: 1
+            */
+            model.name = window.isNull("Name", measure, "");
+            model.id = window.isNull("ID", measure, 0);
+            model.resultsReport = ko.observable(false);
+            model.itemLevel = ko.observable(false);
+
+            model.resultsReport.subscribe(function(checked) {
+                if (checked === false) {
+                    model.itemLevel(false);
+                }
+            });
+
+            model.itemLevel.subscribe(function(checked) {
+                if (checked) {
+                    model.resultsReport(true);
+                }
+            });
+            return model;
+        };
+
+        function getReportTypeSelected(count) {
+            var model = {
+                count: count,
+                resultsReport: {
+                    selected: ko.observable(0)
+                },
+                itemLevel: {
+                    selected: ko.observable(0)
+                }
+            };
+            model.resultsReport.checked = ko.computed(function() {
+                return this.count > 0 && this.count === this.resultsReport.selected();
+            }, model);
+            model.itemLevel.checked = ko.computed(function() {
+                return this.count > 0 &&this.count === this.itemLevel.selected();
+            }, model);
+            return model;
+        }
+
+        var getReportModel = function(measures) {
+            var model = {};
+            var measureId;
+            var i;
+            var englishModel, englishEntity;
+            var spanishModel, spanishEntity;
+            var englishMeasures = measures["English"];
+            var spanishMeasures = measures["Spanish"];
+            var englishMeasureCount = englishMeasures.length;
+            var spanishMeasureCount = spanishMeasures.length;
+
+            model.measures = [];
+
+            function observeMeasure(measure, language) {
+                measure.language = language;
+                measure.resultsReport.subscribe(function(checked) {
+                    var target = model.status[language].resultsReport;
+                    target.selected(target.selected() + (checked ? 1 : -1));
+                    //console.log(measure.id, "checked:", checked);
+                });
+                measure.itemLevel.subscribe(function(checked) {
+                    var target = model.status[language].itemLevel;
+                    target.selected(target.selected() + (checked ? 1 : -1));
+                    //console.log(measure.id, "checked:", checked);
+                });
+            }
+
+            for (i = 0; i < englishMeasures.length; i++) {
+                englishEntity = englishMeasures.measures[i];
+                englishModel = getMeasureModel(englishEntity);
+                observeMeasure(englishModel, "english");
+
+                spanishEntity = spanishMeasures.measures && spanishMeasures.measures.filter(function(mea) {
+                    return mea.ID == englishEntity.RelatedMeasureId;
+                });
+                if (spanishEntity && spanishEntity.length) {
+                    spanishEntity = spanishEntity[0];
+                    spanishModel = getMeasureModel(spanishEntity);
+                    spanishEntity.processed = true;
+                    observeMeasure(spanishModel, "spanish");
+                } else {
+                    spanishModel = null;
+                }
+
+                model.measures.push({
+                    english: englishModel,
+                    spanish: spanishModel
+                });
+            }
+            for (i = 0; i < spanishMeasures.length; i++) {
+                spanishEntity = spanishMeasures.measures[i];
+                spanishModel = getMeasureModel(spanishEntity);
+                if (!spanishEntity.processed) {
+                    observeMeasure(spanishModel, "spanish");
+                    model.measures.push({
+                        english: null,
+                        spanish: spanishModel
+                    });
+                }
+            }
+
+            model.status = {
+                english: getReportTypeSelected(englishMeasureCount),
+                spanish: getReportTypeSelected(spanishMeasureCount)
+            }
+
+            model.waves = [
+                {
+                    value: "@((int)Wave.BOY)",
+                    text: "@(Wave.BOY.ToDescription())",
+                    checked: ko.observable(false)
+                }, {
+                    value: "@((int)Wave.MOY)",
+                    text: "@(Wave.MOY.ToDescription())",
+                    checked: ko.observable(false)
+                }, {
+                    value: "@((int)Wave.EOY)",
+                    text: "@(Wave.EOY.ToDescription())",
+                    checked: ko.observable(false)
+                }
+            ];
+
+            model.getTemplate = function(measure) {
+                if (measure) return "tmp_Measure";
+                return "tmp_Null";
+            };
+
+            model.searchCriteria = {
+                assessmentId: ko.observable(window.queryString("assessmentId", @(Model.ID))),
+                year: ko.observable(window.queryString("year", "")),
+                communityId: ko.observable(window.queryString("communityId", "")),
+                communityName: ko.observable(window.queryString("communityName", "")),
+                schoolId: ko.observable(window.queryString("schoolId", "")),
+                schoolName: ko.observable(window.queryString("schoolName", ""))
+            };
+
+            model.switchSelectAll = function(language, type) {
+                var target = model.status[language][type];
+                var targetStatus;
+                if (target) {
+                    if (target.checked()) {
+                        targetStatus = false;
+                    } else {
+                        targetStatus = true;
+                    }
+                    for (i = 0; i < model.measures.length; i++) {
+                        var measure = model.measures[i];
+                        measure && measure[language] && measure[language][type](targetStatus);
+                    }
+                }
+            };
+
+            model.chooseWave = function(wave) {
+                wave.checked(!wave.checked());
+            };
+
+            model.submit = function() {
+                if (!$form.valid()) {
+                    return false;
+                }
+                var checked = $("input:checkbox:checked[name='englishResults']").length + $("input:checkbox:checked[name='spanishResults']").length;
+                if (checked < 1) {
+                    window.showMessage("hint", "Please select measures");
+                    return false;
+                }
+                return true;
+            };
+            return model;
+        };
+        var measures = @(Html.Raw(ViewBag.Measures));
+        var $form;
+        $(function() {
+            registerFormCallbacks("@(formId)", {
+                onResponsed: function(response) {
+                    if (response.success) {
+                        $.when(window.waitingAlert("success", response.msg));
+                    } else {
+                        window.showMessage("fail", response.msg);
+                    }
+                }
+            });
+            $form = $("#@(formId)");
+            reportModel = getReportModel(measures);
+            ko.applyBindings(reportModel);
+        });
+
+        $("#txtCommunity").on("selected.sunnet.datalist", function (event) {
+            $("#txtSchool").datalist("clear");
+        });
+    </script>
+}

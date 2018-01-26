@@ -1,0 +1,45 @@
+﻿
+/****** Object:  UserDefinedFunction [dbo].[GetClassesOfStudent]    Script Date: 2015/10/8 9:13:51 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+-- =============================================
+-- Author:		Jack
+-- Create date: 2015-04-24
+-- Description:	Get classes of students
+-- =============================================
+ALTER FUNCTION [dbo].[GetClassesOfStudent] 
+(
+	-- Add the parameters for the function here
+	@StudentId INT
+)
+RETURNS VARCHAR(1000)
+AS
+BEGIN
+	-- Declare the return variable here
+	DECLARE @Classes VARCHAR(1000)
+
+	-- Add the T-SQL statements to compute the return value here
+	SELECT @Classes = (SELECT CLS.Name + '|', CLS.ClassId + '|', CAST(CLS.Status AS VARCHAR) + '|', CAST(CLS.DayType AS VARCHAR) + '|', CAST(CLS.Classlevel AS VARCHAR) + ';'
+	FROM [dbo].[Classes] CLS 
+	INNER JOIN [dbo].[StudentClassRelations] SCR ON CLS.ID = SCR.ClassId 
+	WHERE SCR.StudentId = @StudentId
+	FOR XML PATH('')
+	)
+	-- Return the result of the function
+	RETURN @Classes
+
+END
+
+
+
+
+GO
+
+

@@ -1,0 +1,73 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@model  List<ReportRowModel>
+@{
+    Layout = null;
+}
+<table cellpadding="0" cellspacing="0" class='@(ViewBag.NewPager?"newpager":"")'>
+    <caption>
+        @(Model[0][0].Text.ToString())
+    </caption>
+    <thead style="page-break-inside : avoid">
+        <tr class='fixed-columns-rotate' style="page-break-inside : avoid">
+            @for (var j = 0; j < Model[0].Cells.Count; j++)
+            {
+                if (j == 0)
+                {
+                    <th rowspan="@(Model[0][j].Rowspan)"
+                        colspan="@(Model[0][j].Colspan)">
+                        <div style="width:200px;">
+                            <span>
+                                @(ViewData["Title"].ToString())
+                            </span>
+                        </div>
+                    </th>
+                }
+                else
+                {
+                    <th class='@(Model[0][j].IsParent ? "fixed-columns-rotate-super" : "fixed-columns-rotate")'
+                        rowspan="@(Model[0][j].Rowspan)"
+                        colspan="@(Model[0][j].Colspan)">
+                        <div>
+                            <span>
+                                @(Model[0][j].Text.ToString().CutString((Model[0][j].IsParent ? Model[0][j].Colspan : 4) * 5))
+                            </span>
+                        </div>
+                    </th>
+                }
+            }
+            <th class="noborder border-l"></th>
+            <th class="noborder"></th>
+        </tr>
+        <tr class='fixed-columns-rotate' style="page-break-inside : avoid">
+            @for (var j = 0; j < Model[1].Cells.Count; j++)
+            {
+                <th class='fixed-columns-rotate'
+                    rowspan="@(Model[1][j].Rowspan)"
+                    colspan="@(Model[1][j].Colspan)">
+                    <div>
+                        <span>@(Model[1][j].Text.ToString().CutString(20))</span>
+                    </div>
+                </th>
+            }
+            <th class="noborder border-l"></th>
+            <th class="noborder"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 2; i < Model.Count; i++)
+        {
+            <tr style="page-break-inside : avoid">
+                @for (var j = 0; j < Model[i].Cells.Count; j++)
+                {
+                    <td class="@(Model[i][j].Background)">
+                        @(Model[i][j].Text.ToString().CutString(16))
+                    </td>
+                }
+                <td class="noborder border-l"></td>
+                <td class="noborder"></td>
+            </tr>
+        }
+    </tbody>
+</table>
+

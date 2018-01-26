@@ -1,0 +1,23 @@
+﻿@using Sunnet.Cli.UIBase.Models;
+@{
+    ViewBag.Title = "Guide";
+    Layout = "~/Views/Shared/_Layout_LogOut.cshtml";    
+}
+<div class="login-wrong-main">
+    <div class="login-wrong-header">
+        <a href="#">
+            <img src="/images/cli_logo.png" alt="cli_logo"></a>
+    </div>
+    <div class="login-wrong-body">
+        <h4>I'm Sorry</h4>
+        <p>The user does not exist.</p>
+
+    </div>
+    <div class="login-wrong-footer">
+        <p>Please try to clean the browser
+                    <br />cache and log in again.</p>
+        <a class="mainbutton logout-main-btn pass-btn" href="@(DomainHelper.MainSiteDomain)home/Signup">Sign Up</a>
+    </div>
+
+</div>
+

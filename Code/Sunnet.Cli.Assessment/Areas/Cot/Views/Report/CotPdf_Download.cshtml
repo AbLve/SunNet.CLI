@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Preview";
+    Layout = "~/Areas/Cot/Views/Shared/_Layout_Report_Chart.cshtml";
+    var isFirstTeacher = true;
+    var index = 0;
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var models = ViewBag.Models as List<Sunnet.Cli.Business.Cot.Report.CotReportModel>;
+}
+@foreach (var model in models)
+{
+    <table class='header @(isFirstTeacher ? "" : "newpager") ' width="100%">
+        @if (model.Type == ObservedReportType.SingleTeacher || model.Type == ObservedReportType.AssignedTeachers)
+        {
+            @Html.Partial("_Partial_CotReport_TeacherHead", model)
+        }
+        else
+        {
+            @Html.Partial("_Partial_CotReport_TeacherHead2", model)
+        }
+    </table>
+    <div style="width: @ReportHelper.GetChartWidth(model.Measures.Count)px;height:520px;text-align: center; page-break-inside: avoid; margin: 0 auto;">
+        <img src='@(ViewData["Image" + index++])' />
+    </div>
+    <div class="note" style="color:#000000;">
+        @foreach (var measure in model.Measures)
+        {
+            <b>@measure.ShortName:</b>
+            <span>&nbsp;@(measure.Name);&nbsp;</span>
+        }
+    </div>
+        {
+            isFirstTeacher = false;
+        }
+}

@@ -1,0 +1,71 @@
+﻿ 
+GO
+/****** Object:  StoredProcedure [dbo].[DeleleCommunityUserRelations]    Script Date: 2015/7/17 14:22:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[DeleleCommunityUserRelations]
+    @communityId int 
+AS
+BEGIN
+	  
+		-- School and class RelationShip
+		DECLARE schoolCursor CURSOR FOR  SELECT SchoolId FROM CommunitySchoolRelations WHERE CommunityId = @communityId
+		  OPEN schoolCursor
+		   DECLARE @schoolId int
+		   FETCH NEXT FROM schoolCursor INTO @schoolId
+		   WHILE(@@FETCH_STATUS =0)
+			BEGIN
+			    --DELETE FROM CommunitySchoolRelations  WHERE CommunityId = @communityId AND SchoolId = @schoolId ;
+
+			    DECLARE @count1 int SET @count1 = 1;
+
+			    SELECT @count1 = COUNT(0) FROM CommunitySchoolRelations A JOIN Communities B ON A.CommunityId = B.ID WHERE SchoolId = @schoolId and B.Status =1 
+				 IF(@count1 =0) 
+				   BEGIN
+				      UPDATE Schools SET Status =2 WHERE ID =@schoolId;
+					  EXEC dbo.DeleleSchoolUserRelations @schoolId;
+				   END
+
+			 FETCH NEXT FROM schoolCursor INTO @schoolId
+			END
+		CLOSE schoolCursor
+		DEALLOCATE schoolCursor
+
+		
+
+		-- community user relationShip
+		DECLARE userCommunityCursor CURSOR FOR  SELECT userId FROM UserComSchRelations WHERE CommunityId = @communityId
+		  OPEN userCommunityCursor
+		   DECLARE @userId int
+		   FETCH NEXT FROM userCommunityCursor INTO @userId
+		   WHILE(@@FETCH_STATUS =0)
+			BEGIN
+			  BEGIN
+				 --DELETE FROM UserComSchRelations  WHERE CommunityId = @communityId AND UserId = @userId;
+			  
+			    DECLARE @count2 int SET @count2 = 1;
+				DECLARE @count3 int SET @count3 = 1;
+
+				SELECT @count2=COUNT(0) FROM UserComSchRelations A Join Schools B ON A.SchoolId = B.ID WHERE (UserId = @userId and B.Status = 1)
+				SELECT @count3=COUNT(0) FROM UserComSchRelations C Join Communities D ON C.CommunityId = D.ID WHERE (UserId = @userId and D.Status = 1)
+
+				 IF(@count2=0 AND @count3=0)
+				   			      UPDATE Users SET [Status] =2 WHERE ID = @userId AND Role IN(145,110,105,120,115,140);
+		 
+
+			  END
+			 FETCH NEXT FROM userCommunityCursor INTO @userId
+			END
+		CLOSE userCommunityCursor
+		DEALLOCATE userCommunityCursor
+ 
+END
+

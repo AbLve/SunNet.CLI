@@ -1,0 +1,39 @@
+﻿@model StudentMeasureModel
+@{
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var label = Request.QueryString["label"];
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    ViewBag.Title = "Comment - " + label;
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        registerFormCallbacks("@(formId)", {
+            onPosted: function(response) {
+                window.commentChanged = true;
+                closeModal($("#@(formId)"));
+            }
+        });
+    </script>
+}
+@using (Ajax.BeginForm("Comment", "Execute", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        role = "form",
+        id = formId
+    }))
+{
+    @Html.Hidden("ID")
+    <div class="form-group">
+        @Html.LabelFor(model => model.Comment, new { @class = "control-label col-sm-3 required" })
+        <div class="col-sm-9">
+            @Html.TextAreaFor(model => model.Comment,new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Comment)
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="submit" >Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" data-dismiss="modal">Cancel</button>
+    </div>
+}

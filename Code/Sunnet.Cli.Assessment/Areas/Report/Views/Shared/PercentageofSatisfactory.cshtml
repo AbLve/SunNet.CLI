@@ -1,0 +1,197 @@
+﻿@{
+    Layout = "~/Areas/Report/Views/Shared/_Layout_Report.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+
+    var chartTitle = ViewBag.District;
+    if (ViewContext.Controller is ClassController)
+    {
+        chartTitle = ViewBag.School;
+    }
+    if (ViewContext.Controller is StudentController)
+    {
+        chartTitle = ViewBag.Class;
+    }
+
+}
+
+@Html.Partial("_Partial_PercentageofSatisfactory")
+
+@using (Html.BeginForm("PercentageofSatisfactory_Pdf", null, FormMethod.Post, new { id = formId, target = "_blank" }))
+{
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+    @Html.Hidden("districtId")
+    @Html.Hidden("schoolId")
+    @Html.Hidden("classId")
+    @Html.Hidden("language")
+    @Html.Hidden("id")
+    @Html.Hidden("waves")
+    @Html.Hidden("imgSources")
+    @Html.Hidden("startDate")
+    @Html.Hidden("endDate")
+    @Html.Hidden("dobStartDate")
+    @Html.Hidden("dobEndDate")
+
+    @Html.Hidden("export", true)
+    <button type="submit" class="btn-export" id="btn_Export" onclick="javascript:return exportPdf();">
+        Export
+    </button>
+}
+
+@section Scripts{
+    @Scripts.Render("~/scripts/chart")
+    @Scripts.Render("~/scripts/report/assessment")
+    <script type="text/javascript">
+        var charts = [];
+
+        function exportPdf() {
+            var $form = $("#@(formId)");
+            $form.find("input:hidden[name='imgSources']").remove();
+            if (charts && charts.length) {
+                for (var i = 0; i < charts.length; i++) {
+                    var myChart = charts[i];
+                    var options = myChart.getOption();
+                    options.toolbox.feature.magicType.show = false;
+                    options.toolbox.feature.dataZoom.show = false;
+                    options.toolbox.feature.restore.show = false;
+                    myChart.setOption(options);
+                    var $imgSources = $('<input name="imgSources" type="hidden" value="" />').appendTo($form);
+                    $imgSources.val(myChart.getDataURL());
+
+                    options.toolbox.feature.magicType.show = true;
+                    options.toolbox.feature.dataZoom.show = true;
+                    options.toolbox.feature.restore.show = true;
+                    myChart.setOption(options);
+                }
+            }
+            return true;
+        }
+
+        var dataSource = @Html.Raw(ViewBag.JData);
+        +(function() {
+            window.onload = function() {
+                for (var w in dataSource) {
+                    var data = dataSource[w];
+                    var option = new ReportOption();
+                    option.title = {
+                        text: "@(Html.Raw(ViewBag.Title))",
+                        subtext: "@(Html.Raw(chartTitle))",
+                        textAlign: "left",
+                        x: 0,
+                        y: 0
+                    };
+                    for(var i=1;i<data[0].Cells.length;i++){
+                        option.legend.data.push(
+                            {
+                                name:"% of Students Meeting "+data[0].Cells[i].Text+"$"+i
+                            });
+                        option.series.push({
+                            name:"% of Students Meeting " + data[0].Cells[i].Text+"$"+i,
+                            type: 'bar',
+                            smooth:true,
+                            stack: "AssessmentLevel",
+                            data: [],
+                            barWidth:30,
+                            itemStyle: {
+                                normal: {
+                                    color:data[0].Cells[i].Color,
+                                    barBorderColor: data[0].Cells[i].Color,
+                                    barBorderWidth: 1,
+                                    areaStyle:{
+                                        type:'default'
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    option.yAxis[0].axisLabel.formatter = '{value}%';
+                    option.yAxis[0].max =100;
+                    option.yAxis[0].splitNumber = 10;
+                    option.toolbox.feature.magicType.type = ['stack','line', 'bar'];
+                    option.legend.x = 450;
+
+                    var allParentMeasure = new ParentMeasuresModel();
+                    option.xAxis[1].axisLabel.formatter = function(label) {
+                        return allParentMeasure.getText(label);
+                    }
+
+                    var xAxisParent = option.xAxis[1].data;
+                    var xAxisMeasure = option.xAxis[0].data;
+
+                    var lastParent = "";
+                    var measure = "";
+                    var dataIndex;
+                    for (var i = 1; i < data.length; i++) {
+                        var measureData = data[i];
+                        if (measureData.Cells[0].IsParent) {
+                            dataIndex = 2;
+                            lastParent = measureData.Cells[0].Text;
+                            measure = measureData.Cells[1].Text;
+
+                        } else {
+                            dataIndex = 1;
+                            measure = measureData.Cells[0].Text;
+                        }
+                        //if (measureData.Cells[dataIndex].Text != "*" && measureData.Cells[dataIndex].Text != "√") {
+                        if (measureData.Cells[0].IsParent || measureData.Cells[0].Colspan == 1) {
+                            allParentMeasure.add(lastParent);
+
+                            xAxisMeasure.push(measure);
+                            xAxisParent.push(lastParent);
+                        } else {
+                            xAxisMeasure.push(measure);
+                            xAxisParent.push('');
+                        }
+
+                        for (var j = dataIndex; j < measureData.Cells.length; j++) {
+                            var percentage = GetNumber(measureData.Cells[j].Text.replace("%", ""));
+                            if (measureData.Cells[j].Text == "√"||measureData.Cells[j].Text == "*")
+                                percentage = 0;
+
+                            option.series[j - dataIndex].data.push(percentage);
+                            //option.series[j - dataIndex + 1].data.push(100 - percentage);
+                        }
+                        //}
+                    }
+                    option.legend.formatter=function(name){
+                        var res=name.substring(0,name.indexOf("$"));
+                        return res;
+                    };
+                    option.tooltip = {
+                        trigger: 'axis',
+                        formatter:function(params,ticket,callback){
+                            var res="";
+                            for(var i=0;i<params.length;i++){
+                                if(i==0){
+                                    res+=params[i][1]+'<br/>';
+                                }
+                                if(params[i][2] != 0){
+                                    var subName=params[i][0].substring(0,params[i][0].indexOf("$"));
+                                    res+=subName+':'+params[i][2]+'<br/>';
+                                }
+                            }
+                            return res;
+                        }
+                    };
+
+                    var labelNum= option.legend.data.length;
+                    var lengndRow=parseInt(labelNum/3)+1;
+                    var lengndHight=lengndRow*25;
+                    option.legend.x = 0;
+                    option.legend.y = 0;
+                    option.grid.y=lengndHight+70;
+                    option.toolbox.y=lengndHight+70;
+                    option.title.y=lengndHight;
+                    option.grid.width = xAxisMeasure.length * option.grid.width;
+                    document.getElementById('chart' + w).style.height=lengndHight+550+'px';
+                    var myChart = echarts.init(document.getElementById('chart' + w), echartsTheme.default);
+                    myChart.setOption(option);
+                    charts.push(myChart);
+                }
+                setTimeout(function() {
+                    $("#btn_Export").slideDown();
+                }, 2000);
+            };
+        })();
+    </script>
+}

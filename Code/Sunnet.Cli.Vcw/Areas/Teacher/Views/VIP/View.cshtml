@@ -1,0 +1,218 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.FileListModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.UIBase
+@using System.Web.Optimization
+@using Sunnet.Framework.Extensions
+@{
+    ViewBag.Title = "View VIP Assignment";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.Teacher_VIP)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("My VIP Assignments", "Index", "VIP"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;View
+}
+
+@using (Ajax.BeginForm("Delete", "VIP", null, PostFormHelper.DefaultAjaxOptions, new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("AssignmentId", (int)ViewBag.AssignmentId)
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index", "VIP"))" >Back to VIP List</a>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="content-con">
+                <div class="content-title3">
+                    <div class="control-label">VIP Assignment</div>
+                </div>
+                <div class="inputtext-con">
+                    <span class="control-label col-sm-2">Due by</span>
+                    <span class="col-sm-2">@ViewBag.DueDate</span>
+                    <span class="control-label col-sm-1">Content</span>
+                    <span class="col-sm-4">@ViewBag.Content</span>
+                    <span class="control-label col-sm-1">Wave</span>
+                    <span class="col-sm-2">@ViewBag.Wave</span>
+                </div>
+                <div class="inputtext-con">
+                    <span class="control-label col-sm-2">Status</span>
+                    <span class="col-sm-2">@ViewBag.Status</span>
+                    <span class="control-label col-sm-1">Context</span>
+                    <span class="col-sm-4">@ViewBag.Context</span>
+                </div>
+                <div class="inputtext-con-file">
+                    <span class="control-label col-sm-2">Description</span>
+                    <span class="col-sm-10">@ViewBag.Description</span>
+                </div>
+            </div>
+        </div>
+    </div>   
+    <div class="form-group">
+        <div class="col-sm-12">
+            <button type="button"  href='@Url.Action("UploadVideo", "VIP", new { AssignmentID = @ViewBag.AssignmentID, listObj = "list_Video" })' 
+        class="mainbutton mainright-btn submit-btn" data-target="#modalNormal" data-toggle="modal">
+                Upload Video</button>
+            <input type="button" class="mainbutton mainright-btn pencil-btn" value="Delete Selected Video(s)" onclick="return deletedata()">
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Video</div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="text: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr>
+                        <td>
+                            <label>
+                                <input name="video_select" type="checkbox" data-bind="value: item.ID" />
+                            </label>
+                        </td>
+                        <td data-bind="text: item.IdentifyFileName"></td>
+                        <td data-bind="text: item.Number"></td>
+                        <td data-bind="text: item.Status.text"></td>
+                        <td data-bind="text: item.UploadDate"></td>
+                        <td data-bind="text: item.DateRecorded == minDate ? '' : item.DateRecorded"></td>
+                        <td data-bind="text: item.LanguageText"></td>
+                        <td data-bind="text: item.FileExtension"></td>
+                        <td>
+                            <a class="table-btn icon-folder-open view-btn" data-bind="event: { click: $root.viewData }" href="#" title="View"></a>
+                            <a class="table-btn icon-download-alt download-btn" data-bind="attr: { href: item.DownLoadFilePath }" title="Download"></a>
+                        </td>
+                    </tr>
+                </tbody>@Html.Display("e", "NoData", new { Colspan = 100 })
+            </table>
+            @Html.Partial("_Partial_Pager")
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/javascript">
+        var list_Video = {};
+
+        $(function () {
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    list_Video.search();
+                }
+            })
+
+            list_Video = new ViewModel(
+                {
+                    instanceName: "list_Video",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("SearchFiles")))',
+                    viewDataUrl: '@Html.Raw(Url.Action("EditFile"))',
+                    viewType: "Redirect",
+                    orderBy: "ID",
+                    orderDirection: "DESC",
+                    pageSize: 10,
+                    headers: [
+                        {
+                            text: "@Html.DisplayName("Select")",
+                            width: "5%"
+                        },
+                        {
+                            text: "@Html.DisplayName("File Name")",
+                            field: "@Html.NameFor(model => model.IdentifyFileName)",
+                            order: true,
+                            width: '15%'
+                        },
+                        {
+                            text: "@Html.DisplayName("ID")",
+                            field: "@Html.NameFor(model => model.ID)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "@Html.DisplayName("Status")",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: "10%"
+                        },
+                        {
+                            text: "@Html.DisplayName("Upload Date")",
+                            field: "@Html.NameFor(model => model.UploadDate)",
+                            order: true,
+                            width: "11%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Date Recorded")',
+                            field: "@Html.NameFor(model => model.DateRecorded)",
+                            order: true,
+                            width: "13%"
+                        },
+                        {
+                            text: '@Html.DisplayName("Language")',
+                            field: "@Html.NameFor(model => model.LanguageId)",
+                            order: true,
+                            width: "12%"
+                        },
+                        {
+                            text: '@Html.DisplayName("File Type")',
+                            field: "@Html.NameFor(model => model.FileExtension)",
+                            width: "10%"
+                        },
+                        {
+                            text: "Action",
+                            width: "8%"
+                        }
+                    ],
+                    searchCriteria: {
+                        assignmentId: ko.observable(window.queryString("assignmentId", "@ViewBag.AssignmentId")),
+                    }
+                }
+            );
+
+            list_Video.search();
+            ko.applyBindings(list_Video);
+        });
+
+            function deletedata() {
+                var video_select = $("input[name=video_select]:checked");
+                if (video_select.length == 0) {
+                    showMessage("hint", "Vcw_Videos_Noselect")
+                    return false;
+                }
+                else {
+                    var message = window.getErrorMessage("confirmToDelete");
+                    message = message.replace("[{0}]", "the selected videos");
+                    $.when(waitingConfirm(message, "Delete", "Cancel")).done(function () {
+                        $("#@(formId)").submit();
+                    })
+                }
+                return false;
+            }
+    </script>
+}
+

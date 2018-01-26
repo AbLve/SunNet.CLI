@@ -1,0 +1,57 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@(ViewBag.Title)</title>
+    @Styles.Render("~/css/basic")
+
+    <style type="text/css">
+        .download-container {
+            width: 100px;
+            margin: 50px auto auto;
+        }
+
+        .download-note {
+            width: 500px;
+            margin: 50px auto auto;
+        }
+
+        .download-report {
+        }
+
+        form {
+            margin: 0 auto;
+        }
+    </style>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <div class="warp">
+        <div class="header">
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="@(SFConfig.MainSiteDomain)">
+                        <img src="/images/cli_logo.png" alt="cli_logo">
+                    </a>
+                </div>
+                <div class="help-btn">
+                    <a href="http://www.texasschoolready.org/help/MainTicketForm.aspx?Section8" target="_blank">&nbsp;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="download-container">
+        @RenderBody()
+    </div>
+    <div class="download-note well well-lg">
+        <p>
+            This Download page will expire. Save a copy of the downloaded report to your device for future reference.
+        </p>
+    </div>
+</body>
+</html>

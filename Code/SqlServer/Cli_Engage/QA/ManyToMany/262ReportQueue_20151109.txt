@@ -1,0 +1,81 @@
+GO
+IF NOT EXISTS ( SELECT  *
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID('ReportQueue')
+                        AND name = 'ReceiveFileBy' )
+    ALTER TABLE ReportQueue ADD ReceiveFileBy TINYINT;
+GO
+UPDATE  ReportQueue
+SET     ReceiveFileBy = 2
+WHERE   ReceiveFileBy IS NULL;
+GO
+ALTER TABLE ReportQueue ALTER COLUMN ReceiveFileBy TINYINT NOT NULL;
+
+GO
+IF NOT EXISTS ( SELECT  *
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID('ReportQueue')
+                        AND name = 'SFTPHostIp' )
+    ALTER TABLE ReportQueue ADD SFTPHostIp VARCHAR(50);
+GO
+UPDATE  ReportQueue
+SET     SFTPHostIp = ''
+WHERE   SFTPHostIp IS NULL;
+GO
+ALTER TABLE ReportQueue ALTER COLUMN SFTPHostIp VARCHAR(50) NOT NULL;
+
+
+GO
+IF NOT EXISTS ( SELECT  *
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID('ReportQueue')
+                        AND name = 'SFTPPort' )
+    ALTER TABLE ReportQueue ADD SFTPPort INT;
+GO
+UPDATE  ReportQueue
+SET     SFTPPort = 0
+WHERE   SFTPPort IS NULL;
+GO
+ALTER TABLE ReportQueue ALTER COLUMN SFTPPort INT NOT NULL;
+
+
+GO
+IF NOT EXISTS ( SELECT  *
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID('ReportQueue')
+                        AND name = 'SFTPUserName' )
+    ALTER TABLE ReportQueue ADD SFTPUserName VARCHAR(200);
+GO
+UPDATE  ReportQueue
+SET     SFTPUserName = ''
+WHERE   SFTPUserName IS NULL;
+GO
+ALTER TABLE ReportQueue ALTER COLUMN SFTPUserName VARCHAR(200) NOT NULL;
+
+
+
+GO
+IF NOT EXISTS ( SELECT  *
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID('ReportQueue')
+                        AND name = 'SFTPPassword' )
+    ALTER TABLE ReportQueue ADD SFTPPassword VARCHAR(200);
+GO
+UPDATE  ReportQueue
+SET     SFTPPassword = ''
+WHERE   SFTPPassword IS NULL;
+GO
+ALTER TABLE ReportQueue ALTER COLUMN SFTPPassword VARCHAR(200) NOT NULL;
+
+GO
+IF NOT EXISTS ( SELECT  *
+                FROM    syscolumns
+                WHERE   id = OBJECT_ID('ReportQueue')
+                        AND name = 'SFTPFilePath' )
+    ALTER TABLE ReportQueue ADD SFTPFilePath VARCHAR(200);
+GO
+UPDATE  ReportQueue
+SET     SFTPFilePath = ''
+WHERE   SFTPFilePath IS NULL;
+GO
+ALTER TABLE ReportQueue ALTER COLUMN SFTPFilePath VARCHAR(200) NOT NULL;

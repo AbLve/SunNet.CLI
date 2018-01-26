@@ -1,0 +1,33 @@
+﻿ALTER procedure [dbo].[MediaConsentPercent]
+@communityId int,
+@schoolId int,
+@teacher varchar(200)
+AS
+begin
+declare @sql varchar(max)
+set @sql='select BC.Name as CommunityName,BS.Name as SchoolName,S.SchoolId as SchoolCode,(U.FirstName+'' ''+U.LastName) as TeacherName,T.TeacherId as TeacherCode,
+(Coachs.FirstName+'' ''+Coachs.LastName) as CoachName,T.MediaRelease as TeacherMediaRelease,Cl.Name as ClassName,Cl.ClassId as ClassCode,Cl.ID as ClassId,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID) and IsMediaRelease=1 and Status=1) as MediaReleaseYes,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID) and (IsMediaRelease=2 or IsMediaRelease=0) and Status=1) as MediaReleaseNo,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID) and IsMediaRelease=3 and Status=1) as MediaReleaseRefused,
+(select COUNT(*) from Students where ID in (select StudentId from StudentClassRelations where ClassId=Cl.ID and Status=1)) as TotalStudentsinClass,
+(case when T.CoachAssignmentWay=0 then '''' when T.CoachAssignmentWay=1 then ''Face-to-Face'' when T.CoachAssignmentWay=2 then ''Remote'' 
+else T.CoachAssignmentWayOther end) as CoachingModel，
+YIP.YearsInProject
+from Teachers T inner join Users U on U.ID=T.UserId left join (select * from Users where Role=35 or role =40) as Coachs on Coachs.ID=T.CoachId
+left join YearsInProjects YIP on YIP.ID=T.YearsInProjectId
+left join TeacherClassRelations TCL on T.id=TCL.TeacherId inner join Classes CL on CL.ID=TCL.ClassId
+inner join Schools S on T.SchoolId=S.ID inner join BasicSchools BS on BS.ID=S.BasicSchoolId 
+inner join SchoolTypes ST on ST.ID=S.SchoolTypeId
+inner join Communities C on T.CommunityId=C.ID inner join BasicCommunities BC on BC.ID=C.BasicCommunityId '
+set @sql+=' where SUBSTRING(ST.Name,1,4)!=''Demo'' and CL.LeadTeacherId=T.ID and U.Status=1 and CL.Status=1 and S.Status=1 and C.Status=1'
+if(@communityId>0)
+	set @sql+=' and T.CommunityId='+convert(varchar(100),@communityId)
+if(@schoolId>0)
+	set @sql+=' and T.SchoolId='+convert(varchar(100),@schoolId)
+if(@teacher!='')
+	set @sql+=' and ((U.FirstName+ '' ''+U.LastName) like ''%'+@teacher+'%'' or U.PrimaryEmailAddress like ''%'+@teacher+'%'')'
+
+set @sql+=' order by BC.Name'
+exec(@sql)
+end

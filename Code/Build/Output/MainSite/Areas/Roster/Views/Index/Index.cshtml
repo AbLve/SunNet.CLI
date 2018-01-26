@@ -1,0 +1,767 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Business.Students.Models.StudentModel
+@{
+    ViewBag.Title = "Students";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Roster)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Class Roster Management", "Index", "Index", new { Area = "Roster" }))&nbsp;<i class="icon-angle-right"></i>
+    &nbsp;Class Roster Management
+} 
+<div class="right-content-top"></div>
+<form class="form-horizontal" role="form" id="formSearch">
+    <div class="form-group">
+        @Html.Label("", "Community/District", new { @class = "control-label col-sm-2", @for = "txtCommunity" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtCommunity", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#CommunityId",
+                data_remote = Url.Action("GetCommunitySelectListForSearch", "Community", new { Area = "Community" }),
+                data_text = "Name",
+                data_value = "ID",
+                data_required = true,
+                id = "txtCommunity",
+                name = "txtCommunity",
+                placeholder = "Enter key text to search",
+                @for = "CommunityId",
+                data_extraParams = "{\"isActiveCommunity\":\"#isActiveCommunity\"}",
+                data_bind = "value: searchCriteria.communityName"
+            })
+            @Html.HiddenFor(model => model.CommunityId, new
+            {
+                @class = "form-control ",
+                placeholder = "Selected Community",
+                data_bind = "value: searchCriteria.communityId"
+            })
+            @Html.Hidden("isActiveCommunity", false)
+        </div>
+        @Html.Label("", "School Name", new { @class = "control-label col-sm-2", @for = "txtSchool" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtSchool", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#SchoolId",
+                data_remote = Url.Action("GetSchoolSelectList", "School", new { Area = "School" }),
+                data_template = "<strong><% this[i].Name %></strong><br /><i style='color:gray'><% this[i].City %>, <% this[i].State %> <% this[i].Zip %></i>",
+                data_text = "Name",
+                data_value = "ID",
+                data_required = true,
+                id = "txtSchool",
+                name = "txtSchool",
+                placeholder = "Enter key text to search",
+                @for = "SchoolId",
+                data_extraParams = "{\"communityId\":\"#CommunityId\",\"isActive\":\"#isActive\"}",
+                data_bind = "value: searchCriteria.schoolName"
+            })
+            @Html.HiddenFor(model => model.SchoolId, new
+            {
+                @class = "form-control",
+                placeholder = "Selected School",
+                data_bind = "value: searchCriteria.schoolId"
+            })
+            @Html.Hidden("isActive", false)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("", "Homeroom Teacher", new { @class = "control-label col-sm-2", @for = "txtTeacher" })
+        <div class="col-sm-3">
+            @Html.TextBox("txtTeacher", "", new
+            {
+                autocomplete = "off",
+                @class = "form-control",
+                data_list = "true",
+                data_for = "#TeacherId",
+                data_remote = Url.Action("Teachers"),
+                data_text = "Name",
+                data_value = "ID",
+                data_required = true,
+                id = "txtTeacher",
+                name = "txtTeacher",
+                placeholder = "Enter key text to search",
+                @for = "TeacherId",
+                data_extraParams = "{\"communityId\":\"#CommunityId\",\"schoolId\":\"#SchoolId\",\"isActive\":\"#isActive\"}",
+                data_bind = "value: searchCriteria.teacherName"
+            })
+            @Html.Hidden("TeacherId", 0, new
+            {
+                @class = "form-control",
+                placeholder = "Selected Teacher",
+                data_bind = "value: searchCriteria.teacherId"
+            })
+            @Html.Hidden("isActive", false)
+        </div>
+        @Html.Label("", "Class Day Type", new { @class = "control-label col-sm-2", @for = "DayType" })
+        <div class="col-sm-3">
+            @Html.DropDownList("DayType", (IEnumerable<SelectListItem>)ViewBag.DayTypeOptions, new
+            {
+                @class = "form-control",
+                data_bind = "value: searchCriteria.classDayType"
+            })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Class", new { @class = "control-label col-sm-2", @for = "ClassId" })
+        <div class="col-sm-3">
+            <select class="form-control " data-bind="
+                    value: searchCriteria.classId,
+                    options: classes,
+                    optionsText: 'text',
+                    optionsValue: 'value'" id="ClassId" name="ClassId"></select>
+  
+        </div>
+        <div class="col-sm-4 col-sm-offset-2">
+           @* <button class="mainbutton mainright-btn sreach-btn" type="button" 
+                    data-bind="event: { click: AddNewClass }">Add New Class 
+            </button>*@
+
+            <button class="mainbutton mainright-btn sreach-btn" type="button" data-bind="event: { click: search }">Search</button>
+            <!--  <a class="table-btn icon-folder-open view-btn" data-bind="attr: { href: $root.ViewNotes(item) }" 
+                     data-toggle="modal" data-target="#modalNormal" title="View Notes"></a>
+                -->
+                <button  class="mainbutton mainright-btn sreach-btn" type="button" data-toggle="modal" 
+                   data-target="#modalNormal"  
+title="Upload Students" onclick="clickUploadStudents(this)"  data-bind="attr: { href: $root.uploadStudents() }">Upload Students</button>
+           
+        </div>
+    </div>
+
+    <div class="main-content main-content">
+        <div class="content-title">
+            Students
+        </div>
+        <div class="content-body-tab">
+            <table class="table table-striped table-hover p-table-list">
+                <thead>
+                    <tr data-bind="foreach: { data: headers, as: 'header' }">
+
+                        <!-- ko if: (header.order === true)-->
+                        <th data-bind="style: { width: width }">
+                            <a href="javascript:;" data-bind="html: text, click: $root.changeOrder"></a>
+                            <span class="glyphicon"
+                                  data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'ASC',
+    css: { 'glyphicon-arrow-up': $root.orderDirection().toUpperCase() == 'ASC' }"></span>
+                            <span class="glyphicon"
+                                  data-bind="visible: $root.orderBy() == header.field && $root.orderDirection().toUpperCase() == 'DESC',
+    css: { 'glyphicon-arrow-down': $root.orderDirection().toUpperCase() == 'DESC' }"></span>
+                        </th>
+                        <!-- /ko-->
+                        <!-- ko if: (header.order === false) -->
+                        <th data-bind="text: text, style: { width: width }"></th>
+                        <!-- /ko-->
+                    </tr>
+                </thead>
+                <tbody id="listBody" data-bind="foreach: { data: showRecords, as: 'item' }">
+                    <tr data-bind="css:{'new-table-list':created}">
+                        <td>
+                            <!-- ko if: created -->
+                            <i class="icon-hand-right"></i>
+                            <!--/ko-->
+                            <span data-bind="text:$index()+1"></span>
+                        </td>
+                        <td data-bind="attr: { title: $index() }">
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                   style="display: inline-block;" data-bind="value: item.FirstName,attr:{id:'FirstName'+$index(),name:'FirstName'+$index()},required:true" />
+                        </td>
+
+                        <td>
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                   style="display: inline-block;" data-bind="value: item.MiddleName" />
+                        </td>
+
+                        <td>
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                   style="display: inline-block;" data-bind="value: item.LastName,attr:{id:'LastName'+$index(),name:'LastName'+$index()},required:true" />
+
+                        </td>
+
+                        <td>
+                            <input type="text" class="form-control date" maxlength="100"
+                                   style="display: inline-block;" 
+                                   data-bind="value:item.BirthDate,attr:{id:'BirthDate'+$index(),name:'BirthDate'+$index()},required:true,minDate:'@ViewBag.MinDate',maxDate:'@ViewBag.MaxDate'" />
+                                          
+                        </td>
+                        <td>
+                            <select class="form-control" data-bind="
+    value: item.Gender.value,
+    options:$root.genderOptions,
+    optionsText:'text',
+    optionsValue:'value',attr:{id:'Gender'+$index(),name:'Gender'+$index()}"></select>
+                        </td>
+                        <td >
+                            <input type="text" class="form-control input-sm" maxlength="100"
+                                   style="display: inline-block;" data-bind="value: item.StudentId,css:{'input-validation-error':hasNoStudentId}"/>
+
+                        </td>
+                        <td>
+                            <select class="form-control" data-bind="
+    value: item.Ethnicity.value,
+    options:$root.ethnicityOptions,
+    optionsText:'text',
+    optionsValue:'value',attr:{id:'Ethnicity'+$index(),name:'Ethnicity'+$index()}"></select>
+                        </td>
+    <td>
+                            <select class="form-control" data-bind="
+    value: item.GradeLevel.value,
+    options:$root.gradeLevelOptions,
+    optionsText:'text',
+    optionsValue:'value',attr:{id:'GradeLevel'+$index(),name:'GradeLevel'+$index()}"></select>
+                        </td>
+                        <td>
+                            <select class="form-control" data-bind="
+    value: item.AssessmentLanguage.value,
+    options:$root.assessmentLanguageOptions,
+    optionsText:'text',
+    optionsValue:'value',attr:{id:'AssessmentLanguage'+$index(),name:'AssessmentLanguage'+$index()},required:true"></select>
+                        </td>
+                        <td>
+                            <select class="form-control" data-bind="
+    value: item.Status.value,
+    options:$root.statusOptions,
+    optionsText:'text',
+    optionsValue:'value',attr:{id:'Status'+$index(),name:'Status'+$index()},required:true"></select>
+                        </td>
+                        <td>
+                            <a class="table-btn icon-plus  create-btn" data-bind="event: { click: $root.newRow }" href="#" title="New Student"></a>
+                            <!-- ko if: created -->
+                            <a href="#" class="table-btn icon-minus minus-btn" data-bind="event: { click: $root.deleteStudent }" title="Delete"></a>
+                            <!--/ko-->
+                        </td>
+                    </tr>
+                </tbody>
+                @Html.Display("e", "NoData", new { Colspan = 11 })
+            </table>
+
+            @Html.Partial("_Partial_Pager")
+        </div>
+    </div>
+</form>
+@using (Ajax.BeginForm("Save", null, null, PostFormHelper.DefaultAjaxOptions,new
+{
+    id = formId,
+    data_bind = "visible:changed"
+}))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="communityId" data-bind="value: searchCriteria.communityId" />
+    <input type="hidden" name="schoolId" data-bind="value: searchCriteria.schoolId" />
+    <input type="hidden" name="teacherId" data-bind="value: searchCriteria.teacherId" />
+    <input type="hidden" name="classDayType" data-bind="value: searchCriteria.classDayType" />
+    <input type="hidden" name="classId" data-bind="value: searchCriteria.classId" />
+ 
+    <input type="hidden" name="students" id="students"/>
+    <input type="hidden" name="debug" value="true" />
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="button" data-bind="click:submit">Submit</button>
+    </div>
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var defaultAssessmentLanguage = 3; //Bilingual
+        var list_Students = {};
+        var isFirstNewStudent = 0;
+        var getClassUrl = '@Url.Action("GetClassName", "Class", new {Area = "Class"})';
+
+        function clickUploadStudents(sender) {
+            var vcommunityId = list_Students.searchCriteria.communityId();
+            var vschoolId = list_Students.searchCriteria.schoolId();
+            var vteacherId = list_Students.searchCriteria.teacherId();
+            var vclassDayType = list_Students.searchCriteria.classDayType();
+            var vclassId = list_Students.searchCriteria.classId();
+            if (vcommunityId <= 0)
+            {
+                window.showMessage("fail", "Community can not be null.");
+                $(sender).attr("data-target", "#");
+            }
+            else if (vschoolId <= 0)
+            {
+                window.showMessage("fail", "School can not be null.");
+                $(sender).attr("data-target", "#");
+            }
+           else if (vteacherId <= 0)
+            {
+                window.showMessage("fail", "Home Teacher can not be null.");
+                $(sender).attr("data-target", "#");
+            }
+            else if (vclassDayType<= 0)
+            {
+                window.showMessage("fail", "Class Day Type can not be null.");
+                $(sender).attr("data-target", "#");
+            } else {
+                $(sender).attr("data-target", "#modalNormal");
+            }
+           
+
+        }
+
+        function getOptions(ethnicity, gender, assessmentLanguage, status, gradeLevels) {
+            var pleaseSelect = '@(ViewTextHelper.DefaultPleaseSelectText)';
+            ethnicity.unshift({ text: pleaseSelect, value: '0' });
+            gender.unshift({ text: pleaseSelect, value: '0' });
+            //  assessmentLanguage.unshift({ text: pleaseSelect, value: '' });
+            status.unshift({ text: pleaseSelect, value: '' });
+            return {
+                ethnicityOptions: ethnicity,
+                genderOptions: gender,
+                assessmentLanguageOptions: assessmentLanguage,
+                statusOptions: status,
+                gradeLevelOptions: gradeLevels
+            };
+        }
+
+        var options = getOptions(@(Html.Raw(ViewBag.EthnicityJson)), @(Html.Raw(ViewBag.GenderJson)), @(Html.Raw(ViewBag.AssessmentLanguageJson)), @(Html.Raw(ViewBag.StatusJson)), @(Html.Raw(ViewBag.GradeLevelJson)));
+
+        function Student(defaultValues) {
+            var self = this;
+            this.hasNoStudentId = ko.observable(false);
+            this.ID = 0;
+            this.FirstName = "";
+            this.MiddleName = "";
+            this.LastName = "";
+            this.BirthDate = "";
+            this.StudentId = "";
+            this.Status = { value: 0 };
+            this.Gender = { value: 0 };
+            this.Ethnicity = { value: 0 };
+            this.GradeLevel = { value: 0 };
+            this.AssessmentLanguage = { value: 0 };
+
+            this.changed = ko.observable(false);
+
+            var fieldChanged = function(newVal) {
+                self.changed(true);
+            };
+
+            if (defaultValues) {
+                $.extend(self, defaultValues);
+            }
+
+            this.FirstName = ko.observable(this.FirstName);
+            this.FirstName.subscribe(fieldChanged);
+
+            this.MiddleName = ko.observable(this.MiddleName);
+            this.MiddleName.subscribe(fieldChanged);
+
+            this.LastName = ko.observable(this.LastName);
+            this.LastName.subscribe(fieldChanged);
+
+            this.BirthDate = ko.observable(this.BirthDate);
+            this.BirthDate.subscribe(fieldChanged);
+
+            this.Gender.value = ko.observable(this.Gender.value);
+            this.Gender.value.subscribe(fieldChanged);
+
+            this.StudentId = ko.observable(this.StudentId);
+            this.StudentId.subscribe(fieldChanged);
+
+            this.Ethnicity.value = ko.observable(this.Ethnicity.value === 0 ? '' : this.Ethnicity.value);
+            this.Ethnicity.value.subscribe(fieldChanged);
+
+            this.GradeLevel.value = ko.observable(this.GradeLevel.value === 0 ? '' : this.GradeLevel.value);
+            this.GradeLevel.value.subscribe(fieldChanged);
+
+            this.AssessmentLanguage.value = ko.observable(this.AssessmentLanguage.value);
+            this.AssessmentLanguage.value.subscribe(fieldChanged);
+
+            this.Status.value = ko.observable(this.Status.value);
+            this.Status.value.subscribe(fieldChanged);
+
+            this.changed(false);
+
+        }
+
+        function getNewStudent() {
+
+            var student = new Student();
+
+            student.changed(true);
+            student.created = true;
+            student.AssessmentLanguage.value(defaultAssessmentLanguage);
+            return student;
+        }
+
+        function getStudent(values) {
+            var student = new Student(values);
+            student.created = false;
+
+            return student;
+        }
+
+        $(function() {
+            var $form = $("#@(formId)");
+            var $formData = $("#formSearch");
+            var classCache = {};
+            var inited = false;
+            registerFormCallbacks("@(formId)", {
+                onPosted: function(response) {
+
+                    if (response.success) {
+                        // location.href =decodeURIComponent( list_Students.getLocation());
+                        list_Students.search();
+                    }
+                }
+            });
+            $("body").on("hidden.bs.modal", function() {
+                if (window.refresh) {
+                    list_Students.search();
+                    window.refresh = false;
+                }
+            });
+            list_Students = new ViewModel(
+                {
+                    instanceName: "list_Students",
+                    modalId: "modalNormal",
+                    getDataUrl: '@Html.Raw(Server.UrlDecode(Url.Action("Search")))',
+                    orderBy: "FirstName",
+                    orderDirection: "ASC",
+                    pageSize: 50,
+                    headers: [
+                        {
+                            text: '#',
+                            width: '5%'
+                        },
+                        {
+                            text: "<span class='required'>First Name</span>",
+                            field: "@Html.NameFor(model => model.FirstName)",
+                            order: true,
+                            width: '9%'
+                        },
+                        {
+                            text: "Middle Name",
+                            field: "@Html.NameFor(model => model.MiddleName)",
+                            order: true,
+                            width: '9%'
+                        },
+                        {
+                            text: "<span class='required'>Last Name</span>",
+                            field: "@Html.NameFor(model => model.LastName)",
+                            order: true,
+                            width: '9%'
+                        },
+                        {
+                            text: "<span class='required'>Date of Birth</span>",
+                            field: "@Html.NameFor(model => model.BirthDate)",
+                            order: true,
+                            width: '9%'
+                        },
+                        {
+                            text: "Gender",
+                            field: "@Html.NameFor(model => model.Gender)",
+                            order: true,
+                            width: '9%'
+                        },
+                        {
+                            text: "Student ID",
+                            field: "@Html.NameFor(model => model.StudentId)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "Ethnicity",
+                            field: "@Html.NameFor(model => model.Ethnicity)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "Grade Level",
+                            field: "@Html.NameFor(model => model.GradeLevel)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "Assessment Language",
+                            field: "@Html.NameFor(model => model.AssessmentLanguage)",
+                            order: true,
+                            width: '10%'
+                        },
+                        {
+                            text: "Status",
+                            field: "@Html.NameFor(model => model.Status)",
+                            order: true,
+                            width: '10%'
+                        },
+                        { text: "Action", width: '10%' }
+                    ],
+                    searchCriteria: {
+                        communityId: ko.observable(window.queryString("communityId", "@ViewBag.CommunityId")),
+                        communityName: ko.observable(window.queryString("communityName", "@Html.Raw(ViewBag.CommunityName)")),
+                        schoolId: ko.observable(window.queryString("schoolId", "@ViewBag.SchoolId")),
+                        schoolName: ko.observable(window.queryString("schoolName", "@Html.Raw(ViewBag.SchoolName)")),
+                        classDayType:
+                            ko.observable(window.queryString("classDayType", 0)),
+                        classId:
+                            ko.observable(window.queryString("classId", 0)),
+                        teacherId:
+                            ko.observable(window.queryString("teacherId", 0)),
+                        teacherName: ko.observable(window.queryString("teacherName", ""))
+                    }
+                },
+                {
+                    dataProcessor: function(items) {
+                        var models = [];
+                        for (var i = 0; i < items.length; i++) {
+                            models.push(getStudent(items[i]));
+                        }
+                        if (items.length == 0)
+                            list_Students.newRow();
+                        return models;
+
+                    },
+                    AddNewClass: function() {
+
+                        //public string NewClass(int communityId, int schoolId,int teacherId, string teacherFirstName, DayType classDayType)
+                        var vcommunityId = this.searchCriteria.communityId();
+                        var vschoolId = this.searchCriteria.schoolId();
+                        var vteacherId = this.searchCriteria.teacherId();
+                        var vclassDayType = this.searchCriteria.classDayType();
+
+                        $.post("/roster/index/AddNewClass", { communityId: vcommunityId, schoolId: vschoolId, teacherId: vteacherId, classDayType: vclassDayType },
+                            function(data) {
+                                var res = JSON.parse(data);
+                                if (res.success == true) {
+                                    $.getJSON(getClassUrl, {
+                                        communityId: vcommunityId,
+                                        schoolId: vschoolId
+                                    }, function(classes) {
+                                        if (classes && classes.length) {
+                                            classCache[vschoolId] = classes;
+                                            switchClasses(classes);
+                                        }
+                                    });
+                                } else {
+                                    showMessage("fail", res.msg);
+                                }
+                            });
+                    },
+                    uploadStudents: function() {
+                        var vcommunityId = this.searchCriteria.communityId();
+                        var vschoolId = this.searchCriteria.schoolId();
+                        var vteacherId = this.searchCriteria.teacherId();
+                        var vclassDayType = this.searchCriteria.classDayType();
+                        var vclassId = this.searchCriteria.classId();
+                         
+                        var urlStr = '@Url.Action("UploadStudents")'
+                            + "?comId=" + vcommunityId
+                            + "&schoolId=" + vschoolId
+                            + "&teacherId=" + vteacherId
+                            + "&classId=" + vclassId
+                            + "&classDayType=" + vclassDayType
+                            + "&returnurl=" + list_Students.getLocation();
+
+                        return urlStr;
+                    },
+                    newRow: function() {
+                        list_Students.showRecords.push(getNewStudent());
+                    },
+                    deleteStudent: function(student) {
+                        list_Students.showRecords.remove(student);
+                    },
+                    submit: function() {
+                        var students = [], changedStudents = [];
+
+                        if (list_Students.changed()) {
+                            if ($formData.valid() === false) {
+                                window.showMessage("hint", "multiple_Fields_Required");
+                                return false;
+                            }
+
+                            for (var i = 0; i < list_Students.showRecords().length; i++) {
+                                var stu = list_Students.showRecords()[i];
+                                if (stu.changed()) {
+                                    changedStudents.push(stu);
+                                }
+                            }
+                            var vcommunityId = list_Students.searchCriteria.communityId();
+                            var vschoolId = list_Students.searchCriteria.schoolId();
+                            var vteacherId = list_Students.searchCriteria.teacherId();
+                            var vclassDayType = list_Students.searchCriteria.classDayType();
+                            var vclassId = list_Students.searchCriteria.classId();
+
+
+                            var hasStudentId = true;
+                            students = $.map(changedStudents, function(student) {
+                                if (!student.StudentId()) {
+                                    hasStudentId = false;
+                                    student.hasNoStudentId(true);
+                                }
+                                return {
+                                    ID: student.ID,
+                                    SchoolId: vschoolId,
+                                    CommunityId: vcommunityId,
+                                    StudentId: student.StudentId(),
+                                    FirstName: student.FirstName(),
+                                    MiddleName: student.MiddleName(),
+                                    LastName: student.LastName(),
+                                    Status: student.Status.value(),
+                                    BirthDate: student.BirthDate(),
+                                    Gender: student.Gender.value(),
+                                    Ethnicity: student.Ethnicity.value(),
+                                    GradeLevel: student.GradeLevel.value(),
+                                    AssessmentLanguage: student.AssessmentLanguage.value()
+                                }
+                            });
+
+                            if (!hasStudentId) {
+                                jQuery.when(window.waitingConfirm("You have left Student ID blank. Do you have a School Student ID?", "Yes", "No")).done(function() {
+
+                                    return;
+                                }).fail(function() {
+                                    if (vcommunityId <= 0) {
+                                        window.showMessage("fail", "Community can not be null.");
+                                        return false;
+                                    }
+                                    if (vschoolId <= 0) {
+                                        window.showMessage("fail", "School can not be null.");
+                                        return false;
+                                    }
+                                    if (vteacherId <= 0) {
+                                        window.showMessage("fail", "Home Teacher can not be null.");
+                                        return false;
+                                    }
+                                    if (vclassDayType <= 0) {
+                                        window.showMessage("fail", "Class Day Type can not be null.");
+                                        return false;
+                                    }
+                                    $form.find("#students").val(JSON.stringify(students));
+                                    $form.submit();
+                                });
+                            } else {
+                                if (vcommunityId <= 0) {
+                                    window.showMessage("fail", "Community can not be null.");
+                                    return false;
+                                }
+                                if (vschoolId <= 0) {
+                                    window.showMessage("fail", "School can not be null.");
+                                    return false;
+                                }
+                                if (vteacherId <= 0) {
+                                    window.showMessage("fail", "Home Teacher can not be null.");
+                                    return false;
+                                }
+                                if (vclassDayType <= 0) {
+                                    window.showMessage("fail", "Class Day Type can not be null.");
+                                    return false;
+                                }
+                                $form.find("#students").val(JSON.stringify(students));
+                                $form.submit();
+                            }
+                        } else {
+                            window.showMessage("success", "Nothing is changed.");
+                            return;
+                        }
+                    },
+                    teacherClasses: ko.observableArray([]),
+                    newClassText: "Add students to a new class"
+                }
+            );
+            list_Students.classes = ko.computed(function() {
+                return this.teacherClasses().concat([{ text: this.newClassText, value: 0 }]);
+            }, list_Students);
+            $.extend(list_Students, options);
+            list_Students.changed = ko.computed(function() {
+                var changed = false;
+                for (var i = 0; i < this.showRecords().length; i++) {
+                    if (this.showRecords()[i].changed()) {
+                        changed = true;
+                        break;
+                    }
+                }
+                return changed;
+            }, list_Students);
+            if (list_Students.searchCriteria.schoolId()) {
+                loadClasses(list_Students.searchCriteria.schoolId());
+            }
+            ko.applyBindings(list_Students);
+            var $txtCommunity = $("#txtCommunity");
+            var $txtSchool = $("#txtSchool");
+            var $txtTeacher = $("#txtTeacher");
+            $txtCommunity.on("selected.sunnet.datalist", function(event) {
+                $txtSchool.datalist("clear");
+            });
+            $txtSchool.on("selected.sunnet.datalist", function(event) {
+                $txtTeacher.datalist("clear");
+                var schoolId = list_Students.searchCriteria.schoolId();
+                // loadClasses(schoolId);
+            });
+
+            function loadClasses(schoolId) {
+                if (schoolId) {
+                    if (classCache[schoolId]) {
+                        switchClasses(classCache[schoolId]);
+                    } else {
+                        $.getJSON(getClassUrl, {
+                            communityId: list_Students.searchCriteria.communityId(),
+                            schoolId: schoolId
+                        }, function(classes) {
+                            if (classes && classes.length) {
+                                classCache[schoolId] = classes;
+                                switchClasses(classes);
+                            }
+                        });
+                    }
+                }
+            }
+
+            function switchClasses(classes) {
+                var teacherId = parseInt(list_Students.searchCriteria.teacherId());
+                var dayType = parseInt(list_Students.searchCriteria.classDayType());
+                classes = classes.filter(function(class1) {
+                    return (teacherId < 1 || class1.Props["leadTeacherId"] === teacherId)
+                        && (dayType < 1 || class1.Props["classDayType"].value === dayType);
+                });
+                classes = $.map(classes, function(class1) {
+                    return {
+                        text: class1.Name,
+                        value: class1.ID,
+                        props: class1.Props
+                    }
+                });
+
+                list_Students.teacherClasses.removeAll();
+                list_Students.teacherClasses.push.apply(list_Students.teacherClasses, classes);
+
+                if (classes.length) {
+                    list_Students.searchCriteria.classId(classes[0].value);
+                }
+
+                if (!inited && list_Students.searchCriteria.schoolId()) {
+                    list_Students.search();
+                }
+                inited = true;
+
+            }
+
+            list_Students.searchCriteria.classDayType.subscribe(function() {
+                var schoolId = list_Students.searchCriteria.schoolId();
+                switchClasses(classCache[schoolId]);
+            });
+
+            list_Students.searchCriteria.classId.subscribe(function() {
+                list_Students.search();
+            });
+            $txtTeacher.on("selected.sunnet.datalist", function(event) {
+                var teacher = event.selected;
+                if (!teacher.value) {
+                    list_Students.searchCriteria.teacherId(0);
+                }
+                var schoolId = list_Students.searchCriteria.schoolId();
+                loadClasses(schoolId);
+            });
+
+            inited = true;
+        });
+
+    </script>
+}

@@ -1,0 +1,179 @@
+﻿@using Sunnet.Cli.Core.Trs.Enums
+@{
+    ViewBag.Title = "Accreditations";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId2 = PostFormHelper.GetFormId(Html.ViewContext.View);
+    int acc = ViewBag.schoolAccreditation;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        +(function () {
+            registerFormCallbacks("@formId2", {
+                onPosted: function (response) {
+                    redirectBack("School");
+                }
+            });
+
+        })();
+        $(function () {
+            console.log(1);
+            var schoolAcc=@ViewBag.schoolAccreditation;
+            var logAcc=@ViewBag.accreditation;
+            var showAcc=logAcc;
+            if(logAcc==0)
+                showAcc=schoolAcc;
+            $("input[name='Accreditation'][value="+showAcc+"]").attr("checked",true); 
+            $("#verifiedStar option[value='@ViewBag.currentVerifiedStar']").attr("selected", "selected"); 
+        })
+
+        function saveAccreditation() {
+            var accreditation = $("input[name='Accreditation']:checked").val();
+            if(accreditation==undefined){
+                window.showMessage("hint", "trs_SelectAccreditations");
+                return false;
+            }
+            var verifiedStar=$("#verifiedStar").val();
+            var approveDate=$("#ApprovalDate").val();
+            debugger;
+            if('@ViewBag.logId'=='0'&&accreditation>0){
+                eventLogModel.newEventLogList()[0].accreditation(accreditation);
+                eventLogModel.newEventLogList()[0].verifiedStar(verifiedStar);
+                eventLogModel.newEventLogList()[0].approvalDate(approveDate);
+                $("#EventType0").val(eventLogModel.newEventLogList()[0].eventTypeValue());
+            }
+            else{
+                for(var i=0;i<eventLogModel.eventLogList().length;i++){
+                    var logData=eventLogModel.eventLogList()[i];
+                    if (logData.id == '@ViewBag.logId') {
+                        $("#txtAccreditation"+@ViewBag.logId).val(accreditation);
+                        eventLogModel.eventLogList()[i].accreditation(accreditation);
+                        eventLogModel.eventLogList()[i].verifiedStar(verifiedStar);
+                        eventLogModel.eventLogList()[i].approvalDate(approveDate);
+                        $("#EventType"+logData.id).val(logData.eventTypeValue());
+                        break;
+                    }
+                }
+            }
+            closeModal($("#@(formId2)"));
+        }
+    </script>
+}
+
+<div style="font-weight: bold; margin-bottom: 20px;">
+    <i>Select the accreditation you have recived that you would like to be used to calculate star rating:</i>
+</div>
+@using (Ajax.BeginForm("", "", null, PostFormHelper.DefaultAjaxOptions,
+    new { @class = "form-horizontal", id = formId2 }))
+{
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input class="VerifiedStar" id="NAEYC" name="Accreditation" value="@TrsAccreditation.NAEYC.GetValue()" type="radio" />
+                    @TrsAccreditation.NAEYC.ToDescription()
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input class="VerifiedStar" id="NECPA" name="Accreditation" value="@TrsAccreditation.NECPA.GetValue()" type="radio"/>
+                    @TrsAccreditation.NECPA.ToDescription()
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input class="VerifiedStar" id="NAFCC" name="Accreditation" value="@TrsAccreditation.NAFCC.GetValue()" type="radio" />
+                    @TrsAccreditation.NAFCC.ToDescription()
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input class="VerifiedStar" id="USMilitary" name="Accreditation" value="@TrsAccreditation.USMilitary.GetValue()" type="radio" />
+                    @TrsAccreditation.USMilitary.ToDescription()
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input class="VerifiedStar" id="CANASA" name="Accreditation" value="@TrsAccreditation.COA.GetValue()" type="radio" />
+                    @TrsAccreditation.COA.ToDescription()
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input class="VerifiedStar" id="NACECCE" name="Accreditation" value="@TrsAccreditation.NAC.GetValue()" type="radio" />
+                    @TrsAccreditation.NAC.ToDescription()
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input class="VerifiedStar" id="ACSI"  name="Accreditation" value="@TrsAccreditation.ACSI.GetValue()" type="radio" />
+                    @TrsAccreditation.ACSI.ToDescription()
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="radio">
+                <label>
+                    <input class="VerifiedStar" id="QELS" name="Accreditation" value="@TrsAccreditation.QELS.GetValue()" type="radio" />
+                    @TrsAccreditation.QELS.ToDescription()
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4">
+            Verified Star Designation:
+        </div>
+        <div class="col-sm-7">
+            @Html.DropDownList("verifiedStar", (IEnumerable<SelectListItem>)ViewBag.verifiedStar,
+                new { @class = "form-control required",title = ' '})
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4">
+            <label for="ApprovalDate">Approval Date: </label>
+</div>
+        <div class="col-sm-7">
+          
+            <input id="ApprovalDate" name="ApprovalDate" class="form-control date required" value="@ViewBag.ApproveDate"/>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="mainbutton mainright-btn submit-btn" type="button" onclick="return saveAccreditation()">Save</button>
+    </div>
+}

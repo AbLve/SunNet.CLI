@@ -1,0 +1,30 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "TestSendEmail";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+
+<h2>TestSendEmail</h2>
+
+@using (Ajax.BeginForm("TestSendEmail", "Teacher", null, PostFormHelper.DefaultAjaxOptions,
+    new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    <div class="form-group">
+        @Html.Label("SendEmailName", new { @class = "col-sm-4 control-label" ,@for="emailName"})
+        <div class="form-control col-sm-4">
+            @Html.TextBox("emailName")
+        </div>
+        <div class="col-sm-4">
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="col-sm-12 logbtn-con">
+            <input type="submit" class="logbutton submit-btn" value="Submit">
+        </div>
+    </div>
+}

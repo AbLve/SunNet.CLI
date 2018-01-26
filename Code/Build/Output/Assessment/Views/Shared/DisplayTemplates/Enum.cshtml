@@ -1,0 +1,9 @@
+﻿@model Enum
+@{
+    var result = Model.ToDescription();
+    result = result == "0" ? "" : result;
+}
+
+<label class="control-label-text">
+    @result
+</label>

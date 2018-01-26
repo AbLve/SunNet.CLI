@@ -1,0 +1,557 @@
+﻿ 
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    1,--<RoleId, int,>
+           'superuser',--<RoleName, varchar(50),>
+           'RW',--<CommunityId, varchar(2),>
+           'RW',--<SchoolId, varchar(2),>
+           'RW',--<ClassroomId, varchar(2),>
+           
+		   'RW',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'RW',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+ 
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    10,--<RoleId, int,>
+           'statistical user',--<RoleName, varchar(50),>
+           'RW',--<CommunityId, varchar(2),>
+           'RW',--<SchoolId, varchar(2),>
+           'RW',--<ClassroomId, varchar(2),>
+           
+		   'RW',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'RW',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    5,--<RoleId, int,>
+           'content personnel (author)',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+           
+		   'R',--<ClassId, varchar(2),>
+           'R',--<Name, varchar(2),>
+           'R',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'R',--<AtRiskPercent, varchar(2),>
+           'R',--<DayType, varchar(2),>
+           'R',--<LanguageOfInstruction, varchar(2),>
+           'R',--<CurriculumId, varchar(2),>
+           'R',--<SupplementalCurriculumId, varchar(2),>
+           'R',--<MonitoringToolId, varchar(2),>
+           'R',--<UsedEquipment, varchar(2),>
+           'R',--<ClassType, varchar(2),>
+           'R',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'R',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    20,--<RoleId, int,>
+           'intervention manager',--<RoleName, varchar(50),>
+           'RW',--<CommunityId, varchar(2),>
+           'RW',--<SchoolId, varchar(2),>
+           'RW',--<ClassroomId, varchar(2),>
+           
+		   'RW',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'RW',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+ 
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    30,--<RoleId, int,>
+           'intervention support personnel',--<RoleName, varchar(50),>
+           'RW',--<CommunityId, varchar(2),>
+           'RW',--<SchoolId, varchar(2),>
+           'RW',--<ClassroomId, varchar(2),>
+           
+		   'RW',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'RW',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+ 
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    15,--<RoleId, int,>
+           'administrative personnel',--<RoleName, varchar(50),>
+           'RW',--<CommunityId, varchar(2),>
+           'RW',--<SchoolId, varchar(2),>
+           'RW',--<ClassroomId, varchar(2),>
+           
+		   'RW',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'RW',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+ 
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    35,--<RoleId, int,>
+           'coordinator',--<RoleName, varchar(50),>
+           'RW',--<CommunityId, varchar(2),>
+           'RW',--<SchoolId, varchar(2),>
+           'RW',--<ClassroomId, varchar(2),>
+           
+		   'RW',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'RW',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    40,--<RoleId, int,>
+           'mentor / coach',--<RoleName, varchar(50),>
+           'RW',--<CommunityId, varchar(2),>
+           'RW',--<SchoolId, varchar(2),>
+           'RW',--<ClassroomId, varchar(2),>
+           
+		   'RW',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'RW',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+ 
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    25,--<RoleId, int,>
+           'video coding analyst',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+           
+		   'R',--<ClassId, varchar(2),>
+           'R',--<Name, varchar(2),>
+           'R',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'R',--<AtRiskPercent, varchar(2),>
+           'R',--<DayType, varchar(2),>
+           'R',--<LanguageOfInstruction, varchar(2),>
+           'R',--<CurriculumId, varchar(2),>
+           'R',--<SupplementalCurriculumId, varchar(2),>
+           'R',--<MonitoringToolId, varchar(2),>
+           'R',--<UsedEquipment, varchar(2),>
+           'R',--<ClassType, varchar(2),>
+           'R',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'R',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    105,--<RoleId, int,>
+           'statewide',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+           
+		   'R',--<ClassId, varchar(2),>
+           'R',--<Name, varchar(2),>
+           'R',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'R',--<AtRiskPercent, varchar(2),>
+           'R',--<DayType, varchar(2),>
+           'R',--<LanguageOfInstruction, varchar(2),>
+           'R',--<CurriculumId, varchar(2),>
+           'R',--<SupplementalCurriculumId, varchar(2),>
+           'R',--<MonitoringToolId, varchar(2),>
+           'R',--<UsedEquipment, varchar(2),>
+           'R',--<ClassType, varchar(2),>
+           'R',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'R',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+ 
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    110,--<RoleId, int,>
+           'district / community user',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+           
+		   'R',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'X',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+ 
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    115,--<RoleId, int,>
+           'educational specialist',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+           
+		   'R',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'X',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    130,--<RoleId, int,>
+           'educational specialist',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+           
+		   'R',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'X',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+ 
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    125,--<RoleId, int,>
+           'principal',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+           
+		   'R',--<ClassId, varchar(2),>
+           'RW',--<Name, varchar(2),>
+           'RW',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'X',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+ 
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    145,--<RoleId, int,>
+           'teacher',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+           
+		   'R',--<ClassId, varchar(2),>
+           'R',--<Name, varchar(2),>
+           'R',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'RW',--<AtRiskPercent, varchar(2),>
+           'RW',--<DayType, varchar(2),>
+           'RW',--<LanguageOfInstruction, varchar(2),>
+           'RW',--<CurriculumId, varchar(2),>
+           'RW',--<SupplementalCurriculumId, varchar(2),>
+           'RW',--<MonitoringToolId, varchar(2),>
+           'RW',--<UsedEquipment, varchar(2),>
+           'RW',--<ClassType, varchar(2),>
+           'RW',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'X',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    150,--<RoleId, int,>
+           'parent',--<RoleName, varchar(50),>
+           'X',--<CommunityId, varchar(2),>
+           'X',--<SchoolId, varchar(2),>
+           'X',--<ClassroomId, varchar(2),>
+		   'X',--<ClassId, varchar(2),>
+           'X',--<Name, varchar(2),>
+           'X',--<Status, varchar(2),>
+           'X',--<StatusDate, varchar(2),>
+           'X',--<SchoolYear, varchar(2),>
+           'X',--<AtRiskPercent, varchar(2),>
+           'X',--<DayType, varchar(2),>
+           'X',--<LanguageOfInstruction, varchar(2),>
+           'X',--<CurriculumId, varchar(2),>
+           'X',--<SupplementalCurriculumId, varchar(2),>
+           'X',--<MonitoringToolId, varchar(2),>
+           'X',--<UsedEquipment, varchar(2),>
+           'X',--<ClassType, varchar(2),>
+           'X',--<ClassCount, varchar(2),>
+           'X',--<ReferenceData, varchar(2),>
+           'X',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+
+
+INSERT INTO [dbo].[ClassRoles]
+     VALUES
+           (
+		    101,--<RoleId, int,>
+           'auditor',--<RoleName, varchar(50),>
+           'R',--<CommunityId, varchar(2),>
+           'R',--<SchoolId, varchar(2),>
+           'R',--<ClassroomId, varchar(2),>
+		   'R',--<ClassId, varchar(2),>
+           'R',--<Name, varchar(2),>
+           'R',--<Status, varchar(2),>
+           'R',--<StatusDate, varchar(2),>
+           'R',--<SchoolYear, varchar(2),>
+           'R',--<AtRiskPercent, varchar(2),>
+           'R',--<DayType, varchar(2),>
+           'R',--<LanguageOfInstruction, varchar(2),>
+           'R',--<CurriculumId, varchar(2),>
+           'R',--<SupplementalCurriculumId, varchar(2),>
+           'R',--<MonitoringToolId, varchar(2),>
+           'R',--<UsedEquipment, varchar(2),>
+           'R',--<ClassType, varchar(2),>
+           'R',--<ClassCount, varchar(2),>
+           'R',--<ReferenceData, varchar(2),>
+           'R',--<Notes, varchar(2),>
+           GETDATE(),--<CreatedOn, datetime,>
+           GETDATE() --<UpdatedOn, datetime,>
+		   )
+GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

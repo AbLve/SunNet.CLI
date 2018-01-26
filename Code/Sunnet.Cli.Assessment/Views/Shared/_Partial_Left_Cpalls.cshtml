@@ -1,0 +1,66 @@
+﻿@using Sunnet.Cli.Assessment.Areas.Cpalls.Controllers
+@using Sunnet.Cli.Core.Ade.Entities
+@using Sunnet.Cli.Core.Users.Enums;
+@{
+    AssessmentLegendEntity assessmentLegend = ViewBag.AssessmentLegend;
+}
+<h4>
+    <a class="main-ade-left-active" href="@(DomainHelper.MainSiteDomain)Home/Dashboard" title="Dashboard (left menu)">
+        <em class="icon-dashboard"></em>Dashboard
+    </a>
+</h4>
+@if (Request.RawUrl.ToLower().StartsWith("/cpalls"))
+{
+    <ul>
+        @*<li>
+                <a href="/" class="active">Assessment</a>
+            </li>*@
+        @if (Request.RawUrl.ToLower().StartsWith("/cpalls"))
+        {
+            <li>
+                <a href="@(SFConfig.MainSiteDomain)Roster" target="_blank">Class Roster Management</a>
+            </li>
+        }
+    </ul>
+}
+@if (ViewContext.Controller is StudentController)
+{
+    if (assessmentLegend.ID > 0)
+    {
+        if (assessmentLegend.TextPosition.ToLower() == "bottom")
+        {
+    <img alt="color" style="max-width: 100%;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.ColorFilePath)"/>
+    <span style="color: #027E2D;display:block;">@assessmentLegend.Text</span>
+        }
+        else if (assessmentLegend.TextPosition.ToLower() == "top")
+        {
+    <span style="color: #027E2D;display:block;">@assessmentLegend.Text</span>
+    <img alt="color" style="max-width:100%;" src="@(Sunnet.Framework.SFConfig.StaticDomain + "upload/" + assessmentLegend.ColorFilePath)"/>
+        }
+    }
+@*<ul class="menu-left-hint">
+        <li><a class="tab-btn"><i class="icon-play"></i></a>Administer the test</li>
+        <li><a class="tab-btn" style="width: 30px;"><i class="icon-play-more"></i></a>Multi Launch</li>
+        <li><a class="tab-btn"><i class="icon-pause"></i></a>The test was paused</li>
+        <li><a class="tab-btn on-btn NoChange"><i class="icon-circle"></i></a>Exclude the student from the test for current language</li>
+        <li><a class="tab-btn off-btn NoChange"><i class="icon-circle-blank"></i></a>The student was excluded from the test for current language</li>
+        <li><a class="table-btn cpalls_normal NoChange" style="color: #000;" onmouseover="this.style.cssText='background:#32a447;color:#000'">#</a>or &nbsp;&nbsp; 
+            <a class="table-btn cpalls_normal_light NoChange" style="color: #000;" onmouseover="this.style.cssText='background:#D3F07D;color:#000'">#</a>
+            Proficient (at or above benchmark)
+        </li>
+        <li><a class="table-btn cpalls_three NoChange" style="color: #000;">#</a>or &nbsp;&nbsp;
+            <a class="table-btn cpalls_three_light NoChange" style="color: #000;" onmouseover="this.style.cssText='background:#FFF200;color:#000'">#</a>
+             Younger than 4 years-old, Developing (below benchmark)
+        </li>
+        <li><a class="table-btn cpalls_four NoChange" style="color: #000;" onmouseover="this.style.cssText='background:#dc143c;color:#000'">#</a>or &nbsp;&nbsp;
+            <a class="table-btn cpalls_four_light NoChange" style="color: #000;" onmouseover="this.style.cssText='background:#F8A5A9;color:#000'">#</a>
+            4 years-old and older, Emergent (below benchmark)
+        </li>
+        <li><a class="table-btn cpalls_three_less NoChange" style="color: #000;">#</a>or &nbsp;&nbsp;
+            <a class="table-btn cpalls_three_less_light NoChange" style="color: #000;" onmouseover="this.style.cssText='background:#B9ECE7;color:#000'">#</a>
+           Out of age range, no benchmark apply
+        </li>
+        <li><a class="table-btn cpalls_no_benchmark" style="color: #000; background-color: #fff">#</a>Measure has no benchmarks</li>
+        <li>Light colors : For instructional planning only</li>
+    </ul>*@
+}

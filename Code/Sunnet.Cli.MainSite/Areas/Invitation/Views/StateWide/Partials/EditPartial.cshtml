@@ -1,0 +1,119 @@
+﻿@model Sunnet.Cli.Core.Users.Entities.StateWideEntity
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Framework.Extensions
+@using Sunnet.Cli.Business.Permission.Models
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(model => model.ID)
+@Html.HiddenFor(model => model.UserInfo.ID)
+@Html.HiddenFor(model => model.UserInfo.GoogleId)
+@Html.HiddenFor(model => model.UserInfo.Role)
+@Html.HiddenFor(model => model.UserInfo.StatusDate)
+@Html.HiddenFor(model => model.UserInfo.Sponsor)
+@Html.HiddenFor(model => model.UserInfo.InvitationEmail)
+@Html.HiddenFor(model => model.UserInfo.EmailExpireTime)
+@Html.HiddenFor(model => model.UserInfo.Notes)
+@Html.HiddenFor(model => model.UserInfo.CreatedOn)
+@Html.Hidden("confirm", false)
+
+<div class="content-title">Basic Information</div>
+<div class="content-body">
+    @Html.HiddenFor(x => x.UserInfo.Gmail)
+    <div class="form-group">
+        @Html.LabelFor(model => model.SchoolYear, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.SchoolYear, new { @class = "form-control", @readonly = true })
+        </div>
+        @Html.LabelFor(model => model.UserInfo.Status, null, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.DropDownListFor(model => model.UserInfo.Status, Model.UserInfo.Status.ToSelectList(), new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.Status)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.PositionId, null, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.DropDownListFor(e => e.PositionId, (IEnumerable<SelectListItem>)ViewBag.PositionOptions, new { @class = "form-control" })
+            @Html.LabelFor(model => model.PositionOther, new { @class = "control-label hide" })
+            @Html.TextBoxFor(model => model.PositionOther, new { @class = "form-control", type = "hidden" })
+            @Html.ValidationMessageFor(model => model.PositionId)
+        </div>
+        @Html.LabelFor(model => model.StateWideId, null, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.StateWideId, new { @class = "form-control", @readonly = true })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.FirstName, null, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.FirstName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.FirstName)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.MiddleName, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.MiddleName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.LastName, null, new { @class = "col-sm-2 control-label required" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.LastName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.LastName)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.PreviousLastName, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.PreviousLastName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.InternalID, null, new { @class = "col-sm-2 control-label" })
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.UserInfo.InternalID, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+<div class="content-title">Contact Information</div>
+<div class="content-body">
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.PrimaryPhoneNumber, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.PrimaryPhoneNumber, new { @class = "form-control _homephone" })
+            @Html.ValidationMessageFor(model => model.UserInfo.PrimaryPhoneNumber)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.PrimaryNumberType, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.UserInfo.PrimaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserInfo.PrimaryNumberType)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.SecondaryPhoneNumber, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.SecondaryPhoneNumber, new { @class = "form-control _homephone" })
+        </div>
+        @Html.LabelFor(model => model.UserInfo.SecondaryNumberType, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.EnumDropDownListFor(model => model.UserInfo.SecondaryNumberType, ViewTextHelper.DefaultPleaseSelectText, "0", new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.FaxNumber, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.FaxNumber, new { @class = "_phone form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserInfo.PrimaryEmailAddress, null, new { @class = "col-sm-3 control-label required" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.PrimaryEmailAddress, new { @class = "form-control email" })
+            @Html.ValidationMessageFor(model => model.UserInfo.PrimaryEmailAddress)
+        </div>
+        @Html.LabelFor(model => model.UserInfo.SecondaryEmailAddress, null, new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-3">
+            @Html.TextBoxFor(model => model.UserInfo.SecondaryEmailAddress, new { @class = "form-control email" })
+            @Html.ValidationMessageFor(model => model.UserInfo.SecondaryEmailAddress)
+        </div>
+    </div>
+</div>
+

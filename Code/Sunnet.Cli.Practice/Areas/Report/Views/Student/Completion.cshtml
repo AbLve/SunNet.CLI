@@ -1,0 +1,159 @@
+﻿@using System.Web.UI.WebControls
+@using Sunnet.Cli.Business.Cpalls
+@using Sunnet.Cli.Core.Ade
+@{
+    ViewBag.Title = "Class Completion Report";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var language = (int)ViewBag.language;
+    var theOtherLanguage = (int)ViewBag.TheOtherLanguage;
+    var bilingualLanguage = 0;
+    if (ViewBag.BilingualLanguage != null)
+    {
+        bilingualLanguage = (int)ViewBag.BilingualLanguage;
+    }
+}
+@section Scripts{
+    <script type="text/javascript">
+
+    +(function() {
+        var $form = $("#@(formId)");
+        var groups = @(Html.Raw(ViewBag.MeasureJson));
+        var waveMeasure = new WaveMeasures(groups);
+
+        var groups2 = @(Html.Raw(ViewBag.MeasureJson2));
+        var vaveMeasure2;
+        if (groups2) {
+            vaveMeasure2 = new WaveMeasures(groups2);
+        }
+        var groups3 = @(Html.Raw(ViewBag.MeasureJson3));
+        var vaveMeasure3;
+        if (groups3) {
+            vaveMeasure3 = new WaveMeasures(groups3);
+        }
+
+        var models = {};
+        models.languages = {};
+        models.languages[@(language)] = waveMeasure;
+
+
+        if (vaveMeasure2) {
+            models.languages[@(theOtherLanguage)] = vaveMeasure2;
+        } else {
+            models.languages[@(theOtherLanguage)] = false;
+        }
+
+        if (vaveMeasure3) {
+            models.languages[@(bilingualLanguage)] = vaveMeasure3;
+        } else {
+            models.languages[@(bilingualLanguage)] = false;
+        }
+
+
+        models.selectedLanguage = ko.observable(@(language));
+            models.assessment = ko.computed(function() {
+                return models.languages[models.selectedLanguage()];
+            }, models);
+            models.selectedLanguage.subscribe(function(language) {
+                console.log(models.selectedLanguage());
+                var targetWave = $("#@(formId)").find("#myTab").find("li.active").find("a").attr("href").replace("#content","");
+                models.languages[language].chooseWave(parseInt(targetWave));
+            });
+            models.submit = function() {
+                if($("#StartDate").val() != "" && $("#EndDate").val() != "") {
+                    if(DateCompare($("#StartDate").val(),$("#EndDate").val()) ==1){
+                        window.showMessage("hint", "endDateCompareStartDate");
+                        return false;
+                    }
+                }
+
+                var measures = {};
+                $.each(models.assessment().waves, function(i, wave) {
+                    measures[i] = [];
+                });
+                var selectedWaves = [];
+                $.each(models.assessment().groups, function(j, group) {
+                    $.each(group.measures, function(k, measure) {
+                        $.each(measure.selectedWaves(), function(l, wave) {
+                            if (selectedWaves.indexOf(wave) < 0) {
+                                selectedWaves.push(wave);
+                            }
+                            measures[wave].push(measure.id);
+                            if (group.parent && measures[wave].indexOf(group.parent.id) <= 0) {
+                                measures[wave].push(group.parent.id);
+                            }
+                        });
+                    });
+                });
+                if (selectedWaves.length > 1) {
+                    window.showMessage("hint", "One_Wave");
+                    return false;
+                }
+                var strMeas = JSON.stringify(measures);
+                if (strMeas == '{"1":[],"2":[],"3":[]}') {
+                    window.showMessage("hint", "Export_Select_Measure");
+                } else {
+                    $form.find("#waves").val(strMeas);
+                    $form.submit();
+                    setTimeout(function() {$form.cliForm("loaded");}, 3000);
+                }
+            };
+            ko.applyBindings(models, document.getElementById("@(formId)"));
+        $("#languages").find("label.active").find("input").prop("checked", true);
+    })();
+    </script>
+}
+
+<form class="form-horizontal" role="form" method="POST" id="@(formId)" action='@Url.Action("CompletionPdf", "Student", new { Area = "Report" })' target="_blank">
+    <div class="form-group">
+        <div class="col-sm-6">
+            <div class="btn-group term-chose-l" data-toggle="buttons" id="languages">
+                <label class="btn  nav-btn" data-bind="css:{active:selectedLanguage()=='1','submit-btn':selectedLanguage()=='1'},attr:{disabled:languages[1]==false},click:function(){$root.selectedLanguage(1);}" for="language1">
+                    <input autocomplete="off" id="language1" name="language" type="radio" value="1">
+                    English Only
+                </label>
+                <label class="btn  nav-btn" data-bind="css:{active:selectedLanguage()=='2','submit-btn':selectedLanguage()=='2'},attr:{disabled:languages[2]==false},click:function(){$root.selectedLanguage(2);}" for="language2">
+                    <input autocomplete="off" id="language2" name="language" type="radio" value="2">
+                    Spanish Only
+                </label>
+                <label class="btn  nav-btn" data-bind="css:{active:selectedLanguage()=='3','submit-btn':selectedLanguage()=='3'},attr:{disabled:languages[3]==false},click:function(){$root.selectedLanguage(3);}" for="language3">
+                    <input autocomplete="off" id="language3" name="language" type="radio" value="3">
+                    Combined
+                </label>
+            </div>
+        </div>
+        <label class="control-label col-sm-2">Time period </label>
+        <div class="col-sm-2">
+            <label for="StartDate" class="hide">Start Date</label>
+            <input type="text" class="date form-control" id="StartDate" name="StartDate" placeholder="Start date" maxdate="@(DateTime.Now.FormatDateString())" />
+        </div>
+        <div class="col-sm-2">
+            <label for="EndDate" class="hide">End Date</label>
+            <input type="text" class="date form-control" id="EndDate" name="EndDate" placeholder="End date" data-mindate="#F{$dp.$D(\'StartDate\',{d:0});}" maxdate="@(DateTime.Now.FormatDateString())" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2 col-sm-offset-6">DOB Range </label>
+        <div class="col-sm-2">
+            <label for="dobStartDate" class="hide">DOB Start Date</label>
+            <input type="text" class="date form-control" id="dobStartDate" name="dobStartDate" placeholder="Start date" maxDate="@(DateTime.Now.FormatDateString())" />
+        </div>
+        <div class="col-sm-2">
+            <label for="dobEndDate" class="hide">DOB End Date</label>
+            <input type="text" class="date form-control" id="dobEndDate" name="dobEndDate" placeholder="End date" data-minDate="#F{$dp.$D(\'dobStartDate\',{d:0});}" maxDate="@(DateTime.Now.FormatDateString())" />
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    @Html.Partial("_Partial_Select_Wave_Measure")
+    @Html.Hidden("assessmentId")
+    @Html.Hidden("year")
+
+    @Html.Hidden("waves")
+    @Html.Hidden("language")
+
+    <div class="modal-footer">
+        <button type="button" class="mainbutton mainright-btn submit-btn" data-bind="click:submit">Export</button>
+    </div>
+</form>
+

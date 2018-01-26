@@ -1,0 +1,255 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherGeneralFileModel
+@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization;
+@using Sunnet.Cli.Core.Vcw.Enums;
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Framework
+@{
+    ViewBag.Title = "Upload General File";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<SelectItemModel> Contents = ViewBag.Contents as List<SelectItemModel>;
+    List<SelectItemModel> Contexts = ViewBag.Contexts as List<SelectItemModel>;
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.PM_Teachers)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("My Teachers", "Index", "TeacherVIP"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    @(Html.ActionLink("Teacher General", "Index", "TeacherGeneral"))&nbsp;
+    <i class="icon-angle-right"></i>&nbsp;
+    Upload File
+}
+
+
+@section Scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    @Scripts.Render("~/scripts/vcw_upload")
+    <script type="text/javascript">
+        $(function () {
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? "Index")");
+                }
+            });
+        });
+
+            function getUploaderPrefix() {
+                return "@(ViewBag.EncryptUserID)_";
+            }
+
+            function beforeSubmit(sender) {
+                if (uploader.getFiles('queued').length > 0) {
+                    showMessage("hint", "Vcw_File_Inqueue")
+                    return false;
+                }
+                if (uploader.getFiles('complete').length == 0) {
+                    showMessage("hint", "Vcw_File_Noupload"); //Please upload a file.
+                    return false;
+                }
+                var teacher_select = $("input[name=teacher_select]");
+                if (teacher_select.length == 0) {
+                    showMessage("hint", "Vcw_Teachers_Noselect")
+                    return false;
+                }
+                GetFiles();
+                return true;
+            };
+
+            var arrSelectTeacherList;
+            function receiveTeacherList(v) {
+                if (v) {
+                    arrSelectTeacherList = v;
+                    var tmpSelectTeacherHtml = TemplateEngine(window["template_teacher_select"].innerHTML, v);
+                    $("#divTeacherSelect").html(tmpSelectTeacherHtml);
+                }
+            }
+
+            function moveTeacherList(id) {
+                for (var i = 0; i < arrSelectTeacherList.length; i++) {
+                    if (arrSelectTeacherList[i].id == id) {
+                        arrSelectTeacherList.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+    </script>
+}
+
+@using (Ajax.BeginForm("Upload", "TeacherGeneral", null, PostFormHelper.DefaultAjaxOptions, new
+    {
+        @class = "form-horizontal",
+        id = formId
+    }))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        <input type="button" class="mainbutton mainright-btn create-btn" value="Back to General" onclick='redirectBack("index")'>
+    </div>
+    <div class="main-content">
+        <div class="content-title">Video</div>
+        <div class="content-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                @Html.LabelFor(model => model.IdentifyFileName, new { @class = "control-label required" })
+                            </div>
+                            <div class="inputtext-con">
+                                @Html.TextBoxFor(model => model.IdentifyFileName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdentifyFileName)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <label class="control-label" for="DateVieoRecorded">Date Video Recorded</label>
+                            </div>
+                            <div class="inputtext-con">
+                                @Html.TextBoxFor(model => model.DateVieoRecorded, new { @class = "form-control date" })
+                                @Html.ValidationMessageFor(model => model.DateVieoRecorded)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <div class="control-label required">
+                                    Upload File 
+                                    (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                                    <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                                </div>
+                            </div>
+                            <div class="upload-btn">
+                                <div id="picker">1) Select File</div>
+                            </div>
+                            <div id="filelists" class="uploader-list"></div>
+                            <div class="upload-btn">
+                                <a id="ctlBtn">2) Start Upload</a>
+                            </div>
+                            <input type="hidden" id="filetarget" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <div class="control-label">Video Context</div>
+                            </div>
+                            @if (Contexts != null)
+                            {
+                                foreach (SelectItemModel item in Contexts)
+                                {
+                                    if (item.Name.Trim().ToLower() == SFConfig.ContextOther)
+                                    {
+                                <div class="checkbox-con">
+                                    <label class="checkbox-inline checkbox-other">
+                                        <input type="checkbox" name="Context"  value="@(item.ID)" isOther="true"/>@item.Name
+                                    </label>
+                                    <label class="textbox-other">
+                                        @Html.TextBoxFor(m => m.ContextOther, new { @class = "form-control", disabled = "disabled" })
+                                    </label>
+                                    @Html.ValidationMessageFor(model => model.ContextOther)
+                                </div>
+                                    }
+                                    else
+                                    {
+                                <div class="checkbox-con">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="Context" value="@(item.ID)" />@item.Name
+                                    </label>
+                                </div>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <div class="control-label">Video Content</div>
+                            </div>
+                            @if (Contents != null)
+                            {
+                                foreach (SelectItemModel item in Contents)
+                                {
+                                    if (item.Name.Trim().ToLower() == SFConfig.VideoContentOther)
+                                    {
+                                <div class="checkbox-con">
+                                    <label class="checkbox-inline checkbox-other">
+                                        <input type="checkbox" name="Content" 
+                                                    onclick="ContentClick(this)" value="@item.ID">@item.Name
+                                    </label>
+                                    <label class="textbox-other">
+                                        @Html.TextBoxFor(model => model.ContentOther, new { @class = "form-control", @disabled = "disabled" })
+                                    </label>
+                                    @Html.ValidationMessageFor(model => model.ContentOther)
+                                </div>
+                                    }
+                                    else
+                                    {
+                                <div class="checkbox-con">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="Content" value="@item.ID">@item.Name
+                                    </label>
+                                </div>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <div class="control-label">
+                                    Description
+                                    <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                                </div>
+                            </div>
+                            <div class="textarea-con">
+                                <label for="Description" class="hide">&nbsp;</label>
+                                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "3" })
+                                @Html.ValidationMessageFor(m => m.Description)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-6">
+                        <div class="content-con">
+                            <div class="content-title3">
+                                <div class="control-label required">Teachers</div>
+                                <a title="Teachers" href="/SearchUser/TeacherList" data-target="#modalNormal" data-toggle="modal" class="t-teacher-btn">Teacher List</a>
+                            </div>
+                            <script type="text/html" id="template_teacher_select">
+                                <%for ( var i = 0; i < this.length ; i++) {%> 
+                                      <a class="del-btn t-del-btn">
+                                          <button type="button" class="close" data-dismiss="alert" onclick="moveTeacherList(<% this[i].id %>)"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                          <input type="hidden" name="teacher_select" value="<% this[i].id %>" /><% this[i].fistName %> <% this[i].lastName %>
+                                      </a>
+                                <%}%>
+                            </script>
+                            <div style="max-height: 178px; overflow-y: scroll" id="divTeacherSelect">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <input type="hidden" name="uploadfiles" id="uploadfiles" />
+        <div class="button-content">
+            <input type="submit" class="mainbutton mainright-btn submit-btn" value="Submit" id="btnSubmit" onclick="return beforeSubmit(this);">
+            <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+        </div>
+    </div>  
+}
+
+

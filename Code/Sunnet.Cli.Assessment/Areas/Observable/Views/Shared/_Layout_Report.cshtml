@@ -1,0 +1,209 @@
+﻿@using Sunnet.Cli.Assessment.Areas.Cpalls.Controllers
+<!DOCTYPE html>
+@{
+    const string siteName = "Cli Engage";
+    var relativePath = ((RazorView)Html.ViewContext.View).ViewPath;
+    var lastModified = FileHelper.GetFileLastModified(Server.MapPath(relativePath));
+    var moduleTitle = "CIRCLE Assessment System";
+ 
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @if (ViewContext.Controller is StudentController || ViewContext.Controller is ClassController || ViewContext.Controller is SchoolController)
+    {
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, minimum-scale=1, maximum-scale=1.0" />
+    }
+    else
+    {
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1" />
+    }
+    <meta name="keyword" content="CLI Engage | A comprehensive professional development platform for early childhood providers and pre-k teachers in Texas" />
+    <title>@ViewBag.Title - @moduleTitle - @siteName</title>
+    @Styles.Render("~/css/basic")
+    @RenderSection("Styles", false)
+    @Scripts.Render("~/scripts/modernizr")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/scripts/ie68")
+    <![endif]-->
+    @if (ViewBag.Debug != null && (bool)ViewBag.Debug)
+    {
+        <script type="text/javascript">
+            window._DEBUG = true;
+        </script>
+    }
+    <script type="text/javascript">
+        window._TimeoutUrl_ = "@(ViewBag.TimeoutUrl)";
+        window._staticDomain_ = "@DomainHelper.StaticSiteDomain";
+    </script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+    <style type="text/css">
+        .panel-default
+        {
+            border-color: #ddd;
+        }
+
+        body
+        {
+            font-family: Calibri;
+            line-height: 1.42857143;
+            color: #333;
+        }
+
+        table
+        {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        .panel-group .panel
+        {
+            margin-bottom: 0;
+            border-radius: 4px;
+        }
+
+        .panel
+        {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        }
+
+        .panel-default > .panel-heading
+        {
+            color: #333;
+            background-color: #f5f5f5;
+            border-color: #ddd;
+        }
+
+        .panel-group .panel-heading
+        {
+            border-bottom: 0;
+        }
+
+        .panel-heading
+        {
+            padding: 10px 15px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+
+        .panel-title
+        {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 16px;
+            color: inherit;
+        }
+
+        .panel-body
+        {
+            padding: 15px;
+        }
+
+        .table
+        {
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 0px;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .table
+        {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+
+        thead
+        {
+            display: table-header-group;
+            vertical-align: middle;
+            border-color: inherit;
+        }
+
+        .table-condensed > thead > tr > th,
+        .table-condensed > tbody > tr > th,
+        .table-condensed > tfoot > tr > th,
+        .table-condensed > thead > tr > td,
+        .table-condensed > tbody > tr > td,
+        .table-condensed > tfoot > tr > td
+        {
+            padding: 5px;
+        }
+
+        .table > thead > tr > th
+        {
+            vertical-align: bottom;
+            border-bottom: 2px solid #ddd;
+        }
+
+        tbody
+        {
+            display: table-row-group;
+            vertical-align: middle;
+            border-color: inherit;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd)
+        {
+            background-color: #f9f9f9;
+        }
+
+        tr
+        {
+            display: table-row;
+            vertical-align: inherit;
+            border-color: inherit;
+        }
+
+        .table > tbody > tr > td
+        {
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+        }
+
+        .title
+        {
+            text-align:center;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: Calibri;
+            font-weight:900;
+            color:#000;
+        }
+
+        .th_left
+        {
+            text-align:left;
+            font-family: Calibri;
+            font-size: 11px;
+            font-weight:500;
+            color:#000;
+        }
+
+        .th_right
+        {
+            text-align:right;
+            font-family: Calibri;
+            font-size: 11px;
+            font-weight:500;
+            color:#000;
+        }
+    </style>
+</head>
+<body>
+
+    @RenderBody()
+
+</body>
+</html>

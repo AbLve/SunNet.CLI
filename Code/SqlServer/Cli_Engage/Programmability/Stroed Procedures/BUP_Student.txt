@@ -1,0 +1,285 @@
+﻿CREATE PROCEDURE [dbo].[BUP_Student]
+	@BUPStudentId int,
+	@CreatedBy int
+AS
+BEGIN
+	  SET XACT_ABORT ON;
+
+	  DECLARE @Action tinyint
+      DECLARE @CommunityName varchar(200)
+      DECLARE @CommunityEngageID varchar(50)
+      DECLARE @SchoolName varchar(200)
+      DECLARE @SchoolEngageID varchar(50)
+      DECLARE @FirstName varchar(140)
+      DECLARE @MiddleName varchar(140)
+      DECLARE @LastName varchar(140)
+      DECLARE @StudentEngageId varchar(50)
+      DECLARE @LocalStudentID varchar(50)
+      DECLARE @BirthDate datetime
+      DECLARE @Gender tinyint
+      DECLARE @Ethnicity tinyint
+      DECLARE @TSDSStudentID varchar(100)
+      DECLARE @GradeLevel tinyint
+	  DECLARE @ClassName VARCHAR(150)
+      DECLARE @ClassEngageID varchar(32)
+      DECLARE @ClassroomName varchar(50)
+      DECLARE @ClassroomEngageID varchar(32)
+	
+	  DECLARE @SchoolId INT
+	  DECLARE @CommunityId INT
+	  DECLARE @StudentId INT --Students 表Id
+	  DECLARE @ClassroomId INT --Classrooms 表Id
+	  DECLARE @ClassId INT -- classes 表id
+
+	BEGIN TRY
+	  BEGIN TRANSACTION;
+
+		 SELECT   @Action=[Action],@CommunityName=[CommunityName],@CommunityEngageID=[CommunityEngageID],@SchoolName=[SchoolName],@SchoolEngageID=[SchoolEngageID]
+		  ,@FirstName=[FirstName],@MiddleName=[MiddleName],@LastName=[LastName],@StudentEngageId=StudentEngageId,@LocalStudentID=LocalStudentID
+		  ,@BirthDate=BirthDate,@Gender=Gender,@Ethnicity=Ethnicity ,@TSDSStudentID=TSDSStudentID,@GradeLevel=GradeLevel
+		  ,@ClassName=[ClassName],@ClassEngageID=[ClassEngageID],@ClassroomName=[ClassroomName]
+		  ,@ClassroomEngageID=[ClassroomEngageID]
+		  FROM [dbo].BUP_Students WHERE ID = @BUPStudentId
+
+		  SELECT @CommunityId =ID FROM Communities  WHERE CommunityId=@CommunityEngageID
+
+		  IF(@Action = 1) --when insert, school must be active
+			SELECT @SchoolId=s.Id FROM Schools s INNER JOIN CommunitySchoolRelations r ON r.SchoolId=s.id
+				WHERE s.SchoolId = @SchoolEngageID AND r.CommunityId = @CommunityId	AND s.Status=1
+		  ELSE
+			SELECT @SchoolId=s.Id FROM Schools s INNER JOIN CommunitySchoolRelations r ON r.SchoolId=s.id
+				WHERE s.SchoolId = @SchoolEngageID AND r.CommunityId = @CommunityId
+
+		  IF(@ClassEngageID != '')
+			SELECT @ClassId = id FROM Classes WHERE ClassId=@ClassEngageId AND SchoolId= @SchoolId AND Status=1
+
+		  IF(@StudentEngageId != '')
+			SELECT @StudentId = s.ID, 
+			@FirstName= CASE @FirstName WHEN '' THEN s.FirstName ELSE @FirstName END,
+			@LastName= CASE @LastName WHEN '' THEN s.LastName ELSE @LastName END,
+			@BirthDate= CASE @BirthDate WHEN '' THEN s.BirthDate ELSE @BirthDate END
+			FROM Students s
+			INNER JOIN SchoolStudentRelations ss 
+			ON s.ID = ss.StudentId
+			INNER JOIN Schools sch
+			on sch.ID = ss.SchoolId 
+			WHERE s.StudentId=@StudentEngageId
+
+	--INSERT
+	IF(@Action = 1) BEGIN
+		IF(@CommunityId IS NULL)BEGIN
+				UPDATE BUP_Students SET Status=5 , Remark ='Community Engage ID is not in Communities' 
+				WHERE ID = @BUPStudentId
+			END		
+		ELSE BEGIN			
+		IF(@SchoolId IS NULL) 
+			UPDATE BUP_Students SET Status=5 , Remark ='School Engage ID is not in Schools' WHERE ID = @BUPStudentId
+		 ELSE BEGIN
+				DECLARE @IFExistsStudent bit=0;
+					IF(@LocalStudentID != '')
+						BEGIN
+							SELECT @StudentId = ID FROM Students WHERE LocalStudentID=@LocalStudentID 
+							IF (@StudentId IS NOT NULL)
+								SET @IFExistsStudent=1;	
+						END
+					ELSE
+						BEGIN
+							SELECT @StudentId = ID FROM Students WHERE FirstName=@FirstName
+							AND LastName=LastName AND BirthDate=@Birthdate
+							IF (@StudentId IS NOT NULL)
+								SET @IFExistsStudent=1;	
+						END
+					IF(@IFExistsStudent=0)
+					BEGIN
+						INSERT INTO [dbo].[Students]
+						([StudentId]
+						,[FirstName]
+						,[MiddleName]
+						,[LastName]
+						,[Status]
+						,[StatusDate]
+						,[SchoolYear]
+						,[BirthDate]
+						,[Gender]
+						,[Ethnicity]
+						,[EthnicityOther]
+						,[PrimaryLanguageId]
+						,[PrimaryLanguageOther]
+						,[SecondaryLanguageId]
+						,[SecondaryLanguageOther]
+						,[IsSendParent]
+						,[IsMediaRelease]
+						,[Notes]
+						,[CreatedOn]
+						,[UpdatedOn]
+						,[ParentCode]
+						,[AssessmentLanguage]
+						,[LocalStudentID]
+						,[TSDSStudentID]
+						,[GradeLevel])
+						VALUES
+						(''--<StudentId, varchar(12),>
+						,@FirstName --, varchar(140),>
+						,@MiddleName --, varchar(140),>
+						,@LastName  --, varchar(140),>
+						,1 --<Status, tinyint,>
+						,getdate()--<StatusDate, datetime,>
+						,dbo.GetSchoolYear()  --<SchoolYear, varchar(50),>
+						,@BirthDate --, datetime,>
+						,@Gender  --, tinyint,>
+						,@Ethnicity --, tinyint,>
+						,''--<EthnicityOther, varchar(100),>
+						,0--<PrimaryLanguageId, int,>
+						,''--<PrimaryLanguageOther, varchar(100),>
+						,0--<SecondaryLanguageId, int,>
+						,''--<SecondaryLanguageOther, varchar(100),>
+						,0--<IsSendParent, bit,>
+						,0--<IsMediaRelease, tinyint,>
+						,''--<Notes, varchar(600),>
+						,GETDATE() --<CreatedOn, datetime,>
+						,GETDATE() --<UpdatedOn, datetime,>
+						,''--<ParentCode, varchar(50),>
+						,0 --<AssessmentLanguage, tinyint,>
+						, @LocalStudentID --, varchar(100),>
+						,@TSDSStudentID --, varchar(100),>
+						,@GradeLevel --, tinyint,>
+						)
+
+						SELECT @StudentId = SCOPE_IDENTITY()
+
+						INSERT INTO [dbo].[SchoolStudentRelations]
+						([SchoolId]
+						,[StudentId]
+						,[Status]
+						,[CreatedBy]
+						,[CreatedOn]
+						,[UpdatedOn]
+						,[UpdatedBy])
+						VALUES
+						(@SchoolId
+						,@StudentId
+						,1
+						,@CreatedBy
+						,getdate()
+						,getdate()
+						,@CreatedBy)
+				
+						IF(@ClassEngageId != '')BEGIN					
+							IF(@ClassId IS NULL) BEGIN
+								UPDATE BUP_Students SET Status=5 , Remark ='Class Engage ID is not in the school' WHERE ID = @BUPStudentId
+							END
+							ELSE BEGIN						
+								INSERT INTO [dbo].[StudentClassRelations]([StudentId],[ClassId])
+								VALUES(@StudentId, @ClassId )
+							END
+						END
+					END
+					ELSE
+						UPDATE 	BUP_Students SET Status=5 ,Remark ='No duplicate student was created' WHERE ID = @BUPStudentId	
+			END
+		END
+	END  --END ACTION=1
+
+	--UPDATE
+	IF(@Action = 2) BEGIN
+	    IF(@CommunityId IS NULL)
+			UPDATE BUP_Students SET Status=5 , Remark ='Community Engage ID is not in Communities' 
+				WHERE ID = @BUPStudentId
+		ELSE BEGIN								
+		IF(@SchoolId IS NULL) 
+			UPDATE BUP_Students SET Status=5 , Remark ='School Engage ID is not in Schools' WHERE ID = @BUPStudentId
+		ELSE BEGIN
+				IF(@StudentId IS NULL)
+				   UPDATE BUP_Students SET Status=5 , Remark ='Student Engage ID is not in Students' WHERE ID = @BUPStudentId
+				ELSE BEGIN
+					DECLARE @IFDuplicateStudent bit=0;
+					IF(@LocalStudentID != '')
+						BEGIN
+							IF (EXISTS(SELECT ID FROM Students WHERE LocalStudentID=@LocalStudentID AND ID != @StudentId))
+								SET @IFDuplicateStudent=1;	
+						END
+					ELSE
+						BEGIN
+							IF(EXISTS(SELECT ID FROM Students WHERE FirstName=@FirstName
+								AND LastName=LastName AND BirthDate=@Birthdate AND ID != @StudentId))
+								SET @IFDuplicateStudent=1;	
+						END
+					IF(@IFDuplicateStudent=0)
+					BEGIN
+						UPDATE [dbo].[Students] SET 
+						 [FirstName] =  CASE WHEN @FirstName != '' THEN @FirstName ELSE FirstName END
+						,[MiddleName] = CASE WHEN @MiddleName='*CLEAR*' THEN '' WHEN @MiddleName != '' THEN @MiddleName ELSE MiddleName END
+						,[LastName] =  CASE WHEN @LastName != '' THEN @LastName ELSE LastName END
+						,[BirthDate] =  CASE WHEN @BirthDate >'1753/1/1' THEN @BirthDate ELSE BirthDate END 
+						,[Gender] =   CASE WHEN @Gender >0 THEN @Gender ELSE Gender END 
+						,[Ethnicity] =CASE WHEN @Ethnicity = 127 THEN 0 WHEN @Ethnicity>0 THEN @Ethnicity ELSE Ethnicity END 
+						,[UpdatedOn] = GETDATE()
+						,[LocalStudentID] = CASE WHEN @LocalStudentID='*CLEAR*' THEN '' WHEN @LocalStudentID != '' THEN @LocalStudentID ELSE LocalStudentID END
+						,[TSDSStudentID] =  CASE WHEN @TSDSStudentID='*CLEAR*' THEN '' WHEN @TSDSStudentID != '' THEN @TSDSStudentID ELSE TSDSStudentID END
+						,[GradeLevel] = CASE WHEN @GradeLevel = 127 THEN 0 WHEN @GradeLevel>0 THEN @GradeLevel ELSE GradeLevel END 
+						WHERE ID=@StudentId
+
+						IF(@ClassEngageId != '')BEGIN
+							IF(@ClassId IS NULL) 
+								UPDATE BUP_Students SET  Remark ='Class Engage ID is not in the school' WHERE ID = @BUPStudentId
+							ELSE BEGIN	
+							IF(NOT EXISTS(SELECT * FROM StudentClassRelations WHERE StudentId=@StudentId AND ClassId=@ClassId))					
+							INSERT INTO [dbo].[StudentClassRelations]([StudentId],[ClassId])
+							VALUES(@StudentId, @ClassId )
+							END
+						END
+					END
+					ELSE
+					  UPDATE BUP_Students SET Status=5 ,Remark ='Duplicate student found' WHERE ID = @BUPStudentId	
+				END
+			END			
+		END
+
+	END
+
+	--DELETE
+	IF(@Action = 3)BEGIN
+		IF(@CommunityId IS NULL)
+			UPDATE BUP_Students SET Status=5 , Remark ='Community Engage ID is not in Communities' WHERE ID = @BUPStudentId
+		ELSE BEGIN								
+		IF(@SchoolId IS NULL) 
+			UPDATE BUP_Students SET Status=5 , Remark ='School Engage ID is not in Schools' WHERE ID = @BUPStudentId
+		ELSE BEGIN
+				IF(@StudentId IS NULL)
+				   UPDATE BUP_Students SET Status=5 , Remark ='Student Engage ID is not in Students' WHERE ID = @BUPStudentId
+				ELSE BEGIN
+					DELETE SchoolStudentRelations WHERE SchoolId=@SchoolId AND StudentId=@StudentId
+					IF(@ClassEngageID != '')
+					BEGIN
+						SELECT @ClassId = id FROM Classes WHERE ClassId=@ClassEngageId AND SchoolId= @SchoolId
+						IF(@ClassId IS NULL)
+						  UPDATE BUP_Students SET  Remark ='Class Engage ID is not in the school' WHERE ID = @BUPStudentId 
+						ELSE
+						  DELETE StudentClassRelations WHERE StudentId=@StudentId AND ClassId=@ClassId
+					END
+					IF(NOT EXISTS(SELECT * FROM SchoolStudentRelations WHERE StudentId=@StudentId) AND
+					NOT EXISTS(SELECT * FROM StudentClassRelations WHERE StudentId=@StudentId))
+					   UPDATE Students SET 
+					   Status=2,StatusDate=GETDATE(),UpdatedOn=GETDATE() WHERE ID = @StudentId
+				END
+			END
+		END
+	END
+
+	UPDATE BUP_Students SET Status = 3 WHERE ID = @BUPStudentID AND Status = 1;
+	  COMMIT TRANSACTION ;
+	END TRY
+
+	BEGIN CATCH
+		IF (XACT_STATE()) = -1
+		BEGIN			
+			ROLLBACK TRANSACTION;
+			UPDATE BUP_Students SET Remark = ERROR_MESSAGE() ,Status = 4 WHERE ID = @BUPStudentID
+		END;
+
+		IF (XACT_STATE()) = 1
+		BEGIN
+			COMMIT TRANSACTION;   
+		END;
+	END CATCH 
+END

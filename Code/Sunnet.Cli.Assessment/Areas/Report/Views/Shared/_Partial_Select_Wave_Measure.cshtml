@@ -1,0 +1,127 @@
+﻿@{
+    var waves = new List<Wave>() { Wave.BOY, Wave.MOY, Wave.EOY };
+}
+
+<div class="form-group">
+    <div class="nav-tab">
+        <ul id="myTab" class="nav-container term-nav-container" role="tablist">
+            <li class="active term-btn-navcon1">
+                <div class="term-p-bar">
+                    <span data-bind="style: { width: assessment().waves[1].percentage() }"></span>
+                </div>
+                <a href="#content1" role="tab" data-toggle="tab" class="term-btn-con1-n" data-bind="click: function () { $root.assessment().chooseWave(1); }, css: { 'term-btn-con1-a': assessment().waves[1].selectedMeasures().length == assessment().waves[1].count() && assessment().waves[1].count() > 0 }">Wave @(Wave.BOY.ToDescription())</a>
+                
+            </li>
+            <li class="term-btn-navcon2">
+                <div class="term-p-bar">
+                    <span data-bind="style: { width: assessment().waves[2].percentage() }"></span>
+                </div>
+                <a href="#content2" role="tab" data-toggle="tab" class="term-btn-con2-n" data-bind="click: function () { $root.assessment().chooseWave(2); }, css: { 'term-btn-con2-a': assessment().waves[2].selectedMeasures().length == assessment().waves[2].count() && assessment().waves[2].count() > 0 }">Wave @(Wave.MOY.ToDescription())</a>
+                
+            </li>
+            <li class="term-btn-navcon3">
+                <div class="term-p-bar">
+                    <span data-bind="style: { width: assessment().waves[3].percentage() }"></span>
+                </div>
+                <a href="#content3" role="tab" data-toggle="tab" class="term-btn-con3-n" data-bind="click: function () { $root.assessment().chooseWave(3); }, css: { 'term-btn-con3-a': assessment().waves[3].selectedMeasures().length == assessment().waves[3].count() && assessment().waves[3].count() > 0 }">Wave @(Wave.EOY.ToDescription())</a>
+                
+            </li>
+        </ul>
+        <div id="myTabContent" class="tab-content term-content-con">
+
+            <div class="tab-pane fade active in term-main-con1" id="content1">
+                <!-- ko foreach:{data:assessment().groups,as:'group'}-->
+                <!-- ko if: group.visible[1] === true -->
+                <div class="term-content">
+                    <!-- ko if: group.parent != null -->
+                    <div class="form-group">
+                        <div class="col-sm-12" data-bind="click: $root.assessment().chooseGroup">
+                            <a class="term-group-t">
+                                <p data-bind="attr: { title: group.parent.name }">
+                                    <span data-bind="html: group.parent.name" class="body"></span>
+                                    <span class="select"><i data-bind="css: { 'icon-check': allSelected[1](), 'icon-check-empty': !allSelected[1]() }"></i>Select All Measures</span>
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /ko-->
+                    <div class="form-group">
+                        <!-- ko foreach:{data:group.measures,as:'measure'}-->
+                        <div class="col-sm-3" data-bind="visible: applyToWave.indexOf($root.assessment().selectedWave()) >= 0">
+                            <a class="term-contents" data-bind="attr: { title: measure.name }, css: { 'term-1': selectedWaves().indexOf(1) >= 0 }, click: function (measure, event) { $root.assessment().chooseMeasure(measure, $parent); }">
+                                <text data-bind="html: ' ' + measure.name"></text>
+                                <span data-bind="html: ' ' + measure.otherInfo, visible: measure.otherInfo != null">
+                                </span>
+                            </a>
+                        </div>
+                        <!-- /ko-->
+                    </div>
+                </div>
+                <!-- /ko-->
+                <!-- /ko-->
+            </div>
+
+            <div class="tab-pane fade  term-main-con2" id="content2">
+                <!-- ko foreach:{data:assessment().groups,as:'group'}-->
+                <!-- ko if: group.visible[2] === true -->
+                <div class="term-content">
+                    <!-- ko if: group.parent != null -->
+                    <div class="form-group">
+                        <div class="col-sm-12" data-bind="click: $root.assessment().chooseGroup">
+                            <a class="term-group-t">
+                                <p data-bind="attr: { title: group.parent.name }">
+                                    <span data-bind="html: group.parent.name" class="body"></span>
+                                    <span class="select"><i data-bind="css: { 'icon-check': allSelected[2](), 'icon-check-empty': !allSelected[2]() }"></i>Select All Measures</span>
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /ko-->
+                    <div class="form-group">
+                        <!-- ko foreach:{data:group.measures,as:'measure'}-->
+                        <div class="col-sm-2" data-bind="visible: applyToWave.indexOf($root.assessment().selectedWave()) >= 0">
+                            <a class="term-contents" data-bind="attr: { title: measure.name }, css: { 'term-2': selectedWaves().indexOf(2) >= 0 }, click: function (measure, event) { $root.assessment().chooseMeasure(measure, $parent); }">
+                                <text data-bind="html: ' ' + measure.name"></text>
+                                <span data-bind="html: ' ' + measure.otherInfo, visible: measure.otherInfo != null"></span>
+                            </a>
+                        </div>
+                        <!-- /ko-->
+                    </div>
+                </div>
+                <!-- /ko-->
+                <!-- /ko-->
+            </div>
+
+            <div class="tab-pane fade  term-main-con3" id="content3">
+                <!-- ko foreach:{data:assessment().groups,as:'group'}-->
+                <!-- ko if: group.visible[3] === true -->
+                <div class="term-content">
+                    <!-- ko if: group.parent != null -->
+                    <div class="form-group">
+                        <div class="col-sm-12" data-bind="click: $root.assessment().chooseGroup">
+                            <a class="term-group-t">
+                                <p data-bind="attr: { title: group.parent.name }">
+                                    <span data-bind="html: group.parent.name" class="body"></span>
+                                    <span class="select"><i data-bind="css: { 'icon-check': allSelected[3](), 'icon-check-empty': !allSelected[3]() }"></i>Select All Measures</span>
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /ko-->
+                    <div class="form-group">
+                        <!-- ko foreach:{data:group.measures,as:'measure'}-->
+                        <div class="col-sm-2" data-bind="visible: applyToWave.indexOf($root.assessment().selectedWave()) >= 0">
+                            <a class="term-contents" data-bind="attr: { title: measure.name }, css: { 'term-3': selectedWaves().indexOf(3) >= 0 }, click: function (measure, event) { $root.assessment().chooseMeasure(measure, $parent); }">
+                                <text data-bind="html: ' ' + measure.name"></text>
+                                <span data-bind="html: ' ' + measure.otherInfo, visible: measure.otherInfo != null"></span>
+                            </a>
+                        </div>
+                        <!-- /ko-->
+                    </div>
+                </div>
+                <!-- /ko-->
+                <!-- /ko-->
+            </div>
+        </div>
+    </div>
+</div>

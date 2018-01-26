@@ -1,0 +1,222 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.CoachFileModel
+@using Sunnet.Cli.UIBase.Models
+@using System.Web.Optimization
+@using Sunnet.Cli.Core.Vcw.Enums
+@using Sunnet.Framework.Extensions;
+@using Sunnet.Cli.UIBase;
+@using Sunnet.Framework
+@{
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    List<SelectItemModel> Strategies = ViewBag.Strategies as List<SelectItemModel>;
+    List<CoachListModel> SelectedCoaches = ViewBag.SelectedCoaches as List<CoachListModel>;
+    List<SelectItemModel> PMs = ViewBag.PM as List<SelectItemModel>;
+    List<int> SelectedPMs = ViewBag.SelectedPMs as List<int>;
+}
+
+@section LeftMenu
+{
+    @Html.Partial("~/views/Shared/_Partial_Left.cshtml", LeftmenuModel.PM_Coaches)
+}
+
+
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        @Html.LabelFor(model => model.IdentifyFileName, new { @class = "control-label required" })
+                    </div>
+                    <div class="inputtext-con">
+                        @Html.TextBoxFor(model => model.IdentifyFileName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IdentifyFileName)
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <label class="control-label" for="DateRecorded">Date Video Recorded</label>
+                    </div>
+                    <div class="inputtext-con">
+                        @Html.TextBoxFor(m => m.DateRecorded, new
+                   {
+                       @class = "form-control date",
+                       @Value = Model.DateRecorded.Value.FormatDateString()
+                   })
+                        @Html.ValidationMessageFor(m => m.DateRecorded)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">Coaching Strategies</div>
+                    </div>
+                    @if (Strategies != null)
+                    {
+                        foreach (SelectItemModel item in Strategies)
+                        {
+                            bool isChecked = Model.StrategyIds.Contains(item.ID);
+                            if (item.Name.Trim().ToLower() == SFConfig.StrategyOther)
+                            {
+                        <div class="checkbox-con checkbox-con-double">
+                            <label class="checkbox-inline checkbox-other">
+                                <input type="checkbox" name="Strategy" onclick="StrategyClick(this)" 
+                                                    value="@item.ID" @(isChecked ? "checked" : "")>@item.Name
+                            </label>
+                            <label class="textbox-other">
+                                @if (isChecked)
+                                {
+                                    @Html.TextBoxFor(model => model.StrategyOther, new { @class = "form-control form-control-double" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(model => model.StrategyOther, new
+                                   {
+                                       @class = "form-control form-control-double",
+                                       @disabled = "disabled"
+                                   }) 
+                                }
+                            </label>
+                            @Html.ValidationMessageFor(model => model.StrategyOther)
+                        </div>
+                            }
+                            else
+                            {
+                        <div class="checkbox-con checkbox-con-double">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="Strategy"  
+                                                    value="@item.ID" @(isChecked ? "checked" : "") >
+                                @item.Name
+                            </label>
+                        </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">
+                            Coaching Objectives
+                            <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                        </div>
+                        <label class="hide" for="Objectives">&nbsp;</label>
+                    </div>
+                    <div class="textarea-con">
+                        @Html.TextAreaFor(m => m.Objectives, new { @class = "form-control", row = "2" })
+                        @Html.ValidationMessageFor(m => m.Objectives)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <video controls="controls" class="videoplay">
+            <source src="@(FileHelper.GetPreviewPathofUploadFile(Model.FilePath).Replace("\\", "/"))" />
+        </video>
+    </div>
+</div>
+@Html.Partial("/Areas/Coach/Views/Partials/UploadedFile.cshtml")
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    Coaching Effectiveness
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                </div>
+                <label class="hide" for="Effectiveness">&nbsp;</label>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(m => m.Effectiveness, new { @class = "form-control", row = "2" })
+                @Html.ValidationMessageFor(m => m.Effectiveness)
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    FeedbackText
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                </div>
+                <label class="hide" for="FeedbackText">&nbsp;</label>
+            </div>
+            <div class="textarea-con">
+                @Html.TextAreaFor(model => model.FeedbackText, new { @class = "form-control", @rows = "2" })
+                @Html.ValidationMessageFor(model => model.FeedbackText)
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    PM Feedback
+                        (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                        <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                </div>
+            </div>
+            <div class="upload-btn">
+                <div id="picker_feedback">1) Select File</div>
+            </div>
+            <div class="uploader-list" id="filelists_feedback"></div>
+            <div class="upload-btn">
+                <a id="ctlBtn_feedback">2) Start Upload</a>
+            </div>
+            <input type="hidden" id="filetarget_feedback" name="filetarget_feedback" />
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">Send Upload to PM</div>
+            </div>
+            <div class="checkbox-con-multi">
+                @foreach (SelectItemModel item in PMs)
+                {
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="pm" value="@(item.ID)" 
+                                                @(SelectedPMs.Contains(item.ID) ? "checked" : "")>@(item.Name)
+                    </label>
+                }
+            </div>
+            <div class="content-title3">
+                <div class="control-label">Send Upload to Coach</div>
+                <a title="Coaches" href="/SearchUser/CoachList" data-target="#modalNormal"
+                    data-toggle="modal" class="t-teacher-btn">Coach List</a>
+            </div>
+            <script type="text/html" id="template_coach_select">
+                <%for ( var i = 0; i < this.length ; i++) {%> 
+                                      <a class="del-btn t-del-btn">
+                                          <button type="button" class="close" data-dismiss="alert" onclick="moveCoachList(<% this[i].id %>)">
+                                              <span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                          <input type="hidden" name="coach" value="<% this[i].id %>" /><% this[i].fistName %> <% this[i].lastName %>
+                                      </a>
+                <%}%>
+            </script>
+            <div style="max-height: 162px; overflow-y: scroll" id="divCoachSelect">
+                @if (SelectedCoaches != null)
+                {
+                    foreach (CoachListModel item in SelectedCoaches)
+                    {
+                    <a class="del-btn t-del-btn">
+                        <button type="button" class="close" data-dismiss="alert" onclick="moveCoachList('@(item.UserId)')">
+                            <span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <input type="hidden" name="coach" value="@(item.UserId)" 
+                                                firstname="@(item.FirstName)" lastname="@(item.LastName)" />@(item.FirstName) @(item.LastName)
+                    </a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

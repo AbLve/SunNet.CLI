@@ -1,0 +1,132 @@
+﻿@model Sunnet.Cli.Business.Vcw.Models.TeacherGeneralFileModel
+@using Sunnet.Cli.UIBase.Models
+@using Sunnet.Cli.UIBase;
+
+<div class="form-group">
+    <div class="col-sm-6">
+
+        <span class="col-sm-4 control-label">File Name</span>
+        <div class="col-sm-8">
+            <span class="control-label-text">
+                @Model.IdentifyFileName
+            </span>
+        </div>
+
+        <span class="col-sm-4 control-label">Date Uploaded</span>
+        <div class="col-sm-8">
+            <span class="control-label-text">
+                @Model.UploadDate.FormatDateString()
+            </span>
+        </div>
+
+        <span class="col-sm-4 control-label">Date Recorded</span>
+        <div class="col-sm-8">
+            <span class="control-label-text">
+                @Model.DateVieoRecorded.Value.FormatDateString()
+            </span>
+        </div>
+
+        <span class="col-sm-4 control-label">Context</span>
+        <div class="col-sm-8">
+            <span class="control-label-text">
+                @Model.Context
+            </span>
+        </div>
+
+        <span class="col-sm-4 control-label">Content</span>
+        <div class="col-sm-8">
+            <span class="control-label-text">
+                @Model.Content
+            </span>
+        </div>
+
+        <span class="col-sm-4 control-label">File Type</span>
+        <div class="col-sm-8">
+            <span class="control-label-text">
+                @(Model.FileExtension)
+                <a href="@(Model.DownLoadFilePath)" class="form-link4">Download</a>
+            </span>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con" style="min-height: 150px">
+                    <div class="content-title3">
+                        <span class="control-label">Teacher Description</span>
+                    </div>
+                    <div class="textarea-con">
+                        @Model.Description
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="content-con">
+                    <div class="content-title3">
+                        <div class="control-label">
+                            FeedbackText
+                            <span class="control-label-text-r">@ViewTextHelper.Vcw_DescriptionLimit</span>
+                        </div>
+                        @Html.LabelFor(model => model.FeedbackText, null, new { @class = "hide" })
+                    </div>
+                    <div class="textarea-con">
+                        @Html.TextAreaFor(model => model.FeedbackText, new { @class = "form-control", @rows = "2" })
+                        @Html.ValidationMessageFor(model => model.FeedbackText)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div id='div_sunnet'>
+                <div style='width:100%;height:450px; text-align:center; background:#333333 url(@(Sunnet.Framework.SFConfig.AssessmentDomain)/images/not-played.jpg) no-repeat center center; line-height:450px;'>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6">
+        <div class="content-con" style="min-height: 138px">
+            <div class="content-title3">
+                <div class="control-label">Uploaded Feedback File</div>
+            </div>
+            <div class="uploader-list" id="uploader-list_feedback">
+                @if (!string.IsNullOrEmpty(Model.FeedbackFileName))
+                {
+                    <div class="item">
+                        <i class="icon-paper-clip"></i>
+                        <a href="@(DownLoadFile.GetDownFilePath(Model.FeedbackFilePath, Model.FeedbackFileName))" 
+                            class="form-link4">@(Model.FeedbackFileName)</a>
+                        <span class="delete" title="Remove this file">
+                            <a href="javascript:;" onclick="RemoveFile_feedback(this)">×</a>
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="content-con">
+            <div class="content-title3">
+                <div class="control-label">
+                    Coach Feedback
+                    (<span class="redtext">@ViewTextHelper.Vcw_UploadTitle</span>)
+                    <span class="control-label-text-r">@ViewTextHelper.Vcw_UploadLimit</span>
+                </div>
+            </div>
+            <div class="upload-btn">
+                <div id="picker_feedback">1) Select File to Upload</div>
+            </div>
+            <div id="filelists_feedback" class="uploader-list"></div>
+            <div class="upload-btn">
+                <a id="ctlBtn_feedback">2) Start Upload</a>
+            </div>
+            <input type="hidden" id="filetarget_feedback" name="filetarget_feedback" />
+        </div>
+    </div>
+</div>
+
+

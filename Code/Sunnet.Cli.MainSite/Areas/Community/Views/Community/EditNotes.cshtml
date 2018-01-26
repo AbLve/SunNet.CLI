@@ -1,0 +1,134 @@
+﻿@using Sunnet.Cli.MainSite.Models
+@using Sunnet.Cli.UIBase.Models
+@model Sunnet.Cli.Core.Communities.Entities.CommunityNotesEntity
+@{
+    ViewBag.Title = "Custom Notifications";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Community)
+}
+
+@section BreadPath
+{
+    @(Html.ActionLink("Community/District", "Index", "Community"))
+    &nbsp;<i class="icon-angle-right"></i>&nbsp;Edit Custom Notifications
+}
+@section Scripts{
+    @System.Web.Optimization.Scripts.Render("~/scripts/ckeditor")
+
+    <script type="text/javascript">
+        CKEDITOR.replace('Messages',
+        {
+            toolbar: 'Community',
+            height: '300px'
+        });
+        jQuery(function () {
+
+          
+            var staticDomain = window._staticDomain_;
+            staticDomain = staticDomain.substring(0, staticDomain.length - 1);
+            var strs = staticDomain.split('.');
+            document.domain = strs[strs.length - 2] + "." + strs[strs.length - 1];
+
+
+            $.validator.addMethod("compareDate", function (value, element) {
+                var starttime = $("#StartOn").val();
+                var stoptime = $("#StopOn").val();
+                var reg = new RegExp('-', 'g');
+                starttime = starttime.replace(reg, '/');
+                stoptime = stoptime.replace(reg, '/');
+                starttime = new Date(parseInt(Date.parse(starttime), 10));
+                stoptime = new Date(parseInt(Date.parse(stoptime), 10));
+                if (starttime > stoptime) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }, window.getErrorMessage('stopGreaterStart'));
+
+            registerFormCallbacks("@(formId)", {
+                onPosted: function (response) {
+                    redirectBack("index");
+                }
+            });
+                });
+    </script>
+}
+
+@using (Ajax.BeginForm("EditNotes", "Community", null, PostFormHelper.DefaultAjaxOptions,
+    new { @class = "form-horizontal", id = formId }))
+{
+    @Html.AntiForgeryToken()
+    <div class="right-content-top">
+        <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back to Community/District List
+        </a>
+    </div>
+    <div style="text-align: center">
+        Community Name：
+        @ViewBag.CommunityName
+    </div>
+ <div style="text-align: left; font-weight: bold;margin-top:20px">
+     This Custom Notification page can be used to create a customized message that will appear for all users in your Community/District in CLI Engage every 
+time they login between the dates specified below. If the message should no longer appear, change the Status to inactive.
+ </div>
+
+    <div class="main-content">
+        <div class="content-body">
+            <div class="form-group">
+                @Html.LabelFor(model => model.StartOn, new { @class = "control-label required ",style=" float: left;width: 80px" })
+                <div  class="col-sm-2">
+                    @Html.TextBoxFor(model => model.StartOn, new { @class = "form-control date", @Value = Model.StartOn.FormatDateString() })
+                    @Html.ValidationMessageFor(model => model.StartOn)
+                </div>
+                @Html.LabelFor(model => model.StopOn, new { @class = "control-label required",width="80px",style=" float: left;" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.StopOn, new { @class = "form-control date compareDate", @Value = Model.StopOn.FormatDateString() })
+                    @Html.ValidationMessageFor(model => model.StopOn)
+                </div>
+           
+                @Html.LabelFor(model => model.Status, new { @class = "control-label required",width="80px",style=" float: left;" })
+                <div class="col-sm-2">
+                    @Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewBag.StatusOptions, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status)
+                </div> 
+               <label class=" control-label " for="DisplayLogo" width="80px" style=" float: left;"> Display Logo
+                   <i class="icon-question-sign question-tip" id="tooltip1" data-toggle="tooltip" data-placement="top"
+                                        title="The Upload Logo field is located on the Community/District page under Basic Information."></i>
+                 </label> 
+                <div class="col-sm-2" style="margin-top: 5px;">
+                    @Html.CheckBoxFor(model => model.DisplayLogo)
+                </div>
+
+            </div>
+           <div  class="form-group" style="margin-bottom:0px;">
+                <label style=" float: left;width: 80px" >&nbsp;</label>
+                <div class="col-sm-10" style="text-align: right">
+                   up to 1500 characters
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Messages, new { @class = "control-label required" ,style=" float: left;width: 80px"})
+                <div class="col-sm-10">
+                    @*@Html.TextAreaFor(model => model.Messages,
+                    new { @class = "form-control", rows = 20, placeholder = "Limit to 1500 characters." })
+                    @Html.ValidationMessageFor(model => model.Messages)*@
+
+                    <textarea class="form-control validate" cols="20" data-val="true" data-val-required="The Messages field is required." data-val-length="You are over the maximum 1500 character limit for the message box." data-val-length-max="1500" id="Messages" name="Messages" rows="20" style="visibility: hidden; display: none;" placeholder="">@Model.Messages</textarea>
+
+                    <span data-valmsg-replace="true" data-valmsg-for="Messages" class="field-validation-valid"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="mainbutton modal-btn submit-btn" type="submit">Submit</button>
+        <button class="mainbutton modal-btn cancel-btn" type="button" onclick='redirectBack("index")'>Cancel</button>
+
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.CommunityId)
+    </div>
+}
+

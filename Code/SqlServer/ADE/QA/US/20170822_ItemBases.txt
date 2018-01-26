@@ -1,0 +1,10 @@
+
+GO 
+ALTER TABLE dbo.ItemBases ADD WaitTime INT;
+
+GO
+UPDATE  dbo.ItemBases
+SET     WaitTime = 500;
+
+GO 
+ALTER TABLE dbo.ItemBases ALTER COLUMN WaitTime INT NOT NULL;

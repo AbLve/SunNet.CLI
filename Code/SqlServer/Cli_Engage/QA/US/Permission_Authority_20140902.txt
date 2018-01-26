@@ -1,0 +1,27 @@
+﻿/****** Object:  Table [dbo].[Permission_Authority]    Script Date: 09/02/2014 15:08:24 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Permission_Authority](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Authority] [nvarchar](50) NOT NULL,
+	[Descriptions] [nvarchar](100) NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+ CONSTRAINT [PK_PermissionN_Authority] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[Permission_Authority] ON
+INSERT [dbo].[Permission_Authority] ([ID], [Authority], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (1, N'Index', N'浏览权限', CAST(0x0000A36A00000000 AS DateTime), CAST(0x0000A36A00000000 AS DateTime))
+INSERT [dbo].[Permission_Authority] ([ID], [Authority], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (2, N'Add', N'添加权限', CAST(0x0000A36A00000000 AS DateTime), CAST(0x0000A36A00000000 AS DateTime))
+INSERT [dbo].[Permission_Authority] ([ID], [Authority], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (4, N'Edit', N'编辑权限', CAST(0x0000A36A00000000 AS DateTime), CAST(0x0000A36A00000000 AS DateTime))
+INSERT [dbo].[Permission_Authority] ([ID], [Authority], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (8, N'Delete', N'删除权限', CAST(0x0000A36A00000000 AS DateTime), CAST(0x0000A36A00000000 AS DateTime))
+INSERT [dbo].[Permission_Authority] ([ID], [Authority], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (16, N'Get', N'获取数据', CAST(0x0000A36A00000000 AS DateTime), CAST(0x0000A36A00000000 AS DateTime))
+INSERT [dbo].[Permission_Authority] ([ID], [Authority], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (32, N'View', N'查看详细', CAST(0x0000A36A00000000 AS DateTime), CAST(0x0000A36A00000000 AS DateTime))
+INSERT [dbo].[Permission_Authority] ([ID], [Authority], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (64, N'Export', N'导出权限', CAST(0x0000A36A00000000 AS DateTime), CAST(0x0000A36A00000000 AS DateTime))
+INSERT [dbo].[Permission_Authority] ([ID], [Authority], [Descriptions], [CreatedOn], [UpdatedOn]) VALUES (128, N'All', N'所有权限', CAST(0x0000A36A00000000 AS DateTime), CAST(0x0000A36A00000000 AS DateTime))
+SET IDENTITY_INSERT [dbo].[Permission_Authority] OFF

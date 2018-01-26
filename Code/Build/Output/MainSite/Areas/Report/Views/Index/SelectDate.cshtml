@@ -1,0 +1,90 @@
+﻿@using Sunnet.Cli.UIBase.Models
+@{
+    ViewBag.Title = "Select Date";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+}
+@section LeftMenu
+{
+    @Html.Partial("~/Views/Shared/_MasterData_LeftMenu.cshtml", Leftmenu_MainSite.Reports)
+}
+@section BreadPath
+{
+    @(Html.ActionLink("Reports", "Index", "Index"))<i class="icon-angle-right"></i>Teacher Turnover Report
+}
+<div class="right-content-top">
+    <a class="mainbutton mainright-btn nav-btn" href="@(Server.UrlDecode(Request.QueryString["returnurl"]) ?? Url.Action("Index"))">Back</a>
+</div>
+<form action='@Url.Action("TurnoverReport")' id="@(formId)" class="form-horizontal" method="post" data-confirm="false" target="export">
+    <div class="main-content">
+        <div class="content-title">Teacher Turnover Report</div>
+        <div class="content-body">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                @Html.Label("Community/District", new { @class = "control-label col-sm-2", @for = "communityName" })
+                <div class="col-sm-4">
+                    @Html.TextBox("communityName", "", new
+                {
+                    autocomplete = "off",
+                    @class = "form-control",
+                    data_list = "true",
+                    data_for = "#CommunityId",
+                    data_remote = "/Community/Community/GetCommunitySelectList",
+                    data_text = "Name",
+                    data_value = "ID",
+                    id = "communityName",
+                    name = "communityName",
+                    @for = "CommunityId",
+                    placeholder = "Enter key text to search",
+                    data_required = "false"
+                })
+                    <span class="field-validation-error" data-valmsg-for="MenterList" data-valmsg-replace="true">
+                        <span id="Community-error" style="display: none;" class="">The Community/District field is required.</span>
+                    </span>
+                    @Html.Hidden("CommunityId", "", new
+           {
+               @class = "form-control "
+           })
+                </div>             
+            </div>
+            <div class="form-group">
+                <label for="StartDate" class="control-label col-sm-2">
+                    Start Date
+                </label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control date" name="StartDate"  placeholder="@(DateTime.Now.FormatDateString())" maxDate = "@(DateTime.Now.FormatDateString())" />
+                </div>
+
+                <label for="EndDate" class="control-label col-sm-2">
+                    End Date
+                </label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control date" name="EndDate" placeholder="@(DateTime.Now.FormatDateString())"  maxDate = "@(DateTime.Now.FormatDateString())" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="button-content">
+        <button class="mainbutton modal-btn submit-btn" type="submit" onclick="return beforeSubmit()">Export Report</button>
+    </div>
+</form>
+<iframe frameborder="0" style="width:0;height: 0;display: none;" id="export" name="export"></iframe>
+
+@section Scripts{
+    <script type="text/javascript">
+        function beforeSubmit() {
+            setTimeout(function() {
+                $form.find("button:submit").button("reset");
+                window.loading(false);
+            }, 2000);
+            return true;
+        }
+
+        var $form;
+        $(function() {
+            $form = $("#@(formId)");
+        });
+
+
+    </script>
+}

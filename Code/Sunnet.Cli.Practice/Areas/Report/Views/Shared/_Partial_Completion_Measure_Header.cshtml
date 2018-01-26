@@ -1,0 +1,52 @@
+﻿
+@using Sunnet.Cli.Business.Cpalls
+@{
+
+    var title = ViewData["title"];
+    var communityName = ViewData["communityName"];
+    var language = ViewData["language"];
+    var schoolName = ViewData["schoolName"];
+    var className = ViewData["className"];
+    var schoolYear = ViewData["schoolYear"];
+    var waveNum = ViewData["wave"];
+    var teacherName = ViewData["teacherName"];
+    var userName = ViewData["UserName"];
+    var report = ViewData["report"] as ReportList;
+    var breakPager = (bool)ViewData["breakPager"];
+    Layout = null;
+
+}
+
+<table cellpadding="0" cellspacing="0" class="noborder header">
+    <tr>
+        <td></td>
+        <td style="font-size: 14px; font-weight: bold;" colspan="3">
+            @(ReportHelper.GetReportTitle(AssessmentType.Cpalls, ViewBag.AssessmentName))<br />
+        @title
+    </td>
+    <td>
+        <img src="@(DomainHelper.PracticeDomain)images/cli_logo.png" style="width: 150px; height: 60px; vertical-align: middle;" alt="cli_logo" />
+    </td>
+</tr>
+ 
+<tr>
+    <td style="text-align: left; vertical-align: top;" colspan="2">
+        School year:&nbsp;@schoolYear<br />
+        Wave @waveNum<br/>
+        Practice Class
+    </td>
+    <td>&nbsp;</td>
+    <td style="text-align: right; vertical-align: top;" colspan="2">
+        Assessment Language:&nbsp;@language<br/>
+        Teacher:&nbsp;@Html.Raw(teacherName)<br/>
+      @Html.Raw(userName)
+    </td>
+</tr>
+<tr>
+    <td style="width:180px; height:40px;"></td>
+    <td style="width:50px;"></td>
+    <td></td>
+    <td style="width:50px;"></td>
+    <td style="width:180px;"></td>
+</tr>
+</table>

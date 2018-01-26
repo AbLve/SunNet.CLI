@@ -1,0 +1,255 @@
+﻿@using Sunnet.Cli.Core.Ade.Entities
+@{
+    ViewBag.Title = "&nbsp;";
+    Layout = "~/Views/Shared/_Modal_Layout.cshtml";
+    var formId = PostFormHelper.GetFormId(Html.ViewContext.View);
+    var language = (int)ViewBag.language;
+    var theOtherLanguage = (int)ViewBag.TheOtherLanguage;
+    List<AssessmentReportEntity> assessmentReports = ViewBag.AssessmentReports;
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        var models = {};
+        +(function() {
+            var $form = $("#@(formId)");
+            var groups = @(Html.Raw(ViewBag.MeasureJson));
+            console.log(groups);
+            var waveMeasure = new WaveMeasures(groups);
+
+            var groups2 = @(Html.Raw(ViewBag.MeasureJson2));
+            var vaveMeasure2;
+            if (groups2) {
+                vaveMeasure2 = new WaveMeasures(groups2);
+            }
+
+            models.languages = {};
+            models.languages[@(language)] = waveMeasure;
+            if (vaveMeasure2) {
+                models.languages[@(theOtherLanguage)] = vaveMeasure2;
+            } else {
+                models.languages[@(theOtherLanguage)] = false;
+            }
+            models.selectedLanguage = ko.observable(@(language));
+            models.assessment = ko.computed(function() {
+                return models.languages[models.selectedLanguage()];
+            }, models);
+            models.selectedLanguage.subscribe(function(language) {
+                var targetWave = $("#@(formId)").find("#myTab").find("li.active").find("a").attr("href").replace("#content", "");
+                models.languages[language].chooseWave(parseInt(targetWave));
+            });
+            models.submit = function(type) {
+                if (type == "gray") {
+                    $form.find("#Gray").val(type);
+                } else {
+                    $form.find("#Gray").val("");
+                }
+                $("#parentReportType").val(type);
+
+                $form.attr("target", "_blank");
+                if ($.support.mobile === false) {
+                    $form.attr("target", "export");
+                }
+                var measures = {};
+                $.each(models.assessment().waves, function(i, wave) {
+                    measures[i] = [];
+                });
+                var selectedWaves = [];
+                for (var i = 0; i < models.languages[@(language)].wavesArr.length; i++) {
+                    var wave = models.languages[@(language)].wavesArr[i];
+                    if (wave.selected()) {
+                        selectedWaves.push(wave.id);
+                    }
+                }
+                var measures = models.assessment().waves[1].selectedMeasures().slice(0);
+
+                var strMeas = JSON.stringify(measures);
+                var strWaves = JSON.stringify(selectedWaves);
+                if (selectedWaves.length == 0) {
+                    window.showMessage("hint", "Export_Select_Wave");
+                } else if (measures.length == 0) {
+                    window.showMessage("hint", "Export_Select_Measure");
+                } else {
+                    $form.find("#waves").val(strWaves);
+                    $form.find("#measures").val(strMeas);
+                    $form.submit();
+                    setTimeout(function() { $form.cliForm("loaded"); }, 3000);
+                }
+            };
+            models.entireClass = ko.observable(false);
+            models.printComment = ko.observable(false);
+            ko.applyBindings(models, document.getElementById("@(formId)"));
+            $("#languages").find("label.active").find("input").prop("checked", true);
+
+
+            $('input:radio[name="reportType"]').change(function() {
+                var reportType = $("[name='reportType']:checked").val();
+                if (reportType == "summary") {
+                    $("#btnCreateForParent").hide();
+                    $("#btnParentPINpage").hide();
+                    $("#btnParentRportpage").hide();
+                    $("#btnPercentileRank").hide();
+                    $("#btnPrintComments").show();
+                    $("#btnBW").show();
+                    $("#btnColor").show();
+                    $("[isRank='0']").show();
+                } else if (reportType == "parent") {
+                    $("#btnPrintComments").hide();
+                    $("#btnBW").hide();
+                    $("#btnColor").hide();
+                    $("#btnPercentileRank").hide();
+                    $("#btnCreateForParent").show();
+                    $("#btnParentPINpage").show(); //btnParentRportpage
+                    $("#btnParentRportpage").show(); //btnParentRportpage
+                    $("[isRank='0']").show();
+
+                }else if (reportType == "percentileRank") {
+                    $("#btnPrintComments").hide();
+                    $("#btnBW").hide();
+                    $("#btnColor").hide();
+                    $("#btnCreateForParent").hide();
+                    $("#btnParentPINpage").hide(); //btnParentRportpage
+                    $("#btnParentRportpage").hide(); //btnParentRportpage
+                    $("#btnPercentileRank").show();
+                    $("[isRank='0']").hide();
+                    $("[isRank='0']").find("a").each(function() {
+                        if ($(this).attr("class") == "term-contents term-1") {
+                            $(this).click();
+                        }
+                    });
+                }
+            });
+            $('input:radio[name="entireClass"]').change(function () {
+                var entireClass = $("[name='entireClass']:checked").val();
+                if (entireClass == "true") {
+                    $("#dobRange").show();
+                } else {
+                    $("#dobRange").hide();
+                }
+            });
+        })();
+    </script>
+}
+<form class="form-horizontal" role="form" method="POST" id="@(formId)" action='@Url.Action("StudentReports", "Student", new { Area = "Report" })' target="export">
+    <div class="btn-group" data-toggle="buttons" style="position: absolute; top: -47px; left: 5px;">
+        @if (assessmentReports.Any(e => e.Report == ReportEnum.Summary))
+        {
+            <label class="btn  btn-default active" for="studentSummary" style="border-radius: 0px;">
+                <input autocomplete="off" id="studentSummary" name="reportType" type="radio" value="summary" checked="">
+                Student Summary
+            </label>
+        }
+        @if (assessmentReports.Any(e => e.Report == ReportEnum.PercentileRank))
+        {
+            <label class="btn  btn-default" for="studentPercentileRank" style="border-radius: 0px; margin-left: 5px;">
+                <input autocomplete="off" id="percentileRank" name="reportType" type="radio" value="percentileRank" title=" ">
+                Summary Report (Percentile Rank)
+            </label>
+        }
+        @if (assessmentReports.Any(e => e.Report == ReportEnum.Parent))
+         {
+             <label class="btn btn-default " for="parentReport" style="width: 150px; border-radius: 0px; margin-left: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                 <input autocomplete="off" id="parentReport" name="reportType" type="radio" value="parent">
+                 Parent Report
+             </label>
+         }
+         </div>
+
+    @if (assessmentReports.Any())
+    {
+        <div class="form-group">
+            <div class="col-sm-3">
+                <button id="btnPrintComments" type="button" class="btn btn-default radio-btn" style="padding-left:1em;padding-right:1em"
+                        data-bind="click:function(){printComment(!printComment());}"
+                        data-toggle="button" aria-pressed="false" autocomplete="off">
+                    <i class="" data-bind="css:{'icon-check-empty':printComment() == false,'icon-check':printComment()}"></i>
+                    Print Comments1
+                </button>
+            </div>
+            <div class="btn-group col-sm-5" data-toggle="buttons" @*style="position: absolute; top: 20px; right: 234px;"*@>
+                <label class="btn  btn-default" for="entireClass" style="border-radius: 0px;">
+                    <input autocomplete="off" id="entireClass" name="entireClass" type="radio" value="true">
+                    Entire Class1
+                </label>
+                <label class="btn btn-default active" for="entireClass2" style="width: 140px; border-radius: 0px; margin-left: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                    <input autocomplete="off" id="entireClass2" name="entireClass" type="radio" value="false" checked="">
+                    @(ViewBag.Student) Only
+                </label>
+            </div>
+
+            <div class="btn-group term-chose-l col-sm-4" data-toggle="buttons" data-bind="foreach:{data:models.languages[@(language)].wavesArr,as:'wave'}">
+                <label class="btn nav-btn" data-bind="css:{'submit-btn':selected},click:function(){wave.selected(!wave.selected());}">
+                    <input type="checkbox" autocomplete="off">
+                    <span data-bind="text:text"></span>
+                </label>
+            </div>
+        </div>
+        <div id="dobRange" class="form-group" style="display:none;">
+            <label class="control-label col-sm-2 col-sm-offset-2">DOB Range </label>
+            <div class="col-sm-4">
+                <label for="dobStartDate" class="hide">DOB Start Date</label>
+                <input type="text" class="date form-control" id="dobStartDate" name="dobStartDate" placeholder="Start date" maxDate="@(DateTime.Now.FormatDateString())" />
+            </div>
+            <div class="col-sm-4">
+                <label for="dobEndDate" class="hide">DOB End Date</label>
+                <input type="text" class="date form-control" id="dobEndDate" name="dobEndDate" placeholder="End date" data-minDate="#F{$dp.$D(\'dobStartDate\',{d:0});}" maxDate="@(DateTime.Now.FormatDateString())" />
+            </div>
+        </div>
+
+        <div class="clearfix">
+            @Html.Hidden("language")
+            @Html.Hidden("printComments", "flase", new
+        {
+            data_bind = "value:printComment()"
+        })
+            <br />
+        </div>
+        @Html.Partial("_Partial_Select_Measure")
+        @Html.Hidden("assessmentId")
+        @Html.Hidden("year")
+        @Html.Hidden("id")
+        @Html.Hidden("waves")
+        @Html.Hidden("measures")
+        @Html.Hidden("export", true)
+        @Html.Hidden("imgSource")
+        @Html.Hidden("Gray")
+        @Html.Hidden("parentReportType")
+    }
+    <div class="modal-footer">
+        @if (assessmentReports.Any(e => e.Report == ReportEnum.Summary))
+        {
+            <button id="btnBW" type="button" class="mainbutton mainright-btn submit-btn "
+                    data-bind="click:function(){submit('gray');}">
+                Scores (B&W)
+            </button>
+            <button id="btnColor" type="button" class="mainbutton mainright-btn submit-btn "
+                    data-bind="click:submit">
+                Scores (Color)
+            </button>
+        }
+        @if (assessmentReports.Any(e => e.Report == ReportEnum.PercentileRank))
+        {
+            <button id="btnPercentileRank" style="display: none" type="button" class="mainbutton mainright-btn submit-btn "
+                    data-bind="click:function(){submit('percentileRank');}">
+                Standard Report
+            </button>
+        }
+        @if (assessmentReports.Any(e => e.Report == ReportEnum.Parent))
+        {
+            <button id="btnCreateForParent" style="display: none" type="button" class="mainbutton mainright-btn submit-btn "
+                    data-bind="click:function(){submit('forparent');}">
+                Create for Parent
+            </button>
+            <button id="btnParentPINpage" style="display: none" type="button" class="mainbutton mainright-btn submit-btn "
+                    data-bind="click:function(){submit('pin');}">
+                Print Parent Pin Page
+            </button>
+            <button id="btnParentRportpage" style="display: none" type="button" class="mainbutton mainright-btn submit-btn "
+                    data-bind="click:function(){submit('onlyreport');}">
+                Print Parent Reports
+            </button>
+        }
+    </div>
+</form>
+
+<iframe id="export" name="export" style="display: none; height: 0px; width: 0px;"></iframe>

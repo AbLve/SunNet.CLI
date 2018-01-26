@@ -1,0 +1,29 @@
+﻿
+IF not EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[Context_Datas]') AND OBJECTPROPERTY(ID, 'IsTable') = 1) 
+begin
+	CREATE TABLE [dbo].[Context_Datas](
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[Name] [varchar](100) NOT NULL,
+		[Status] [tinyint] NOT NULL,
+		[CreatedOn] [datetime] NOT NULL,
+		[UpdatedOn] [datetime] NOT NULL,
+	 CONSTRAINT [PK_Context_Datas] PRIMARY KEY CLUSTERED 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+
+
+	SET ANSI_PADDING OFF
+
+	SET IDENTITY_INSERT [dbo].[Context_Datas] ON 
+
+	INSERT [dbo].[Context_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (1, N'Whole Group', 1, CAST(0x0000A45F00BF4A11 AS DateTime), CAST(0x0000A45F00BF4A11 AS DateTime))
+
+	INSERT [dbo].[Context_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (2, N'Small Group', 1, CAST(0x0000A45F00BF4A11 AS DateTime), CAST(0x0000A45F00BF4A11 AS DateTime))
+
+	INSERT [dbo].[Context_Datas] ([ID], [Name], [Status], [CreatedOn], [UpdatedOn]) VALUES (3, N'Other', 1, CAST(0x0000A45F00BF4A12 AS DateTime), CAST(0x0000A45F00BF4A12 AS DateTime))
+
+	SET IDENTITY_INSERT [dbo].[Context_Datas] OFF
+
+end
